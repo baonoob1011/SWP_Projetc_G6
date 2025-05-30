@@ -80,7 +80,6 @@ const SendOTP = ({ email }: { email: string }) => {
     }
   };
   
-
   if (verified) return <NewPass email={email} />;
 
   return (
