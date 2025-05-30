@@ -144,14 +144,6 @@
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 			<version>3.5.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.twilio.sdk/twilio -->
-		<dependency>
-			<groupId>com.twilio.sdk</groupId>
-			<artifactId>twilio</artifactId>
-			<version>8.31.1</version>
-		</dependency>
-
-
 
 	</dependencies>
 
