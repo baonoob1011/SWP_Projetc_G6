@@ -15,16 +15,14 @@ import {
   ListItemButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { NavLink } from "react-router-dom";
-
+import { NavLink, useNavigate } from "react-router-dom";
 
 type HeaderProps = {
-  username: string;
-  setUsername: React.Dispatch<React.SetStateAction<string>>;
+  fullName: string;
+  setFullName: React.Dispatch<React.SetStateAction<string>>;
 };
 
-
-export function Header({ username, setUsername }: HeaderProps) {
+export function Header({ fullName, setFullName }: HeaderProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Dropdown menu state
@@ -43,11 +41,35 @@ export function Header({ username, setUsername }: HeaderProps) {
     setMenuOpen(null);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    setUsername("");   // Xóa username ở state App => Header re-render
-    window.location.href = "/login";
+  const nagative = useNavigate();
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      if (token) {
+        await fetch("http://localhost:8080/api/auth/logout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+      localStorage.removeItem("fullName");
+      setFullName("");
+
+      nagative("/login");
+    } catch (error) {
+      console.error("Logout API error:", error);
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("fullName");
+      localStorage.removeItem("username");
+      setFullName(""); // Xóa fullName ở state App => Header re-render
+      window.location.href = "/login";
+    }
   };
 
   const navItems = [
@@ -139,10 +161,10 @@ export function Header({ username, setUsername }: HeaderProps) {
 
           {/* Login/Logout + Mobile Menu button */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            {username ? (
+            {fullName ? (
               <>
                 <Typography variant="body2" sx={{ color: "white" }}>
-                  Welcome,{" "}{username}
+                  Welcome, {fullName}
                 </Typography>
                 <Typography variant="body2" sx={{ color: "white" }}>
                   |
