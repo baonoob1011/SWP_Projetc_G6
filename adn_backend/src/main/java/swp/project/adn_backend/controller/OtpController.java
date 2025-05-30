@@ -26,6 +26,7 @@ public class OtpController {
     private SendEmailService emailService;
     private VerifyOtpService otpService;
 
+
     @Autowired
     public OtpController(UserService userService, SendEmailService emailService, VerifyOtpService otpService) {
         this.userService = userService;
@@ -39,7 +40,6 @@ public class OtpController {
         String otp = generateOtp();
 
         otpService.saveOtp(request.getEmail(), otp);
-
         emailService.sendOtpEmail(request.getEmail(), otp);
 
         return ResponseEntity.ok("OTP sent to " + request.getEmail());
@@ -51,19 +51,6 @@ public class OtpController {
         return String.valueOf(otp);
     }
 
-    //    @PostMapping("/verify")
-//    public ResponseEntity<String> verifyOtp(@Valid @RequestBody OtpVerifyRequest request) {
-//        boolean isValid = otpService.verifyOtp(request.getEmail(), request.getOtp());
-//
-//        if (!isValid) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid OTP");
-//        }
-//
-//        userService.updatePasswordByEmail(request.getEmail(), request.getNewPassword());
-//        otpService.clearOtp(request.getEmail());
-//
-//        return ResponseEntity.ok("Password changed successfully.");
-//    }
     @PostMapping("/verify-otp")
     public ResponseEntity<String> verifyOtp(@Valid @RequestBody OtpVerifyRequest request) {
         boolean isValid = otpService.verifyOtp(request.getEmail(), request.getOtp());

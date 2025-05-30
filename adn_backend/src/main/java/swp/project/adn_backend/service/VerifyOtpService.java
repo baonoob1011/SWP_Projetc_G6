@@ -1,29 +1,53 @@
 package swp.project.adn_backend.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.entity.Users;
+import swp.project.adn_backend.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class VerifyOtpService {
 
-    private Map<String, String> otpStorage = new ConcurrentHashMap<>();
+    @Autowired
+    private UserRepository userRepository;
 
     public void saveOtp(String email, String otp) {
-        System.out.println("OTP saved for " + email + ": " + otp);
-        otpStorage.put(email, otp);
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Email does not exist."));
+
+        user.setOtpCode(otp);
+        user.setOtpExpiryTime(LocalDateTime.now().plusMinutes(1)); // OTP hết hạn sau 1 phút
+        userRepository.save(user);
     }
 
-    public boolean verifyOtp(String email, String otp) {
-        System.out.println("Verifying OTP for " + email + ": " + otp + ", stored: " + otpStorage.get(email));
-        String savedOtp = otpStorage.get(email);
-        return savedOtp != null && savedOtp.equals(otp);
+    public boolean verifyOtp(String email, String inputOtp) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Email does not exist."));
+
+        if (user.getOtpCode() == null || user.getOtpExpiryTime() == null) {
+            return false;
+        }
+
+        if (LocalDateTime.now().isAfter(user.getOtpExpiryTime())) {
+            return false;
+        }
+
+        return user.getOtpCode().equals(inputOtp);
     }
+
 
 
     public void clearOtp(String email) {
-        otpStorage.remove(email);
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Email does not exist."));
+
+        user.setOtpCode(null);
+        user.setOtpExpiryTime(null);
+        userRepository.save(user);
     }
 }
 

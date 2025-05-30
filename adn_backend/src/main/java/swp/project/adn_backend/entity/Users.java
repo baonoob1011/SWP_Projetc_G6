@@ -41,6 +41,8 @@ public class Users {
 
     Boolean enabled = true;
 
+     String otpCode;
+     LocalDateTime otpExpiryTime;
 
     @Column(name = "last_otp_sent_time", nullable = true) // Có thể null
     private LocalDateTime lastOtpSentTime;
@@ -173,6 +175,22 @@ public class Users {
 
     public void setFeedbacks(List<Feedback> feedbacks) {
         this.feedbacks = feedbacks;
+    }
+
+    public String getOtpCode() {
+        return otpCode;
+    }
+
+    public void setOtpCode(String otpCode) {
+        this.otpCode = otpCode;
+    }
+
+    public LocalDateTime getOtpExpiryTime() {
+        return otpExpiryTime;
+    }
+
+    public void setOtpExpiryTime(LocalDateTime otpExpiryTime) {
+        this.otpExpiryTime = otpExpiryTime;
     }
 }
 
