@@ -12,14 +12,15 @@ import swp.project.adn_backend.dto.request.OtpValidationRequest;
 import swp.project.adn_backend.dto.request.OtpVerifyRequest;
 import swp.project.adn_backend.dto.request.SmsRequest;
 import swp.project.adn_backend.dto.response.OtpResponseDto;
-import swp.project.adn_backend.service.EmailService;
+
 
 import java.util.Random;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import swp.project.adn_backend.service.OtpService;
+import swp.project.adn_backend.service.SendEmailService;
 import swp.project.adn_backend.service.UserService;
+import swp.project.adn_backend.service.VerifyOtpService;
 
 @RestController
 @RequestMapping("/api/otp")
@@ -27,12 +28,12 @@ import swp.project.adn_backend.service.UserService;
 public class OtpController {
 
     private UserService userService;
-    private EmailService emailService;
-    private OtpService otpService;
+    private SendEmailService emailService;
+    private VerifyOtpService otpService;
 
 
     @Autowired
-    public OtpController(UserService userService, EmailService emailService, OtpService otpService) {
+    public OtpController(UserService userService, SendEmailService emailService, VerifyOtpService otpService) {
         this.userService = userService;
         this.emailService = emailService;
         this.otpService = otpService;

@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class OtpService {
+public class VerifyOtpService {
 
     private Map<String, String> otpStorage = new ConcurrentHashMap<>();
 

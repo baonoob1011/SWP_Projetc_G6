@@ -11,12 +11,12 @@ import swp.project.adn_backend.repository.UserRepository;
 import java.util.Optional;
 
 @Service
-public class EmailService {
+public class SendEmailService {
 
     private JavaMailSender mailSender;
     private UserRepository userRepository;
     @Autowired
-    public EmailService(JavaMailSender mailSender, UserRepository userRepository) {
+    public SendEmailService(JavaMailSender mailSender, UserRepository userRepository) {
         this.mailSender = mailSender;
         this.userRepository = userRepository;
     }
