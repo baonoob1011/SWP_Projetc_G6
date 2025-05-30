@@ -13,7 +13,6 @@ import java.util.Optional;
 @Service
 public class EmailService {
 
-
     private JavaMailSender mailSender;
     private UserRepository userRepository;
     @Autowired
