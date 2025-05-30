@@ -19,30 +19,35 @@ import java.util.Set;
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     long userId;
 
-    @Column(name = "full_name", columnDefinition = "nvarchar(255)")
+    @Column(name = "full_name", columnDefinition = "nvarchar(255)", nullable = false)
     String fullName;
 
-    @Column(columnDefinition = "nvarchar(255)")
+    @Column(columnDefinition = "nvarchar(255)", nullable = false)
     String username;
 
-    @Column(columnDefinition = "nvarchar(255)")
+    @Column(columnDefinition = "nvarchar(255)", nullable = false)
     String password;
 
-    @Column(columnDefinition = "nvarchar(20)")
+    @Column(columnDefinition = "nvarchar(20)", nullable = false)
     String phone;
-
+    
     @Column(columnDefinition = "nvarchar(255)")
     String email;
 
+    @Column(nullable = false)
     Boolean enabled = true;
 
+    @Column(name = "role", nullable = false)
     Set<String> roles;
 
+    @Column(name = "last_otp_sent_time", nullable = true) // Có thể null
+    private LocalDateTime lastOtpSentTime;
+
     @CreationTimestamp
-    @Column(name = "create_at", updatable = false)
+    @Column(name = "create_at", updatable = false, nullable = false)
     LocalDateTime createAt;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -56,6 +61,14 @@ public class Users {
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Feedback> feedbacks;
+
+    public LocalDateTime getLastOtpSentTime() {
+        return lastOtpSentTime;
+    }
+
+    public void setLastOtpSentTime(LocalDateTime lastOtpSentTime) {
+        this.lastOtpSentTime = lastOtpSentTime;
+    }
 
     public long getUserId() {
         return userId;

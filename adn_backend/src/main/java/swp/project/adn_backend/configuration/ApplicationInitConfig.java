@@ -31,10 +31,10 @@ public class ApplicationInitConfig {
                 users.setUsername("adminAccount");
                 users.setPassword(passwordEncoder.encode("admin"));
                 users.setRoles(roles);
-//                        .username("adminAccount")
-//                        .password(passwordEncoder.encode("admin"))
-//                        .roles(roles)
-//                        .build();
+                users.setFullName("Tran Dinh Bao");
+                users.setEmail("trandinhbao222@gmail.com");
+                users.setPhone("0357594189");
+
                 userRepository.save(users);
             }
         };

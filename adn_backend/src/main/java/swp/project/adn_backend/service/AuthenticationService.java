@@ -80,6 +80,7 @@ public class AuthenticationService {
                 .issueTime(new Date())
                 .expirationTime(Date.from(Instant.now().plus(10, ChronoUnit.SECONDS)))
                 .claim("scope", buildScope(users))
+                .claim("fullName",users.getFullName())
                 .build();
 
         SignedJWT signedJWT = new SignedJWT(header, jwtClaimsSet);
