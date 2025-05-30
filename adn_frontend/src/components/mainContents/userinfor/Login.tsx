@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
-import CustomSnackBar from "../mainContents/userinfor/Snackbar";
 
 type UserInfo = {
   username: string;
@@ -12,22 +11,16 @@ type UserInfo = {
 };
 
 type LoginProps = {
-  setFullName: React.Dispatch<React.SetStateAction<string>>;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Login = ({ setFullName }: LoginProps) => {
+const Login = ({ setUsername }: LoginProps) => {
   const navigate = useNavigate();
 
   const [user, setUser] = useState<UserInfo>({
     username: "",
     password: "",
   });
-
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success" as "success" | "error",
-  }); //create popup notice
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,18 +32,20 @@ const Login = ({ setFullName }: LoginProps) => {
 
   const TimeLeftLogout = (exp: number) => {
     const now = Date.now() / 1000;
-    const timeleft = (exp - now) * 1000 * 60 * 60;
+    const timeleft = (exp - now) * 1000;
 
     if (timeleft > 0) {
       setTimeout(() => {
         toast.error("Hết thời gian đăng nhập");
         localStorage.clear();
-        setFullName("");
+        setUsername("");
         navigate("/login");
       }, timeleft);
     }
   };
 
+
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -63,31 +58,31 @@ const Login = ({ setFullName }: LoginProps) => {
         body: JSON.stringify(user),
       });
       if (!response.ok) {
-        setSnackbar({
-          open: true,
-          message: "Sai tên đăng nhập hoặc mật khẩu",
-          severity: "error",
+        Swal.fire({
+          icon: "error",
+          title: "Đăng nhập thất bại!",
+          text: "Sai tên đăng nhập hoặc mật khẩu",
         });
       } else {
         const data = await response.json();
         const token = data.result.token;
 
         try {
-          const decoded: { sub: string; exp: number; fullName: string } = jwtDecode(token);
+          const decoded: { sub: string; exp: number } = jwtDecode(token);
 
           localStorage.setItem("token", token);
           localStorage.setItem("username", decoded.sub);
-          localStorage.setItem("fullName", decoded.fullName);
-          setFullName(decoded.fullName);// Cập nhật state App => Header re-render
+
+          setUsername(decoded.sub); // Cập nhật state App => Header re-render
           TimeLeftLogout(decoded.exp);
           Swal.fire({
             icon: "success",
             title: "Đăng nhập thành công!",
             showConfirmButton: false,
-            timer: 1300,
+            timer: 1500,
           });
 
-          setTimeout(() => navigate("/"), 1500);
+          setTimeout(() => navigate("/"), 1000);
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (decodeError) {
           Swal.fire({
@@ -147,12 +142,6 @@ const Login = ({ setFullName }: LoginProps) => {
           </Box>
         </Box>
       </Paper>
-      <CustomSnackBar
-        open={snackbar.open}
-        message={snackbar.message}
-        severity={snackbar.severity}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-      />
     </div>
   );
 };
