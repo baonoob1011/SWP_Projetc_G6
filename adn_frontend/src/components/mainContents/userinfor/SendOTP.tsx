@@ -79,7 +79,7 @@ const SendOTP = ({ email }: { email: string }) => {
       alert((err as Error).message);
     }
   };
-  
+
   if (verified) return <NewPass email={email} />;
 
   return (
