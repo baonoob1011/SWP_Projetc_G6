@@ -29,7 +29,29 @@ public class AdministrativeService {
             CascadeType.DETACH, CascadeType.REFRESH
     })
     @JoinColumn(name = "service_id", nullable = false)
-    Service service;
+    ServiceTest service;
 
+    public long getAdministrativeServiceId() {
+        return administrativeServiceId;
+    }
 
+    public void setAdministrativeServiceId(long administrativeServiceId) {
+        this.administrativeServiceId = administrativeServiceId;
+    }
+
+    public SampleCollectionMethod getSampleCollectionMethod() {
+        return sampleCollectionMethod;
+    }
+
+    public void setSampleCollectionMethod(SampleCollectionMethod sampleCollectionMethod) {
+        this.sampleCollectionMethod = sampleCollectionMethod;
+    }
+
+    public ServiceTest getService() {
+        return service;
+    }
+
+    public void setService(ServiceTest service) {
+        this.service = service;
+    }
 }

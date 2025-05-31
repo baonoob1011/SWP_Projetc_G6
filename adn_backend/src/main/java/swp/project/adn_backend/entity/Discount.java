@@ -41,5 +41,5 @@ public class Discount {
             CascadeType.DETACH, CascadeType.REFRESH
     })
     @JoinColumn(name = "service_id", nullable = false)
-    Service service;
+    ServiceTest service;
 }

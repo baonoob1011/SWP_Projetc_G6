@@ -24,6 +24,8 @@ public class PriceList {
     @Column(name = "effective_date")
     LocalDate effectiveDate;
 
+    String time;
+
     double price;
 
     @ManyToOne(cascade = {
@@ -31,5 +33,45 @@ public class PriceList {
             CascadeType.DETACH, CascadeType.REFRESH
     })
     @JoinColumn(name = "service_id", nullable = false)
-    Service service;
+    ServiceTest service;
+
+    public long getPriceId() {
+        return priceId;
+    }
+
+    public void setPriceId(long priceId) {
+        this.priceId = priceId;
+    }
+
+    public LocalDate getEffectiveDate() {
+        return effectiveDate;
+    }
+
+    public void setEffectiveDate(LocalDate effectiveDate) {
+        this.effectiveDate = effectiveDate;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public ServiceTest getService() {
+        return service;
+    }
+
+    public void setService(ServiceTest service) {
+        this.service = service;
+    }
 }

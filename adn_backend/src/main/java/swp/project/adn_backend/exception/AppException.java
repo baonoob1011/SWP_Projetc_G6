@@ -2,22 +2,22 @@ package swp.project.adn_backend.exception;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import swp.project.adn_backend.enums.ErrorCode;
+import swp.project.adn_backend.enums.ErrorCodeUser;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppException extends  RuntimeException{
-    ErrorCode errorCode;
+    ErrorCodeUser errorCode;
 
-    public AppException(ErrorCode errorCode) {
+    public AppException(ErrorCodeUser errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
 
-    public ErrorCode getErrorCode() {
+    public ErrorCodeUser getErrorCode() {
         return errorCode;
     }
 
-    public void setErrorCode(ErrorCode errorCode) {
+    public void setErrorCode(ErrorCodeUser errorCode) {
         this.errorCode = errorCode;
     }
 }

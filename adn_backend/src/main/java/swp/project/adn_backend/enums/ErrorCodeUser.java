@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public enum ErrorCode {
+public enum ErrorCodeUser {
     USER_EXISTED(1001, "Username is existed", HttpStatus.BAD_REQUEST),
     USERNAME_INVALID(1002, "Username must be at least 8 characters", HttpStatus.BAD_REQUEST),
     EMAIL_INVALID(1003, "Email format is invalid", HttpStatus.BAD_REQUEST),
@@ -27,18 +27,24 @@ public enum ErrorCode {
     CONFIRM_PASSWORD_NOT_MATCHING(1017, "Passwords do not match", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(1018, "User is not existed", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(1019, "Unauthenticated", HttpStatus.UNAUTHORIZED),// Trường hợp đặc biệt
-    UNAUTHORIZED(1020, "You do not have permission", HttpStatus.FORBIDDEN) // Trường hợp đặc biệt
+    UNAUTHORIZED(1020, "You do not have permission", HttpStatus.FORBIDDEN),
+
+
+    //service validation
+    SERVICE_NAME_IS_EXISTED(1001,"Service name is existed", HttpStatus.BAD_REQUEST);
+
+    // Trường hợp đặc biệt
     ;
     int code;
     String message;
     HttpStatusCode httpStatusCode;
 
-    ErrorCode(int code, String message) {
+    ErrorCodeUser(int code, String message) {
         this.code = code;
         this.message = message;
     }
 
-    ErrorCode(int code, String message, HttpStatusCode httpStatusCode) {
+    ErrorCodeUser(int code, String message, HttpStatusCode httpStatusCode) {
         this.code = code;
         this.message = message;
         this.httpStatusCode = httpStatusCode;

@@ -10,16 +10,13 @@ import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "Feedback")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Feedback {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     @Column(name = "feedback_id")
-    long civilServiceId;
+    long feedbackId;
 
     @Column(name = "feedback_text")
     String feedbackText;
@@ -39,5 +36,53 @@ public class Feedback {
             CascadeType.DETACH, CascadeType.REFRESH
     })
     @JoinColumn(name = "service_id", nullable = false)
-    Service service;
+    ServiceTest service;
+
+    public Feedback(long feedbackId, String feedbackText, LocalDate dateSubmitted, Users users, ServiceTest service) {
+        this.feedbackId = feedbackId;
+        this.feedbackText = feedbackText;
+        this.dateSubmitted = dateSubmitted;
+        this.users = users;
+        this.service = service;
+    }
+
+    public long getFeedbackId() {
+        return feedbackId;
+    }
+
+    public void setFeedbackId(long feedbackId) {
+        this.feedbackId = feedbackId;
+    }
+
+    public String getFeedbackText() {
+        return feedbackText;
+    }
+
+    public void setFeedbackText(String feedbackText) {
+        this.feedbackText = feedbackText;
+    }
+
+    public LocalDate getDateSubmitted() {
+        return dateSubmitted;
+    }
+
+    public void setDateSubmitted(LocalDate dateSubmitted) {
+        this.dateSubmitted = dateSubmitted;
+    }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    public ServiceTest getService() {
+        return service;
+    }
+
+    public void setService(ServiceTest service) {
+        this.service = service;
+    }
 }

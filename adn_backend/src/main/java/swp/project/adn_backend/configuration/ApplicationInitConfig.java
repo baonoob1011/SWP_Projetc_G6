@@ -32,6 +32,7 @@ public class ApplicationInitConfig {
                 users.setPhone("0357594189");
 
 
+
                 userRepository.save(users);
             }
         };

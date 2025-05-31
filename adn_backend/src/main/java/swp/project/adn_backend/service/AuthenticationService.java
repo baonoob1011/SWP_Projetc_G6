@@ -11,14 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import swp.project.adn_backend.dto.request.IntrospectRequest;
 import swp.project.adn_backend.dto.request.LoginDTO;
-import swp.project.adn_backend.dto.request.UserDTO;
 import swp.project.adn_backend.dto.response.AuthenticationResponse;
 import swp.project.adn_backend.dto.response.IntrospectResponse;
 import swp.project.adn_backend.entity.Users;
-import swp.project.adn_backend.enums.ErrorCode;
+import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.repository.UserRepository;
 
@@ -26,7 +24,6 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.StringJoiner;
 
 
 @Service
@@ -41,12 +38,12 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(LoginDTO loginDTO) {
         var user = userRepository.findByUsername(loginDTO.getUsername())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticated = passwordEncoder.matches(loginDTO.getPassword(), user.getPassword());
         if (!authenticated) {
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
+            throw new AppException(ErrorCodeUser.UNAUTHENTICATED);
         }
 
         var token = generateToken(user);
@@ -79,10 +76,11 @@ public class AuthenticationService {
                 .issuer("baotd.com")
                 .issueTime(new Date())
                 .expirationTime(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
-                .claim("scope", users.getRole())
+                .claim("role", users.getRole())
                 .claim("fullName", users.getFullName())
                 .claim("phone", users.getPhone())
                 .claim("email", users.getEmail())
+                .claim("id",users.getUserId())
                 .build();
 
         SignedJWT signedJWT = new SignedJWT(header, jwtClaimsSet);

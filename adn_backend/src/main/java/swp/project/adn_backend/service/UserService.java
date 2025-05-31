@@ -8,13 +8,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.request.UserDTO;
 import swp.project.adn_backend.entity.Users;
-import swp.project.adn_backend.enums.ErrorCode;
-import swp.project.adn_backend.enums.Roles;
+import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.UserMapper;
 import swp.project.adn_backend.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,23 +31,50 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    //Đăng kí Staff
+    public Users registerStaffAcount(UserDTO userDTO) {
+        if (userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new AppException(ErrorCodeUser.USER_EXISTED);
+        }
+
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
+        }
+
+        if (userRepository.existsByPhone(userDTO.getPhone())) {
+            throw new AppException(ErrorCodeUser.PHONE_EXISTED);
+        }
+        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+            throw new AppException(ErrorCodeUser.CONFIRM_PASSWORD_NOT_MATCHING);
+        }
+
+        // Tạo user từ DTO và mã hóa mật khẩu
+        Users users = userMapper.toUser(userDTO);
+        users.setRole("STAFF");
+        users.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
+        // Lưu lại để cascade lưu role
+        return userRepository.save(users);
+
+
+    }
 
     // Đăng ký User
     public Users registerUserAccount(UserDTO userDTO) {
 
         if (userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new AppException(ErrorCode.USER_EXISTED);
+            throw new AppException(ErrorCodeUser.USER_EXISTED);
         }
 
         if (userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new AppException(ErrorCode.EMAIL_EXISTED);
+            throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
         }
 
         if (userRepository.existsByPhone(userDTO.getPhone())) {
-            throw new AppException(ErrorCode.PHONE_EXISTED);
+            throw new AppException(ErrorCodeUser.PHONE_EXISTED);
         }
         if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
-            throw new AppException(ErrorCode.CONFIRM_PASSWORD_NOT_MATCHING);
+            throw new AppException(ErrorCodeUser.CONFIRM_PASSWORD_NOT_MATCHING);
         }
 
         // Tạo user từ DTO và mã hóa mật khẩu

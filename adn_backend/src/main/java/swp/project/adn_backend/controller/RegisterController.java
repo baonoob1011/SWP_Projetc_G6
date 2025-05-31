@@ -22,11 +22,18 @@ import swp.project.adn_backend.service.UserService;
 public class RegisterController {
     @Autowired
     UserService userService;
-    @PostMapping("/register")
-    public APIResponse<Users> register(@RequestBody @Valid UserDTO userDTO) {
+    @PostMapping("/register/user-account")
+    public APIResponse<Users> registerUserAccount(@RequestBody @Valid UserDTO userDTO) {
         APIResponse<Users> usersAPIResponse=new APIResponse<>();
         usersAPIResponse.setResult(userService.registerUserAccount(userDTO));
         return  usersAPIResponse;
+    }
+
+    @PostMapping("/register/staff-account")
+    public APIResponse<Users> registerStaffAcount(@RequestBody @Valid UserDTO userDTO) {
+        APIResponse<Users> usersAPIResponse = new APIResponse<>();
+        usersAPIResponse.setResult(userService.registerUserAccount(userDTO));
+        return usersAPIResponse;
     }
 }
 

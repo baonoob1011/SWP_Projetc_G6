@@ -26,10 +26,19 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+
 public class SecurityConfig {
-    private final String[] PUBLIC_ENDPOINTS = {"/api/auth/**",
+    private final String[] PUBLIC_ENDPOINTS = {
+            "/api/auth/**",
             "/api/otp/**",
-            "/api/register"
+            "/api/register/user-account",
+    };
+    private final String[] PUBLIC_ENDPOINTS_FOR_ADMIN = {
+            "/api/register/**",
+            "/api/services/**"
+    };
+    private final String[] PUBLIC_ENDPOINTS_FOR_STAFF = {
+            "/api/services/**"
     };
     protected static final String SIGNER_KEY =
             "g2n1atsr9e9KvFKy2RePQ/rPREVb3/2+Hcjt7Mb1/PtlOUhBpASAwrVILClWabHI";
@@ -42,7 +51,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/getUsers").hasRole(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_ADMIN).hasRole(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_STAFF).hasRole(Roles.STAFF.name())
                         .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/api/logout")
@@ -54,7 +64,7 @@ public class SecurityConfig {
                 )
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt ->
-                                jwt.decoder(jwtDecoder()).jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                                        jwt.decoder(jwtDecoder()).jwtAuthenticationConverter(jwtAuthenticationConverter()))
                                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 )
                 .httpBasic(Customizer.withDefaults());
@@ -63,13 +73,21 @@ public class SecurityConfig {
     }
 
     @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+
+        // Map từ claim "role" trong JWT
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("role");
+
+        // Thêm tiền tố "ROLE_" để Spring hiểu đúng
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+
         return jwtAuthenticationConverter;
     }
+
 
     @Bean
     JwtDecoder jwtDecoder() {

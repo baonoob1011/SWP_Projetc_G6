@@ -10,9 +10,7 @@ import swp.project.adn_backend.dto.request.ChangePasswordRequest;
 import swp.project.adn_backend.dto.request.OtpRequest;
 import swp.project.adn_backend.dto.request.OtpVerifyRequest;
 import swp.project.adn_backend.service.SendEmailService;
-
 import java.util.Random;
-
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.service.VerifyOtpService;
@@ -35,7 +33,7 @@ public class OtpController {
     }
 
 
-    @PostMapping("/send")
+    @PostMapping("/send-otp")
     public ResponseEntity<String> sendOtp(@Valid @RequestBody OtpRequest request) {
         String otp = generateOtp();
 

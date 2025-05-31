@@ -8,9 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -68,7 +66,7 @@ public class Users {
     List<Appointment> appointments;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<Service> services;
+    List<ServiceTest> services;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Feedback> feedbacks;
@@ -161,11 +159,11 @@ public class Users {
         this.appointments = appointments;
     }
 
-    public List<Service> getServices() {
+    public List<ServiceTest> getServices() {
         return services;
     }
 
-    public void setServices(List<Service> services) {
+    public void setServices(List<ServiceTest> services) {
         this.services = services;
     }
 

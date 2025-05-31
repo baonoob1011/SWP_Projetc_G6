@@ -57,7 +57,7 @@ public class Appointment {
             joinColumns = @JoinColumn(name = "appointment_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    List<Service> services;
+    List<ServiceTest> services;
 
     @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
