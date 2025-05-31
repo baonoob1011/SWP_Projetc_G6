@@ -13,6 +13,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import CustomSnackBar from "../mainContents/userinfor/Snackbar";
+import styles from "./Signup.module.css";
 
 type Info = {
   fullName: string;
@@ -66,7 +67,7 @@ const SignUp = () => {
         [name]: value,
       });
     }
-    validateField(name, newValue)
+    validateField(name, newValue);
   };
 
   const nagative = useNavigate();
@@ -81,7 +82,7 @@ const SignUp = () => {
       //if error set field to empty
       setError({});
 
-      const response = await fetch("http://localhost:8080/api/register", {
+      const response = await fetch("http://localhost:8080/api/register/user-account", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -126,13 +127,10 @@ const SignUp = () => {
   };
 
   return (
-    <>
-      <Paper
-        elevation={20}
-        style={{ padding: 40, borderRadius: 20, marginTop: 50 }}
-      >
+    <div className={styles.container} style={{marginTop: 60}}>
+      <Paper elevation={20} className={styles.paper}>
         <Box component="form" onSubmit={handleSubmit}>
-          <Typography variant="h5" gutterBottom color="blue">
+          <Typography variant="h5" gutterBottom className={styles.title}>
             Đăng Ký
           </Typography>
 
@@ -235,7 +233,7 @@ const SignUp = () => {
             Đăng Ký
           </Button>
 
-          <Box mt={3} textAlign="center">
+          <Box className={styles.linkContainer}>
             <Typography variant="body2">
               Bạn đã có tài khoản? {"  "}
               <Link to="/login">Đăng nhập</Link>
@@ -249,7 +247,7 @@ const SignUp = () => {
         severity={snackbar.severity}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
       />
-    </>
+    </div>
   );
 };
 

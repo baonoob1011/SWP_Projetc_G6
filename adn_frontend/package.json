@@ -16,6 +16,7 @@
     "@mui/material": "^7.1.0",
     "@mui/x-data-grid": "^8.4.0",
     "@mui/x-date-pickers": "^8.4.0",
+    "@tailwindcss/vite": "^4.1.8",
     "dayjs": "^1.11.13",
     "framer-motion": "^12.14.0",
     "jwt-decode": "^4.0.0",
@@ -26,10 +27,12 @@
     "react-timer-hook": "^4.0.5",
     "react-toastify": "^11.0.5",
     "sweetalert2": "^11.22.0",
+    "tailwindcss": "^4.1.8",
     "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@types/google.maps": "^3.58.1",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
