@@ -58,33 +58,42 @@ public class ServiceTestService {
     public ServiceTest createAdministrativeService(ServiceRequest serviceRequest,
                                                    Authentication authentication,
                                                    PriceListRequest priceListRequest,
-                                                   AdministrativeServiceRequest administrativeServiceRequest
-
-    ) {
+                                                   AdministrativeServiceRequest administrativeServiceRequest,
+                                                   MultipartFile file) {
         if (serviceTestRepository.existsByServiceName(serviceRequest.getServiceName())) {
             throw new AppException(ErrorCodeUser.SERVICE_NAME_IS_EXISTED);
         }
+
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
         Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
-        // service
+        // Map service
         ServiceTest serviceTest = serviceTestMapper.toServiceTest(serviceRequest);
         serviceTest.setRegistedDate(LocalDateTime.now());
         serviceTest.setActive(true);
         serviceTest.setUsers(users);
 
-        //Tạo list price
+
+        if (file != null && !file.isEmpty()) {
+            try {
+                String base64Image = Base64.getEncoder().encodeToString(file.getBytes());
+                serviceTest.setImage(base64Image);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to save image", e);
+            }
+        }
+
+        // Price list
         PriceList priceList = priceListMapper.toPriceList(priceListRequest);
         priceList.setEffectiveDate(LocalDate.now());
-        priceList.setService(serviceTest); // 🔥 Rất quan trọng
-
+        priceList.setService(serviceTest);
         List<PriceList> priceLists = new ArrayList<>();
         priceLists.add(priceList);
         serviceTest.setPriceLists(priceLists);
 
-        //AdministrativeService
+        // AdministrativeService
         AdministrativeService administrativeService = administrativeMapper.toAdministrativeService(administrativeServiceRequest);
         administrativeService.setSampleCollectionMethod(SampleCollectionMethod.AT_CLINIC);
         administrativeService.setService(serviceTest);
@@ -93,43 +102,50 @@ public class ServiceTestService {
         return serviceTestRepository.save(serviceTest);
     }
 
+
     public ServiceTest createCivilService(ServiceRequest serviceRequest,
                                           Authentication authentication,
                                           PriceListRequest priceListRequest,
-                                          CivilServiceRequest civilServiceRequest
-
-    ) {
+                                          CivilServiceRequest civilServiceRequest,
+                                          MultipartFile file) {
         if (serviceTestRepository.existsByServiceName(serviceRequest.getServiceName())) {
             throw new AppException(ErrorCodeUser.SERVICE_NAME_IS_EXISTED);
         }
+
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
         Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
-        // service
+        // Tạo ServiceTest
         ServiceTest serviceTest = serviceTestMapper.toServiceTest(serviceRequest);
         serviceTest.setRegistedDate(LocalDateTime.now());
         serviceTest.setActive(true);
         serviceTest.setUsers(users);
 
-        //Tạo list price
+        
+        if (file != null && !file.isEmpty()) {
+            try {
+                String base64Image = Base64.getEncoder().encodeToString(file.getBytes());
+                serviceTest.setImage(base64Image);
+            } catch (IOException e) {
+                throw new RuntimeException("Lỗi khi lưu ảnh", e);
+            }
+        }
+
+        // Tạo PriceList
         PriceList priceList = priceListMapper.toPriceList(priceListRequest);
         priceList.setEffectiveDate(LocalDate.now());
-        priceList.setService(serviceTest); // 🔥 Rất quan trọng
+        priceList.setService(serviceTest);
+        serviceTest.setPriceLists(List.of(priceList));
 
-        List<PriceList> priceLists = new ArrayList<>();
-        priceLists.add(priceList);
-        serviceTest.setPriceLists(priceLists);
-
-        //civilServiceRequest
+        // Tạo CivilService
         CivilService civilService = civilServiceMapper.toCivilService(civilServiceRequest);
-        civilService.setSampleCollectionMethods(
-                Set.of(SampleCollectionMethod.AT_HOME, SampleCollectionMethod.AT_CLINIC)
-        );
+        civilService.setService(serviceTest);
         civilServiceRepository.save(civilService);
 
         return serviceTestRepository.save(serviceTest);
     }
+
 
 }
