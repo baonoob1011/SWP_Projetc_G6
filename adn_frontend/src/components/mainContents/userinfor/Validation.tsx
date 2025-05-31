@@ -11,15 +11,15 @@ export const signUpSchema = yup.object().shape({
   username: yup
     .string()
     .trim()
-    .required()
     .matches(noSpace, "không được có khoảng trắng")
-    .min(8, "Tên quá ngắn"),
+    .min(8, "Tên quá ngắn")
+    .required("Không được bỏ trống"),
   email: yup
     .string()
     .trim()
-    .required("Không được bỏ trống")
     .matches(noSpace, "không được có khoảng trắng")
-    .min(1, "Không được bỏ trống"),
+    .email("Đúng định dạng ___ @ ___")
+    .required("Không được bỏ trống"),
   password: yup
     .string()
     .trim()
@@ -37,6 +37,6 @@ export const signUpSchema = yup.object().shape({
 
   phone: yup
     .string()
-    .required()
-    .matches(/^0\d{9}$/, "Số điện thoại không đúng"),
+    .matches(/^0\d{9}$/, "Số điện thoại không đúng")
+    .required("Không được bỏ trống"),
 });
