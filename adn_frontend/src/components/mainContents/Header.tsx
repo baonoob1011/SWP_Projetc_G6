@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { NavLink, useNavigate } from "react-router-dom";
+import logo from "../../image/Logo.png";
 
 type HeaderProps = {
   fullName: string;
@@ -67,6 +68,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
       localStorage.removeItem("token");
       localStorage.removeItem("fullName");
       localStorage.removeItem("username");
+      localStorage.removeItem("role");
       setFullName(""); // Xóa fullName ở state App => Header re-render
       window.location.href = "/login";
     }
@@ -83,23 +85,26 @@ export function Header({ fullName, setFullName }: HeaderProps) {
     },
     { label: "Tin tức", path: "/blog" },
     { label: "Đặt lịch", path: "/order" },
+    { label: "Chi nhánh", path: "/map" },
   ];
 
   return (
     <>
-      <AppBar position="fixed" color="primary">
-        <Toolbar sx={{ justifyContent: "space-between" }}>
+      <AppBar position="fixed" sx={{ backgroundColor: "#206696" }}>
+        <Toolbar sx={{ justifyContent: "space-between", minHeight: 64 }}>
           <Typography
             variant="h6"
             component={NavLink}
             to="/"
             sx={{ textDecoration: "none", color: "inherit" }}
           >
-            Logo
+            <Box sx={{ width: 40, mr: 2 }}>
+              <img src={logo} alt="Logo" style={{ width: "100%",objectFit: "contain" }}  />
+            </Box>
           </Typography>
 
           {/* Desktop menu */}
-          <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
+          <Box sx={{ display: { xs: "none", md: "flex" }, gap: 10 }}>
             {navItems.map((item) =>
               item.children ? (
                 <Box key={item.label} sx={{ position: "relative" }}>
