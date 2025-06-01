@@ -11,6 +11,7 @@ import Map from "./components/page/Map.tsx";
 
 import Services from "./components/mainContents/services/Services.tsx";
 import SignUpStaff from "./components/mainContents/feature/SignUpForStaff.tsx";
+import SignUpManager from "./components/mainContents/feature/SignUpForManager.tsx";
 
 function App() {
   const [fullname, setFullName] = useState(localStorage.getItem("fullName") || "");
@@ -18,19 +19,17 @@ function App() {
   return (
     <>
       <Header fullName={fullname} setFullName={setFullName} />
-      {/* <Civil></Civil> */}
-
-      <Services/>
-      <SignUpStaff/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login setFullName={setFullName} />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forget" element={<Forget />} />
-        <Route path="/map" element={<Map/>} />
-        
+        <Route path="/map" element={<Map />} />
+        <Route path="/signup-manager" element={<SignUpManager />} />
+        <Route path="/signup-staff" element={<SignUpStaff />} />
+        <Route path="/services" element={<Services />} />
       </Routes>
-      <ToastContainer/>
+      <ToastContainer />
     </>
   );
 }

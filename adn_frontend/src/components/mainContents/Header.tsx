@@ -25,10 +25,12 @@ type HeaderProps = {
 
 export function Header({ fullName, setFullName }: HeaderProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  // Dropdown menu state
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const role = localStorage.getItem("role");
+
   const handleOpenMenu = (
     event: React.MouseEvent<HTMLElement>,
     label: string
@@ -41,8 +43,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
     setAnchorEl(null);
     setMenuOpen(null);
   };
-
-  const nagative = useNavigate();
 
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
@@ -59,18 +59,11 @@ export function Header({ fullName, setFullName }: HeaderProps) {
       localStorage.removeItem("token");
       localStorage.removeItem("username");
       localStorage.removeItem("fullName");
+      localStorage.removeItem("role");
       setFullName("");
-
-      nagative("/login");
+      window.location.href = "/login";
     } catch (error) {
       console.error("Logout API error:", error);
-    } finally {
-      localStorage.removeItem("token");
-      localStorage.removeItem("fullName");
-      localStorage.removeItem("username");
-      localStorage.removeItem("role");
-      setFullName(""); // Xóa fullName ở state App => Header re-render
-      window.location.href = "/login";
     }
   };
 
@@ -99,11 +92,11 @@ export function Header({ fullName, setFullName }: HeaderProps) {
             sx={{ textDecoration: "none", color: "inherit" }}
           >
             <Box sx={{ width: 40, mr: 2 }}>
-              <img src={logo} alt="Logo" style={{ width: "100%",objectFit: "contain" }}  />
+              <img src={logo} alt="Logo" style={{ width: "100%", objectFit: "contain" }} />
             </Box>
           </Typography>
 
-          {/* Desktop menu */}
+          {/* Desktop Navigation */}
           <Box sx={{ display: { xs: "none", md: "flex" }, gap: 10 }}>
             {navItems.map((item) =>
               item.children ? (
@@ -127,9 +120,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         color: "white",
                         mt: 0,
                         boxShadow: "none",
-                        "& .MuiMenu-list": {
-                          paddingY: 0,
-                        },
+                        "& .MuiMenu-list": { paddingY: 0 },
                       },
                     }}
                   >
@@ -139,12 +130,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         component={NavLink}
                         to={child.path}
                         onClick={handleCloseMenu}
-                        sx={{
-                          color: "white",
-                          "&:hover": {
-                            backgroundColor: "primary.dark",
-                          },
-                        }}
+                        sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
                       >
                         {child.label}
                       </MenuItem>
@@ -164,25 +150,76 @@ export function Header({ fullName, setFullName }: HeaderProps) {
             )}
           </Box>
 
-          {/* Login/Logout + Mobile Menu button */}
+          {/* Auth + Mobile Menu */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {fullName ? (
-              <>
-                <Typography variant="body2" sx={{ color: "white" }}>
-                  Welcome, {fullName}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "white" }}>
-                  |
-                </Typography>
-                <Button
-                  component={NavLink}
-                  to="/home"
-                  color="inherit"
-                  onClick={handleLogout}
-                >
-                  Đăng Xuất
-                </Button>
-              </>
+              role === "ADMIN" ? (
+                <>
+                  <Button sx={{ color: "white" }} onClick={(e) => handleOpenMenu(e, "ADMIN")}>
+                    Welcome, {fullName}
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={menuOpen === "ADMIN"}
+                    onClose={handleCloseMenu}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
+                    PaperProps={{
+                      elevation: 0,
+                      sx: {
+                        bgcolor: "primary.main",
+                        color: "white",
+                        mt: 0,
+                        boxShadow: "none",
+                        "& .MuiMenu-list": { paddingY: 0 },
+                      },
+                    }}
+                  >
+                    <MenuItem
+                      component={NavLink}
+                      to="/signup-manager"
+                      onClick={handleCloseMenu}
+                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                    >
+                      Thông tin quản lý
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/signup-staff"
+                      onClick={handleCloseMenu}
+                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                    >
+                      Thông tin nhân viên
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleCloseMenu();
+                        handleLogout();
+                      }}
+                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                    >
+                      Đăng xuất
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <>
+                  <Typography variant="body2" sx={{ color: "white" }}>
+                    Welcome, {fullName}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "white" }}>
+                    |
+                  </Typography>
+                  <Button
+                    component={NavLink}
+                    to="/home"
+                    color="inherit"
+                    onClick={handleLogout}
+                  >
+                    Đăng Xuất
+                  </Button>
+                </>
+              )
             ) : (
               <>
                 <Button color="inherit" component={NavLink} to="/login">
@@ -210,7 +247,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
         </Toolbar>
       </AppBar>
 
-      {/* Drawer (Mobile) */}
+      {/* Mobile Drawer */}
       <Drawer
         anchor="right"
         open={drawerOpen}
@@ -230,7 +267,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         component={NavLink}
                         to={child.path}
                         onClick={() => setDrawerOpen(false)}
-                        sx={{ pl: 4 }} // lùi vào chút cho con
+                        sx={{ pl: 4 }}
                       >
                         <ListItemText primary={child.label} />
                       </ListItemButton>

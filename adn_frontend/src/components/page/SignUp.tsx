@@ -24,6 +24,15 @@ type Info = {
   phone: string;
 };
 
+type ErrorResponse = {
+  message: string;
+  errors?: {
+    username?: string;
+    email?: string;
+    phone?: string;
+  };
+};
+
 const SignUp = () => {
   const [info, setInfo] = useState<Info>({
     fullName: "",
@@ -39,7 +48,7 @@ const SignUp = () => {
     open: false,
     message: "",
     severity: "success" as "success" | "error",
-  }); //create popup notice
+  });
 
   const validateField = async (name: string, value: string) => {
     try {
@@ -56,67 +65,89 @@ const SignUp = () => {
     const { name, value } = e.target;
     let newValue = value;
     if (name === "phone") {
-      newValue = value.replace(/\D/g, ""); //only get number and, remove text
-      setInfo({
-        ...info,
-        [name]: newValue,
-      });
-    } else {
-      setInfo({
-        ...info,
-        [name]: value,
-      });
+      newValue = value.replace(/\D/g, "");
     }
+
+    setInfo((prev) => ({ ...prev, [name]: newValue }));
     validateField(name, newValue);
   };
 
-  const nagative = useNavigate();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // const { confirmPassword, ...dataToSend } = info;
+
     try {
-      //check valid before submit form
-      await signUpSchema.validate(info, { abortEarly: false }); //if false will print all error, if true just print first error
+      // Validate form bằng Yup
+      await signUpSchema.validate(info, { abortEarly: false });
+      setError({}); // Clear lỗi frontend
 
-      //if error set field to empty
-      setError({});
-
-      const response = await fetch("http://localhost:8080/api/register/user-account", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(info),
-      });
+      const response = await fetch(
+        "http://localhost:8080/api/register/user-account",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(info),
+        }
+      );
 
       if (!response.ok) {
-        setSnackbar({
-          open: true,
-          message: "Tên đăng nhập hoặc email đã tồn tại",
-          severity: "error",
-        });
-      } else {
-        Swal.fire({
-          icon: "success",
-          title: "Đăng ký thành công!",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        setTimeout(() => {
-          nagative("/login");
-        }, 1500);
+        const errorData: ErrorResponse = await response.json();
+
+        // Nếu server trả về lỗi từng field
+        if (errorData.errors) {
+          const newServerErrors: { [key: string]: string } = {};
+          
+          // Xử lý tất cả các lỗi cùng lúc thay vì dừng ở lỗi đầu tiên
+          if (errorData.errors.username) {
+            newServerErrors.username = "Tên đăng nhập đã tồn tại";
+          }
+          if (errorData.errors.email) {
+            newServerErrors.email = "Email đã tồn tại";
+          }
+          if (errorData.errors.phone) {
+            newServerErrors.phone = "Số điện thoại đã tồn tại";
+          }
+
+          // Hiển thị tất cả lỗi lên các field cùng lúc
+          setError((prev) => ({ ...prev, ...newServerErrors }));
+          
+          // Không return ở đây để tránh dừng xử lý
+          // return; // <- Xóa dòng này
+        } else {
+          // Nếu không phải lỗi cụ thể
+          setSnackbar({
+            open: true,
+            message: errorData.message || "Đã xảy ra lỗi",
+            severity: "error",
+          });
+        }
+        return; // Chỉ return ở đây sau khi đã xử lý hết tất cả lỗi
       }
+
+      // Nếu thành công
+      Swal.fire({
+        icon: "success",
+        title: "Đăng ký thành công!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     } catch (error) {
+      // Lỗi Yup (validation frontend)
       if (error instanceof ValidationError) {
-        const newErrors: { [key: string]: string } = {};
-        error.inner.forEach((item) => {
-          if (item.path) {
-            newErrors[item.path] = item.message;
+        const yupErrors: { [key: string]: string } = {};
+        error.inner.forEach((err) => {
+          if (err.path) {
+            yupErrors[err.path] = err.message;
           }
         });
-        setError(newErrors);
+        setError(yupErrors);
       } else {
+        // Lỗi mạng
         setSnackbar({
           open: true,
           message: "Không thể kết nối tới máy chủ",
@@ -127,7 +158,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className={styles.container} style={{marginTop: 60}}>
+    <div className={styles.container} style={{ marginTop: 60 }}>
       <Paper elevation={20} className={styles.paper}>
         <Box component="form" onSubmit={handleSubmit}>
           <Typography variant="h5" gutterBottom className={styles.title}>
@@ -235,12 +266,12 @@ const SignUp = () => {
 
           <Box className={styles.linkContainer}>
             <Typography variant="body2">
-              Bạn đã có tài khoản? {"  "}
-              <Link to="/login">Đăng nhập</Link>
+              Bạn đã có tài khoản? <Link to="/login">Đăng nhập</Link>
             </Typography>
           </Box>
         </Box>
       </Paper>
+
       <CustomSnackBar
         open={snackbar.open}
         message={snackbar.message}

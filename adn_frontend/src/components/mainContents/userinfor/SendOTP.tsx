@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import CountdownTimer from "../CountDown";
+import CountdownTimer from "../feature/CountDown";
 import NewPass from "./NewPass";
 import CustomSnackBar from "./Snackbar";
 import Swal from "sweetalert2";

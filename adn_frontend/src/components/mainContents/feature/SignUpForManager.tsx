@@ -16,7 +16,7 @@ import { ValidationError } from "yup";
 import Swal from "sweetalert2";
 import styles from "./Staff.module.css";
 
-type Staff = {
+type Manager = {
   fullName: string;
   idCard: string;
   email: string;
@@ -29,9 +29,9 @@ type Staff = {
   dateOfBirth: string;
 };
 
-const SignUpStaff = () => {
+const SignUpManager = () => {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [staff, setStaff] = useState<Staff>({
+  const [manager, setManager] = useState<Manager>({
     fullName: "",
     idCard: "",
     email: "",
@@ -57,7 +57,7 @@ const SignUpStaff = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const validateField = async (name: string, value: any) => {
     try {
-      await signUpStaffSchema.validateAt(name, { ...staff, [name]: value });
+      await signUpStaffSchema.validateAt(name, { ...manager, [name]: value });
       setError((prev) => ({ ...prev, [name]: "" }));
     } catch (err) {
       if (err instanceof ValidationError) {
@@ -77,7 +77,7 @@ const SignUpStaff = () => {
       newValue = value.replace(/\D/g, "");
     }
 
-    setStaff((prev) => ({
+    setManager((prev) => ({
       ...prev,
       [name]: newValue,
     }));
@@ -89,40 +89,31 @@ const SignUpStaff = () => {
     e.preventDefault();
 
     try {
-      await signUpStaffSchema.validate(staff, { abortEarly: false });
+      await signUpStaffSchema.validate(manager, { abortEarly: false });
       setError({});
 
       // Chuẩn bị data để gửi
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { ...dataToSend } = staff;
+      const { ...dataToSend } = manager;
 
-      // Fix 1: Thêm role vào data
-      //   const staffData = {
-      //     ...dataToSend,
-      //     role: "STAFF", // Thêm role mặc định
-      //     enabled: true, // Thêm enabled mặc định
-      //     createAt: new Date().toISOString().split('T')[0] // Thêm createAt với định dạng YYYY-MM-DD
-      //   };
-
-      // Fix 2: Lấy token từ localStorage và thêm vào header
       const token = localStorage.getItem("token");
 
-      if (!token) {
-        setSnackbar({
-          open: true,
-          message: "Bạn cần đăng nhập để thực hiện chức năng này",
-          severity: "error",
-        });
-        return;
-      }
+      //   if (!token) {
+      //     setSnackbar({
+      //       open: true,
+      //       message: "Bạn cần đăng nhập để thực hiện chức năng này",
+      //       severity: "error",
+      //     });
+      //     return;
+      //   }
 
       const response = await fetch(
-        "http://localhost:8080/api/register/staff-account",
+        "http://localhost:8080/api/register/manager-account",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Thêm Authorization header
+            Authorization: `Bearer ${token}`, // Fix 3: Thêm Authorization header
           },
           body: JSON.stringify(dataToSend),
         }
@@ -156,7 +147,7 @@ const SignUpStaff = () => {
         });
 
         // Reset form sau khi thành công
-        setStaff({
+        setManager({
           fullName: "",
           idCard: "",
           email: "",
@@ -199,7 +190,7 @@ const SignUpStaff = () => {
       <Paper elevation={20} className={styles.paper}>
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Typography variant="h5" gutterBottom className={styles.title}>
-            Thông tin nhân viên
+            Thông tin quản lý
           </Typography>
 
           <TextField
@@ -207,7 +198,7 @@ const SignUpStaff = () => {
             margin="normal"
             name="fullName"
             label="Họ và tên"
-            value={staff.fullName}
+            value={manager.fullName}
             onChange={handleInput}
             error={!!error.fullName}
             helperText={error.fullName}
@@ -218,7 +209,7 @@ const SignUpStaff = () => {
             margin="normal"
             name="idCard"
             label="Nhập CCCD"
-            value={staff.idCard}
+            value={manager.idCard}
             onChange={handleInput}
             error={!!error.idCard}
             helperText={error.idCard}
@@ -231,7 +222,7 @@ const SignUpStaff = () => {
             name="email"
             label="Địa chỉ email"
             type="email"
-            value={staff.email}
+            value={manager.email}
             onChange={handleInput}
             error={!!error.email}
             helperText={error.email}
@@ -242,7 +233,7 @@ const SignUpStaff = () => {
             margin="normal"
             name="username"
             label="Tên đăng nhập"
-            value={staff.username}
+            value={manager.username}
             onChange={handleInput}
             error={!!error.username}
             helperText={error.username}
@@ -255,7 +246,7 @@ const SignUpStaff = () => {
             label="Mật khẩu"
             type="password"
             aria-describedby="rulePass"
-            value={staff.password}
+            value={manager.password}
             onChange={handleInput}
             error={!!error.password}
             helperText={error.password}
@@ -279,15 +270,16 @@ const SignUpStaff = () => {
             name="confirmPassword"
             label="Nhập lại mật khẩu"
             type="password"
-            value={staff.confirmPassword}
+            value={manager.confirmPassword}
             onChange={handleInput}
             error={!!error.confirmPassword}
             helperText={error.confirmPassword}
           />
+
           <RadioGroup
             row
             name="gender"
-            value={staff.gender}
+            value={manager.gender}
             onChange={handleInput}
           >
             <FormControlLabel value="Male" control={<Radio />} label="Nam" />
@@ -304,7 +296,7 @@ const SignUpStaff = () => {
             margin="normal"
             name="address"
             label="Nhập địa chỉ"
-            value={staff.address}
+            value={manager.address}
             onChange={handleInput}
             error={!!error.address}
             helperText={error.address}
@@ -316,7 +308,7 @@ const SignUpStaff = () => {
             name="phone"
             label="Số điện thoại"
             type="tel"
-            value={staff.phone}
+            value={manager.phone}
             onChange={handleInput}
             error={!!error.phone}
             helperText={error.phone}
@@ -329,7 +321,7 @@ const SignUpStaff = () => {
             name="dateOfBirth"
             label="Ngày sinh"
             type="date"
-            value={staff.dateOfBirth}
+            value={manager.dateOfBirth}
             onChange={handleInput}
             error={!!error.dateOfBirth}
             helperText={error.dateOfBirth}
@@ -359,4 +351,4 @@ const SignUpStaff = () => {
   );
 };
 
-export default SignUpStaff;
+export default SignUpManager;
