@@ -19,19 +19,17 @@ function App() {
   return (
     <>
       <Header fullName={fullname} setFullName={setFullName} />
-      {/* <Civil></Civil> */}
-      <SignUpManager/>
-      <Services/>
-      <SignUpStaff/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login setFullName={setFullName} />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forget" element={<Forget />} />
-        <Route path="/map" element={<Map/>} />
-        
+        <Route path="/map" element={<Map />} />
+        <Route path="/signup-manager" element={<SignUpManager />} />
+        <Route path="/signup-staff" element={<SignUpStaff />} />
+        <Route path="/services" element={<Services />} />
       </Routes>
-      <ToastContainer/>
+      <ToastContainer />
     </>
   );
 }
