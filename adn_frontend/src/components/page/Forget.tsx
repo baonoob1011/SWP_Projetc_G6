@@ -18,7 +18,7 @@ const Forget = () => {
     e.preventDefault();
     setSending(true);
     try {
-      const res = await fetch("http://localhost:8080/api/otp/send", {
+      const res = await fetch("http://localhost:8080/api/otp/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
