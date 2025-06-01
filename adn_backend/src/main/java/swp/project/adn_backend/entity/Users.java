@@ -71,6 +71,9 @@ public class Users {
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Feedback> feedbacks;
 
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<Staff> staff;
+
     public long getUserId() {
         return userId;
     }

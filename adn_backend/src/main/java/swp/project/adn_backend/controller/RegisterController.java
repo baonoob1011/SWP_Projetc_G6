@@ -6,34 +6,67 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import swp.project.adn_backend.dto.request.StaffRequest;
 import swp.project.adn_backend.dto.request.UserDTO;
 import swp.project.adn_backend.dto.response.APIResponse;
+import swp.project.adn_backend.dto.response.ErrorResponse;
+import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
+import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.exception.AppException;
+import swp.project.adn_backend.service.StaffService;
 import swp.project.adn_backend.service.UserService;
 
 @RestController
 @RequestMapping("/api")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RegisterController {
-    @Autowired
+
     UserService userService;
-    @PostMapping("/register/user-account")
-    public APIResponse<Users> registerUserAccount(@RequestBody @Valid UserDTO userDTO) {
-        APIResponse<Users> usersAPIResponse=new APIResponse<>();
-        usersAPIResponse.setResult(userService.registerUserAccount(userDTO));
-        return  usersAPIResponse;
+    StaffService staffService;
+
+    @Autowired
+    public RegisterController(UserService userService, StaffService staffService) {
+        this.userService = userService;
+        this.staffService = staffService;
     }
 
-    @PostMapping("/register/staff-account")
-    public APIResponse<Users> registerStaffAcount(@RequestBody @Valid UserDTO userDTO) {
-        APIResponse<Users> usersAPIResponse = new APIResponse<>();
-        usersAPIResponse.setResult(userService.registerUserAccount(userDTO));
-        return usersAPIResponse;
+    @PostMapping("/register/user-account")
+    public ResponseEntity<?> registerUserAccount(@RequestBody @Valid UserDTO userDTO) {
+        try {
+            Users user = userService.registerUserAccount(userDTO);
+            return ResponseEntity.ok(user);
+        } catch (AppException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(ex.getErrorCode(), ex.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse(ErrorCodeUser.INTERNAL_ERROR,"Unexpected error occurred."));
+        }
     }
+
+
+    @PostMapping("/register/staff-account")
+    public ResponseEntity<?> registerStaffAcount(@RequestBody @Valid StaffRequest staffRequest, Authentication authentication) {
+        try {
+            Staff staff = staffService.createStaff(staffRequest, authentication);
+            return ResponseEntity.ok(staff);
+        } catch (AppException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(ex.getErrorCode(), ex.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse(ErrorCodeUser.INTERNAL_ERROR, "Unexpected error occurred."));
+        }
+    }
+
 }
 

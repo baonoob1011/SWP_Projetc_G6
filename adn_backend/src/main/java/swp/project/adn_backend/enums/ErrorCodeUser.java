@@ -38,7 +38,9 @@ public enum ErrorCodeUser {
     //
 
     // Trường hợp đặc biệt
-     INVALID_REQUEST(10001, "Invalid request");
+     INVALID_REQUEST(1021, "Invalid request"),
+    INTERNAL_ERROR
+
     ;
     int code;
     String message;

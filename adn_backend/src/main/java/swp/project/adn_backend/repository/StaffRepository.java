@@ -7,4 +7,7 @@ import swp.project.adn_backend.entity.Staff;
 
 @RepositoryRestResource(path = "staff")
 public interface StaffRepository extends JpaRepository<Staff,Long> {
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+    boolean existsByPhone(String phone);
 }
