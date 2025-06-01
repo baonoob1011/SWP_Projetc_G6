@@ -12,87 +12,74 @@ const Services = () => {
     description: "",
     serviceType: "",
   });
-
-  const [selectFile, setSelectFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string>("");
+  const fileRef = useRef<HTMLInputElement>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const role = localStorage.getItem("role");
-    if (role === "ADMIN") {
-      setIsAdmin(true);
-    }
+    setIsAdmin(localStorage.getItem("role") === "ADMIN");
   }, []);
 
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm({
-      ...form,
-      [name]: value,
-    });
+  const handleInput = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
-      setSelectFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0];
+    if (selected?.type.startsWith("image/")) {
+      setFile(selected);
+      setPreview(URL.createObjectURL(selected));
     } else {
-      alert("Chọn đúng định dạng ảnh");
+      alert("Vui lòng chọn ảnh hợp lệ");
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const getOptions = () =>
+    form.serviceType === "ADMINISTRATIVE"
+      ? ["Lấy mẫu xét nghiệm tại cơ sở"]
+      : form.serviceType === "CIVIL"
+      ? ["Lấy mẫu xét nghiệm tại cơ sở", "Lấy mẫu xét nghiệm tại nhà"]
+      : [];
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!file) return alert("Chưa chọn ảnh");
 
-    if (!selectFile) {
-      alert("Chưa chọn ảnh");
-      return;
-    }
+    const request = {
+      serviceRequest: { ...form },
+      priceListRequest: {},
+      administrativeServiceRequest: {},
+      civilServiceRequest: {},
+    };
 
-    try {
-      const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(request)], { type: "application/json" })
+    );
+    formData.append("file", file);
 
-      const serviceRequest = {
-        serviceName: form.serviceName,
-        description: form.description,
-        serviceType: form.serviceType,
-      };
-
-      const request = {
-        serviceRequest,
-        priceListRequest: {}, // Nếu có thông tin giá, bổ sung vào đây
-        administrativeServiceRequest: {}, // Hoặc dùng civilServiceRequest nếu gọi API dân sự
-      };
-
-      const formData = new FormData();
-      formData.append("request", new Blob([JSON.stringify(request)], { type: "application/json" }));
-      formData.append("file", selectFile);
-
-      const response = await fetch(
-        "http://localhost:8080/api/services/create-administrative-service",
-        {
-          method: "POST",
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        alert("Lỗi khi tạo dịch vụ: " + errorText);
-      } else {
-        alert("Tạo dịch vụ thành công");
-        setForm({ serviceName: "", description: "", serviceType: "" });
-        setSelectFile(null);
-        setPreviewUrl(null);
+    const res = await fetch(
+      "http://localhost:8080/api/services/create-service",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: formData,
       }
-    } catch (error) {
-      console.error(error);
-      alert("Lỗi hệ thống");
+    );
+
+    if (res.ok) {
+      alert("Tạo dịch vụ thành công");
+      setForm({ serviceName: "", description: "", serviceType: "" });
+      setFile(null);
+      setPreview("");
+    } else {
+      alert("Lỗi: " + (await res.text()));
     }
   };
 
@@ -101,53 +88,47 @@ const Services = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      style={{ padding: 20, maxWidth: 500, margin: "50px auto" }}
+      style={{ maxWidth: 500, margin: "50px auto", padding: 20 }}
     >
       <input
-        type="text"
         name="serviceName"
-        placeholder="Tên dịch vụ"
         value={form.serviceName}
         onChange={handleInput}
-        style={{
-          display: "block",
-          width: "100%",
-          padding: 8,
-          marginBottom: 10,
-        }}
+        placeholder="Tên dịch vụ"
+        style={{ width: "100%", padding: 8, marginBottom: 10 }}
       />
-      <input
-        type="text"
-        name="description"
-        placeholder="Hình thức"
-        value={form.description}
-        onChange={handleInput}
-        style={{
-          display: "block",
-          width: "100%",
-          padding: 8,
-          marginBottom: 10,
-        }}
-      />
-      <input
-        type="text"
+
+      <select
         name="serviceType"
-        placeholder="Loại dịch vụ"
         value={form.serviceType}
         onChange={handleInput}
-        style={{
-          display: "block",
-          width: "100%",
-          padding: 8,
-          marginBottom: 10,
-        }}
-      />
+        style={{ width: "100%", padding: 8, marginBottom: 10 }}
+      >
+        <option value="">-- Chọn loại dịch vụ --</option>
+        <option value="ADMINISTRATIVE">Hành Chính</option>
+        <option value="CIVIL">Dân sự</option>
+      </select>
+
+      <select
+        name="description"
+        value={form.description}
+        onChange={handleInput}
+        disabled={!getOptions().length}
+        style={{ width: "100%", padding: 8, marginBottom: 10 }}
+      >
+        <option value="">-- Chọn hình thức --</option>
+        {getOptions().map((opt) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
 
       <button
         type="button"
-        onClick={() => fileInputRef.current?.click()}
+        onClick={() => fileRef.current?.click()}
         style={{
-          padding: "10px 20px",
+          padding: 10,
           backgroundColor: "#007bff",
           color: "white",
           border: "none",
@@ -158,40 +139,37 @@ const Services = () => {
       </button>
 
       <input
+        ref={fileRef}
         type="file"
         accept="image/*"
-        name="image"
-        ref={fileInputRef}
-        onChange={handleFileChange}
         style={{ display: "none" }}
+        onChange={handleFile}
       />
 
       <input
         type="text"
         readOnly
-        value={previewUrl || ""}
-        placeholder="URL"
-        style={{ display: "block", width: "100%", padding: 8, marginTop: 10 }}
+        value={preview}
+        placeholder="URL ảnh"
+        style={{ width: "100%", padding: 8, marginTop: 10 }}
       />
 
-      {previewUrl && (
-        <div style={{ marginTop: 10, textAlign: "center" }}>
-          <img
-            src={previewUrl}
-            alt="preview"
-            style={{ maxWidth: "100%", borderRadius: 8 }}
-          />
-        </div>
+      {preview && (
+        <img
+          src={preview}
+          alt="preview"
+          style={{ width: "100%", marginTop: 10, borderRadius: 8 }}
+        />
       )}
 
       <button
         type="submit"
         style={{
-          marginTop: 15,
           width: "100%",
+          marginTop: 15,
+          padding: 10,
           backgroundColor: "green",
           color: "white",
-          padding: 10,
           border: "none",
           borderRadius: 4,
         }}

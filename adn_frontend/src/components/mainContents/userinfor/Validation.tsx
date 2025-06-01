@@ -2,7 +2,7 @@ import * as yup from "yup";
 
 const noSpace = /^\S+$/;
 
-export const signUpSchema = yup.object().shape({
+const baseSchema = yup.object().shape({
   fullName: yup
     .string()
     .trim()
@@ -39,4 +39,47 @@ export const signUpSchema = yup.object().shape({
     .string()
     .matches(/^0\d{9}$/, "Số điện thoại không đúng")
     .required("Không được bỏ trống"),
+
+  address: yup
+  .string()
+  .trim()
+  .required("Không được bỏ trống"),
+
+  gender: yup
+  .string()
+  .trim()
+  .required("Không được bỏ trống"),
+
+  idCard: yup
+  .string()
+  .matches( /^\d{12}$/)
+  .trim()
+  .required("Không được bỏ trống"),
+
+  dateOfBirth: yup
+  .string()
+  .required("Vui lòng chọn ngày sinh")
+  .matches(/^\d{4}-\d{2}-\d{2}$/, "Ngày không đúng định dạng"),
 });
+
+export const signUpSchema = baseSchema.pick([
+  "fullName",
+  "username",
+  "email",
+  "password",
+  "confirmPassword",
+  "phone",
+]);
+
+export const signUpStaffSchema = baseSchema.pick([
+  "fullName",
+  "username",
+  "email",
+  "password",
+  "confirmPassword",
+  "phone",
+  "idCard",
+  "address",
+  "gender",
+  "dateOfBirth"
+]);

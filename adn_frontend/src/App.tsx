@@ -8,8 +8,9 @@ import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Map from "./components/page/Map.tsx";
-import Civil from "./components/mainContents/services/Civil.tsx";
-import Services from "./components/mainContents/services/services.tsx";
+
+import Services from "./components/mainContents/services/Services.tsx";
+import SignUpStaff from "./components/mainContents/feature/SignUpForStaff.tsx";
 
 function App() {
   const [fullname, setFullName] = useState(localStorage.getItem("fullName") || "");
@@ -20,6 +21,7 @@ function App() {
       {/* <Civil></Civil> */}
 
       <Services/>
+      <SignUpStaff/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login setFullName={setFullName} />} />
