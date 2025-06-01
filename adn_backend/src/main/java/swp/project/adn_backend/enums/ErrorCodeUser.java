@@ -39,7 +39,7 @@ public enum ErrorCodeUser {
 
     // Trường hợp đặc biệt
      INVALID_REQUEST(1021, "Invalid request"),
-    INTERNAL_ERROR
+    INTERNAL_ERROR(1022, "Internal server error. Please try again later.")
 
     ;
     int code;

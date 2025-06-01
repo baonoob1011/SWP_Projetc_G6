@@ -1,10 +1,13 @@
 package swp.project.adn_backend.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.request.UserDTO;
 import swp.project.adn_backend.entity.Users;
@@ -31,52 +34,9 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    //Đăng kí Staff
-    public Users registerStaffAcount(UserDTO userDTO) {
-        if (userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new AppException(ErrorCodeUser.USER_EXISTED);
-        }
-
-        if (userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
-        }
-
-        if (userRepository.existsByPhone(userDTO.getPhone())) {
-            throw new AppException(ErrorCodeUser.PHONE_EXISTED);
-        }
-        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
-            throw new AppException(ErrorCodeUser.CONFIRM_PASSWORD_NOT_MATCHING);
-        }
-
-        // Tạo user từ DTO và mã hóa mật khẩu
-        Users users = userMapper.toUser(userDTO);
-        users.setRole("STAFF");
-        users.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-
-        // Lưu lại để cascade lưu role
-        return userRepository.save(users);
-
-
-    }
-
     // Đăng ký User
     public Users registerUserAccount(UserDTO userDTO) {
-
-        if (userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new AppException(ErrorCodeUser.USER_EXISTED);
-        }
-
-        if (userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
-        }
-
-        if (userRepository.existsByPhone(userDTO.getPhone())) {
-            throw new AppException(ErrorCodeUser.PHONE_EXISTED);
-        }
-        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
-            throw new AppException(ErrorCodeUser.CONFIRM_PASSWORD_NOT_MATCHING);
-        }
-
+        validateUser(userDTO);
         // Tạo user từ DTO và mã hóa mật khẩu
         Users users = userMapper.toUser(userDTO);
         users.setRole("USER");
@@ -89,19 +49,70 @@ public class UserService {
 
     }
 
-    public List<Users> getAllUsers() {
-        return userRepository.findAll();
+    // Cập nhật User
+    @Transactional
+    public Users updateUser(Authentication authentication, UserDTO userDTO) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+        if (!existingUser.getUsername().equals(userDTO.getUsername()) &&
+                userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new AppException(ErrorCodeUser.USER_EXISTED);
+        }
+
+        if (!existingUser.getEmail().equals(userDTO.getEmail()) &&
+                userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
+        }
+
+        if (!existingUser.getPhone().equals(userDTO.getPhone()) &&
+                userRepository.existsByPhone(userDTO.getPhone())) {
+            throw new AppException(ErrorCodeUser.PHONE_EXISTED);
+        }
+        if (!existingUser.getPassword().equals(userDTO.getPassword()) &&
+                userRepository.existsByPassword(userDTO.getPassword())) {
+            throw new AppException(ErrorCodeUser.PHONE_EXISTED);
+        }
+        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+            throw new AppException(ErrorCodeUser.CONFIRM_PASSWORD_NOT_MATCHING);
+        }
+
+        Users updatedUser = userMapper.toUser(userDTO);
+        updatedUser.setUserId(existingUser.getUserId());
+        updatedUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
+        return userRepository.save(updatedUser);
     }
 
+    // Xoá User
+    @Transactional
+    public Users deleteUser(Authentication authentication,UserDTO userDTO) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+        existingUser.setEnabled(false);
+       return userRepository.save(existingUser);
+    }
 
-    public void updatePasswordByEmail(String email, String newPassword) {
-        Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    private void validateUser(UserDTO userDTO) {
+        if (userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new AppException(ErrorCodeUser.USER_EXISTED);
+        }
 
-        String encodedPassword = passwordEncoder.encode(newPassword);
-        user.setPassword(encodedPassword);
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
+        }
 
-        userRepository.save(user);
+        if (userRepository.existsByPhone(userDTO.getPhone())) {
+            throw new AppException(ErrorCodeUser.PHONE_EXISTED);
+        }
+
+        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+            throw new AppException(ErrorCodeUser.CONFIRM_PASSWORD_NOT_MATCHING);
+        }
     }
 
 }

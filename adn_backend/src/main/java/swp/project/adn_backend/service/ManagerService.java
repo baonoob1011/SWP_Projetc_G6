@@ -9,81 +9,82 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.request.ManagerRequest;
 import swp.project.adn_backend.dto.request.StaffRequest;
-import swp.project.adn_backend.dto.request.UserDTO;
+import swp.project.adn_backend.entity.Manager;
 import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.Roles;
 import swp.project.adn_backend.exception.AppException;
+import swp.project.adn_backend.mapper.ManagerMapper;
 import swp.project.adn_backend.mapper.StaffMapper;
+import swp.project.adn_backend.repository.ManagerRepository;
 import swp.project.adn_backend.repository.StaffRepository;
 import swp.project.adn_backend.repository.UserRepository;
 
-import javax.management.relation.Role;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StaffService {
+public class ManagerService {
 
     UserRepository userRepository;
-    StaffRepository staffRepository;
-    StaffMapper staffMapper;
+    ManagerRepository managerRepository;
+    ManagerMapper managerMapper;
 
     @Autowired
-    public StaffService(UserRepository userRepository, StaffRepository staffRepository, StaffMapper staffMapper) {
+    public ManagerService(UserRepository userRepository, ManagerRepository managerRepository, ManagerMapper managerMapper) {
         this.userRepository = userRepository;
-        this.staffRepository = staffRepository;
-        this.staffMapper = staffMapper;
+        this.managerRepository = managerRepository;
+        this.managerMapper = managerMapper;
     }
 
-    public Staff createStaff(StaffRequest staffRequest, Authentication authentication){
-        if (staffRepository.existsByUsername(staffRequest.getUsername())) {
+    public Manager createManager(ManagerRequest managerRequest, Authentication authentication){
+        if (managerRepository.existsByUsername(managerRequest.getUsername())) {
             throw new AppException(ErrorCodeUser.USER_EXISTED);
         }
 
-        if (staffRepository.existsByEmail(staffRequest.getEmail())) {
+        if (managerRepository.existsByEmail(managerRequest.getEmail())) {
             throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
         }
 
-        if (staffRepository.existsByPhone(staffRequest.getPhone())) {
+        if (managerRepository.existsByPhone(managerRequest.getPhone())) {
             throw new AppException(ErrorCodeUser.PHONE_EXISTED);
         }
-        if (!staffRequest.getPassword().equals(staffRequest.getConfirmPassword())) {
+        if (!managerRequest.getPassword().equals(managerRequest.getConfirmPassword())) {
             throw new AppException(ErrorCodeUser.CONFIRM_PASSWORD_NOT_MATCHING);
         }
-        Staff staff=staffMapper.toStaff(staffRequest);
-        staff.setRole(Roles.STAFF.name());
-        staff.setCreateAt(LocalDate.now());
+        Manager manager =managerMapper.toManager(managerRequest);
+        manager.setRole(Roles.MANAGER.name());
+        manager.setCreateAt(LocalDate.now());
 
         //người tạo ra staff
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
         Users users = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
-        staff.setUsers(users);
+        manager.setUsers(users);
 
-        return staffRepository.save(staff);
+        return managerRepository.save(manager);
     }
-    private void validateUser(StaffRequest staffRequest) {
-        if (userRepository.existsByUsername(staffRequest.getUsername())) {
+    private void validateManager(ManagerRequest managerRequest) {
+        if (userRepository.existsByUsername(managerRequest.getUsername())) {
             throw new AppException(ErrorCodeUser.USER_EXISTED);
         }
 
-        if (userRepository.existsByEmail(staffRequest.getEmail())) {
+        if (userRepository.existsByEmail(managerRequest.getEmail())) {
             throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
         }
 
-        if (userRepository.existsByPhone(staffRequest.getPhone())) {
+        if (userRepository.existsByPhone(managerRequest.getPhone())) {
             throw new AppException(ErrorCodeUser.PHONE_EXISTED);
         }
 
-        if (!staffRequest.getPassword().equals(staffRequest.getConfirmPassword())) {
+        if (!managerRequest.getPassword().equals(managerRequest.getConfirmPassword())) {
             throw new AppException(ErrorCodeUser.CONFIRM_PASSWORD_NOT_MATCHING);
         }
 

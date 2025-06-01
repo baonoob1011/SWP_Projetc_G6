@@ -35,9 +35,13 @@ public class SecurityConfig {
     };
     private final String[] PUBLIC_ENDPOINTS_FOR_ADMIN = {
             "/api/register/**",
-            "/api/services/**"
     };
     private final String[] PUBLIC_ENDPOINTS_FOR_STAFF = {
+            "/api/services/**"
+    };
+    private final String[] PUBLIC_ENDPOINTS_FOR_MANAGER = {
+            "/api/user/**",
+            "/api/register/staff-account",
             "/api/services/**"
     };
     protected static final String SIGNER_KEY =
@@ -52,6 +56,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_ADMIN).hasRole(Roles.ADMIN.name())
+
+                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole(Roles.MANAGER.name())
+                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole(Roles.MANAGER.name())
+                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole(Roles.MANAGER.name())
+
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_STAFF).hasRole(Roles.STAFF.name())
                         .anyRequest().authenticated()
                 ).logout(logout -> logout
