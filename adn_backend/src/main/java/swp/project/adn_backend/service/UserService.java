@@ -75,9 +75,8 @@ public class UserService {
                 userRepository.existsByPassword(userDTO.getPassword())) {
             throw new AppException(ErrorCodeUser.PHONE_EXISTED);
         }
-        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
-            throw new AppException(ErrorCodeUser.CONFIRM_PASSWORD_NOT_MATCHING);
-        }
+
+
 
         Users updatedUser = userMapper.toUser(userDTO);
         updatedUser.setUserId(existingUser.getUserId());
@@ -86,15 +85,14 @@ public class UserService {
         return userRepository.save(updatedUser);
     }
 
-    // Xoá User
-    @Transactional
-    public Users deleteUser(Authentication authentication,UserDTO userDTO) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        Long userId = jwt.getClaim("id");
-        Users existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
-        existingUser.setEnabled(false);
-       return userRepository.save(existingUser);
+    public void updatePasswordByEmail(String email, String newPassword) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+
+        userRepository.save(user);
     }
 
     private void validateUser(UserDTO userDTO) {

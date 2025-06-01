@@ -1,6 +1,9 @@
-package swp.project.adn_backend.service;
+package swp.project.adn_backend.token;
 
-import com.nimbusds.jose.*;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -15,38 +18,41 @@ import swp.project.adn_backend.dto.request.IntrospectRequest;
 import swp.project.adn_backend.dto.request.LoginDTO;
 import swp.project.adn_backend.dto.response.AuthenticationResponse;
 import swp.project.adn_backend.dto.response.IntrospectResponse;
-import swp.project.adn_backend.entity.Users;
+import swp.project.adn_backend.entity.Manager;
+import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
-import swp.project.adn_backend.repository.UserRepository;
+import swp.project.adn_backend.repository.ManagerRepository;
+import swp.project.adn_backend.repository.StaffRepository;
 
 import java.text.ParseException;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationService {
+public class AuthenticationManagerService {
     protected static final String SIGNER_KEY =
             "g2n1atsr9e9KvFKy2RePQ/rPREVb3/2+Hcjt7Mb1/PtlOUhBpASAwrVILClWabHI";
 
     @Autowired
-    UserRepository userRepository;
+    ManagerRepository managerRepository;
 
 
-    public AuthenticationResponse authenticate(LoginDTO loginDTO) {
-        var user = userRepository.findByUsername(loginDTO.getUsername())
+    public AuthenticationResponse authenticateManager(LoginDTO loginDTO) {
+        var manager = managerRepository.findByUsername(loginDTO.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        boolean authenticated = passwordEncoder.matches(loginDTO.getPassword(), user.getPassword());
+        boolean authenticated = passwordEncoder.matches(loginDTO.getPassword(), manager.getPassword());
         if (!authenticated) {
             throw new AppException(ErrorCodeUser.UNAUTHENTICATED);
         }
 
-        var token = generateToken(user);
+        var token = generateToken(manager);
 
         return AuthenticationResponse.builder()
                 .token(token)
@@ -69,18 +75,25 @@ public class AuthenticationService {
                 .build();
     }
 
-    private String generateToken(Users users) {
+    private String generateToken(Manager manager) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(users.getUsername())
+                .subject(manager.getUsername())
                 .issuer("baotd.com")
                 .issueTime(new Date())
                 .expirationTime(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
-                .claim("role", users.getRole())
-                .claim("fullName", users.getFullName())
-                .claim("phone", users.getPhone())
-                .claim("email", users.getEmail())
-                .claim("id",users.getUserId())
+                .claim("role", manager.getRole())
+                .claim("fullName", manager.getFullName())
+                .claim("phone", manager.getPhone())
+                .claim("email", manager.getEmail())
+                .claim("id", manager.getManagerId())
+                .claim("address", manager.getAddress())
+                .claim("dateOfBirth", manager.getDateOfBirth() != null ? manager.getDateOfBirth().format(formatter) : null)
+                .claim("gender", manager.getGender())
+                .claim("idCard", manager.getIdCard())
                 .build();
 
         SignedJWT signedJWT = new SignedJWT(header, jwtClaimsSet);
@@ -92,12 +105,6 @@ public class AuthenticationService {
         }
     }
 
-//    private String buildScope(Users users) {
-//        StringJoiner stringJoiner = new StringJoiner(" ");
-//        if (!CollectionUtils.isEmpty(users.getRoles())) {
-//            users.getRoles().forEach(role -> stringJoiner.add(role.getRoles()));
-//        }
-//        return stringJoiner.toString();
-//    }
+
 
 }

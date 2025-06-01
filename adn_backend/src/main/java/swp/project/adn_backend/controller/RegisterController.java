@@ -29,7 +29,7 @@ import swp.project.adn_backend.service.StaffService;
 import swp.project.adn_backend.service.UserService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/register")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RegisterController {
 
@@ -44,47 +44,29 @@ public class RegisterController {
         this.managerService = managerService;
     }
 
-    @PostMapping("/register/user-account")
+    @PostMapping("/user-account")
     public ResponseEntity<?> registerUserAccount(@RequestBody @Valid UserDTO userDTO) {
-        try {
-            Users user = userService.registerUserAccount(userDTO);
-            return ResponseEntity.ok(user);
-        } catch (AppException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse(ex.getErrorCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse(ErrorCodeUser.INTERNAL_ERROR,"Unexpected error occurred."));
-        }
+
+        Users user = userService.registerUserAccount(userDTO);
+        return ResponseEntity.ok(user);
+
     }
 
 
-    @PostMapping("/register/staff-account")
-    public ResponseEntity<?> registerStaffAcount(@RequestBody @Valid StaffRequest staffRequest, Authentication authentication) {
-        try {
-            Staff staff = staffService.createStaff(staffRequest, authentication);
-            return ResponseEntity.ok(staff);
-        } catch (AppException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse(ex.getErrorCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse(ErrorCodeUser.INTERNAL_ERROR, "Unexpected error occurred."));
-        }
+    @PostMapping("/staff-account")
+    public ResponseEntity<Staff> registerStaffAcount(@RequestBody @Valid StaffRequest staffRequest, Authentication authentication) {
+
+        Staff staff = staffService.createStaff(staffRequest, authentication);
+        return ResponseEntity.ok(staff);
+
     }
 
-    @PostMapping("/register/manager-account")
-    public ResponseEntity<?> registerManagerAccount(@RequestBody @Valid ManagerRequest managerRequest, Authentication authentication) {
-        try {
-            Manager manager = managerService.createManager(managerRequest, authentication);
-            return ResponseEntity.ok(manager);
-        } catch (AppException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse(ex.getErrorCode(), ex.getMessage()));
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse(ErrorCodeUser.INTERNAL_ERROR, "Unexpected error occurred."));
-        }
+    @PostMapping("/manager-account")
+    public ResponseEntity<Manager> registerManagerAccount(@RequestBody @Valid ManagerRequest managerRequest, Authentication authentication) {
+
+        Manager manager = managerService.createManager(managerRequest, authentication);
+        return ResponseEntity.ok(manager);
+
     }
 
 }

@@ -32,17 +32,22 @@ public class SecurityConfig {
             "/api/auth/**",
             "/api/otp/**",
             "/api/register/user-account",
+            "/api/user/**"
     };
     private final String[] PUBLIC_ENDPOINTS_FOR_ADMIN = {
             "/api/register/**",
+            "/api/admin/**"
     };
     private final String[] PUBLIC_ENDPOINTS_FOR_STAFF = {
-            "/api/services/**"
+            "/api/services/**",
+            "/api/staff/**",
     };
     private final String[] PUBLIC_ENDPOINTS_FOR_MANAGER = {
             "/api/user/**",
             "/api/register/staff-account",
-            "/api/services/**"
+            "/api/services/**",
+            "/api/manager/**",
+            "/api/staff/**"
     };
     protected static final String SIGNER_KEY =
             "g2n1atsr9e9KvFKy2RePQ/rPREVb3/2+Hcjt7Mb1/PtlOUhBpASAwrVILClWabHI";
@@ -53,15 +58,22 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // cấu hình CORS
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(request -> request
+
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
+
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_ADMIN).hasRole(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS_FOR_ADMIN).hasRole(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_FOR_ADMIN).hasRole(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_FOR_ADMIN).hasRole(Roles.ADMIN.name())
 
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole(Roles.MANAGER.name())
+                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole(Roles.MANAGER.name())
                         .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole(Roles.MANAGER.name())
                         .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole(Roles.MANAGER.name())
 
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_STAFF).hasRole(Roles.STAFF.name())
+                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_FOR_STAFF).hasRole(Roles.STAFF.name())
                         .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/api/logout")

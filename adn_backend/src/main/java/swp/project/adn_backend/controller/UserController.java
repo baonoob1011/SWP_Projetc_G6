@@ -28,8 +28,8 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(authentication, userDTO));
     }
 
-    @DeleteMapping("/delete-user")
-    public ResponseEntity<Users> deleteUser(Authentication authentication, UserDTO userDTO) {
-        return ResponseEntity.ok(userService.deleteUser(authentication, userDTO));
-    }
+//    @DeleteMapping("/delete-user")
+//    public ResponseEntity<Users> deleteUser(Authentication authentication, UserDTO userDTO) {
+//        return ResponseEntity.ok(userService.deleteUser(authentication, userDTO));
+//    }
 }

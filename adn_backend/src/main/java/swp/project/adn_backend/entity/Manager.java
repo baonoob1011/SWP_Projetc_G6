@@ -14,13 +14,13 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Staff")
+@Table(name = "Manager")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Manager {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "staff_id")
-    long staffId;
+    @Column(name = "manager_id")
+    long managerId;
 
     @Column(name = "full_name", columnDefinition = "NVARCHAR(100)")
     String fullName;
@@ -34,6 +34,7 @@ public class Manager {
     String role;
     @Column(columnDefinition = "NVARCHAR(10)")
     String gender;
+    @Column(columnDefinition = "NVARCHAR(255)")
     String address;
     String phone;
 
@@ -41,21 +42,8 @@ public class Manager {
     @Column(name = "day_of_birth")
     LocalDate dateOfBirth;
 
-
     @Column(name = "create_at")
-     LocalDate createAt;
-    //nhân viên lấy mẫu
-    @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    List<Sample> samples;
-
-    @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    List<Appointment> appointments;
+    LocalDate createAt;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -72,12 +60,20 @@ public class Manager {
         this.users = users;
     }
 
-    public long getStaffId() {
-        return staffId;
+    public long getManagerId() {
+        return managerId;
     }
 
-    public void setStaffId(long staffId) {
-        this.staffId = staffId;
+    public void setManagerId(long managerId) {
+        this.managerId = managerId;
+    }
+
+    public LocalDate getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(LocalDate createAt) {
+        this.createAt = createAt;
     }
 
     public String getFullName() {
@@ -169,27 +165,4 @@ public class Manager {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public LocalDate getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(LocalDate createAt) {
-        this.createAt = createAt;
-    }
-
-    public List<Sample> getSamples() {
-        return samples;
-    }
-
-    public void setSamples(List<Sample> samples) {
-        this.samples = samples;
-    }
-
-    public List<Appointment> getAppointments() {
-        return appointments;
-    }
-
-    public void setAppointments(List<Appointment> appointments) {
-        this.appointments = appointments;
-    }
 }

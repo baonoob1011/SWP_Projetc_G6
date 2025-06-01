@@ -1,0 +1,110 @@
+package swp.project.adn_backend.token;
+
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSVerifier;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.request.IntrospectRequest;
+import swp.project.adn_backend.dto.request.LoginDTO;
+import swp.project.adn_backend.dto.response.AuthenticationResponse;
+import swp.project.adn_backend.dto.response.IntrospectResponse;
+import swp.project.adn_backend.entity.Staff;
+import swp.project.adn_backend.entity.Users;
+import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.exception.AppException;
+import swp.project.adn_backend.repository.StaffRepository;
+import swp.project.adn_backend.repository.UserRepository;
+
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+
+
+@Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class AuthenticationStaffService {
+    protected static final String SIGNER_KEY =
+            "g2n1atsr9e9KvFKy2RePQ/rPREVb3/2+Hcjt7Mb1/PtlOUhBpASAwrVILClWabHI";
+
+    @Autowired
+    StaffRepository staffRepository;
+
+
+    public AuthenticationResponse authenticateStaff(LoginDTO loginDTO) {
+        var staff = staffRepository.findByUsername(loginDTO.getUsername())
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        boolean authenticated = passwordEncoder.matches(loginDTO.getPassword(), staff.getPassword());
+        if (!authenticated) {
+            throw new AppException(ErrorCodeUser.UNAUTHENTICATED);
+        }
+
+        var token = generateToken(staff);
+
+        return AuthenticationResponse.builder()
+                .token(token)
+                .authenticated("true")
+                .build();
+    }
+
+    public IntrospectResponse introspect(IntrospectRequest request)
+            throws ParseException, JOSEException {
+
+        var token = request.getToken();
+        JWSVerifier jwsVerifier = new MACVerifier(SIGNER_KEY.getBytes());
+        SignedJWT signedJWT = SignedJWT.parse(token);
+
+        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        boolean verify = signedJWT.verify(jwsVerifier);
+
+        return IntrospectResponse.builder()
+                .valid(verify && expiryTime.after(new Date()))
+                .build();
+    }
+
+    private String generateToken(Staff staff) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                .subject(staff.getUsername())
+                .issuer("baotd.com")
+                .issueTime(new Date())
+                .expirationTime(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
+                .claim("role", staff.getRole())
+                .claim("fullName", staff.getFullName())
+                .claim("phone", staff.getPhone())
+                .claim("email", staff.getEmail())
+                .claim("id", staff.getStaffId())
+                .claim("address", staff.getAddress())
+                .claim("dateOfBirth", staff.getDateOfBirth() != null ? staff.getDateOfBirth().format(formatter) : null)
+                .claim("gender", staff.getGender())
+                .claim("idCard", staff.getIdCard())
+                .build();
+
+        SignedJWT signedJWT = new SignedJWT(header, jwtClaimsSet);
+        try {
+            signedJWT.sign(new MACSigner(SIGNER_KEY.getBytes()));
+            return signedJWT.serialize();
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+}

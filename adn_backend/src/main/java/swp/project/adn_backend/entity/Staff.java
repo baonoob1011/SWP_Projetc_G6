@@ -8,9 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.sql.Date;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -37,6 +36,7 @@ public class Staff {
     String role;
     @Column(columnDefinition = "NVARCHAR(10)")
     String gender;
+    @Column(columnDefinition = "nvarchar(255)")
     String address;
     String phone;
 

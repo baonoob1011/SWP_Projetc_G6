@@ -1,19 +1,14 @@
 package swp.project.adn_backend.dto.request;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Lob;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.CreationTimestamp;
 import swp.project.adn_backend.entity.Users;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StaffRequest {
@@ -58,8 +53,9 @@ public class StaffRequest {
     @Pattern(regexp = "^\\+?\\d{9,15}$", message = "PHONE_INVALID")
     String phone;
 
-    @NotBlank(message = "Birth day is required")
-    LocalDate dayOfBirth;
+    @NotNull(message = "Birth day is required")
+    @Past(message = "Birth day must be in the past")
+    private LocalDate dateOfBirth;
 
     LocalDate createAt;
 
@@ -167,12 +163,12 @@ public class StaffRequest {
         this.phone = phone;
     }
 
-    public @NotBlank(message = "Birth day is required") LocalDate getDayOfBirth() {
-        return dayOfBirth;
+    public @NotNull(message = "Birth day is required") @Past(message = "Birth day must be in the past") LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setDayOfBirth(@NotBlank(message = "Birth day is required") LocalDate dayOfBirth) {
-        this.dayOfBirth = dayOfBirth;
+    public void setDateOfBirth(@NotNull(message = "Birth day is required") @Past(message = "Birth day must be in the past") LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public LocalDate getCreateAt() {

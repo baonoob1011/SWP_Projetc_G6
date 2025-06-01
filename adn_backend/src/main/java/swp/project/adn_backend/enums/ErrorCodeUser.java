@@ -22,13 +22,14 @@ public enum ErrorCodeUser {
     PASSWORD_TOO_SHORT(1012, "Password must be at least 8 characters", HttpStatus.BAD_REQUEST),
     EMAIL_EXISTED(1013, "Email is already registered", HttpStatus.BAD_REQUEST),
     PHONE_EXISTED(1014, "Phone number already in use", HttpStatus.BAD_REQUEST),
+    ADDRESS_EXISTED(1014, "address  already in use", HttpStatus.BAD_REQUEST),
     INVALID_KEY(1015, "Valid Message Key", HttpStatus.BAD_REQUEST),
     CONFIRM_PASSWORD_BLANK(1016, "Confirm password must not be blank", HttpStatus.BAD_REQUEST),
     CONFIRM_PASSWORD_NOT_MATCHING(1017, "Passwords do not match", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(1018, "User is not existed", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(1019, "Unauthenticated", HttpStatus.UNAUTHORIZED),// Trường hợp đặc biệt
     UNAUTHORIZED(1020, "You do not have permission", HttpStatus.FORBIDDEN),
-
+    PHONE_NOT_EXISTS(1008,"phone is not existed"),
 
     //service validation
     SERVICE_NAME_IS_EXISTED(1001,"Service name is existed", HttpStatus.BAD_REQUEST),
