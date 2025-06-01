@@ -22,6 +22,8 @@ public class ApplicationInitConfig {
             if (userRepository.findByUsername("adminAccount").isEmpty()) {
 
 
+
+                
                 // Tạo user mới
                 Users users = new Users();
                 users.setUsername("adminAccount");
