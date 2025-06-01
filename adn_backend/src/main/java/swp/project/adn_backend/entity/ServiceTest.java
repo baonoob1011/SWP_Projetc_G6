@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import swp.project.adn_backend.enums.ServiceType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,8 +32,10 @@ public class ServiceTest {
     @Column(columnDefinition = "nvarchar(255)")
     String description;
     // Hành Chính, Dân sự
-    @Column(name = "service_type",columnDefinition = "nvarchar(255)")
-    String serviceType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "service_type", columnDefinition = "nvarchar(255)")
+    private ServiceType serviceType;
+
 
     @Column(name = "is_active")
     boolean isActive;
@@ -124,11 +127,11 @@ public class ServiceTest {
         this.description = description;
     }
 
-    public String getServiceType() {
+    public ServiceType getServiceType() {
         return serviceType;
     }
 
-    public void setServiceType(String serviceType) {
+    public void setServiceType(ServiceType serviceType) {
         this.serviceType = serviceType;
     }
 

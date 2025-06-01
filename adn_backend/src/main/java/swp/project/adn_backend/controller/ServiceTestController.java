@@ -16,42 +16,23 @@ public class ServiceTestController {
     @Autowired
     private ServiceTestService serviceTestService;
 
-    @PostMapping(value = "/create-administrative-service", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/create-service", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createAdministrativeService(
             @RequestPart("request") @Valid CreateServiceRequest request,
             @RequestPart(value = "file", required = false) MultipartFile file,
             Authentication authentication) {
 
-        serviceTestService.createAdministrativeService(
+        serviceTestService.createService(
                 request.getServiceRequest(),
                 authentication,
                 request.getPriceListRequest(),
                 request.getAdministrativeServiceRequest(),
-                file
-        );
-
-        return ResponseEntity.ok("Tạo dịch vụ ADN thành công");
-    }
-
-
-
-    @PostMapping(value = "/create-civil-service", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> createCivilService(
-            @RequestPart("request") @Valid CreateServiceRequest request,
-            @RequestPart(value = "file", required = false) MultipartFile file,
-            Authentication authentication) {
-
-        serviceTestService.createCivilService(
-                request.getServiceRequest(),
-                authentication,
-                request.getPriceListRequest(),
                 request.getCivilServiceRequest(),
                 file
         );
 
         return ResponseEntity.ok("Tạo dịch vụ ADN thành công");
     }
-
 
 
 }

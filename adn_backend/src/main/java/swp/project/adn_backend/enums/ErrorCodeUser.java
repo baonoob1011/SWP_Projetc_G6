@@ -31,9 +31,14 @@ public enum ErrorCodeUser {
 
 
     //service validation
-    SERVICE_NAME_IS_EXISTED(1001,"Service name is existed", HttpStatus.BAD_REQUEST);
+    SERVICE_NAME_IS_EXISTED(1001,"Service name is existed", HttpStatus.BAD_REQUEST),
+    SERVICE_NOT_EXISTS(1001,"Service not exists", HttpStatus.BAD_REQUEST),
+
+
+    //
 
     // Trường hợp đặc biệt
+     INVALID_REQUEST(10001, "Invalid request");
     ;
     int code;
     String message;

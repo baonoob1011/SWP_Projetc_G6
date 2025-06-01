@@ -2,6 +2,7 @@ package swp.project.adn_backend.dto.request;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
+import swp.project.adn_backend.enums.ServiceType;
 
 import java.time.LocalDateTime;
 
@@ -15,20 +16,22 @@ public class ServiceRequest {
     @Size(max = 255, message = "Description must be at most 255 characters")
     private String description;
 
-    @NotBlank(message = "Service type is required")
-    @Pattern(regexp = "^(Hành Chính|Dân sự)$", message = "Service type must be either 'Hành Chính' or 'Dân sự'")
-    private String serviceType;
+    private ServiceType serviceType;
+
 
     private boolean isActive;
 
     private String image;
 
-    public ServiceRequest(String serviceName, String description, String serviceType, boolean isActive, String image) {
+    public ServiceRequest(String serviceName, String description, ServiceType serviceType, boolean isActive, String image) {
         this.serviceName = serviceName;
         this.description = description;
         this.serviceType = serviceType;
         this.isActive = isActive;
         this.image = image;
+    }
+
+    public ServiceRequest() {
     }
 
     public String getImage() {
@@ -56,11 +59,11 @@ public class ServiceRequest {
         this.description = description;
     }
 
-    public @NotBlank(message = "Service type is required") @Pattern(regexp = "^(Hành Chính|Dân sự)$", message = "Service type must be either 'Hành Chính' or 'Dân sự'") String getServiceType() {
+    public ServiceType getServiceType() {
         return serviceType;
     }
 
-    public void setServiceType(@NotBlank(message = "Service type is required") @Pattern(regexp = "^(Hành Chính|Dân sự)$", message = "Service type must be either 'Hành Chính' or 'Dân sự'") String serviceType) {
+    public void setServiceType(ServiceType serviceType) {
         this.serviceType = serviceType;
     }
 
