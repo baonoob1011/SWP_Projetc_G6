@@ -114,6 +114,21 @@ const Login = ({ setFullName }: LoginProps) => {
     }
   };
 
+//    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//    const handleGoogleLoginSuccess = (fullName: string, token: string) => {
+//   setFullName(fullName);
+
+//   Swal.fire({
+//     icon: "success",
+//     title: "Đăng nhập Google thành công!",
+//     showConfirmButton: false,
+//     timer: 1300,
+//   });
+
+//   navigate("/");
+// };
+
+
   return (
     <div className={styles.container}>
       <Paper elevation={20} className={styles.paper}>
@@ -149,7 +164,7 @@ const Login = ({ setFullName }: LoginProps) => {
               <Link to="/forget">Quên mật khẩu ?</Link>
             </Typography>
           </Box>
-
+          {/* <LoginByGoogle onLoginSuccess={handleGoogleLoginSuccess} /> */}
           <Box className={styles.linkContainer}>
             <Typography variant="body2">
               Bạn chưa có tài khoản? <Link to="/signup">Đăng ký</Link>
