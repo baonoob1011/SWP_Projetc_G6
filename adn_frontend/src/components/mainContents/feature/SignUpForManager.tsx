@@ -276,12 +276,6 @@ const SignUpManager = () => {
             helperText={error.confirmPassword}
           />
 
-          <Typography
-            variant="subtitle1"
-            sx={{ mt: 2, mb: 1, textAlign: "left" }}
-          >
-            Giới tính:
-          </Typography>
           <RadioGroup
             row
             name="gender"

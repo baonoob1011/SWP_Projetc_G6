@@ -43,7 +43,7 @@ const Login = ({ setFullName }: LoginProps) => {
 
   const TimeLeftLogout = (exp: number) => {
     const now = Date.now() / 1000;
-    const timeleft = (exp - now) * 1000 * 60 * 60;
+    const timeleft = (exp - now) * 1000 ;
     if (timeleft > 0) {
       setTimeout(() => {
         toast.error("Hết thời gian đăng nhập");
