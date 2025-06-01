@@ -1,0 +1,50 @@
+/* Simple CSS for SignUp Form */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+
+.paper {
+  max-width: 500px;
+  width: 100%;
+  padding: 40px 30px;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+  font-weight: 600;
+}
+
+.linkContainer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.linkContainer a {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.linkContainer a:hover {
+  text-decoration: underline;
+}
+
+/* Optional: Responsive design */
+@media (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .paper {
+    padding: 30px 20px;
+  }
+}
