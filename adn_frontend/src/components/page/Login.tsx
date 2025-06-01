@@ -57,7 +57,7 @@ const Login = ({ setFullName }: LoginProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8080/api/auth/token", {
+      const response = await fetch("http://localhost:8080/api/auth/token-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user)

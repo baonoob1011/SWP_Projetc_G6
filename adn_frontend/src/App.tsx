@@ -11,6 +11,7 @@ import Map from "./components/page/Map.tsx";
 
 import Services from "./components/mainContents/services/Services.tsx";
 import SignUpStaff from "./components/mainContents/feature/SignUpForStaff.tsx";
+import SignUpManager from "./components/mainContents/feature/SignUpForManager.tsx";
 
 function App() {
   const [fullname, setFullName] = useState(localStorage.getItem("fullName") || "");
@@ -19,7 +20,7 @@ function App() {
     <>
       <Header fullName={fullname} setFullName={setFullName} />
       {/* <Civil></Civil> */}
-
+      <SignUpManager/>
       <Services/>
       <SignUpStaff/>
       <Routes>
