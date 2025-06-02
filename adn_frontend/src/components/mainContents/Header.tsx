@@ -61,6 +61,8 @@ export function Header({ fullName, setFullName }: HeaderProps) {
       localStorage.removeItem("fullName");
       localStorage.removeItem("role");
       setFullName("");
+
+      navigate( "/login");
       window.location.href = "/login";
     } catch (error) {
       console.error("Logout API error:", error);
