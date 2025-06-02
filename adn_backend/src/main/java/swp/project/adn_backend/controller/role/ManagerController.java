@@ -36,13 +36,13 @@ public class ManagerController {
 
     //delete
     @DeleteMapping("/delete-user")
-    public ResponseEntity<Users> deleteUserByPhone(@RequestParam String phone) {
-        return ResponseEntity.ok(managerService.deleteUserByPhone(phone));
+    public void deleteUserByPhone(@RequestParam String phone) {
+        managerService.deleteUserByPhone(phone);
     }
 
     @DeleteMapping("/delete-staff")
-    public ResponseEntity<Staff> deleteStaffByPhone(@RequestParam String phone) {
-        return ResponseEntity.ok(managerService.deleteStaffByPhone(phone));
+    public void deleteStaffByPhone(@RequestParam String phone) {
+        managerService.deleteStaffByPhone(phone);
     }
 
     //update

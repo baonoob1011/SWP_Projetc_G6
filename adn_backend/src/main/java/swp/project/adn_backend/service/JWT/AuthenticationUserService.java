@@ -1,4 +1,4 @@
-package swp.project.adn_backend.JWT;
+package swp.project.adn_backend.service.JWT;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;

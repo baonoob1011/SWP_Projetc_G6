@@ -68,19 +68,19 @@ public class ManagerService {
     }
 
     @Transactional
-    public Users deleteUserByPhone(String phone) {
+    public void deleteUserByPhone(String phone) {
         Users users = userRepository.findByPhone(phone)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PHONE_NOT_EXISTS));
-        users.setEnabled(false);
-        return userRepository.save(users);
+
+        userRepository.delete(users);
     }
 
     @Transactional
-    public Staff deleteStaffByPhone(String phone) {
-        Staff staff = staffRepository.findByPhone(phone)
+    public void deleteStaffByPhone(String phone) {
+        Users staff = userRepository.findByPhone(phone)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PHONE_NOT_EXISTS));
-        staff.setEnabled(false);
-        return staffRepository.save(staff);
+
+        userRepository.delete(staff);
     }
 
     @Transactional

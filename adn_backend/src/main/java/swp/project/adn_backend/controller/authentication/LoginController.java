@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import swp.project.adn_backend.dto.request.LoginDTO;
 import swp.project.adn_backend.dto.response.APIResponse;
 import swp.project.adn_backend.dto.response.AuthenticationResponse;
-import swp.project.adn_backend.JWT.AuthenticationUserService;
+import swp.project.adn_backend.service.JWT.AuthenticationUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
