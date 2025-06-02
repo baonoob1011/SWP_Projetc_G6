@@ -3,7 +3,6 @@ package swp.project.adn_backend.configuration;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,17 +25,19 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-
 public class SecurityConfig {
+
+
     private final String[] PUBLIC_ENDPOINTS = {
             "/api/auth/**",
+            "/api/auth/gg/",
             "/api/otp/**",
             "/api/register/user-account",
-            "/api/user/**"
+            "/oauth/**",
+            "/api/patient/**"
     };
     private final String[] PUBLIC_ENDPOINTS_FOR_ADMIN = {
-            "/api/register/**",
-            "/api/admin/**"
+            "/api/**"
     };
     private final String[] PUBLIC_ENDPOINTS_FOR_STAFF = {
             "/api/services/**",
@@ -62,18 +63,20 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
 
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_ADMIN).hasRole(Roles.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS_FOR_ADMIN).hasRole(Roles.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_FOR_ADMIN).hasRole(Roles.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_FOR_ADMIN).hasRole(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_ADMIN).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS_FOR_ADMIN).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_FOR_ADMIN).hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole(Roles.MANAGER.name())
-                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole(Roles.MANAGER.name())
-                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole(Roles.MANAGER.name())
-                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole(Roles.MANAGER.name())
+                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_FOR_MANAGER).hasRole("MANAGER")
 
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_STAFF).hasRole(Roles.STAFF.name())
-                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_FOR_STAFF).hasRole(Roles.STAFF.name())
+                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_FOR_STAFF).hasRole("STAFF")
+                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_FOR_STAFF).hasRole("STAFF")
+                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_FOR_STAFF).hasRole("STAFF")
+                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS_FOR_STAFF).hasRole("STAFF")
+
                         .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/api/logout")
@@ -88,27 +91,23 @@ public class SecurityConfig {
                                         jwt.decoder(jwtDecoder()).jwtAuthenticationConverter(jwtAuthenticationConverter()))
                                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 )
+
                 .httpBasic(Customizer.withDefaults());
 
         return security.build();
     }
 
+
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-
-        // Map từ claim "role" trong JWT
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("role");
-
-        // Thêm tiền tố "ROLE_" để Spring hiểu đúng
-        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("role");  // Claim "role" will be used
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");  // Add prefix "ROLE_" to authorities
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-
         return jwtAuthenticationConverter;
     }
-
 
     @Bean
     JwtDecoder jwtDecoder() {
@@ -116,7 +115,6 @@ public class SecurityConfig {
         return NimbusJwtDecoder.withSecretKey(secretKeySpec)
                 .macAlgorithm(MacAlgorithm.HS512)
                 .build();
-
     }
 
     @Bean

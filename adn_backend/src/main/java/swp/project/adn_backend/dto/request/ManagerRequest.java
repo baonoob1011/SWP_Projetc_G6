@@ -1,10 +1,11 @@
 package swp.project.adn_backend.dto.request;
 
+
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import swp.project.adn_backend.entity.Users;
+import swp.project.adn_backend.enums.Roles;
 
 import java.time.LocalDate;
 
@@ -40,7 +41,6 @@ public class ManagerRequest {
     @NotBlank(message = "CONFIRM_PASSWORD_BLANK")
     String confirmPassword;
 
-    String role;
 
     @NotBlank(message = "Gender is required")
     String gender;
@@ -57,8 +57,6 @@ public class ManagerRequest {
     private LocalDate dateOfBirth;
 
     LocalDate createAt;
-
-    Users users;
 
     public @NotBlank(message = "FULLNAME_BLANK") String getFullName() {
         return fullName;
@@ -122,13 +120,7 @@ public class ManagerRequest {
         this.confirmPassword = confirmPassword;
     }
 
-    public String getRole() {
-        return role;
-    }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
 
     public @NotBlank(message = "Gender is required") String getGender() {
         return gender;
@@ -168,13 +160,5 @@ public class ManagerRequest {
 
     public void setCreateAt(LocalDate createAt) {
         this.createAt = createAt;
-    }
-
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
     }
 }

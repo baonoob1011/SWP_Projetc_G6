@@ -7,6 +7,7 @@ public enum Roles {
     USER,
     ADMIN,
     STAFF,
-    MANAGER
+    MANAGER,
+    PATIENT
     ;
 }

@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
-import swp.project.adn_backend.service.ServiceTestService;
+import swp.project.adn_backend.service.authService.ServiceTestService;
 
 @RestController
 @RequestMapping("/api/services")
