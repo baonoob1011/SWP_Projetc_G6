@@ -12,12 +12,14 @@ import Map from "./components/page/Map.tsx";
 import Services from "./components/mainContents/services/Services.tsx";
 import SignUpStaff from "./components/mainContents/feature/SignUpForStaff.tsx";
 import SignUpManager from "./components/mainContents/feature/SignUpForManager.tsx";
+import UserData from "./components/mainContents/actorList/UserData.tsx";
 
 function App() {
   const [fullname, setFullName] = useState(localStorage.getItem("fullName") || "");
 
   return (
     <>
+      <UserData></UserData>
       <Header fullName={fullname} setFullName={setFullName} />
       <Routes>
         <Route path="/" element={<Home />} />
