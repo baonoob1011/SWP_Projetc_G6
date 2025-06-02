@@ -18,6 +18,29 @@ public class ManagerController {
     @Autowired
     private ManagerService managerService;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     //Get
     @GetMapping("/get-all-user")
     public ResponseEntity<List<Users>> getAllUsers() {
