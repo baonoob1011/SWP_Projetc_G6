@@ -80,7 +80,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
     },
     { label: "Tin tức", path: "/blog" },
     { label: "Đặt lịch", path: "/order" },
-    { label: "Chi nhánh", path: "/map" },
+    { label: "Chi nhánh", path: "/branch" },
   ];
 
   return (
@@ -198,14 +198,30 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     >
                       Đăng ký thông tin quản lý
                     </MenuItem>
-                    {/* <MenuItem
+                    <MenuItem
                       component={NavLink}
-                      to="/signup-staff"
+                      to="/userData"
                       onClick={handleCloseMenu}
                       sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
                     >
-                      Đang ký thông tin nhân viên
-                    </MenuItem> */}
+                      Danh sách người dùng
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/managerData"
+                      onClick={handleCloseMenu}
+                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                    >
+                      Danh sách quản lý
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/staffData"
+                      onClick={handleCloseMenu}
+                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                    >
+                      Danh sách nhân viên
+                    </MenuItem>
                     <MenuItem
                       onClick={() => {
                         handleCloseMenu();
