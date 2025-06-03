@@ -1,0 +1,174 @@
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  Button,
+  TextField,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+
+type User = {
+  // userId: string;
+  fullName: string;
+  email: string;
+  enabled: boolean;
+  role: string;
+  phone: string;
+  createAt: string;
+};
+
+function GetUserByStaff() {
+  const [account, setAccount] = useState<User[]>([]);
+  const [isManager, setIsManager] = useState(true);
+  const [search, setSearch] = useState("")
+  // ✅ Gọi API lấy dữ liệu
+  const fetchData = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(
+        "http://localhost:8080/api/staff/get-all-user",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error("Không thể lấy dữ liệu");
+
+      const data = await res.json();
+
+      if (!Array.isArray(data)) throw new Error("Dữ liệu không hợp lệ");
+
+      setAccount(data);
+    } catch (error) {
+      console.error("Lỗi fetch:", error);
+      alert("Lỗi khi tải dữ liệu người dùng.");
+    }
+  };
+
+  // ✅ Xóa người dùng
+  const handleDelete = async (phone: string, fullName: string) => {
+    if (
+      !window.confirm(
+        `Bạn có chắc chắn muốn xóa người dùng tên là ${fullName}?`
+      )
+    )
+      return;
+
+    const token = localStorage.getItem("token");
+
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/staff/delete-user?phone=${phone}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error("Xóa thất bại");
+
+      alert("Xóa thành công");
+      fetchData();
+    } catch (error) {
+      console.error("Lỗi xóa:", error);
+      alert("Không thể xóa người dùng");
+    }
+  };
+
+  useEffect(() => {
+    setIsManager(localStorage.getItem("role") === "STAFF");
+  }, []);
+
+  useEffect(() => {
+    fetchData(); // gọi lần đầu khi component mount
+  }, []);
+
+  if (!isManager) {
+    return;
+  }
+
+  const searchByPhone = account.filter((user) => 
+    user.phone.includes(search)    
+)
+
+  return (
+    <TableContainer component={Paper} sx={{ mt: 4, marginTop: 10 }}>
+      <Typography variant="h6" sx={{ m: 2 }}>
+        Danh sách người dùng
+      </Typography>
+      <TextField
+          label="Tìm theo SĐT"
+          variant="outlined"
+          size="small"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>
+              <strong>ID</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Họ tên</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Email</strong>
+            </TableCell>
+            <TableCell>
+              <strong>SĐT</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Vai trò</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Ngày đăng ký</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Trạng thái</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Thao tác</strong>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {searchByPhone.map((user, index) => (
+            <TableRow key={index}>
+              <TableCell>{index + 1}</TableCell>
+              <TableCell>{user.fullName}</TableCell>
+              <TableCell>{user.email}</TableCell>
+              <TableCell>{user.phone}</TableCell>
+              <TableCell>{user.role}</TableCell>
+              <TableCell>{user.createAt}</TableCell>
+              <TableCell>
+                {user.enabled ? "Đã kích hoạt" : "Chưa kích hoạt"}
+              </TableCell>
+              <TableCell>
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="small"
+                  onClick={() => handleDelete(user.phone, user.fullName)}
+                >
+                  Xóa
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}
+
+export default GetUserByStaff;

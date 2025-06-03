@@ -12,14 +12,25 @@ import Map from "./components/page/Map.tsx";
 import Services from "./components/mainContents/services/Services.tsx";
 import SignUpStaff from "./components/mainContents/feature/SignUpForStaff.tsx";
 import SignUpManager from "./components/mainContents/feature/SignUpForManager.tsx";
-import UserData from "./components/mainContents/actorList/UserData.tsx";
+import GetManagerByAdmin from "./components/mainContents/actorList/GetManagerByAdmin.tsx";
+import GetStaffByAdmin from "./components/mainContents/actorList/GetStaffByAdmin.tsx";
+import GetUserByAdmin from "./components/mainContents/actorList/GetUserByAdmin.tsx";
+import GetUserByManager from "./components/mainContents/actorList/GetUserByManager.tsx";
+import GetStaffByManager from "./components/mainContents/actorList/GetStaffByManager.tsx";
+import GetUserByStaff from "./components/mainContents/actorList/GetUserByStaff.tsx";
+
 
 function App() {
   const [fullname, setFullName] = useState(localStorage.getItem("fullName") || "");
 
   return (
     <>
-      <UserData></UserData>
+      <GetManagerByAdmin/>
+      <GetStaffByAdmin/>
+      <GetUserByAdmin/>
+      <GetUserByManager/>
+      <GetStaffByManager/>
+      <GetUserByStaff/>
       <Header fullName={fullname} setFullName={setFullName} />
       <Routes>
         <Route path="/" element={<Home />} />

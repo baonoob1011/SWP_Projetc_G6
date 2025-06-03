@@ -1,4 +1,5 @@
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -6,34 +7,36 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
-type User = {
+type Staff = {
+  idCard: string;
+  dateOfBirth: string;
+  address: string;
+  gender: string;
   userId: string;
   fullName: string;
   email: string;
-  otpCode: string;
+  enabled: boolean;
   role: string;
   phone: string;
-  username: string;
+  createAt: string;
 };
 
-function UserData() {
-  const [account, setAccount] = useState<User[]>([]);
+function GetStaffByAdmin() {
+  const [account, setAccount] = useState<Staff[]>([]);
   const [isAdmin, setIsAdmin] = useState(true);
-
+  const [search, setSearch] = useState("");
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(
-        "http://localhost:8080/api/manager/get-all-user",
-        {
-          method: "GET",
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await fetch("http://localhost:8080/api/admin/get-all-staff", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = await res.json();
       setAccount(data);
     } catch (error) {
@@ -42,7 +45,7 @@ function UserData() {
     }
   };
   useEffect(() => {
-    setIsAdmin(localStorage.getItem("role") === "MANAGER");
+    setIsAdmin(localStorage.getItem("role") === "ADMIN");
   }, []);
 
   useEffect(() => {
@@ -51,7 +54,7 @@ function UserData() {
 
   const handleDelete = async (phone: string, fullName: string) => {
     const mes = window.confirm(
-      `bạn có chắc chắn muốn xóa người dùng có tên là ${fullName} ?`
+      `bạn có chắc chắn muốn xóa nhân viên có tên là ${fullName} ?`
     );
     if (!mes) {
       return;
@@ -60,7 +63,7 @@ function UserData() {
 
       try {
         const res = await fetch(
-          `http://localhost:8080/api/manager/delete-user?phone=${phone}`,
+          `http://localhost:8080/api/admin/delete-staff?phone=${phone}`,
           {
             method: "DELETE",
             headers: { Authorization: `Bearer ${token}` },
@@ -82,13 +85,20 @@ function UserData() {
   if (!isAdmin) {
     return;
   }
-
+  const searchByphone = account.filter((user) => user.phone.includes(search));
   return (
     <>
       <TableContainer component={Paper} sx={{ mt: 4, marginTop: 10 }}>
         <Typography variant="h6" sx={{ m: 2 }}>
-          Danh sách người dùng
+          Danh sách nhân viên
         </Typography>
+        <TextField
+          label="Nhập số điện thoại"
+          variant="outlined"
+          size="small"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <Table>
           <TableHead>
             <TableRow>
@@ -99,39 +109,62 @@ function UserData() {
                 <strong>Họ tên</strong>
               </TableCell>
               <TableCell>
+                <strong>CCCD</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Ngày sinh</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Giới tính</strong>
+              </TableCell>
+              <TableCell>
                 <strong>Email</strong>
               </TableCell>
               <TableCell>
-                <strong>Username</strong>
+                <strong>Số điện thoại</strong>
               </TableCell>
               <TableCell>
-                <strong>SĐT</strong>
+                <strong>Địa chỉ</strong>
               </TableCell>
               <TableCell>
                 <strong>Vai trò</strong>
               </TableCell>
               <TableCell>
-                <strong>OTP</strong>
+                <strong>Ngày đăng ký</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Trạng thái</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Thao tác</strong>
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {account.map((user) => (
-              <TableRow key={user.userId}>
-                <TableCell>{user.userId}</TableCell>
+            {searchByphone.map((user, index) => (
+              <TableRow key={index}>
+                <TableCell>{index + 1}</TableCell>
                 <TableCell>{user.fullName}</TableCell>
+                <TableCell>{user.idCard}</TableCell>
+                <TableCell>{user.dateOfBirth}</TableCell>
+                <TableCell>{user.gender}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.username}</TableCell>
                 <TableCell>{user.phone}</TableCell>
+                <TableCell>{user.address}</TableCell>
                 <TableCell>{user.role}</TableCell>
-                <TableCell>{user.otpCode}</TableCell>
+                <TableCell>{user.createAt}</TableCell>
                 <TableCell>
-                  <button
-                    type="submit"
+                  {user.enabled ? "Đã kích hoạt" : "Chưa kích hoạt"}
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    size="small"
                     onClick={() => handleDelete(user.phone, user.fullName)}
                   >
                     Xóa
-                  </button>
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -142,4 +175,4 @@ function UserData() {
   );
 }
 
-export default UserData;
+export default GetStaffByAdmin;
