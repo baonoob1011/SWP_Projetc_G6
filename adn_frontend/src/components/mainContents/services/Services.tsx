@@ -18,7 +18,7 @@ const Services = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    setIsAdmin(localStorage.getItem("role") === "ADMIN");
+    setIsAdmin(localStorage.getItem("role") === "MANAGER");
   }, []);
 
   const handleInput = (

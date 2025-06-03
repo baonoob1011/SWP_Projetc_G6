@@ -1,4 +1,12 @@
-import { Box, Button, Paper, TextField, Typography, CircularProgress, InputAdornment } from "@mui/material";
+import {
+  Box,
+  Button,
+  Paper,
+  TextField,
+  Typography,
+  CircularProgress,
+  InputAdornment,
+} from "@mui/material";
 import { useState } from "react";
 import CustomSnackBar from "../mainContents/userinfor/Snackbar";
 import SendOTP from "../mainContents/userinfor/SendOTP";
@@ -25,18 +33,19 @@ const Forget = () => {
       });
       if (!res.ok) {
         setSnackbar({
-        open: true,
-        message: "Email không tồn tại",
-        severity: "error",
-      });
+          open: true,
+          message: "Email không tồn tại",
+          severity: "error",
+        });
+      } else {
+        setSnackbar({
+          open: true,
+          message: "Gửi OTP thành công",
+          severity: "success",
+        });
+        setTimeout(() => setShow(true), 1500);
       }
-      setSnackbar({
-        open: true,
-        message: "Gửi OTP thành công",
-        severity: "success",
-      });
-      setTimeout(() => setShow(true), 1500);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setSnackbar({
         open: true,
@@ -53,12 +62,20 @@ const Forget = () => {
   }
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" >
-      <Paper elevation={6} sx={{ borderRadius: 4, p: 5, width: "100%", maxWidth: 420 }}>
+    <Box display="flex" justifyContent="center" alignItems="center">
+      <Paper
+        elevation={6}
+        sx={{ borderRadius: 4, p: 5, width: "100%", maxWidth: 420 }}
+      >
         <Typography variant="h5" textAlign="center" fontWeight={700} mb={1}>
           Quên Mật Khẩu
         </Typography>
-        <Typography variant="body2" textAlign="center" color="text.secondary" mb={3}>
+        <Typography
+          variant="body2"
+          textAlign="center"
+          color="text.secondary"
+          mb={3}
+        >
           Vui lòng nhập email để nhận mã xác thực (OTP)
         </Typography>
 
@@ -87,7 +104,9 @@ const Forget = () => {
             size="large"
             sx={{ mt: 3, py: 1.2, fontWeight: 600 }}
             disabled={sending}
-            startIcon={sending && <CircularProgress size={20} color="inherit" />}
+            startIcon={
+              sending && <CircularProgress size={20} color="inherit" />
+            }
           >
             {sending ? "Đang gửi..." : "Gửi OTP"}
           </Button>
