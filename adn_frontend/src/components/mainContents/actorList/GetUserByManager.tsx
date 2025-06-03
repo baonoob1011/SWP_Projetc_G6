@@ -39,7 +39,7 @@ function GetUserByManager() {
         }
       );
 
-      if (!res.ok) throw new Error("Không thể lấy dữ liệu");
+      if (!res.ok) alert("Không thể lấy dữ liệu");
 
       const data = await res.json();
 

@@ -35,7 +35,7 @@ function GetUserByAdmin() {
         },
       });
 
-      if (!res.ok) throw new Error("Không thể lấy dữ liệu");
+      if (!res.ok) {alert("Không thể lấy dữ liệu")};
 
       const data = await res.json();
 
@@ -100,7 +100,7 @@ function GetUserByAdmin() {
         Danh sách người dùng
       </Typography>
       <TextField
-        label="Nhập số điện thoạithoại"
+        label="Nhập số điện thoại"
         variant="outlined"
         size="small"
         value={search}
