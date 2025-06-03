@@ -39,7 +39,7 @@ function App() {
         <Route path="/branch" element={<Branch />} />
         <Route path="/signup-manager" element={<SignUpManager />} />
         <Route path="/signup-staff" element={<SignUpStaff />} />
-        <Route path="/services" element={<Services />} />
+        <Route path="/create-services" element={<Services />} />
         <Route path="/map" element={<Map />} />
         <Route path="/managerData" element={<GetManagerByAdmin/>} />
         <Route path="/staffData" element={<GetStaffByAdmin/>} />

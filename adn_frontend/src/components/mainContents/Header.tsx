@@ -273,6 +273,17 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       Đăng ký thông tin nhân viên
                     </MenuItem>
                     <MenuItem
+                      component={NavLink}
+                      to="/create-services"
+                      onClick={handleCloseMenu}
+                      sx={{
+                        color: "white",
+                        "&:hover": { bgcolor: "primary.dark" },
+                      }}
+                    >
+                      Tạo dịch vụ
+                    </MenuItem>
+                    <MenuItem
                       onClick={() => {
                         handleCloseMenu();
                         handleLogout();
