@@ -128,49 +128,56 @@ const Login = ({ setFullName }: LoginProps) => {
 //   navigate("/");
 // };
 
-
   return (
     <div className={styles.container}>
+      {/* DNA Icons Container - Bên phải */}
+      <div className={styles.dnaIconsContainer}></div>
+      
+      {/* Form Section - Bên trái */}
       <Paper elevation={20} className={styles.paper}>
-        <Box component={"form"} onSubmit={handleSubmit}>
-          <Typography variant="h5" className={styles.title}>
-            Đăng nhập
-          </Typography>
-
-          <TextField
-            label="Tên đăng nhập"
-            fullWidth
-            margin="normal"
-            name="username"
-            value={user.username}
-            onChange={handleInput}
-          />
-          <TextField
-            label="Mật khẩu"
-            type="password"
-            fullWidth
-            margin="normal"
-            name="password"
-            value={user.password}
-            onChange={handleInput}
-          />
-
-          <Button type="submit" variant="contained" color="primary" fullWidth>
-            Đăng nhập
-          </Button>
-
-          <Box className={styles.linkContainer}>
-            <Typography variant="body2">
-              <Link to="/forget">Quên mật khẩu ?</Link>
+        <div className={styles.formContainer}>
+          <Box component={"form"} onSubmit={handleSubmit}>
+            <Typography variant="h5" className={styles.title}>
+              Đăng nhập
             </Typography>
+
+            <TextField
+              label="Tên đăng nhập"
+              fullWidth
+              margin="normal"
+              name="username"
+              value={user.username}
+              onChange={handleInput}
+              variant="outlined"
+            />
+            <TextField
+              label="Mật khẩu"
+              type="password"
+              fullWidth
+              margin="normal"
+              name="password"
+              value={user.password}
+              onChange={handleInput}
+              variant="outlined"
+            />
+
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Đăng nhập
+            </Button>
+
+            <Box className={styles.linkContainer}>
+              <Typography variant="body2">
+                <Link to="/forget">Quên mật khẩu ?</Link>
+              </Typography>
+            </Box>
+            {/* <LoginByGoogle onLoginSuccess={handleGoogleLoginSuccess} /> */}
+            <Box className={styles.linkContainer}>
+              <Typography variant="body2">
+                Bạn chưa có tài khoản? <Link to="/signup">Đăng ký</Link>
+              </Typography>
+            </Box>
           </Box>
-          {/* <LoginByGoogle onLoginSuccess={handleGoogleLoginSuccess} /> */}
-          <Box className={styles.linkContainer}>
-            <Typography variant="body2">
-              Bạn chưa có tài khoản? <Link to="/signup">Đăng ký</Link>
-            </Typography>
-          </Box>
-        </Box>
+        </div>
       </Paper>
 
       <CustomSnackBar

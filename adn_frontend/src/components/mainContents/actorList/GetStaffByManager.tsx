@@ -93,63 +93,92 @@ function GetStaffByManager() {
 
   return (
     <>
-      <TableContainer component={Paper} sx={{ mt: 4, marginTop: 10 }}>
-      <Typography variant="h6" sx={{ m: 2 }}>
-        Danh sách nhân viên
-      </Typography>
-      <TextField
-        label="Nhập số điện thoại"
-        variant="outlined"
-        size="small"
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-      />
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell><strong>ID</strong></TableCell>
-            <TableCell><strong>Họ tên</strong></TableCell>
-            <TableCell><strong>CCCD</strong></TableCell>
-            <TableCell><strong>Ngày sinh</strong></TableCell>
-            <TableCell><strong>Giới tính</strong></TableCell>
-            <TableCell><strong>Email</strong></TableCell>
-            <TableCell><strong>Số điện thoại</strong></TableCell>
-            <TableCell><strong>Địa chỉ</strong></TableCell>
-            <TableCell><strong>Vai trò</strong></TableCell>
-            <TableCell><strong>Ngày đăng ký</strong></TableCell>
-            <TableCell><strong>Trạng thái</strong></TableCell>
-            <TableCell><strong>Thao tác</strong></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {searchByphone.map((user, index) => (
-            <TableRow key={index}>
-              <TableCell>{index +1}</TableCell>
-              <TableCell>{user.fullName}</TableCell>
-              <TableCell>{user.idCard}</TableCell>
-              <TableCell>{user.dateOfBirth}</TableCell>
-              <TableCell>{user.gender}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.phone}</TableCell>
-              <TableCell>{user.address}</TableCell>
-              <TableCell>{user.role}</TableCell>
-              <TableCell>{user.createAt}</TableCell>
-              <TableCell>{user.enabled ? "Đã kích hoạt" : "Chưa kích hoạt"}</TableCell>
-              <TableCell>
-                <Button
-                  variant="contained"
-                  color="error"
-                  size="small"
-                  onClick={() => handleDelete(user.phone, user.fullName)}
-                >
-                  Xóa
-                </Button>
+      <TableContainer component={Paper} sx={{flexGrow: 1}}>
+        <Typography variant="h6" sx={{ m: 2 }}>
+          Danh sách nhân viên
+        </Typography>
+        <TextField
+          label="Nhập số điện thoại"
+          variant="outlined"
+          size="small"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <Table sx={{ fontSize: "13px" }}>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                ID
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Họ tên
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                CCCD
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Ngày sinh
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Giới tính
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Email
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                SĐT
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Địa chỉ
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Vai trò
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Ngày đăng ký
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Trạng thái
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Thao tác
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {searchByphone.map((user, index) => (
+              <TableRow key={index} sx={{ fontSize: "13px" }}>
+                <TableCell sx={{ fontSize: "10px" }}>{index + 1}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.fullName}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.idCard}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>
+                  {user.dateOfBirth}
+                </TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.gender}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.email}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.phone}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.address}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.role}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.createAt}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>
+                  {user.enabled ? "Đã kích hoạt" : "Chưa kích hoạt"}
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    size="small"
+                    sx={{ fontSize: "10px" }}
+                    onClick={() => handleDelete(user.phone, user.fullName)}
+                  >
+                    Xóa
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 }

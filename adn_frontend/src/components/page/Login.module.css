@@ -1,398 +1,208 @@
-/* ===== LOGIN FORM CSS MODULE ===== */
-
-/* Container styling - DNA theme */
+/* Container Layout */
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f4c75, #3282b8, #bbe1fa);
+  display: flex;
+  justify-content: flex-end;
+  background: #f1f5f9 url('../../image/bg.png') center/cover no-repeat;
+}
+body {
+  overflow-y: hidden;
+}
+/* Login Panel (Right Side) */
+.paper {
+  flex: 1;
+  max-width: 500px;
+  background: rgba(173, 216, 230, 0.25); /* Xanh nhạt hơi mờ */
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(173, 216, 230, 0.3);
+  box-shadow: -15px 0 40px rgba(0, 0, 0, 0.1), inset 0 0 120px rgba(255, 255, 255, 0.1);
+  animation: slideInFromRight 0.6s ease;
   position: relative;
-  overflow: hidden;
-  padding: 20px;
 }
 
-/* DNA helix floating elements */
-.container::before,
-.container::after {
+
+.paper::before {
   content: '';
   position: absolute;
-  background: rgba(187, 225, 250, 0.15);
-  animation: dnaFloat 12s ease-in-out infinite;
-  border-radius: 50% 10px 50% 10px;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(173, 216, 230, 0.15), rgba(173, 216, 230, 0.05));
+  pointer-events: none;
 }
 
-.container::before {
-  width: 80px;
-  height: 200px;
-  top: 10%;
-  left: 5%;
-  animation-delay: 0s;
-  transform: rotate(45deg);
+
+/* Form Wrapper */
+.formContainer {
+  padding: 60px 50px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: slideUp 0.5s ease;
 }
 
-.container::after {
-  width: 120px;
-  height: 250px;
-  bottom: 10%;
-  right: 5%;
-  animation-delay: 6s;
-  transform: rotate(-45deg);
-}
-
-/* Additional DNA strand elements */
-.container {
-  background: 
-    linear-gradient(135deg, #0f4c75, #3282b8, #bbe1fa),
-    radial-gradient(circle at 20% 80%, rgba(187, 225, 250, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(50, 130, 184, 0.3) 0%, transparent 50%);
-}
-
-@keyframes dnaFloat {
-  0%, 100% {
-    transform: translateY(0px) rotate(45deg) scaleY(1);
-    opacity: 0.4;
-  }
-  25% {
-    transform: translateY(-20px) rotate(90deg) scaleY(1.1);
-    opacity: 0.6;
-  }
-  50% {
-    transform: translateY(-10px) rotate(135deg) scaleY(0.9);
-    opacity: 0.8;
-  }
-  75% {
-    transform: translateY(-30px) rotate(180deg) scaleY(1.2);
-    opacity: 0.5;
-  }
-}
-
-/* Paper card styling with entrance animation - Medical theme */
-.paper {
-  padding: 32px !important;
-  border-radius: 16px !important;
-  background: rgba(255, 255, 255, 0.95) !important;
-  backdrop-filter: blur(15px) !important;
-  border: 2px solid rgba(187, 225, 250, 0.3) !important;
-  box-shadow: 
-    0 15px 35px rgba(15, 76, 117, 0.15),
-    0 5px 15px rgba(50, 130, 184, 0.1) !important;
-  max-width: 380px;
-  width: 100%;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  animation: slideInUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-  opacity: 0;
-  animation-fill-mode: forwards;
-}
-
-.paper:hover {
-  /* transform: translateY(-6px) !important; */
-  box-shadow: 
-    0 20px 45px rgba(15, 76, 117, 0.2),
-    0 8px 25px rgba(50, 130, 184, 0.15) !important;
-  border-color: rgba(187, 225, 250, 0.5) !important;
-}
-
-@keyframes slideInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(50px) scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* Title styling - Medical/DNA theme */
+/* Title */
 .title {
-  font-size: 24px !important;
-  font-weight: 700 !important;
-  text-align: center !important;
-  margin-bottom: 24px !important;
-  background: linear-gradient(135deg, #0f4c75, #3282b8, #bbe1fa) !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
+  text-align: center;
+  margin-bottom: 50px;
+  font: 700 2.5rem system-ui;
+  color: #1e293b;
   position: relative;
-  animation: fadeInDown 0.6s ease forwards;
-  animation-delay: 0.2s;
-  opacity: 0;
+  text-shadow: 0 2px 10px rgba(30, 41, 59, 0.1);
+  animation: fadeInScale 0.6s ease;
 }
 
 .title::after {
   content: '';
-  display: block;
-  margin: 12px auto 0;
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(135deg, #0f4c75, #3282b8);
-  border-radius: 2px;
-  animation: expandWidth 0.8s ease forwards;
-  animation-delay: 0.5s;
-  transform: scaleX(0);
-}
-
-@keyframes fadeInDown {
-  0% {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes expandWidth {
-  0% {
-    transform: scaleX(0);
-  }
-  100% {
-    transform: scaleX(1);
-  }
-}
-
-/* MUI TextField custom styling */
-.paper :global(.MuiTextField-root) {
-  margin-bottom: 20px !important;
-  animation: fadeInUp 0.5s ease forwards;
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 120%; height: 120%;
+  background: radial-gradient(ellipse, rgba(59, 130, 246, 0.1), transparent 70%);
+  transform: translate(-50%, -50%);
   opacity: 0;
+  transition: opacity 0.3s;
+  z-index: -1;
 }
+.title:hover::after { opacity: 1; }
 
-.paper :global(.MuiTextField-root:nth-of-type(1)) {
-  animation-delay: 0.3s;
+/* Inputs */
+.MuiTextField-root {
+  margin-bottom: 35px;
+  animation: slideInUp 0.5s ease both;
 }
+.MuiTextField-root:nth-child(2) { animation-delay: 0.1s; }
+.MuiTextField-root:nth-child(3) { animation-delay: 0.2s; }
 
-.paper :global(.MuiTextField-root:nth-of-type(2)) {
-  animation-delay: 0.4s;
-}
-
-.paper :global(.MuiOutlinedInput-root) {
-  border-radius: 10px !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  background: rgba(255, 255, 255, 0.8) !important;
-}
-
-.paper :global(.MuiOutlinedInput-root:hover) {
-  background: rgba(255, 255, 255, 0.95) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(50, 130, 184, 0.1);
-}
-
-.paper :global(.MuiOutlinedInput-root.Mui-focused) {
-  background: rgba(255, 255, 255, 1) !important;
-  /* transform: translateY(-3px); */
-  box-shadow: 0 6px 20px rgba(50, 130, 184, 0.15);
-}
-
-.paper :global(.MuiOutlinedInput-notchedOutline) {
-  border-color: rgba(50, 130, 184, 0.3) !important;
-  transition: border-color 0.3s ease !important;
-}
-
-.paper :global(.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline) {
-  border-color: rgba(50, 130, 184, 0.5) !important;
-}
-
-.paper :global(.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline) {
-  border-color: #3282b8 !important;
-  border-width: 2px !important;
-}
-
-.paper :global(.MuiInputLabel-root) {
-  color: #666 !important;
-  transition: color 0.3s ease !important;
-}
-
-.paper :global(.MuiInputLabel-root.Mui-focused) {
-  color: #3282b8 !important;
-}
-
-/* Button styling - Medical theme */
-.paper :global(.MuiButton-root) {
-  padding: 14px !important;
-  border-radius: 10px !important;
-  font-size: 15px !important;
-  font-weight: 600 !important;
-  background: linear-gradient(135deg, #0f4c75, #3282b8) !important;
-  margin-top: 16px !important;
-  margin-bottom: 16px !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+.MuiOutlinedInput-root {
+  border-radius: 12px;
+  background: rgba(249, 250, 251, 0.85);
+  border: 1px solid rgba(203, 213, 225, 0.6);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  backdrop-filter: blur(10px);
+  transition: 0.4s ease;
   position: relative;
   overflow: hidden;
-  animation: fadeInUp 0.5s ease forwards;
-  animation-delay: 0.5s;
-  opacity: 0;
 }
 
-.paper :global(.MuiButton-root::before) {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(187, 225, 250, 0.3), rgba(255,255,255,0.1));
-  transition: left 0.5s ease;
+.MuiOutlinedInput-root:hover {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08), 0 0 20px rgba(59, 130, 246, 0.1);
+  transform: scale(1.01);
+  border-color: rgba(59, 130, 246, 0.3);
 }
 
-.paper :global(.MuiButton-root:hover) {
-  /* transform: translateY(-3px) !important; */
-  box-shadow: 0 8px 25px rgba(50, 130, 184, 0.4) !important;
+.MuiOutlinedInput-root.Mui-focused {
+  background: rgba(255, 255, 255, 0.97);
+  border-color: #3b82f6;
+  box-shadow: 0 12px 30px rgba(59, 130, 246, 0.2);
+  transform: scale(1.02);
 }
 
-.paper :global(.MuiButton-root:hover::before) {
-  left: 0;
+.MuiOutlinedInput-root input {
+  caret-color: #3b82f6;
+  z-index: 1;
+  transition: 0.3s;
+  color: #1e293b;
 }
 
-.paper :global(.MuiButton-root:active) {
-  /* transform: translateY(-1px) !important; */
-  box-shadow: 0 4px 15px rgba(50, 130, 184, 0.3) !important;
+/* Label */
+.MuiInputLabel-root {
+  color: #64748b;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+.MuiInputLabel-root.Mui-focused {
+  color: #3b82f6;
+  font-weight: 600;
+  transform: scale(0.9);
 }
 
-@keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Button */
+.MuiButton-root {
+  margin-top: 40px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #3b82f6, #60a5fa, #8b5cf6);
+  color: white;
+  font: 600 1.1rem system-ui;
+  text-transform: none;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+  animation: slideInUp 0.5s ease 0.3s both, float 3s ease-in-out infinite;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: none;
 }
 
-/* Link container styling */
+.MuiButton-root:hover {
+  background: linear-gradient(135deg, #2563eb, #3b82f6, #7c3aed);
+  transform: scale(1.05);
+  box-shadow: 0 12px 35px rgba(37, 99, 235, 0.6), 0 0 30px rgba(59, 130, 246, 0.3);
+}
+.MuiButton-root:active {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(25, 60, 158, 0.6);
+}
+
+/* Link */
 .linkContainer {
-  text-align: center !important;
-  margin-top: 16px !important;
-  animation: fadeIn 0.5s ease forwards;
-  opacity: 0;
-}
-
-.linkContainer:nth-of-type(1) {
-  animation-delay: 0.6s;
-}
-
-.linkContainer:nth-of-type(2) {
-  animation-delay: 0.7s;
-}
-
-.linkContainer :global(.MuiTypography-root) {
-  color: #666 !important;
-  font-size: 14px !important;
+  text-align: center;
+  margin: 30px 0;
+  animation: fadeIn 0.5s ease 0.4s both;
 }
 
 .linkContainer a {
-  color: #3282b8 !important;
-  text-decoration: none !important;
-  font-weight: 600 !important;
-  transition: all 0.3s ease !important;
-  position: relative;
-}
-
-.linkContainer a::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(135deg, #0f4c75, #3282b8);
-  transition: width 0.3s ease;
+  color: #3b82f6;
+  font-weight: 600;
+  text-decoration: none;
+  background: rgba(59, 130, 246, 0.05);
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: 0.4s ease;
+  display: inline-block;
+  backdrop-filter: blur(10px);
 }
 
 .linkContainer a:hover {
-  color: #0f4c75 !important;
-  transform: translateY(-1px);
+  color: #2563eb;
+  transform: scale(1.05) translateY(-2px);
+  background: rgba(59, 130, 246, 0.1);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
 }
 
-.linkContainer a:hover::after {
-  width: 100%;
+/* Animations */
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); opacity: 0; filter: blur(10px); }
+  to { transform: translateX(0); opacity: 1; filter: blur(0); }
 }
-
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slideInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes fadeInScale {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
 @keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
-/* Loading state for button */
-.paper :global(.MuiButton-root:disabled) {
-  background: linear-gradient(135deg, #ccc, #999) !important;
-  color: white !important;
-  position: relative;
-}
-
-.paper :global(.MuiButton-root:disabled::after) {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 20px;
-  height: 20px;
-  margin: -10px 0 0 -10px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Mobile responsiveness */
-@media (max-width: 480px) {
-  .container {
-    padding: 16px;
-  }
-  
-  .paper {
-    padding: 24px 20px !important;
-    max-width: 100%;
-  }
-  
-  .title {
-    font-size: 20px !important;
-    margin-bottom: 20px !important;
-  }
-  
-  .paper :global(.MuiTextField-root) {
-    margin-bottom: 16px !important;
-  }
-  
-  .paper :global(.MuiButton-root) {
-    padding: 12px !important;
-    font-size: 14px !important;
-  }
-  
-  .linkContainer {
-    margin-top: 12px !important;
-  }
-  
-  .linkContainer :global(.MuiTypography-root) {
-    font-size: 13px !important;
-  }
-}
-
-/* Tablet responsiveness */
+/* Responsive */
 @media (max-width: 768px) {
-  .container::before,
-  .container::after {
-    display: none;
-  }
-  
-  .paper {
-    max-width: 350px;
-  }
+  .container { flex-direction: column; justify-content: center; }
+  .paper { max-width: 100%; backdrop-filter: blur(20px); }
+  .formContainer { padding: 50px 40px; height: auto; }
+  .title { font-size: 2.2rem; margin-bottom: 40px; }
 }
-::selection {
-  background: #000000 !important;
-  color: #ffffff !important;
+@media (max-width: 480px) {
+  .formContainer { padding: 40px 25px; }
+  .title { font-size: 2rem; margin-bottom: 35px; }
 }
