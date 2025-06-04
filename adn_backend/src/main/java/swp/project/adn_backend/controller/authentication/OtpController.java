@@ -1,4 +1,4 @@
-package swp.project.adn_backend.controller;
+package swp.project.adn_backend.controller.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 import swp.project.adn_backend.dto.request.ChangePasswordRequest;
 import swp.project.adn_backend.dto.request.OtpRequest;
 import swp.project.adn_backend.dto.request.OtpVerifyRequest;
-import swp.project.adn_backend.service.SendEmailService;
+import swp.project.adn_backend.service.authService.SendEmailService;
 import java.util.Random;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import swp.project.adn_backend.service.VerifyOtpService;
-import swp.project.adn_backend.service.UserService;
+import swp.project.adn_backend.service.authService.VerifyOtpService;
+import swp.project.adn_backend.service.roleService.UserService;
 
 @RestController
 @RequestMapping("/api/otp")

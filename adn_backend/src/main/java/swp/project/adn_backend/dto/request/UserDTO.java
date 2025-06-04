@@ -59,8 +59,6 @@ public class UserDTO {
         this.confirmPassword = confirmPassword;
     }
 
-    String role;
-
     public String getEmail() {
         return email;
     }
