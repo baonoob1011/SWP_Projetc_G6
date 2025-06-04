@@ -155,7 +155,19 @@ export function Header({ fullName, setFullName }: HeaderProps) {
             {fullName ? (
               role === "ADMIN" ? (
                 <>
-                  <Button sx={{ color: "white" }} onClick={(e) => handleOpenMenu(e, "ADMIN")}>
+                  <Button sx={{
+                    backgroundColor: "#90caf9",
+                    color: "#0d47a1",
+                    textTransform: "none",
+                    fontWeight: "bold",
+                    "&:hover": {
+                      backgroundColor: "#64b5f6",
+                      maxWidth:"100%",
+                      
+                    },
+
+
+                  }} onClick={(e) => handleOpenMenu(e, "ADMIN")}>
                     Welcome, {fullName}
                   </Button>
                   <Menu
@@ -192,6 +204,14 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       Thông tin nhân viên
                     </MenuItem>
                     <MenuItem
+                      component={NavLink}
+                      to="/services"
+                      onClick={handleCloseMenu}
+                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                    >
+                      Dịch vụ
+                    </MenuItem>
+                    <MenuItem
                       onClick={() => {
                         handleCloseMenu();
                         handleLogout();
@@ -204,21 +224,50 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                 </>
               ) : (
                 <>
-                  <Typography variant="body2" sx={{ color: "white" }}>
-                    Welcome, {fullName}
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: "white" }}>
-                    |
-                  </Typography>
                   <Button
-                    component={NavLink}
-                    to="/home"
-                    color="inherit"
-                    onClick={handleLogout}
+                    sx={{
+                      backgroundColor: "#90caf9",
+                      color: "#0d47a1",
+                      textTransform: "none",
+                      fontWeight: "bold",
+                      "&:hover": {
+                        backgroundColor: "#64b5f6",
+                        maxWidth: "100%",
+                      },
+                    }}
+                    onClick={(e) => handleOpenMenu(e, "USER")}
                   >
-                    Đăng Xuất
+                    Welcome, {fullName}
                   </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={menuOpen === "USER"}
+                    onClose={handleCloseMenu}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
+                    PaperProps={{
+                      elevation: 0,
+                      sx: {
+                        bgcolor: "primary.main",
+                        color: "white",
+                        mt: 0,
+                        boxShadow: "none",
+                        "& .MuiMenu-list": { paddingY: 0 },
+                      },
+                    }}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        handleCloseMenu();
+                        handleLogout();
+                      }}
+                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                    >
+                      Đăng xuất
+                    </MenuItem>
+                  </Menu>
                 </>
+
               )
             ) : (
               <>
