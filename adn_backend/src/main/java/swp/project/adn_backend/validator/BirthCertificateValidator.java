@@ -15,7 +15,7 @@ public class BirthCertificateValidator implements ConstraintValidator<RequireBir
         if (request.getDateOfBirth() == null) return true; // skip if date is null, handled by @NotNull
         int age = Period.between(request.getDateOfBirth(), LocalDate.now()).getYears();
 
-        if (age < 14) {
+        if (age < 18) {
             return request.getBirthCertificate() != null && !request.getBirthCertificate().trim().isEmpty();
         }
 

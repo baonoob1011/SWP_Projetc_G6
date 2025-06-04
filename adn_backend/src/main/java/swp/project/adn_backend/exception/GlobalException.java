@@ -1,6 +1,5 @@
 package swp.project.adn_backend.exception;
 
-import org.hibernate.query.SemanticException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -17,6 +16,9 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalException {
+
+
+
     @ExceptionHandler(MultiFieldValidationException.class)
     public ResponseEntity<?> handleValidationException(MultiFieldValidationException ex) {
         return ResponseEntity.badRequest().body(Map.of(
@@ -25,16 +27,11 @@ public class GlobalException {
         ));
     }
 
+
+
+
     @ExceptionHandler(value = RuntimeException.class)
     ResponseEntity<APIResponse> handlingRunTimeException(RuntimeException e) {
-        APIResponse apiResponse = new APIResponse<>();
-        apiResponse.setCode(1001);
-        apiResponse.setMessage(e.getMessage());
-        return ResponseEntity.badRequest().body(apiResponse);
-    }
-
-    @ExceptionHandler(value = SemanticException.class)
-    ResponseEntity<APIResponse> handlingSemanticException(SemanticException e) {
         APIResponse apiResponse = new APIResponse<>();
         apiResponse.setCode(1001);
         apiResponse.setMessage(e.getMessage());
@@ -81,6 +78,7 @@ public class GlobalException {
         apiResponse.setMessage(errorCode.getMessage());
         return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
     }
+
 
     @ExceptionHandler(value = AccessDeniedException.class)
     ResponseEntity<APIResponse> handlingAccessDeniedException(AccessDeniedException e) {

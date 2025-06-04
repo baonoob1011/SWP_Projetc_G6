@@ -16,7 +16,7 @@ public class IdCardValidator implements ConstraintValidator<RequireIdCardIf18OrO
 
         int age = Period.between(request.getDateOfBirth(), LocalDate.now()).getYears();
 
-        if (age >= 16) {
+        if (age >= 18) {
             return request.getIdentityNumber() != null && !request.getIdentityNumber().trim().isEmpty();
         }
 

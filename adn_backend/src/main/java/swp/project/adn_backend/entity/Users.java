@@ -66,9 +66,9 @@ public class Users {
         this.lastOtpSentTime = lastOtpSentTime;
     }
 
-
+    @CreationTimestamp
     @Column(name = "create_at", updatable = false)
-    LocalDate createAt;
+    LocalDateTime createAt;
 
    String role;
 
@@ -192,11 +192,11 @@ public class Users {
     }
 
 
-    public LocalDate getCreateAt() {
+    public LocalDateTime getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(LocalDate createAt) {
+    public void setCreateAt(LocalDateTime createAt) {
         this.createAt = createAt;
     }
 
