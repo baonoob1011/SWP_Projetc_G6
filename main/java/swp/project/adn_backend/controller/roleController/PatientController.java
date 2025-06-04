@@ -1,4 +1,4 @@
-package swp.project.adn_backend.controller.role;
+package swp.project.adn_backend.controller.roleController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
