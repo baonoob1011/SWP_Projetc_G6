@@ -8,15 +8,13 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
-
 
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Data
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserDTO {
+public class UserRequest {
 
     // Full name with length limit
     @NotBlank(message = "FULLNAME_BLANK")
