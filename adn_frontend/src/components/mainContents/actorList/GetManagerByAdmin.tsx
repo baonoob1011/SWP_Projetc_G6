@@ -10,7 +10,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
 
 type Staff = {
   idCard: string;
@@ -91,10 +93,11 @@ function GetManagerByAdmin() {
   const searchByphone = account.filter((user) => user.phone.includes(search));
   return (
     <>
-      <TableContainer component={Paper} sx={{ mt: 4, marginTop: 10 }}>
+      <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
         <Typography variant="h6" sx={{ m: 2 }}>
           Danh sách quản lý
         </Typography>
+
         <TextField
           label="Nhập số điện thoại"
           variant="outlined"
@@ -102,61 +105,64 @@ function GetManagerByAdmin() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <Table>
+
+        <Table sx={{ fontSize: "13px" }}>
           <TableHead>
             <TableRow>
-              <TableCell>
-                <strong>ID</strong>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                ID
               </TableCell>
-              <TableCell>
-                <strong>Họ tên</strong>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Họ tên
               </TableCell>
-              <TableCell>
-                <strong>CCCD</strong>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                CCCD
               </TableCell>
-              <TableCell>
-                <strong>Ngày sinh</strong>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Ngày sinh
               </TableCell>
-              <TableCell>
-                <strong>Giới tính</strong>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Giới tính
               </TableCell>
-              <TableCell>
-                <strong>Email</strong>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Email
               </TableCell>
-              <TableCell>
-                <strong>Số điện thoại</strong>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                SĐT
               </TableCell>
-              <TableCell>
-                <strong>Địa chỉ</strong>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Địa chỉ
               </TableCell>
-              <TableCell>
-                <strong>Vai trò</strong>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Vai trò
               </TableCell>
-              <TableCell>
-                <strong>Ngày đăng ký</strong>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Ngày đăng ký
               </TableCell>
-              <TableCell>
-                <strong>Trạng thái</strong>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Trạng thái
               </TableCell>
-              <TableCell>
-                <strong>Thao tác</strong>
+              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+                Thao tác
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {searchByphone.map((user, index) => (
-              <TableRow key={index}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{user.fullName}</TableCell>
-                <TableCell>{user.idCard}</TableCell>
-                <TableCell>{user.dateOfBirth}</TableCell>
-                <TableCell>{user.gender}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.phone}</TableCell>
-                <TableCell>{user.address}</TableCell>
-                <TableCell>{user.role}</TableCell>
-                <TableCell>{user.createAt}</TableCell>
-                <TableCell>
+              <TableRow key={index} sx={{ fontSize: "13px" }}>
+                <TableCell sx={{ fontSize: "10px" }}>{index + 1}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.fullName}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.idCard}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>
+                  {user.dateOfBirth}
+                </TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.gender}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.email}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.phone}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.address}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.role}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>{user.createAt}</TableCell>
+                <TableCell sx={{ fontSize: "10px" }}>
                   {user.enabled ? "Đã kích hoạt" : "Chưa kích hoạt"}
                 </TableCell>
                 <TableCell>
@@ -164,9 +170,10 @@ function GetManagerByAdmin() {
                     variant="contained"
                     color="error"
                     size="small"
+                    sx={{ minWidth: 0, padding: "6px", borderRadius: "4px" }}
                     onClick={() => handleDelete(user.phone, user.fullName)}
                   >
-                    Xóa
+                    <Trash2 size={16} />
                   </Button>
                 </TableCell>
               </TableRow>
@@ -174,6 +181,16 @@ function GetManagerByAdmin() {
           </TableBody>
         </Table>
       </TableContainer>
+      <>
+        <Button
+          component={NavLink}
+          to="/signup-manager"
+          className="normal-case"
+          style={{ textDecoration: "none" }}
+        >
+          <Plus size={20} />
+        </Button>
+      </>
     </>
   );
 }

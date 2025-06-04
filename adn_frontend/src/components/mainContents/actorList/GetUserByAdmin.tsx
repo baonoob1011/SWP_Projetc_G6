@@ -95,7 +95,7 @@ function GetUserByAdmin() {
   const searchByPhone = account.filter((user) => user.phone.includes(search));
 
   return (
-    <TableContainer component={Paper} sx={{ mt: 4, marginTop: 10 }}>
+    <TableContainer component={Paper} sx={{flexGrow: 1}}>
       <Typography variant="h6" sx={{ m: 2 }}>
         Danh sách người dùng
       </Typography>
@@ -106,31 +106,31 @@ function GetUserByAdmin() {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <Table>
+      <Table sx={{ fontSize: "13px" }}>
         <TableHead>
           <TableRow>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px" }}>
               <strong>ID</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px" }}>
               <strong>Họ tên</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px" }}>
               <strong>Email</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px" }}>
               <strong>SĐT</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px" }}>
               <strong>Vai trò</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px" }}>
               <strong>Ngày đăng ký</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px" }}>
               <strong>Trạng thái</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px" }}>
               <strong>Thao tác</strong>
             </TableCell>
           </TableRow>
@@ -138,13 +138,13 @@ function GetUserByAdmin() {
         <TableBody>
           {searchByPhone.map((user, index) => (
             <TableRow key={index}>
-              <TableCell>{index + 1}</TableCell>
-              <TableCell>{user.fullName}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.phone}</TableCell>
-              <TableCell>{user.role}</TableCell>
-              <TableCell>{user.createAt}</TableCell>
-              <TableCell>
+              <TableCell sx={{ fontSize: "12px" }}>{index + 1}</TableCell>
+              <TableCell sx={{ fontSize: "12px" }}>{user.fullName}</TableCell>
+              <TableCell sx={{ fontSize: "12px" }}>{user.email}</TableCell>
+              <TableCell sx={{ fontSize: "12px" }}>{user.phone}</TableCell>
+              <TableCell sx={{ fontSize: "12px" }}>{user.role}</TableCell>
+              <TableCell sx={{ fontSize: "12px" }}>{user.createAt}</TableCell>
+              <TableCell sx={{ fontSize: "12px" }}>
                 {user.enabled ? "Đã kích hoạt" : "Chưa kích hoạt"}
               </TableCell>
               <TableCell>

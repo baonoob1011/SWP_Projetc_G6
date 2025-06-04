@@ -165,22 +165,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
             {fullName ? (
               role === "ADMIN" ? (
                 <>
-
-                  <Button sx={{
-                    backgroundColor: "#90caf9",
-                    color: "#0d47a1",
-                    textTransform: "none",
-                    fontWeight: "bold",
-                    "&:hover": {
-                      backgroundColor: "#64b5f6",
-                      maxWidth:"100%",
-                      
-                    },
-
-
-                  }} onClick={(e) => handleOpenMenu(e, "ADMIN")}>
-                    Welcome, {fullName}
-
                   <Button
                     sx={{ color: "black" }}
                     onClick={(e) => handleOpenMenu(e, "ADMIN")}
@@ -238,14 +222,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       sx={{ color: "black", "&:hover": { bgcolor: "primary.dark" } }}
                     >
                       Danh sách nhân viên
-                    </MenuItem>
-                    <MenuItem
-                      component={NavLink}
-                      to="/services"
-                      onClick={handleCloseMenu}
-                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
-                    >
-                      Dịch vụ
                     </MenuItem>
                     <MenuItem
                       onClick={() => {
