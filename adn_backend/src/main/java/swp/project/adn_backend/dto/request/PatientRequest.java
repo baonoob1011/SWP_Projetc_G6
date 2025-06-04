@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import swp.project.adn_backend.annotation.RequireBirthCertificateIfUnder18;
 import swp.project.adn_backend.annotation.RequireIdCardIf18OrOlder;
+import swp.project.adn_backend.entity.Users;
 
 
 import java.time.LocalDate;
@@ -42,6 +43,7 @@ public class PatientRequest {
     private String relationship;
 
     private String birthCertificate;
+
 
     public @NotBlank(message = "Full name is required") String getFullName() {
         return fullName;
@@ -106,6 +108,9 @@ public class PatientRequest {
     public void setRelationship(@NotBlank(message = "Relationship is required") String relationship) {
         this.relationship = relationship;
     }
+
+
+
 
     public String getBirthCertificate() {
         return birthCertificate;

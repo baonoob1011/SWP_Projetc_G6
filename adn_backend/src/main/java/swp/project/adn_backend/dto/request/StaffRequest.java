@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import swp.project.adn_backend.entity.Users;
+import swp.project.adn_backend.enums.Roles;
+
 import java.time.LocalDate;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -41,7 +43,6 @@ public class StaffRequest {
     @NotBlank(message = "CONFIRM_PASSWORD_BLANK")
     String confirmPassword;
 
-    String role;
 
     @NotBlank(message = "Gender is required")
     String gender;
@@ -58,16 +59,6 @@ public class StaffRequest {
     private LocalDate dateOfBirth;
 
     LocalDate createAt;
-
-    Users users;
-
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
-    }
 
     public @NotBlank(message = "FULLNAME_BLANK") String getFullName() {
         return fullName;
@@ -131,13 +122,7 @@ public class StaffRequest {
         this.confirmPassword = confirmPassword;
     }
 
-    public String getRole() {
-        return role;
-    }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
 
     public @NotBlank(message = "Gender is required") String getGender() {
         return gender;

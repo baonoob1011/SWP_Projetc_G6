@@ -21,7 +21,6 @@ public class ApplicationInitConfig {
         return args -> {
             if (userRepository.findByUsername("adminAccount").isEmpty()) {
 
-
                 // Tạo user mới
                 Users users = new Users();
                 users.setUsername("adminAccount");
@@ -30,8 +29,6 @@ public class ApplicationInitConfig {
                 users.setEmail("trandinhbao222@gmail.com");
                 users.setRole("ADMIN");
                 users.setPhone("0357594189");
-
-
 
                 userRepository.save(users);
             }

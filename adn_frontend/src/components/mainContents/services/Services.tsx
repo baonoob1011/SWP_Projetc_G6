@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import styles from "./Services.module.css";
 
 
 
@@ -20,7 +21,7 @@ const Services = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    setIsAdmin(localStorage.getItem("role") === "ADMIN");
+    setIsAdmin(localStorage.getItem("role") === "MANAGER");
   }, []);
 
   const handleInput = (
@@ -80,6 +81,9 @@ const Services = () => {
       setForm({ serviceName: "", description: "", serviceType: "" });
       setFile(null);
       setPreview("");
+      if (fileRef.current) {
+        fileRef.current.value = "";
+      }
     } else {
       alert("Lỗi: " + (await res.text()));
     }
@@ -88,93 +92,95 @@ const Services = () => {
   if (!isAdmin) return null;
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ maxWidth: 500, margin: "50px auto", padding: 20 }}
-    >
-      <input
-        name="serviceName"
-        value={form.serviceName}
-        onChange={handleInput}
-        placeholder="Tên dịch vụ"
-        style={{ width: "100%", padding: 8, marginBottom: 10 }}
-      />
+    <form onSubmit={handleSubmit} className={styles.form}>
+      <div className={styles.formGroup}>
+        <label className={styles.label}>Tên dịch vụ</label>
+        <input
+          name="serviceName"
+          value={form.serviceName}
+          onChange={handleInput}
+          placeholder="Nhập tên dịch vụ"
+          className={styles.input}
+          required
+        />
+      </div>
 
-      <select
-        name="serviceType"
-        value={form.serviceType}
-        onChange={handleInput}
-        style={{ width: "100%", padding: 8, marginBottom: 10 }}
-      >
-        <option value="">-- Chọn loại dịch vụ --</option>
-        <option value="ADMINISTRATIVE">Hành Chính</option>
-        <option value="CIVIL">Dân sự</option>
-      </select>
+      <div className={styles.formGroup}>
+        <label className={styles.label}>Loại dịch vụ</label>
+        <select
+          name="serviceType"
+          value={form.serviceType}
+          onChange={handleInput}
+          className={styles.select}
+          required
+        >
+          <option value="">-- Chọn loại dịch vụ --</option>
+          <option value="ADMINISTRATIVE">Hành Chính</option>
+          <option value="CIVIL">Dân sự</option>
+        </select>
+      </div>
 
-      <select
-        name="description"
-        value={form.description}
-        onChange={handleInput}
-        disabled={!getOptions().length}
-        style={{ width: "100%", padding: 8, marginBottom: 10 }}
-      >
-        <option value="">-- Chọn hình thức --</option>
-        {getOptions().map((opt) => (
-          <option key={opt} value={opt}>
-            {opt}
-          </option>
-        ))}
-      </select>
+      <div className={styles.formGroup}>
+        <label className={styles.label}>Hình thức</label>
+        <select
+          name="description"
+          value={form.description}
+          onChange={handleInput}
+          disabled={!getOptions().length}
+          className={styles.select}
+          required
+        >
+          <option value="">-- Chọn hình thức --</option>
+          {getOptions().map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      <button
-        type="button"
-        onClick={() => fileRef.current?.click()}
-        style={{
-          padding: 10,
-          backgroundColor: "#007bff",
-          color: "white",
-          border: "none",
-          borderRadius: 4,
-        }}
-      >
-        Chọn ảnh
-      </button>
+      <div className={styles.formGroup}>
+        <label className={styles.label}>Hình ảnh</label>
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          className={styles.fileButton}
+        >
+          <svg className={styles.fileIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Chọn ảnh
+        </button>
 
-      <input
-        ref={fileRef}
-        type="file"
-        accept="image/*"
-        style={{ display: "none" }}
-        onChange={handleFile}
-      />
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          className={styles.fileInput}
+          onChange={handleFile}
+        />
 
-      <input
-        type="text"
-        readOnly
-        value={preview}
-        placeholder="URL ảnh"
-        style={{ width: "100%", padding: 8, marginTop: 10 }}
-      />
+        <input
+          type="text"
+          readOnly
+          value={file ? file.name : ""}
+          placeholder="Chưa chọn file"
+          className={styles.urlInput}
+        />
+      </div>
 
       {preview && (
         <img
           src={preview}
           alt="preview"
-          style={{ width: "100%", marginTop: 10, borderRadius: 8 }}
+          className={styles.previewImage}
         />
       )}
 
       <button
         type="submit"
-        style={{
-          width: "100%",
-          marginTop: 15,
-          padding: 10,
-          backgroundColor: "green",
-          color: "white",
-          border: "none",
-          borderRadius: 4,
-        }}
+        className={styles.submitButton}
+        disabled={!form.serviceName || !form.serviceType || !form.description || !file}
       >
         Gửi đăng ký
       </button>

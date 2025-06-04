@@ -29,6 +29,15 @@ type Staff = {
   dateOfBirth: string;
 };
 
+type ErrorResponse = {
+  message: string;
+  errors?: {
+    username?: string;
+    email?: string;
+    phone?: string;
+  };
+};
+
 const SignUpStaff = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [staff, setStaff] = useState<Staff>({
@@ -51,7 +60,7 @@ const SignUpStaff = () => {
   });
 
   useEffect(() => {
-    setIsAdmin(localStorage.getItem("role") === "ADMIN");
+    setIsAdmin(localStorage.getItem("role") === "MANAGER");
   }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -131,6 +140,37 @@ const SignUpStaff = () => {
       console.log("Response status:", response.status);
 
       if (!response.ok) {
+        const errorData: ErrorResponse = await response.json();
+
+        // Nếu server trả về lỗi từng field
+        if (errorData.errors) {
+          const newServerErrors: { [key: string]: string } = {};
+          
+          // Xử lý tất cả các lỗi cùng lúc thay vì dừng ở lỗi đầu tiên
+          if (errorData.errors.username) {
+            newServerErrors.username = "Tên đăng nhập đã tồn tại";
+          }
+          if (errorData.errors.email) {
+            newServerErrors.email = "Email đã tồn tại";
+          }
+          if (errorData.errors.phone) {
+            newServerErrors.phone = "Số điện thoại đã tồn tại";
+          }
+
+          // Hiển thị tất cả lỗi lên các field cùng lúc
+          setError((prev) => ({ ...prev, ...newServerErrors }));
+          
+          // Không return ở đây để tránh dừng xử lý
+          // return; // <- Xóa dòng này
+        } else {
+          // Nếu không phải lỗi cụ thể
+          setSnackbar({
+            open: true,
+            message: errorData.message || "Đã xảy ra lỗi",
+            severity: "error",
+          });
+        }
+
         let errorMessage = "Tên đăng nhập hoặc email đã tồn tại";
 
         // Kiểm tra các lỗi cụ thể
@@ -284,13 +324,6 @@ const SignUpStaff = () => {
             error={!!error.confirmPassword}
             helperText={error.confirmPassword}
           />
-
-          <Typography
-            variant="subtitle1"
-            sx={{ mt: 2, mb: 1, textAlign: "left" }}
-          >
-            Giới tính:
-          </Typography>
           <RadioGroup
             row
             name="gender"

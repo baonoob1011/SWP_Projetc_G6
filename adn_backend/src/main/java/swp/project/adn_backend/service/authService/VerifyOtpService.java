@@ -1,4 +1,4 @@
-package swp.project.adn_backend.service;
+package swp.project.adn_backend.service.authService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,8 +6,6 @@ import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class VerifyOtpService {

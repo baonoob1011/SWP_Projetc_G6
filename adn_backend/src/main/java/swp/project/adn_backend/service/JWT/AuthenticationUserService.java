@@ -1,9 +1,6 @@
-package swp.project.adn_backend.token;
+package swp.project.adn_backend.service.JWT;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSVerifier;
+import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -11,48 +8,54 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.configuration.UserPrincipal;
 import swp.project.adn_backend.dto.request.IntrospectRequest;
 import swp.project.adn_backend.dto.request.LoginDTO;
 import swp.project.adn_backend.dto.response.AuthenticationResponse;
 import swp.project.adn_backend.dto.response.IntrospectResponse;
-import swp.project.adn_backend.entity.Manager;
-import swp.project.adn_backend.entity.Staff;
+import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
-import swp.project.adn_backend.repository.ManagerRepository;
-import swp.project.adn_backend.repository.StaffRepository;
+import swp.project.adn_backend.repository.UserRepository;
 
 import java.text.ParseException;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationManagerService {
+public class AuthenticationUserService {
+
     protected static final String SIGNER_KEY =
             "g2n1atsr9e9KvFKy2RePQ/rPREVb3/2+Hcjt7Mb1/PtlOUhBpASAwrVILClWabHI";
 
     @Autowired
-    ManagerRepository managerRepository;
+    UserRepository userRepository;
 
-
-    public AuthenticationResponse authenticateManager(LoginDTO loginDTO) {
-        var manager = managerRepository.findByUsername(loginDTO.getUsername())
+    public AuthenticationResponse authenticateUser(LoginDTO loginDTO) {
+        var user = userRepository.findByUsername(loginDTO.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        boolean authenticated = passwordEncoder.matches(loginDTO.getPassword(), manager.getPassword());
-        if (!authenticated) {
+        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
             throw new AppException(ErrorCodeUser.UNAUTHENTICATED);
         }
 
-        var token = generateToken(manager);
+        // Generate JWT
+        String token = generateToken(user);
+
+        // Set Authentication into SecurityContext
+        UserPrincipal userPrincipal = new UserPrincipal(user);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userPrincipal, null, userPrincipal.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return AuthenticationResponse.builder()
                 .token(token)
@@ -75,25 +78,18 @@ public class AuthenticationManagerService {
                 .build();
     }
 
-    private String generateToken(Manager manager) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
+    private String generateToken(Users users) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
-
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(manager.getUsername())
+                .subject(users.getUsername())
                 .issuer("baotd.com")
                 .issueTime(new Date())
                 .expirationTime(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
-                .claim("role", manager.getRole())
-                .claim("fullName", manager.getFullName())
-                .claim("phone", manager.getPhone())
-                .claim("email", manager.getEmail())
-                .claim("id", manager.getManagerId())
-                .claim("address", manager.getAddress())
-                .claim("dateOfBirth", manager.getDateOfBirth() != null ? manager.getDateOfBirth().format(formatter) : null)
-                .claim("gender", manager.getGender())
-                .claim("idCard", manager.getIdCard())
+                .claim("role", users.getRole())
+                .claim("fullName", users.getFullName())
+                .claim("phone", users.getPhone())
+                .claim("email", users.getEmail())
+                .claim("id", users.getUserId())
                 .build();
 
         SignedJWT signedJWT = new SignedJWT(header, jwtClaimsSet);
@@ -104,7 +100,4 @@ public class AuthenticationManagerService {
             throw new RuntimeException(e);
         }
     }
-
-
-
 }

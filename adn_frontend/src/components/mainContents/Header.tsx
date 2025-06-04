@@ -17,6 +17,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../image/Logo.png";
+import { ArrowDropDown } from "@mui/icons-material";
 
 type HeaderProps = {
   fullName: string;
@@ -61,6 +62,8 @@ export function Header({ fullName, setFullName }: HeaderProps) {
       localStorage.removeItem("fullName");
       localStorage.removeItem("role");
       setFullName("");
+
+      navigate("/login");
       window.location.href = "/login";
     } catch (error) {
       console.error("Logout API error:", error);
@@ -78,7 +81,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
     },
     { label: "Tin tức", path: "/blog" },
     { label: "Đặt lịch", path: "/order" },
-    { label: "Chi nhánh", path: "/map" },
+    { label: "Chi nhánh", path: "/branch" },
   ];
 
   return (
@@ -92,7 +95,11 @@ export function Header({ fullName, setFullName }: HeaderProps) {
             sx={{ textDecoration: "none", color: "inherit" }}
           >
             <Box sx={{ width: 40, mr: 2 }}>
-              <img src={logo} alt="Logo" style={{ width: "100%", objectFit: "contain" }} />
+              <img
+                src={logo}
+                alt="Logo"
+                style={{ width: "100%", objectFit: "contain" }}
+              />
             </Box>
           </Typography>
 
@@ -130,7 +137,10 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         component={NavLink}
                         to={child.path}
                         onClick={handleCloseMenu}
-                        sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                        sx={{
+                          color: "white",
+                          "&:hover": { bgcolor: "primary.dark" },
+                        }}
                       >
                         {child.label}
                       </MenuItem>
@@ -155,6 +165,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
             {fullName ? (
               role === "ADMIN" ? (
                 <>
+
                   <Button sx={{
                     backgroundColor: "#90caf9",
                     color: "#0d47a1",
@@ -169,6 +180,12 @@ export function Header({ fullName, setFullName }: HeaderProps) {
 
                   }} onClick={(e) => handleOpenMenu(e, "ADMIN")}>
                     Welcome, {fullName}
+
+                  <Button
+                    sx={{ color: "white" }}
+                    onClick={(e) => handleOpenMenu(e, "ADMIN")}
+                  >
+                    {fullName}
                   </Button>
                   <Menu
                     anchorEl={anchorEl}
@@ -191,17 +208,36 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       component={NavLink}
                       to="/signup-manager"
                       onClick={handleCloseMenu}
-                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                      sx={{
+                        color: "white",
+                        "&:hover": { bgcolor: "primary.dark" },
+                      }}
                     >
-                      Thông tin quản lý
+                      Đăng ký thông tin quản lý
                     </MenuItem>
                     <MenuItem
                       component={NavLink}
-                      to="/signup-staff"
+                      to="/userData"
                       onClick={handleCloseMenu}
                       sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
                     >
-                      Thông tin nhân viên
+                      Danh sách người dùng
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/managerData"
+                      onClick={handleCloseMenu}
+                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                    >
+                      Danh sách quản lý
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/staffData"
+                      onClick={handleCloseMenu}
+                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                    >
+                      Danh sách nhân viên
                     </MenuItem>
                     <MenuItem
                       component={NavLink}
@@ -216,7 +252,144 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         handleCloseMenu();
                         handleLogout();
                       }}
-                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                      sx={{
+                        color: "white",
+                        "&:hover": { bgcolor: "primary.dark" },
+                      }}
+                    >
+                      Đăng xuất
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : role === "MANAGER" ? (
+                <>
+                  <Button
+                    sx={{ color: "white" }}
+                    onClick={(e) => handleOpenMenu(e, "MANAGER")}
+                    endIcon={<ArrowDropDown />}
+                  >
+                    {fullName}
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={menuOpen === "MANAGER"}
+                    onClose={handleCloseMenu}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
+                    PaperProps={{
+                      elevation: 0,
+                      sx: {
+                        bgcolor: "primary.main",
+                        color: "white",
+                        mt: 0,
+                        boxShadow: "none",
+                        "& .MuiMenu-list": { paddingY: 0 },
+                      },
+                    }}
+                  >
+                    <MenuItem
+                      component={NavLink}
+                      to="/signup-Staff"
+                      onClick={handleCloseMenu}
+                      sx={{
+                        color: "white",
+                        "&:hover": { bgcolor: "primary.dark" },
+                      }}
+                    >
+                      Đăng ký thông tin nhân viên
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/m-userData"
+                      onClick={handleCloseMenu}
+                      sx={{
+                        color: "white",
+                        "&:hover": { bgcolor: "primary.dark" },
+                      }}
+                    >
+                      Danh sách người dùng
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/m-staffData"
+                      onClick={handleCloseMenu}
+                      sx={{
+                        color: "white",
+                        "&:hover": { bgcolor: "primary.dark" },
+                      }}
+                    >
+                      Danh sách nhân viên
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/create-services"
+                      onClick={handleCloseMenu}
+                      sx={{
+                        color: "white",
+                        "&:hover": { bgcolor: "primary.dark" },
+                      }}
+                    >
+                      Tạo dịch vụ
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleCloseMenu();
+                        handleLogout();
+                      }}
+                      sx={{
+                        color: "white",
+                        "&:hover": { bgcolor: "primary.dark" },
+                      }}
+                    >
+                      Đăng xuất
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : role === "STAFF" ? (
+                <>
+                  <Button
+                    sx={{ color: "white" }}
+                    onClick={(e) => handleOpenMenu(e, "STAFF")}
+                  >
+                    {fullName}
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={menuOpen === "STAFF"}
+                    onClose={handleCloseMenu}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
+                    PaperProps={{
+                      elevation: 0,
+                      sx: {
+                        bgcolor: "primary.main",
+                        color: "white",
+                        mt: 0,
+                        boxShadow: "none",
+                        "& .MuiMenu-list": { paddingY: 0 },
+                      },
+                    }}
+                  >
+                    <MenuItem
+                      component={NavLink}
+                      to="/signup-manager"
+                      onClick={handleCloseMenu}
+                      sx={{
+                        color: "white",
+                        "&:hover": { bgcolor: "primary.dark" },
+                      }}
+                    >
+                      Đăng ký thông tin quản lý
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleCloseMenu();
+                        handleLogout();
+                      }}
+                      sx={{
+                        color: "white",
+                        "&:hover": { bgcolor: "primary.dark" },
+                      }}
                     >
                       Đăng xuất
                     </MenuItem>
@@ -224,6 +397,14 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                 </>
               ) : (
                 <>
+
+                  <Typography variant="body2" sx={{ color: "white" }}>
+                    {fullName}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "white" }}>
+                    |
+                  </Typography>
+
                   <Button
                     sx={{
                       backgroundColor: "#90caf9",

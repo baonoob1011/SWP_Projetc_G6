@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
+import swp.project.adn_backend.enums.Roles;
 
 
 import java.time.LocalDate;
@@ -43,6 +44,7 @@ public class Staff {
 
     @Column(name = "day_of_birth")
     LocalDate dateOfBirth;
+
 
 
     @Column(name = "create_at")

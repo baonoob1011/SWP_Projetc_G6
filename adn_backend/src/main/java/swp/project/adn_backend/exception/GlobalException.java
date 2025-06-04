@@ -5,17 +5,41 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import swp.project.adn_backend.dto.response.APIResponse;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 
 import java.nio.file.AccessDeniedException;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalException {
+
+
+
+    @ExceptionHandler(MultiFieldValidationException.class)
+    public ResponseEntity<?> handleValidationException(MultiFieldValidationException ex) {
+        return ResponseEntity.badRequest().body(Map.of(
+                "message", "Validation Failed",
+                "errors", ex.getErrors()
+        ));
+    }
+
+
+
+
     @ExceptionHandler(value = RuntimeException.class)
     ResponseEntity<APIResponse> handlingRunTimeException(RuntimeException e) {
+        APIResponse apiResponse = new APIResponse<>();
+        apiResponse.setCode(1001);
+        apiResponse.setMessage(e.getMessage());
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    @ExceptionHandler(value = MissingServletRequestParameterException.class)
+    ResponseEntity<APIResponse> handlingMissingServletRequestParameterException(MissingServletRequestParameterException e) {
         APIResponse apiResponse = new APIResponse<>();
         apiResponse.setCode(1001);
         apiResponse.setMessage(e.getMessage());
