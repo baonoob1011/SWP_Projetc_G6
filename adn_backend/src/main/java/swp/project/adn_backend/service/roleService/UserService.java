@@ -1,4 +1,4 @@
-package swp.project.adn_backend.service;
+package swp.project.adn_backend.service.roleService;
 
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -9,14 +9,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.request.ManagerRequest;
+import swp.project.adn_backend.dto.request.StaffRequest;
 import swp.project.adn_backend.dto.request.UserDTO;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.enums.Roles;
 import swp.project.adn_backend.exception.AppException;
+import swp.project.adn_backend.exception.MultiFieldValidationException;
 import swp.project.adn_backend.mapper.UserMapper;
 import swp.project.adn_backend.repository.UserRepository;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Service
@@ -32,6 +37,7 @@ public class UserService {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+
     }
 
     // Đăng ký User
@@ -41,12 +47,30 @@ public class UserService {
         Users users = userMapper.toUser(userDTO);
         users.setRole("USER");
         users.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-
-
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
+    }
 
+    public Users registerStaffAccount(StaffRequest staffRequest) {
 
+        validateStaff(staffRequest);
+        // Tạo user từ DTO và mã hóa mật khẩu
+        Users users = userMapper.toStaff(staffRequest);
+        users.setRole("STAFF");
+        users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
+        // Lưu lại để cascade lưu role
+        return userRepository.save(users);
+    }
+
+    public Users registerManagerAccount(ManagerRequest managerRequest) {
+        validateManager(managerRequest);
+        // Tạo user từ DTO và mã hóa mật khẩu
+        Users users = userMapper.toManager(managerRequest);
+        users.setRole("MANAGER");
+        users.setPassword(passwordEncoder.encode(managerRequest.getPassword()));
+        // Lưu lại để cascade lưu role
+        System.out.println(users);
+        return userRepository.save(users);
     }
 
     // Cập nhật User
@@ -77,7 +101,6 @@ public class UserService {
         }
 
 
-
         Users updatedUser = userMapper.toUser(userDTO);
         updatedUser.setUserId(existingUser.getUserId());
         updatedUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -96,21 +119,78 @@ public class UserService {
     }
 
     private void validateUser(UserDTO userDTO) {
+        Map<String, String> errors = new HashMap<>();
+
         if (userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new AppException(ErrorCodeUser.USER_EXISTED);
+            errors.put("username", "USER_EXISTED");
         }
 
         if (userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
+            errors.put("email", "EMAIL_EXISTED");
         }
 
         if (userRepository.existsByPhone(userDTO.getPhone())) {
-            throw new AppException(ErrorCodeUser.PHONE_EXISTED);
+            errors.put("phone", "PHONE_EXISTED");
         }
 
         if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
-            throw new AppException(ErrorCodeUser.CONFIRM_PASSWORD_NOT_MATCHING);
+            errors.put("confirmPassword", "CONFIRM_PASSWORD_NOT_MATCHING");
+        }
+
+        if (!errors.isEmpty()) {
+            throw new MultiFieldValidationException(errors);
         }
     }
+
+    private void validateStaff(StaffRequest staffRequest) {
+        Map<String, String> errors = new HashMap<>();
+
+        if (userRepository.existsByUsername(staffRequest.getUsername())) {
+            errors.put("username", "USER_EXISTED");
+        }
+
+        if (userRepository.existsByEmail(staffRequest.getEmail())) {
+            errors.put("email", "EMAIL_EXISTED");
+        }
+
+        if (userRepository.existsByPhone(staffRequest.getPhone())) {
+            errors.put("phone", "PHONE_EXISTED");
+        }
+
+        if (!staffRequest.getPassword().equals(staffRequest.getConfirmPassword())) {
+            errors.put("confirmPassword", "CONFIRM_PASSWORD_NOT_MATCHING");
+        }
+
+        if (!errors.isEmpty()) {
+            throw new MultiFieldValidationException(errors);
+        }
+    }
+
+    private void validateManager(ManagerRequest managerRequest) {
+        Map<String, String> errors = new HashMap<>();
+
+        if (userRepository.existsByUsername(managerRequest.getUsername())) {
+            errors.put("username", "USER_EXISTED");
+        }
+
+        if (userRepository.existsByEmail(managerRequest.getEmail())) {
+            errors.put("email", "EMAIL_EXISTED");
+        }
+
+        if (userRepository.existsByPhone(managerRequest.getPhone())) {
+            errors.put("phone", "PHONE_EXISTED");
+        }
+
+        if (!managerRequest.getPassword().equals(managerRequest.getConfirmPassword())) {
+            errors.put("confirmPassword", "CONFIRM_PASSWORD_NOT_MATCHING");
+        }
+
+        if (!errors.isEmpty()) {
+            throw new MultiFieldValidationException(errors);
+        }
+    }
+
+
+
 
 }

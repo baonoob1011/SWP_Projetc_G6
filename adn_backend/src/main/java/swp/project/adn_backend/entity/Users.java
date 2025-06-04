@@ -5,11 +5,14 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
+import swp.project.adn_backend.enums.Roles;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,6 +24,16 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     long userId;
+
+    @Column(name = "id_card")
+    String idCard;
+
+    @Column(columnDefinition = "NVARCHAR(10)")
+    String gender;
+    @Column(columnDefinition = "nvarchar(255)")
+    String address;
+    @Column(name = "day_of_birth")
+    LocalDate dateOfBirth;
 
     @Column(name = "full_name", columnDefinition = "nvarchar(255)")
     String fullName;
@@ -57,7 +70,15 @@ public class Users {
     @Column(name = "create_at", updatable = false)
     LocalDateTime createAt;
 
-    String role;
+   String role;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Patient> patients;
@@ -73,6 +94,46 @@ public class Users {
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Staff> staff;
+
+    public String getIdCard() {
+        return idCard;
+    }
+
+    public void setIdCard(String idCard) {
+        this.idCard = idCard;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public List<Staff> getStaff() {
+        return staff;
+    }
+
+    public void setStaff(List<Staff> staff) {
+        this.staff = staff;
+    }
 
     public long getUserId() {
         return userId;
@@ -130,13 +191,6 @@ public class Users {
         this.enabled = enabled;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 
     public LocalDateTime getCreateAt() {
         return createAt;

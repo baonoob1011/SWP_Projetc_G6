@@ -36,7 +36,7 @@ public class Appointment {
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
+            CascadeType.DETACH, CascadeType.REFRESH,
     })
     @JoinColumn(name = "user_id", nullable = false)
     Users users;
