@@ -2,16 +2,23 @@ package swp.project.adn_backend.service.JWT;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.configuration.UserPrincipal;
+import swp.project.adn_backend.dto.request.IntrospectRequest;
 import swp.project.adn_backend.dto.request.LoginDTO;
 import swp.project.adn_backend.dto.response.AuthenticationResponse;
+import swp.project.adn_backend.dto.response.IntrospectResponse;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
@@ -44,11 +51,11 @@ public class AuthenticationUserService {
         // Generate JWT
         String token = generateToken(user);
 
-//        // Set Authentication into SecurityContext
-//        UserPrincipal userPrincipal = new UserPrincipal(user);
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(
-//                userPrincipal, null, userPrincipal.getAuthorities());
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Set Authentication into SecurityContext
+        UserPrincipal userPrincipal = new UserPrincipal(user);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userPrincipal, null, userPrincipal.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return AuthenticationResponse.builder()
                 .token(token)
@@ -56,6 +63,20 @@ public class AuthenticationUserService {
                 .build();
     }
 
+    public IntrospectResponse introspect(IntrospectRequest request)
+            throws ParseException, JOSEException {
+
+        var token = request.getToken();
+        JWSVerifier jwsVerifier = new MACVerifier(SIGNER_KEY.getBytes());
+        SignedJWT signedJWT = SignedJWT.parse(token);
+
+        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        boolean verify = signedJWT.verify(jwsVerifier);
+
+        return IntrospectResponse.builder()
+                .valid(verify && expiryTime.after(new Date()))
+                .build();
+    }
 
     private String generateToken(Users users) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);

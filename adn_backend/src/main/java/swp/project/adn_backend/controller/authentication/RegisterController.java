@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import swp.project.adn_backend.dto.request.ManagerRequest;
 import swp.project.adn_backend.dto.request.StaffRequest;
-import swp.project.adn_backend.dto.request.UserRequest;
+import swp.project.adn_backend.dto.request.UserDTO;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.service.roleService.UserService;
 
@@ -32,7 +32,7 @@ public class RegisterController {
 
     @PostMapping("/user-account")
     public ResponseEntity<?> registerUserAccount(
-            @RequestBody @Valid UserRequest userDTO,
+            @RequestBody @Valid UserDTO userDTO,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {

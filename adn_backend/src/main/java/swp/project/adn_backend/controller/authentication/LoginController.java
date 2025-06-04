@@ -33,12 +33,27 @@ public class LoginController {
     @PostMapping("/token")
     public APIResponse<AuthenticationResponse> authenticateUser(@Valid @RequestBody LoginDTO loginDTO) {
         AuthenticationResponse result = authenticationUserService.authenticateUser(loginDTO);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null) {
+            logger.info("User '{}' logged in with roles: {}",
+                    authentication.getName(),
+                    authentication.getAuthorities());
+        } else {
+            logger.warn("Authentication is null after login for '{}'", loginDTO.getUsername());
+        }
+
         return APIResponse.<AuthenticationResponse>builder()
                 .code(200)
                 .message("Login successful")
                 .result(result)
                 .build();
     }
+
+
+
+
 
 //    @PostMapping("/introspect")
 //    public APIResponse<IntrospectResponse> authenticate(@Valid @RequestBody IntrospectRequest request) throws ParseException, JOSEException {

@@ -1,4 +1,4 @@
-package swp.project.adn_backend.controller.roleController;
+package swp.project.adn_backend.controller.role;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import swp.project.adn_backend.dto.request.UserRequest;
+import swp.project.adn_backend.dto.request.UserDTO;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.service.roleService.UserService;
 
@@ -18,7 +18,7 @@ public class UserController {
     UserService userService;
 
     @PutMapping("/update-user")
-    public ResponseEntity<Users> updateUser(Authentication authentication, UserRequest userDTO) {
+    public ResponseEntity<Users> updateUser(Authentication authentication, UserDTO userDTO) {
         return ResponseEntity.ok(userService.updateUser(authentication, userDTO));
     }
 

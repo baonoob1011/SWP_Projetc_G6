@@ -1,7 +1,5 @@
 package swp.project.adn_backend.service.roleService;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,12 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
-import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.ManagerRequest;
+import swp.project.adn_backend.dto.request.StaffRequest;
 import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.enums.Roles;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.exception.MultiFieldValidationException;
 import swp.project.adn_backend.mapper.UserMapper;
@@ -45,16 +43,14 @@ public class ManagerService {
     StaffRepository staffRepository;
     PasswordEncoder passwordEncoder;
     UserMapper userMapper;
-    EntityManager entityManager;
 
     @Autowired
-    public ManagerService(UserRepository userRepository, ManagerRepository managerRepository, StaffRepository staffRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, EntityManager entityManager) {
+    public ManagerService(UserRepository userRepository, ManagerRepository managerRepository, StaffRepository staffRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.managerRepository = managerRepository;
         this.staffRepository = staffRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
-        this.entityManager = entityManager;
     }
 
     public Users findUserByPhone(String phone) {
@@ -63,23 +59,12 @@ public class ManagerService {
         return users;
     }
 
-    public List<UserInfoDTO> getAllUser() {
-        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.UserInfoDTO(" +
-                "u.fullName, u.phone, u.email, u.enabled, u.createAt, u.role) " +
-                "FROM Users u WHERE u.role = :input";
-        TypedQuery<UserInfoDTO> query = entityManager.createQuery(jpql, UserInfoDTO.class);
-        query.setParameter("input", "USER");
-        return query.getResultList();
+    public List<Users> getAllUser() {
+        return userRepository.findAll();
     }
 
-
-    public List<StaffInfoDTO> getAllStaff() {
-        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO(" +
-                "u.fullName, u.phone, u.email, u.enabled, u.createAt, u.role, u.idCard, u.gender, u.address, u.dateOfBirth) " +
-                "FROM Users u WHERE u.role = :input";
-        TypedQuery<StaffInfoDTO> query = entityManager.createQuery(jpql, StaffInfoDTO.class);
-        query.setParameter("input", "STAFF");
-        return query.getResultList();
+    public List<Staff> getAllStaff() {
+        return staffRepository.findAll();
     }
 
     @Transactional
