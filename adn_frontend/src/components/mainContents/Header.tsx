@@ -86,7 +86,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
 
   return (
     <>
-      <AppBar position="fixed" sx={{ backgroundColor: "#206696" }}>
+      <AppBar position="fixed" sx={{ backgroundColor: "#4A90E2" }}>
         <Toolbar sx={{ justifyContent: "space-between", minHeight: 64 }}>
           <Typography
             variant="h6"
@@ -109,7 +109,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               item.children ? (
                 <Box key={item.label} sx={{ position: "relative" }}>
                   <Button
-                    sx={{ color: "white" }}
+                    sx={{ color: "black" }}
                     onClick={(e) => handleOpenMenu(e, item.label)}
                   >
                     {item.label}
@@ -124,7 +124,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       elevation: 0,
                       sx: {
                         bgcolor: "primary.main",
-                        color: "white",
+                        color: "black",
                         mt: 0,
                         boxShadow: "none",
                         "& .MuiMenu-list": { paddingY: 0 },
@@ -138,7 +138,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         to={child.path}
                         onClick={handleCloseMenu}
                         sx={{
-                          color: "white",
+                          color: "black",
                           "&:hover": { bgcolor: "primary.dark" },
                         }}
                       >
@@ -152,7 +152,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   key={item.label}
                   component={NavLink}
                   to={item.path}
-                  sx={{ color: "white" }}
+                  sx={{ color: "black" }}
                 >
                   {item.label}
                 </Button>
@@ -182,7 +182,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     Welcome, {fullName}
 
                   <Button
-                    sx={{ color: "white" }}
+                    sx={{ color: "black" }}
                     onClick={(e) => handleOpenMenu(e, "ADMIN")}
                   >
                     {fullName}
@@ -197,7 +197,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       elevation: 0,
                       sx: {
                         bgcolor: "primary.main",
-                        color: "white",
+                        color: "black",
                         mt: 0,
                         boxShadow: "none",
                         "& .MuiMenu-list": { paddingY: 0 },
@@ -209,7 +209,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       to="/signup-manager"
                       onClick={handleCloseMenu}
                       sx={{
-                        color: "white",
+                        color: "black",
                         "&:hover": { bgcolor: "primary.dark" },
                       }}
                     >
@@ -219,7 +219,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       component={NavLink}
                       to="/userData"
                       onClick={handleCloseMenu}
-                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                      sx={{ color: "black", "&:hover": { bgcolor: "primary.dark" } }}
                     >
                       Danh sách người dùng
                     </MenuItem>
@@ -227,7 +227,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       component={NavLink}
                       to="/managerData"
                       onClick={handleCloseMenu}
-                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                      sx={{ color: "black", "&:hover": { bgcolor: "primary.dark" } }}
                     >
                       Danh sách quản lý
                     </MenuItem>
@@ -235,7 +235,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       component={NavLink}
                       to="/staffData"
                       onClick={handleCloseMenu}
-                      sx={{ color: "white", "&:hover": { bgcolor: "primary.dark" } }}
+                      sx={{ color: "black", "&:hover": { bgcolor: "primary.dark" } }}
                     >
                       Danh sách nhân viên
                     </MenuItem>
@@ -253,7 +253,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         handleLogout();
                       }}
                       sx={{
-                        color: "white",
+                        color: "black",
                         "&:hover": { bgcolor: "primary.dark" },
                       }}
                     >
@@ -264,7 +264,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               ) : role === "MANAGER" ? (
                 <>
                   <Button
-                    sx={{ color: "white" }}
+                    sx={{ color: "black" }}
                     onClick={(e) => handleOpenMenu(e, "MANAGER")}
                     endIcon={<ArrowDropDown />}
                   >
@@ -280,7 +280,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       elevation: 0,
                       sx: {
                         bgcolor: "primary.main",
-                        color: "white",
+                        color: "black",
                         mt: 0,
                         boxShadow: "none",
                         "& .MuiMenu-list": { paddingY: 0 },
@@ -292,7 +292,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       to="/signup-Staff"
                       onClick={handleCloseMenu}
                       sx={{
-                        color: "white",
+                        color: "black",
                         "&:hover": { bgcolor: "primary.dark" },
                       }}
                     >
@@ -303,7 +303,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       to="/m-userData"
                       onClick={handleCloseMenu}
                       sx={{
-                        color: "white",
+                        color: "black",
                         "&:hover": { bgcolor: "primary.dark" },
                       }}
                     >
@@ -314,7 +314,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       to="/m-staffData"
                       onClick={handleCloseMenu}
                       sx={{
-                        color: "white",
+                        color: "black",
                         "&:hover": { bgcolor: "primary.dark" },
                       }}
                     >
@@ -325,7 +325,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       to="/create-services"
                       onClick={handleCloseMenu}
                       sx={{
-                        color: "white",
+                        color: "black",
                         "&:hover": { bgcolor: "primary.dark" },
                       }}
                     >
@@ -337,7 +337,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         handleLogout();
                       }}
                       sx={{
-                        color: "white",
+                        color: "black",
                         "&:hover": { bgcolor: "primary.dark" },
                       }}
                     >
@@ -348,7 +348,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               ) : role === "STAFF" ? (
                 <>
                   <Button
-                    sx={{ color: "white" }}
+                    sx={{ color: "black" }}
                     onClick={(e) => handleOpenMenu(e, "STAFF")}
                   >
                     {fullName}
@@ -363,7 +363,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       elevation: 0,
                       sx: {
                         bgcolor: "primary.main",
-                        color: "white",
+                        color: "black",
                         mt: 0,
                         boxShadow: "none",
                         "& .MuiMenu-list": { paddingY: 0 },
@@ -375,7 +375,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       to="/signup-manager"
                       onClick={handleCloseMenu}
                       sx={{
-                        color: "white",
+                        color: "black",
                         "&:hover": { bgcolor: "primary.dark" },
                       }}
                     >
@@ -387,7 +387,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         handleLogout();
                       }}
                       sx={{
-                        color: "white",
+                        color: "black",
                         "&:hover": { bgcolor: "primary.dark" },
                       }}
                     >
@@ -397,11 +397,13 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                 </>
               ) : (
                 <>
+                  <Typography variant="body2" sx={{ color: "black" }}>
 
                   <Typography variant="body2" sx={{ color: "white" }}>
+
                     {fullName}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: "white" }}>
+                  <Typography variant="body2" sx={{ color: "black" }}>
                     |
                   </Typography>
 
@@ -455,7 +457,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                 <Button color="inherit" component={NavLink} to="/login">
                   Đăng nhập
                 </Button>
-                <Typography variant="body2" sx={{ color: "white" }}>
+                <Typography variant="body2" sx={{ color: "black" }}>
                   |
                 </Typography>
                 <Button color="inherit" component={NavLink} to="/signup">
