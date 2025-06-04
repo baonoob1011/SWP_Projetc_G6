@@ -17,6 +17,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../image/Logo.png";
+import { ArrowDropDown } from "@mui/icons-material";
 
 type HeaderProps = {
   fullName: string;
@@ -168,7 +169,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     sx={{ color: "white" }}
                     onClick={(e) => handleOpenMenu(e, "ADMIN")}
                   >
-                    Welcome, {fullName}
+                    {fullName}
                   </Button>
                   <Menu
                     anchorEl={anchorEl}
@@ -241,8 +242,9 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   <Button
                     sx={{ color: "white" }}
                     onClick={(e) => handleOpenMenu(e, "MANAGER")}
+                    endIcon={<ArrowDropDown />}
                   >
-                    Welcome, {fullName}
+                    {fullName}
                   </Button>
                   <Menu
                     anchorEl={anchorEl}
@@ -271,6 +273,28 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       }}
                     >
                       Đăng ký thông tin nhân viên
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/m-userData"
+                      onClick={handleCloseMenu}
+                      sx={{
+                        color: "white",
+                        "&:hover": { bgcolor: "primary.dark" },
+                      }}
+                    >
+                      Danh sách người dùng
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/m-staffData"
+                      onClick={handleCloseMenu}
+                      sx={{
+                        color: "white",
+                        "&:hover": { bgcolor: "primary.dark" },
+                      }}
+                    >
+                      Danh sách nhân viên
                     </MenuItem>
                     <MenuItem
                       component={NavLink}
@@ -303,7 +327,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     sx={{ color: "white" }}
                     onClick={(e) => handleOpenMenu(e, "STAFF")}
                   >
-                    Welcome, {fullName}
+                    {fullName}
                   </Button>
                   <Menu
                     anchorEl={anchorEl}
@@ -350,7 +374,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               ) : (
                 <>
                   <Typography variant="body2" sx={{ color: "white" }}>
-                    Welcome, {fullName}
+                    {fullName}
                   </Typography>
                   <Typography variant="body2" sx={{ color: "white" }}>
                     |
