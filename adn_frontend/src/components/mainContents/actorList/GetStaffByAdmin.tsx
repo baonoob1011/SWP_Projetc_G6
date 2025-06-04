@@ -10,6 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 type Staff = {
   idCard: string;
@@ -101,71 +102,91 @@ function GetStaffByAdmin() {
         <Table sx={{ fontSize: "13px" }}>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+              {/** Dòng tiêu đề với border */}
+              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
                 ID
               </TableCell>
-              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
                 Họ tên
               </TableCell>
-              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
                 CCCD
               </TableCell>
-              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
                 Ngày sinh
               </TableCell>
-              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
                 Giới tính
               </TableCell>
-              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
                 Email
               </TableCell>
-              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
                 SĐT
               </TableCell>
-              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
                 Địa chỉ
               </TableCell>
-              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
                 Vai trò
               </TableCell>
-              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
                 Ngày đăng ký
               </TableCell>
-              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
                 Trạng thái
               </TableCell>
-              <TableCell sx={{ fontSize: "13px", fontWeight: "bold" }}>
+              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
                 Thao tác
               </TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             {searchByphone.map((user, index) => (
-              <TableRow key={index} sx={{ fontSize: "13px" }}>
-                <TableCell sx={{ fontSize: "10px" }}>{index + 1}</TableCell>
-                <TableCell sx={{ fontSize: "10px" }}>{user.fullName}</TableCell>
-                <TableCell sx={{ fontSize: "10px" }}>{user.idCard}</TableCell>
-                <TableCell sx={{ fontSize: "10px" }}>
+              <TableRow key={index}>
+                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                  {index + 1}
+                </TableCell>
+                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                  {user.fullName}
+                </TableCell>
+                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                  {user.idCard}
+                </TableCell>
+                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
                   {user.dateOfBirth}
                 </TableCell>
-                <TableCell sx={{ fontSize: "10px" }}>{user.gender}</TableCell>
-                <TableCell sx={{ fontSize: "10px" }}>{user.email}</TableCell>
-                <TableCell sx={{ fontSize: "10px" }}>{user.phone}</TableCell>
-                <TableCell sx={{ fontSize: "10px" }}>{user.address}</TableCell>
-                <TableCell sx={{ fontSize: "10px" }}>{user.role}</TableCell>
-                <TableCell sx={{ fontSize: "10px" }}>{user.createAt}</TableCell>
-                <TableCell sx={{ fontSize: "10px" }}>
+                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                  {user.gender}
+                </TableCell>
+                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                  {user.email}
+                </TableCell>
+                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                  {user.phone}
+                </TableCell>
+                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                  {user.address}
+                </TableCell>
+                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                  {user.role}
+                </TableCell>
+                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                  {user.createAt}
+                </TableCell>
+                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
                   {user.enabled ? "Đã kích hoạt" : "Chưa kích hoạt"}
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ border: "1px solid #ccc" }}>
                   <Button
                     variant="contained"
                     color="error"
                     size="small"
-                    sx={{ fontSize: "10px" }}
+                    sx={{ minWidth: 0, padding: "6px", borderRadius: "4px" }}
                     onClick={() => handleDelete(user.phone, user.fullName)}
                   >
-                    Xóa
+                    <Trash2 size={16} />
                   </Button>
                 </TableCell>
               </TableRow>
