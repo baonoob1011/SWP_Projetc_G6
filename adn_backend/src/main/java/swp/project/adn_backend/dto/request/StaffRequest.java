@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StaffRequest {
+    long staffId;
 
     @NotBlank(message = "FULLNAME_BLANK")
     String fullName;
@@ -62,6 +63,14 @@ public class StaffRequest {
 
     public @NotBlank(message = "FULLNAME_BLANK") String getFullName() {
         return fullName;
+    }
+
+    public long getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(long staffId) {
+        this.staffId = staffId;
     }
 
     public void setFullName(@NotBlank(message = "FULLNAME_BLANK") String fullName) {

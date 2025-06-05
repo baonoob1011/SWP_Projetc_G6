@@ -5,7 +5,6 @@ import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import swp.project.adn_backend.enums.Roles;
 
 import java.time.LocalDate;
 

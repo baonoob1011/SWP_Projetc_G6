@@ -4,11 +4,12 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
-import swp.project.adn_backend.service.authService.ServiceTestService;
+import swp.project.adn_backend.service.ServiceTestService;
 
 @RestController
 @RequestMapping("/api/services")
