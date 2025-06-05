@@ -15,7 +15,7 @@ export default function Home() {
       gradient: "from-green-500 to-teal-600"
     },
     {
-      title: "Tư vấn di truyền",
+      title: "Xét nghiệm dân sự",
       desc: "Giải thích kết quả và tư vấn hướng xử lý.",
       icon: "💡",
       gradient: "from-orange-500 to-red-600"

@@ -1,7 +1,7 @@
 import Forget from "./components/page/Forget.tsx";
 import Login from "./components/page/Login.tsx";
 import SignUp from "./components/page/SignUp.tsx";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./components/page/Home.tsx";
 import { Header } from "./components/mainContents/Header.tsx";
 import { useState } from "react";
@@ -18,35 +18,78 @@ import GetStaffByManager from "./components/mainContents/actorList/GetStaffByMan
 // import GetUserByStaff from "./components/mainContents/actorList/GetUserByStaff.tsx";
 import Branch from "./components/page/Branch.tsx";
 import Map from "./components/page/Map.tsx";
-
+import AdminSidebar from "./components/page/AdminPage.tsx";
+import { Box } from "@mui/material";
+import DataList from "./components/mainContents/actorList/AllDataList.tsx";
 
 function App() {
-  const [fullname, setFullName] = useState(localStorage.getItem("fullName") || "");
+  const [fullname, setFullName] = useState(
+    localStorage.getItem("fullName") || ""
+  );
 
+  const role = localStorage.getItem("role");
+  const location = useLocation();
+  const hideHeaderPaths = ["/login", "/signup", "/forget"];
+  const shouldHideHeader = hideHeaderPaths.includes(location.pathname);
   return (
     <>
-      
-      
-
-      {/* <GetUserByStaff/> */}
-      <Header fullName={fullname} setFullName={setFullName} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login setFullName={setFullName} />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/forget" element={<Forget />} />
-        <Route path="/branch" element={<Branch />} />
-        <Route path="/signup-manager" element={<SignUpManager />} />
-        <Route path="/signup-staff" element={<SignUpStaff />} />
-        <Route path="/map" element={<Map />} />
-        <Route path="/managerData" element={<GetManagerByAdmin/>} />
-        <Route path="/staffData" element={<GetStaffByAdmin/>} />
-        <Route path="/userData" element={<GetUserByAdmin/>} />
-        <Route path="/m-userData" element={<GetUserByManager/>} />
-        <Route path="/m-staffData" element={<GetStaffByManager/>} />
-        <Route path="/create-services" element={<Services />} />
-      </Routes>
-      <ToastContainer />
+      {role === "ADMIN" ? (
+        <Box sx={{ display: "flex", height: "100vh" }}>
+          <Box
+            sx={{
+              width: 250,
+              flexShrink: 0,
+              height: "100vh",
+              borderRight: "1px solid #ddd",
+              bgcolor: "background.paper",
+            }}
+          >
+            <AdminSidebar />
+          </Box>
+          <Box
+            sx={{
+              flexGrow: 1,
+              p: 3,
+              bgcolor: "#f9fafb",
+              height: "100vh",
+              overflowY: "auto",
+            }}
+          >
+            <Routes>
+              <Route path="/admin" element={<DataList />}>
+                <Route path="data"/>
+                <Route path="manager" element={<GetManagerByAdmin />} />
+                <Route path="staff" element={<GetStaffByAdmin />} />
+                <Route path="user" element={<GetUserByAdmin />} />
+              </Route>
+              <Route path="signup-manager" element={<SignUpManager />} />
+              <Route path="services" element={<Services />} />
+            </Routes>
+          </Box>
+        </Box>
+      ) : (
+        <>
+          {!shouldHideHeader && (
+            <Header fullName={fullname} setFullName={setFullName} />
+          )}
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/login"
+              element={<Login setFullName={setFullName} />}
+            />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/forget" element={<Forget />} />
+            <Route path="/signup-staff" element={<SignUpStaff />} />
+            <Route path="/branch" element={<Branch />} />
+            <Route path="/map" element={<Map />} />
+            <Route path="/m-userData" element={<GetUserByManager />} />
+            <Route path="/m-staffData" element={<GetStaffByManager />} />
+            <Route path="/create-services" element={<Services />} />
+          </Routes>
+          <ToastContainer />
+        </>
+      )}
     </>
   );
 }

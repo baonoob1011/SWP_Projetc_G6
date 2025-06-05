@@ -63,8 +63,7 @@ public class Patient {
     })
     List<Sample> samples;
 
-    public Patient() {
-    }
+
 
     public long getPatientId() {
         return patientId;

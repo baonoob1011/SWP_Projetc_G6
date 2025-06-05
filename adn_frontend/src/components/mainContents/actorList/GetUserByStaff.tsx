@@ -28,11 +28,14 @@ function GetUserByStaff() {
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`http://localhost:8080/api/staff/get-user-phone?phone=${search}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await fetch(
+        `http://localhost:8080/api/staff/get-user-phone?phone=${search}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!res.ok) throw new Error("Không thể lấy dữ liệu");
 
@@ -62,13 +65,14 @@ function GetUserByStaff() {
   const searchByPhone = account.find((user) => user.phone === search);
 
   return (
-    <TableContainer component={Paper} sx={{ mt: 4, marginTop: 10 }}>
+    <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
       <TextField
         label="Tìm theo SĐT"
         variant="outlined"
         size="small"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        sx={{ margin: "10px 5px" }}
       />
       <Typography variant="h6" sx={{ m: 2 }}>
         Danh sách người dùng

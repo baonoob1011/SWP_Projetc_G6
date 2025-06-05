@@ -6,7 +6,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
   Button,
   TextField,
 } from "@mui/material";
@@ -16,7 +15,7 @@ type User = {
   fullName: string;
   email: string;
   enabled: boolean;
-  role: string;
+  roles: string[];
   phone: string;
   createAt: string;
 };
@@ -35,7 +34,9 @@ function GetUserByAdmin() {
         },
       });
 
-      if (!res.ok) {alert("Không thể lấy dữ liệu")};
+      if (!res.ok) {
+        alert("Không thể lấy dữ liệu");
+      }
 
       const data = await res.json();
 
@@ -95,59 +96,76 @@ function GetUserByAdmin() {
   const searchByPhone = account.filter((user) => user.phone.includes(search));
 
   return (
-    <TableContainer component={Paper} sx={{ mt: 4, marginTop: 10 }}>
-      <Typography variant="h6" sx={{ m: 2 }}>
-        Danh sách người dùng
-      </Typography>
+    <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
       <TextField
         label="Nhập số điện thoại"
         variant="outlined"
         size="small"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        sx={{ margin: "10px 5px" }}
       />
-      <Table>
+      <Table
+        sx={{
+          fontSize: "13px",
+          borderCollapse: "collapse",
+          width: "100%",
+        }}
+      >
         <TableHead>
           <TableRow>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
               <strong>ID</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
               <strong>Họ tên</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
               <strong>Email</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
               <strong>SĐT</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
               <strong>Vai trò</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
               <strong>Ngày đăng ký</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
               <strong>Trạng thái</strong>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
               <strong>Thao tác</strong>
             </TableCell>
           </TableRow>
         </TableHead>
+
         <TableBody>
           {searchByPhone.map((user, index) => (
             <TableRow key={index}>
-              <TableCell>{index + 1}</TableCell>
-              <TableCell>{user.fullName}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.phone}</TableCell>
-              <TableCell>{user.role}</TableCell>
-              <TableCell>{user.createAt}</TableCell>
-              <TableCell>
+              <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
+                {index + 1}
+              </TableCell>
+              <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
+                {user.fullName}
+              </TableCell>
+              <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
+                {user.email}
+              </TableCell>
+              <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
+                {user.phone}
+              </TableCell>
+              <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
+                {user.roles}
+              </TableCell>
+              <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
+                {user.createAt}
+              </TableCell>
+              <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
                 {user.enabled ? "Đã kích hoạt" : "Chưa kích hoạt"}
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ border: "1px solid #ccc" }}>
                 <Button
                   variant="contained"
                   color="error"

@@ -16,6 +16,7 @@ import {
   MenuItem,
   ListItemButton,
 } from "@mui/material";
+
 import {
   Menu as MenuIcon,
   HomeOutlined,
@@ -26,7 +27,11 @@ import {
   LocationOnOutlined,
   ArrowDropDown,
 } from "@mui/icons-material";
+
 import { NavLink, useNavigate } from "react-router-dom";
+
+
+
 import logo from "../../image/Logo.png";
 import styles from "./Header.module.css";
 
@@ -370,8 +375,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
           </Box>
         </Toolbar>
       </AppBar>
-
-      {/* Drawer cho mobile */}
       <Drawer
         anchor="right"
         open={drawerOpen}

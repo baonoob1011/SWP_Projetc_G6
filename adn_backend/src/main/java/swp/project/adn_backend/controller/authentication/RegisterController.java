@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import swp.project.adn_backend.dto.request.ManagerRequest;
 import swp.project.adn_backend.dto.request.StaffRequest;
-import swp.project.adn_backend.dto.request.UserDTO;
+import swp.project.adn_backend.dto.request.UserRequest;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.service.roleService.UserService;
 
@@ -32,7 +33,7 @@ public class RegisterController {
 
     @PostMapping("/user-account")
     public ResponseEntity<?> registerUserAccount(
-            @RequestBody @Valid UserDTO userDTO,
+            @RequestBody @Valid UserRequest userDTO,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -50,7 +51,8 @@ public class RegisterController {
     @PostMapping("/staff-account")
     public ResponseEntity<?> registerStaffAccount(
             @RequestBody @Valid StaffRequest staffRequest,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            Authentication authentication) {
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
@@ -60,14 +62,15 @@ public class RegisterController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        Users user = userService.registerStaffAccount(staffRequest);
+        Users user = userService.registerStaffAccount(staffRequest,authentication);
         return ResponseEntity.ok(user);
     }
 
     @PostMapping("/manager-account")
     public ResponseEntity<?> registerManagerAccount(
             @RequestBody @Valid ManagerRequest managerRequest,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            Authentication authentication) {
 
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
@@ -77,7 +80,7 @@ public class RegisterController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        Users user = userService.registerManagerAccount(managerRequest);
+        Users user = userService.registerManagerAccount(managerRequest,authentication);
         return ResponseEntity.ok(user);
     }
 

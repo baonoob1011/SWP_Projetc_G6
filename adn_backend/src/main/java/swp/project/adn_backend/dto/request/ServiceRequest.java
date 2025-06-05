@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 public class ServiceRequest {
 
+    long serviceId;
     @NotBlank(message = "Service name is required")
     @Size(max = 100, message = "Service name must be at most 100 characters")
     private String serviceName;
@@ -23,24 +24,17 @@ public class ServiceRequest {
 
     private String image;
 
-    public ServiceRequest(String serviceName, String description, ServiceType serviceType, boolean isActive, String image) {
-        this.serviceName = serviceName;
-        this.description = description;
-        this.serviceType = serviceType;
-        this.isActive = isActive;
-        this.image = image;
-    }
 
     public ServiceRequest() {
     }
 
-    public String getImage() {
-        return image;
+    public ServiceRequest(String serviceName, String description, ServiceType serviceType, boolean isActive) {
+        this.serviceName = serviceName;
+        this.description = description;
+        this.serviceType = serviceType;
+        this.isActive = isActive;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
 
     public @NotBlank(message = "Service name is required") @Size(max = 100, message = "Service name must be at most 100 characters") String getServiceName() {
         return serviceName;
@@ -59,6 +53,22 @@ public class ServiceRequest {
         this.description = description;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public long getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(long serviceId) {
+        this.serviceId = serviceId;
+    }
+
     public ServiceType getServiceType() {
         return serviceType;
     }
@@ -74,4 +84,5 @@ public class ServiceRequest {
     public void setActive(boolean active) {
         isActive = active;
     }
+
 }
