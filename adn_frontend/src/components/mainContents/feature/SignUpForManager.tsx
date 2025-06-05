@@ -227,8 +227,8 @@ const SignUpManager = () => {
   }
 
   return (
-    <div className={styles.container} style={{ marginTop: 60 }}>
-      <Paper elevation={20} className={styles.paper}>
+    <div className={styles.container}>
+      <Paper elevation={20} className={styles.paper} >
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Typography variant="h5" gutterBottom className={styles.title}>
             Thông tin quản lý

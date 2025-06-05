@@ -60,7 +60,7 @@ const SignUpStaff = () => {
   });
 
   useEffect(() => {
-    setIsAdmin(localStorage.getItem("role") === "ADMIN");
+    setIsAdmin(localStorage.getItem("role") === "MANAGER");
   }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

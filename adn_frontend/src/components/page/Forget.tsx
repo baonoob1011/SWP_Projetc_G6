@@ -1,8 +1,16 @@
-import { Box, Button, Paper, TextField, Typography, CircularProgress, InputAdornment } from "@mui/material";
+import {
+  Box,
+  Button,
+  Paper,
+  TextField,
+  Typography,
+  InputAdornment,
+} from "@mui/material";
 import { useState } from "react";
 import CustomSnackBar from "../mainContents/userinfor/Snackbar";
 import SendOTP from "../mainContents/userinfor/SendOTP";
 import EmailIcon from "@mui/icons-material/Email";
+import styles from "./Forget.module.css";
 
 const Forget = () => {
   const [email, setEmail] = useState("");
@@ -25,19 +33,20 @@ const Forget = () => {
       });
       if (!res.ok) {
         setSnackbar({
-        open: true,
-        message: "Email không tồn tại",
-        severity: "error",
-      });
+          open: true,
+          message: "Email không tồn tại",
+          severity: "error",
+        });
+      } else {
+        setSnackbar({
+          open: true,
+          message: "Gửi OTP thành công",
+          severity: "success",
+        });
+        setTimeout(() => setShow(true), 1500);
       }
-      setSnackbar({
-        open: true,
-        message: "Gửi OTP thành công",
-        severity: "success",
-      });
-      setTimeout(() => setShow(true), 1500);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
+      console.log(err)
       setSnackbar({
         open: true,
         message: "Lỗi mạng",
@@ -53,45 +62,57 @@ const Forget = () => {
   }
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" >
-      <Paper elevation={6} sx={{ borderRadius: 4, p: 5, width: "100%", maxWidth: 420 }}>
-        <Typography variant="h5" textAlign="center" fontWeight={700} mb={1}>
+    <Box className={styles.forgetContainer}>
+      <Paper elevation={6} className={styles.forgetPaper}>
+        <Typography 
+          variant="h5" 
+          className={styles.forgetTitle}
+        >
           Quên Mật Khẩu
         </Typography>
-        <Typography variant="body2" textAlign="center" color="text.secondary" mb={3}>
+        
+        <Typography
+          variant="body2"
+          className={styles.forgetSubtitle}
+        >
           Vui lòng nhập email để nhận mã xác thực (OTP)
         </Typography>
 
-        <form onSubmit={handleSendEmail}>
-          <TextField
-            label="Địa chỉ Email"
-            type="email"
-            fullWidth
-            variant="outlined"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon color="action" />
-                </InputAdornment>
-              ),
-            }}
-          />
+        <Box component="form" onSubmit={handleSendEmail}>
+          <Box className={styles.inputGroup}>
+            <TextField
+              label="Địa chỉ Email"
+              type="email"
+              fullWidth
+              variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className={styles.customTextField}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailIcon sx={{ color: "#666" }} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
 
           <Button
             type="submit"
             fullWidth
             variant="contained"
             size="large"
-            sx={{ mt: 3, py: 1.2, fontWeight: 600 }}
+            className={styles.forgetButton}
             disabled={sending}
-            startIcon={sending && <CircularProgress size={20} color="inherit" />}
+            startIcon={
+              sending && <div className={styles.spinner} />
+            }
           >
             {sending ? "Đang gửi..." : "Gửi OTP"}
           </Button>
-        </form>
+        </Box>
 
         <CustomSnackBar
           open={snackbar.open}
