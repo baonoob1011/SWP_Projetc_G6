@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  CircularProgress,
   Paper,
   TextField,
   Typography,
@@ -11,6 +10,7 @@ import CountdownTimer from "../feature/CountDown";
 import NewPass from "./NewPass";
 import CustomSnackBar from "./Snackbar";
 import Swal from "sweetalert2";
+import styles from "./SendOTP.module.css";
 
 const SendOTP = ({ email }: { email: string }) => {
   const [otp, setOtp] = useState("");
@@ -49,7 +49,7 @@ const SendOTP = ({ email }: { email: string }) => {
           setVerified(true);
         }, 1500);
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setSnackbar({
         open: true,
@@ -80,61 +80,66 @@ const SendOTP = ({ email }: { email: string }) => {
     }
   };
 
+  const maskEmail = (email: string) => {
+    const [name, domain] = email.split("@");
+    const visible = name.length <= 3 ? name[0] : name.slice(0, 3);
+    return `${visible}${"*".repeat(name.length - visible.length)}@${domain}`;
+  };
+
   if (verified) return <NewPass email={email} />;
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      px={2}
-    >
-      <Paper
-        elevation={8}
-        sx={{ borderRadius: 4, p: 5, maxWidth: 440, width: "100%" }}
-      >
-        <Typography variant="h5" textAlign="center" fontWeight={700} mb={2}>
+    <Box className={styles.forgetContainer}>
+      <Paper className={styles.forgetPaper} elevation={0}>
+        <Typography className={styles.forgetTitle}>
           Xác thực OTP
         </Typography>
-        <Typography
-          textAlign="center"
-          mb={3}
-          sx={{ color: "primary.main", fontWeight: "bold" }}
-        >
-          Mã OTP đã gửi tới: {email}
+        <Typography className={styles.forgetSubtitle}>
+          Mã OTP đã gửi tới: {maskEmail(email)}
         </Typography>
+        
         <form onSubmit={handleVerifyOtp}>
-          <TextField
-            fullWidth
-            placeholder="Nhập mã OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            required
-            size="medium"
-          />
+          <div className={styles.inputGroup}>
+            <TextField
+              fullWidth
+              placeholder="Nhập mã OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              required
+              size="medium"
+              className={styles.customTextField}
+              InputLabelProps={{
+                shrink: false,
+              }}
+            />
+          </div>
+          
           <Box
-            mt={3}
-            mb={1}
+            mb={2}
             display="flex"
-            justifyContent="space-between"
+            justifyContent="center"
             alignItems="center"
           >
-            <CountdownTimer duration={60000} onComplete={() => {}} onResend={resendOtp} />
+            <CountdownTimer
+              duration={60000}
+              onComplete={() => {}}
+              onResend={resendOtp}
+            />
           </Box>
+          
           <Button
             type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, py: 1.3, fontWeight: 600 }}
+            className={styles.forgetButton}
             disabled={isVerifying}
           >
             {isVerifying ? (
-              <CircularProgress size={24} color="inherit" />
+              <div className={styles.spinner} />
             ) : (
               "Xác nhận OTP"
             )}
           </Button>
         </form>
+        
         <CustomSnackBar
           open={snackbar.open}
           message={snackbar.message}

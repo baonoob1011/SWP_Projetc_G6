@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Paper,
   TextField,
@@ -7,10 +6,12 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "./NewPass.module.css";
 
 const NewPass = ({ email }: { email: string }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleReset = async (e: React.FormEvent) => {
@@ -20,6 +21,7 @@ const NewPass = ({ email }: { email: string }) => {
       return;
     }
 
+    setIsLoading(true);
     try {
       const res = await fetch("http://localhost:8080/api/otp/reset-password", {
         method: "POST",
@@ -31,45 +33,66 @@ const NewPass = ({ email }: { email: string }) => {
       navigate("/login");
     } catch (err) {
       alert((err as Error).message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center">
-      <Paper elevation={8} sx={{ borderRadius: 4, p: 5, maxWidth: 440, width: "100%" }}>
-        <Typography variant="h5" textAlign="center" fontWeight={700} mb={2}>
+    <div className={styles.newPassContainer}>
+      <Paper className={styles.newPassPaper} elevation={0}>
+        <Typography className={styles.newPassTitle} variant="h5">
           Đặt Lại Mật Khẩu
         </Typography>
+        <Typography className={styles.newPassSubtitle}>
+          Nhập mật khẩu mới để hoàn tất quá trình đặt lại
+        </Typography>
+        
         <form onSubmit={handleReset}>
-          <TextField
-            fullWidth
-            type="password"
-            label="Mật khẩu mới"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            margin="normal"
-            required
-          />
-          <TextField
-            fullWidth
-            type="password"
-            label="Xác nhận mật khẩu"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            margin="normal"
-            required
-          />
+          <div className={styles.inputGroup}>
+            <TextField
+              className={styles.customTextField}
+              fullWidth
+              type="password"
+              label="Mật khẩu mới"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+              variant="outlined"
+            />
+          </div>
+          
+          <div className={styles.inputGroup}>
+            <TextField
+              className={styles.customTextField}
+              fullWidth
+              type="password"
+              label="Xác nhận mật khẩu"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              variant="outlined"
+            />
+          </div>
+          
           <Button
+            className={styles.newPassButton}
             type="submit"
             variant="contained"
-            fullWidth
-            sx={{ mt: 3, py: 1.2, fontWeight: 600 }}
+            disabled={isLoading}
           >
-            Đổi Mật Khẩu
+            {isLoading ? (
+              <>
+                <div className={styles.spinner}></div>
+                Đang xử lý...
+              </>
+            ) : (
+              "Đổi Mật Khẩu"
+            )}
           </Button>
         </form>
       </Paper>
-    </Box>
+    </div>
   );
 };
 

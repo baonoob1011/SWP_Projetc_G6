@@ -158,7 +158,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className={styles.container} style={{ marginTop: 60 }}>
+    <div className={styles.container} >
       <Paper elevation={20} className={styles.paper}>
         <Box component="form" onSubmit={handleSubmit}>
           <Typography variant="h5" gutterBottom className={styles.title}>

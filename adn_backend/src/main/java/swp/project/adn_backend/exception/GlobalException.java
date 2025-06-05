@@ -1,5 +1,6 @@
 package swp.project.adn_backend.exception;
 
+import org.hibernate.query.SemanticException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import swp.project.adn_backend.dto.response.APIResponse;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 
@@ -32,6 +34,25 @@ public class GlobalException {
 
     @ExceptionHandler(value = RuntimeException.class)
     ResponseEntity<APIResponse> handlingRunTimeException(RuntimeException e) {
+        APIResponse apiResponse = new APIResponse<>();
+        apiResponse.setCode(1001);
+        apiResponse.setMessage(e.getMessage());
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+
+
+
+    @ExceptionHandler(value = NoResourceFoundException.class)
+    ResponseEntity<APIResponse> handlingNoResourceFoundException(NoResourceFoundException e) {
+        APIResponse apiResponse = new APIResponse<>();
+        apiResponse.setCode(1001);
+        apiResponse.setMessage(e.getMessage());
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    @ExceptionHandler(value = SemanticException.class)
+    ResponseEntity<APIResponse> handlingSemanticException(SemanticException e) {
         APIResponse apiResponse = new APIResponse<>();
         apiResponse.setCode(1001);
         apiResponse.setMessage(e.getMessage());

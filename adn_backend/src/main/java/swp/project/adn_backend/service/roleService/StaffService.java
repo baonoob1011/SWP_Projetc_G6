@@ -1,6 +1,8 @@
 package swp.project.adn_backend.service.roleService;
 
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.StaffRequest;
 import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
@@ -37,15 +40,7 @@ public class StaffService {
     StaffRepository staffRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
-
-
-    @Autowired
-    public StaffService(UserRepository userRepository, StaffRepository staffRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.staffRepository = staffRepository;
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
+    EntityManager entityManager;
 
 
     // update staff
@@ -57,10 +52,17 @@ public class StaffService {
 
     }
 
-    public Users findUserByPhone(String phone) {
+    @Transactional(readOnly = true)
+    public UserInfoDTO findUserByPhone(String phone) {
         Users users = userRepository.findByPhone(phone)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PHONE_NOT_EXISTS));
-        return users;
+
+        String jpql = "Select new swp.project.adn_backend.dto.InfoDTO(" +
+                "u.fullName, u.phone, u.email, u.enabled, u.createdAt, u.role) " +
+                "From Users u Where u.phone=:phone";
+        TypedQuery<UserInfoDTO> query = entityManager.createQuery(jpql, UserInfoDTO.class);
+        query.setParameter("phone", phone);
+        return query.getSingleResult();
     }
 
 
