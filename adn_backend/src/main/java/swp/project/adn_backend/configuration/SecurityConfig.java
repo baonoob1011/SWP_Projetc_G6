@@ -57,6 +57,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
                         // STAFF or MANAGER can access /api/staff/**
+                        .requestMatchers("/api/appointment/book-appointment").hasAnyRole("USER")
                         .requestMatchers("/api/staff/**").hasAnyRole("STAFF", "MANAGER", "ADMIN")
                         .requestMatchers("/api/services/create-service").hasAnyRole("MANAGER", "ADMIN")
                         .requestMatchers("/api/manager/**").hasAnyRole("MANAGER", "ADMIN")

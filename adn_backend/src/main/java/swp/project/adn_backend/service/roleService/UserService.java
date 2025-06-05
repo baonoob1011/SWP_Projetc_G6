@@ -13,12 +13,18 @@ import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.request.ManagerRequest;
 import swp.project.adn_backend.dto.request.StaffRequest;
 import swp.project.adn_backend.dto.request.UserRequest;
+import swp.project.adn_backend.entity.Manager;
+import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.Roles;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.exception.MultiFieldValidationException;
+import swp.project.adn_backend.mapper.ManagerMapper;
+import swp.project.adn_backend.mapper.StaffMapper;
 import swp.project.adn_backend.mapper.UserMapper;
+import swp.project.adn_backend.repository.ManagerRepository;
+import swp.project.adn_backend.repository.StaffRepository;
 import swp.project.adn_backend.repository.UserRepository;
 
 import java.time.LocalDate;
@@ -35,14 +41,21 @@ public class UserService {
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     EntityManager entityManager;
-
+    StaffRepository staffRepository;
+    ManagerRepository managerRepository;
+    StaffMapper staffMapper;
+    ManagerMapper managerMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, EntityManager entityManager) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, EntityManager entityManager, StaffRepository staffRepository, ManagerRepository managerRepository, StaffMapper staffMapper, ManagerMapper managerMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.entityManager = entityManager;
+        this.staffRepository = staffRepository;
+        this.managerRepository = managerRepository;
+        this.staffMapper = staffMapper;
+        this.managerMapper = managerMapper;
     }
 
     // Đăng ký User
@@ -60,7 +73,13 @@ public class UserService {
         return userRepository.save(users);
     }
 
-    public Users registerStaffAccount(StaffRequest staffRequest) {
+    public Users registerStaffAccount(StaffRequest staffRequest,Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users userRegister = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+
         HashSet<String> roles = new HashSet<>();
         validateStaff(staffRequest);
         // Tạo user từ DTO và mã hóa mật khẩu
@@ -69,13 +88,25 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
+
+        //add vao bang staff
+        Staff staff = staffMapper.toStaff(staffRequest);
+        staff.setRole("STAFF");
+        staff.setCreateAt(LocalDate.now());
+        staff.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
+        staff.setUsers(userRegister);
+        staffRepository.save(staff);
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
     }
 
-    public Users registerManagerAccount(ManagerRequest managerRequest) {
-        HashSet<String> roles = new HashSet<>();
+    public Users registerManagerAccount(ManagerRequest managerRequest,Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users userRegister = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
+        HashSet<String> roles = new HashSet<>();
         validateManager(managerRequest);
         // Tạo user từ DTO và mã hóa mật khẩu
         Users users = userMapper.toManager(managerRequest);
@@ -83,6 +114,15 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(managerRequest.getPassword()));
+
+        //add vao bang staff
+        Manager manager = managerMapper.toManager(managerRequest);
+        manager.setRole("MANAGER");
+        manager.setCreateAt(LocalDate.now());
+        manager.setPassword(passwordEncoder.encode(managerRequest.getPassword()));
+        manager.setUsers(userRegister);
+        managerRepository.save(manager);
+
         return userRepository.save(users);
     }
 

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 public class ServiceRequest {
 
+    long serviceId;
     @NotBlank(message = "Service name is required")
     @Size(max = 100, message = "Service name must be at most 100 characters")
     private String serviceName;
@@ -58,6 +59,14 @@ public class ServiceRequest {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public long getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(long serviceId) {
+        this.serviceId = serviceId;
     }
 
     public ServiceType getServiceType() {

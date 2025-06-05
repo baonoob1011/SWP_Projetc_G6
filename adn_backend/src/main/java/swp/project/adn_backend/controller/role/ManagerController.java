@@ -2,15 +2,12 @@ package swp.project.adn_backend.controller.role;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
-import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
-import swp.project.adn_backend.dto.request.ManagerRequest;
 
+import swp.project.adn_backend.dto.request.ManagerRequest;
 import swp.project.adn_backend.entity.Users;
-import swp.project.adn_backend.service.roleService.AdminService;
 import swp.project.adn_backend.service.roleService.ManagerService;
 
 import java.util.List;

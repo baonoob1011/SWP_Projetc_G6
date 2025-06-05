@@ -8,16 +8,13 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 //import swp.project.adn_backend.configuration.UserPrincipal;
 import swp.project.adn_backend.dto.request.IntrospectRequest;
-import swp.project.adn_backend.dto.request.LoginDTO;
+import swp.project.adn_backend.dto.request.authentication.LoginDTO;
 import swp.project.adn_backend.dto.response.AuthenticationResponse;
 import swp.project.adn_backend.dto.response.IntrospectResponse;
 import swp.project.adn_backend.entity.Users;
@@ -29,7 +26,6 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.List;
 import java.util.StringJoiner;
 
 @Service
@@ -46,10 +42,14 @@ public class AuthenticationUserService {
         var user = userRepository.findByUsername(loginDTO.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
+        if (!user.getEnabled()) {
+            throw new AppException(ErrorCodeUser.USER_DISABLED);  // Bạn cần định nghĩa USER_DISABLED trong enum
+        }
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
             throw new AppException(ErrorCodeUser.UNAUTHENTICATED);
         }
+
 
         // Generate JWT
         String token = generateToken(user);
@@ -86,9 +86,9 @@ public class AuthenticationUserService {
                 .claim("role", buildScope(users))
                 .claim("id", users.getUserId())
                 .claim("phone", users.getPhone())
-       //         .claim("address", users.getAddress())
+                //         .claim("address", users.getAddress())
                 .claim("fullName", users.getFullName())
-  //              .claim("dayOfBirth", users.getDateOfBirth().toString()) // nếu là LocalDate
+                //              .claim("dayOfBirth", users.getDateOfBirth().toString()) // nếu là LocalDate
                 .claim("email", users.getEmail())
 //                .claim("enable", users.getEnabled())
 //                .claim("gender", users.getGender())

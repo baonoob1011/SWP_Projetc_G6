@@ -1,4 +1,4 @@
-package swp.project.adn_backend.dto.request.serviceRequest;
+package swp.project.adn_backend.dto.response.serviceResponse;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RegisterServiceRequest {
+public class RegisterServiceRespose {
      String service_name;
      ServiceType serviceType;
      boolean isActive;

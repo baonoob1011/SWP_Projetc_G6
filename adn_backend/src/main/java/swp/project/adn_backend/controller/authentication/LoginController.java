@@ -11,12 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import swp.project.adn_backend.dto.request.LoginDTO;
+import swp.project.adn_backend.dto.request.authentication.LoginDTO;
 import swp.project.adn_backend.dto.response.APIResponse;
 import swp.project.adn_backend.dto.response.AuthenticationResponse;
+import swp.project.adn_backend.repository.UserRepository;
 import swp.project.adn_backend.service.JWT.AuthenticationUserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,28 +25,22 @@ public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 
-    @Autowired
     AuthenticationUserService authenticationUserService;
+    UserRepository userRepository;
+
+    @Autowired
+    public LoginController(AuthenticationUserService authenticationUserService, UserRepository userRepository) {
+        this.authenticationUserService = authenticationUserService;
+        this.userRepository = userRepository;
+    }
 
     @PostMapping("/token")
     public APIResponse<AuthenticationResponse> authenticateUser(@Valid @RequestBody LoginDTO loginDTO) {
         AuthenticationResponse result = authenticationUserService.authenticateUser(loginDTO);
-   //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        if (authentication != null) {
-//            logger.info("User '{}' logged in with roles: {}",
-//                    authentication.getName(),
-//                    authentication.getAuthorities()
-//                            .stream()
-//                            .map(grantedAuthority -> grantedAuthority.getAuthority())
-//                            .toList()
-//            );
-//        } else {
-//            logger.warn("Authentication is null after login for '{}'", loginDTO.getUsername());
-//        }
 
-        var authentication= SecurityContextHolder.getContext().getAuthentication();
-        logger.info("Username: {}",authentication.getName());
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        logger.info("Username: {}", authentication.getName());
         authentication.getAuthorities().forEach(grantedAuthority -> logger.info(grantedAuthority.getAuthority()));
         return APIResponse.<AuthenticationResponse>builder()
                 .code(200)

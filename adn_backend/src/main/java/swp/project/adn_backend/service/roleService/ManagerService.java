@@ -5,9 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 //import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -32,6 +30,7 @@ import swp.project.adn_backend.repository.UserRepository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -79,24 +78,28 @@ public class ManagerService {
 
         List<UserInfoDTO> users = query.getResultList();
 
-        // Lấy thêm roles cho từng user (bạn có thể query thêm entity hoặc cache)
         for (UserInfoDTO userDto : users) {
-            Users userEntity = entityManager.createQuery(
+            List<Users> matchedUsers = entityManager.createQuery(
                             "SELECT u FROM Users u WHERE u.fullName = :fullName", Users.class)
                     .setParameter("fullName", userDto.getFullName())
-                    .getSingleResult();
-            userDto.setRoles(userEntity.getRoles());
+                    .getResultList();
+
+            if (!matchedUsers.isEmpty()) {
+                userDto.setRoles(matchedUsers.get(0).getRoles());
+            }
         }
 
         return users;
     }
 
 
+
+
     @Transactional(readOnly = true)
     public List<StaffInfoDTO> getAllStaff() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO(" +
-                "u.fullName, u.phone, u.email, u.enabled, u.createAt, u.roles, u.idCard, u.gender, u.address, u.dateOfBirth) " +
-                "FROM Users u JOIN u.roles r WHERE r = :input";
+                "u.fullName, u.phone, u.email, u.enabled, u.createAt, u.role, u.idCard, u.gender, u.address, u.dateOfBirth) " +
+                "FROM Staff u WHERE u.role = :input";
 
         TypedQuery<StaffInfoDTO> query = entityManager.createQuery(jpql, StaffInfoDTO.class);
         query.setParameter("input", "STAFF");

@@ -10,20 +10,20 @@ public class StaffInfoDTO {
     private String email;
     private boolean enabled;
     private LocalDate createAt;
-    private Set<String>roles;
+    private String role;
     private String idCard;
     private String gender;
     private String address;
     private LocalDate dateOfBirth;
 
 
-    public StaffInfoDTO(String fullName, String phone, String email, boolean enabled, LocalDate createAt, Set<String> roles, String idCard, String gender, String address, LocalDate dateOfBirth) {
+    public StaffInfoDTO(String fullName, String phone, String email, boolean enabled, LocalDate createAt, String role, String idCard, String gender, String address, LocalDate dateOfBirth) {
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
         this.enabled = enabled;
         this.createAt = createAt;
-        this.roles = roles;
+        this.role = role;
         this.idCard = idCard;
         this.gender = gender;
         this.address = address;
@@ -61,7 +61,6 @@ public class StaffInfoDTO {
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
-
 
 
     public LocalDate getCreateAt() {
@@ -104,12 +103,11 @@ public class StaffInfoDTO {
         this.enabled = enabled;
     }
 
-
-    public Set<String> getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = role;
     }
 }
