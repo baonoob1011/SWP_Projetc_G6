@@ -7,13 +7,15 @@ import {
   LogOut,
   Bell,
   Home,
-  Users,
-  BarChart3,
-  FileText,
+  // Users,
+  // BarChart3,
+  // FileText,
   Shield,
+  List,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
+import { RoomService } from "@mui/icons-material";
 
 const AdminSidebar = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -29,9 +31,8 @@ const AdminSidebar = () => {
 
   const menuItems = [
     { id: "dashboard", icon: Home, label: "Dashboard" },
-    { id: "users", icon: Users, label: "Người dùng", path: "admin/user" },
-    { id: "satff", icon: BarChart3, label: "Nhân viên", path: "admin/staff" },
-    { id: "manager", icon: FileText, label: "Quản lý", path: "admin/manager" },
+    { id: "data", icon: List, label: "Danh sách", path: "admin/data" },
+    { id: "services", icon: RoomService, label: "Dịch vụ", path: "services" },
   ];
 
   const handleLogout = async () => {
