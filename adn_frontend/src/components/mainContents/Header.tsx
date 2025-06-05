@@ -15,7 +15,7 @@ import {
   ListItemButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../../image/Logo.png";
 import { ArrowDropDown } from "@mui/icons-material";
 
@@ -256,13 +256,13 @@ export function Header({ fullName, setFullName }: HeaderProps) {
         )
       ) : (
         <>
-          <Button color="inherit" component={NavLink} to="/login">
+          <Button color="inherit" component={Link} to="/login">
             Đăng nhập
           </Button>
           <Typography variant="body2" sx={{ color: "black" }}>
             |
           </Typography>
-          <Button color="inherit" component={NavLink} to="/signup">
+          <Button color="inherit" component={Link} to="/signup">
             Đăng ký
           </Button>
         </>

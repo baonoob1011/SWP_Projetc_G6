@@ -1,9 +1,9 @@
 import Forget from "./components/page/Forget.tsx";
 import Login from "./components/page/Login.tsx";
 import SignUp from "./components/page/SignUp.tsx";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./components/page/Home.tsx";
-// import { Header } from "./components/mainContents/Header.tsx";
+import { Header } from "./components/mainContents/Header.tsx";
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,6 +20,7 @@ import Branch from "./components/page/Branch.tsx";
 import Map from "./components/page/Map.tsx";
 import AdminSidebar from "./components/page/AdminPage.tsx";
 import { Box } from "@mui/material";
+import DataList from "./components/mainContents/actorList/AllDataList.tsx";
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -27,7 +28,9 @@ function App() {
   );
 
   const role = localStorage.getItem("role");
-
+  const location = useLocation();
+  const hideHeaderPaths = ["/login", "/signup", "/forget"];
+  const shouldHideHeader = hideHeaderPaths.includes(location.pathname);
   return (
     <>
       {role === "ADMIN" ? (
@@ -43,8 +46,6 @@ function App() {
           >
             <AdminSidebar />
           </Box>
-
-          {/* Content chính: chiếm còn lại, full height, scroll riêng */}
           <Box
             sx={{
               flexGrow: 1,
@@ -55,16 +56,22 @@ function App() {
             }}
           >
             <Routes>
-              <Route path="/admin/manager" element={<GetManagerByAdmin />} />
-              <Route path="/admin/staff" element={<GetStaffByAdmin />} />
-              <Route path="/admin/user" element={<GetUserByAdmin />} />
-              <Route path="/signup-manager" element={<SignUpManager />} />
+              <Route path="/admin" element={<DataList />}>
+                <Route path="data"/>
+                <Route path="manager" element={<GetManagerByAdmin />} />
+                <Route path="staff" element={<GetStaffByAdmin />} />
+                <Route path="user" element={<GetUserByAdmin />} />
+              </Route>
+              <Route path="signup-manager" element={<SignUpManager />} />
+              <Route path="services" element={<Services />} />
             </Routes>
           </Box>
         </Box>
       ) : (
         <>
-          {/* <Header fullName={fullname} setFullName={setFullName} /> */}
+          {!shouldHideHeader && (
+            <Header fullName={fullname} setFullName={setFullName} />
+          )}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route
