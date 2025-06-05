@@ -17,9 +17,6 @@ import {
   ListItemButton,
 } from "@mui/material";
 
-import MenuIcon from "@mui/icons-material/Menu";
-
-
 import {
   Menu as MenuIcon,
   HomeOutlined,
@@ -33,7 +30,7 @@ import {
 
 import { NavLink, useNavigate } from "react-router-dom";
 
-import { Link, NavLink, useNavigate } from "react-router-dom";
+
 
 import logo from "../../image/Logo.png";
 import styles from "./Header.module.css";
@@ -102,241 +99,24 @@ export function Header({ fullName, setFullName }: HeaderProps) {
 
   return (
     <>
-
-      <AppBar position="fixed" sx={{ backgroundColor: "#206696" }}>
-        <Toolbar sx={{ justifyContent: "space-between", minHeight: 64 }}>
-          <Typography
-            variant="h6"
-            component={NavLink}
-            to="/"
-            sx={{ textDecoration: "none", color: "inherit" }}
-          >
-            <Box sx={{ width: 40, mr: 2 }}>
-              <img
-                src={logo}
-                alt="Logo"
-                style={{ width: "100%", objectFit: "contain" }}
-              />
-            </Box>
-
-      <AppBar position="fixed" sx={{ backgroundColor: "#4A90E2" }}>
-  <Toolbar sx={{ justifyContent: "space-between", minHeight: 64 }}>
-    <Typography
-      variant="h6"
-      component={NavLink}
-      to="/"
-      sx={{ textDecoration: "none", color: "inherit" }}
-    >
-      <Box sx={{ width: 40, mr: 2 }}>
-        <img
-          src={logo}
-          alt="Logo"
-          style={{ width: "100%", objectFit: "contain" }}
-        />
-      </Box>
-    </Typography>
-
-
-    {/* Desktop Navigation */}
-    <Box sx={{ display: { xs: "none", md: "flex" }, gap: 10 }}>
-      {navItems.map((item) =>
-        item.children ? (
-          <Box key={item.label} sx={{ position: "relative" }}>
-            <Button sx={{ color: "black" }} onClick={(e) => handleOpenMenu(e, item.label)}>
-              {item.label}
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={menuOpen === item.label}
-              onClose={handleCloseMenu}
-              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-              transformOrigin={{ vertical: "top", horizontal: "left" }}
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  bgcolor: "primary.main",
-                  color: "black",
-                  mt: 0,
-                  boxShadow: "none",
-                  "& .MuiMenu-list": { paddingY: 0 },
-                },
-              }}
-            >
-              {item.children.map((child) => (
-                <MenuItem
-                  key={child.label}
-                  component={NavLink}
-                  to={child.path}
-                  onClick={handleCloseMenu}
-                  sx={{
-                    color: "black",
-                    "&:hover": { bgcolor: "primary.dark" },
-                  }}
-                >
-                  {child.label}
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        ) : (
-          <Button
-            key={item.label}
-            component={NavLink}
-            to={item.path}
-            sx={{ color: "black" }}
-          >
-            {item.label}
-          </Button>
-        )
-      )}
-    </Box>
-
-    {/* Auth + Mobile Menu */}
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      {fullName ? (
-        role === "MANAGER" ? (
-          <>
-            <Button
-              sx={{ color: "black" }}
-              onClick={(e) => handleOpenMenu(e, "MANAGER")}
-              endIcon={<ArrowDropDown />}
-            >
-              {fullName}
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={menuOpen === "MANAGER"}
-              onClose={handleCloseMenu}
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  bgcolor: "primary.main",
-                  color: "black",
-                  mt: 0,
-                  boxShadow: "none",
-                  "& .MuiMenu-list": { paddingY: 0 },
-                },
-              }}
-            >
-              <MenuItem component={NavLink} to="/signup-Staff" onClick={handleCloseMenu}>
-                Đăng ký thông tin nhân viên
-              </MenuItem>
-              <MenuItem component={NavLink} to="/m-userData" onClick={handleCloseMenu}>
-                Danh sách người dùng
-              </MenuItem>
-              <MenuItem component={NavLink} to="/m-staffData" onClick={handleCloseMenu}>
-                Danh sách nhân viên
-              </MenuItem>
-              <MenuItem component={NavLink} to="/create-services" onClick={handleCloseMenu}>
-                Tạo dịch vụ
-              </MenuItem>
-              <MenuItem onClick={() => { handleCloseMenu(); handleLogout(); }}>
-                Đăng xuất
-              </MenuItem>
-            </Menu>
-          </>
-        ) : role === "STAFF" ? (
-          <>
-            <Button
-              sx={{ color: "black" }}
-              onClick={(e) => handleOpenMenu(e, "STAFF")}
-            >
-              {fullName}
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={menuOpen === "STAFF"}
-              onClose={handleCloseMenu}
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  bgcolor: "primary.main",
-                  color: "black",
-                  mt: 0,
-                  boxShadow: "none",
-                  "& .MuiMenu-list": { paddingY: 0 },
-                },
-              }}
-            >
-              <MenuItem component={NavLink} to="/signup-manager" onClick={handleCloseMenu}>
-                Đăng ký thông tin quản lý
-              </MenuItem>
-              <MenuItem onClick={() => { handleCloseMenu(); handleLogout(); }}>
-                Đăng xuất
-              </MenuItem>
-            </Menu>
-          </>
-        ) : (
-          <>
-            <Button
-              sx={{
-                backgroundColor: "#90caf9",
-                color: "#0d47a1",
-                textTransform: "none",
-                fontWeight: "bold",
-                "&:hover": {
-                  backgroundColor: "#64b5f6",
-                },
-              }}
-              onClick={(e) => handleOpenMenu(e, "USER")}
-            >
-              Welcome, {fullName}
-            </Button>
-          </>
-        )
-      ) : (
-        <>
-          <Button color="inherit" component={Link} to="/login">
-            Đăng nhập
-          </Button>
-          <Typography variant="body2" sx={{ color: "black" }}>
-            |
-          </Typography>
-          <Button color="inherit" component={Link} to="/signup">
-            Đăng ký
-          </Button>
-        </>
-      )}
-
-      <IconButton
-        edge="end"
-        color="inherit"
-        aria-label="menu"
-        sx={{ display: { md: "none" } }}
-        onClick={() => setDrawerOpen(true)}
-      >
-        <MenuIcon />
-      </IconButton>
-    </Box>
-  </Toolbar>
-</AppBar>
-
-
-      {/* Mobile Drawer */}
-
       <AppBar position="fixed" color="inherit" elevation={1}>
-        {/* Toolbar disableGutters + px:0 để hoàn toàn không có padding ngang */}
         <Toolbar
           disableGutters
           sx={{
-            px: 0,                // padding-left:0, padding-right:0
-            minHeight: "auto",    // bỏ minHeight cố định 64px
+            px: 0,                // loại bỏ hoàn toàn padding ngang
+            minHeight: "auto",    // bỏ chiều cao cố định 64px
             height: "auto",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
           }}
         >
-          {/* === LOGO + GENLINK (sát kín mép trái) === */}
+          {/* Logo + GENLINK sát mép trái */}
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
-              ml: 0,      // margin-left = 0
+              ml: 0,   // margin-left = 0 để bám sát mép trái
             }}
           >
             <NavLink
@@ -345,7 +125,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                 display: "flex",
                 alignItems: "center",
                 textDecoration: "none",
-                marginLeft: 0,  // đảm bảo không có lề trái
+                marginLeft: 0,
               }}
             >
               <img
@@ -353,8 +133,8 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                 alt="Logo"
                 className={styles.logoImage}
                 style={{
-                  width: 70,
-                  height: 70,
+                  width: 40,
+                  height: 40,
                   display: "block",
                 }}
               />
@@ -369,7 +149,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
             </NavLink>
           </Box>
 
-          {/* === NAVIGATION (ở giữa) === */}
+          {/* Navigation giữa */}
           <Box
             sx={{
               display: { xs: "none", md: "flex" },
@@ -435,13 +215,13 @@ export function Header({ fullName, setFullName }: HeaderProps) {
             )}
           </Box>
 
-          {/* === AUTH (Đăng nhập / Đăng ký) sát mép phải === */}
+          {/* Phần Đăng nhập / Đăng ký sát mép phải */}
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
               gap: 1.5, // 12px giữa các nút
-              pr: 0,    // padding-right = 0 để sát mép phải
+              pr: 0,    // padding-right = 0 để bám sát mép phải
             }}
           >
             {fullName ? (
@@ -552,7 +332,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     </MenuItem>
                   </Menu>
                 </>
-                
               ) : (
                 <Typography variant="body2">Welcome, {fullName}</Typography>
               )
@@ -582,7 +361,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               </>
             )}
 
-            {/* Nút menu cho mobile (chỉ hiện khi < md) */}
+            {/* Nút menu mobile (chỉ hiện khi < md) */}
             <IconButton
               edge="end"
               color="inherit"
@@ -596,9 +375,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
           </Box>
         </Toolbar>
       </AppBar>
-
-      {/* Drawer (Mobile) */}
-
       <Drawer
         anchor="right"
         open={drawerOpen}
