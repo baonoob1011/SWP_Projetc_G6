@@ -1,4 +1,4 @@
-package swp.project.adn_backend.service.authService;
+package swp.project.adn_backend.service;
 
 
 import lombok.AccessLevel;
@@ -59,6 +59,7 @@ public class ServiceTestService {
                                      AdministrativeServiceRequest administrativeServiceRequest,
                                      CivilServiceRequest civilServiceRequest,
                                      MultipartFile file) {
+
 
         if (serviceTestRepository.existsByServiceName(serviceRequest.getServiceName())) {
             throw new AppException(ErrorCodeUser.SERVICE_NAME_IS_EXISTED);
@@ -125,7 +126,6 @@ public class ServiceTestService {
     }
 
 
-
     public void deleteServiceTest(long serviceId) {
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
@@ -154,14 +154,14 @@ public class ServiceTestService {
         existingService.setServiceType(serviceRequest.getServiceType());
 
         // Cập nhật ảnh nếu có
-        if (file != null && !file.isEmpty()) {
-            try {
-                String base64Image = Base64.getEncoder().encodeToString(file.getBytes());
-                existingService.setImage(base64Image);
-            } catch (IOException e) {
-                throw new AppException(ErrorCodeUser.INTERNAL_ERROR);
-            }
-        }
+//        if (file != null && !file.isEmpty()) {
+//            try {
+//                String base64Image = Base64.getEncoder().encodeToString(file.getBytes());
+//                existingService.setImage(base64Image);
+//            } catch (IOException e) {
+//                throw new AppException(ErrorCodeUser.INTERNAL_ERROR);
+//            }
+//        }
 
         // Cập nhật PriceList mới
         if (priceListRequest != null) {
@@ -182,7 +182,7 @@ public class ServiceTestService {
                 AdministrativeService administrativeService =
                         administrativeServiceRepository.findByService(existingService)
                                 .orElseGet(() -> new AdministrativeService());
-                AdministrativeService updateAdministrativeService=administrativeMapper.toAdministrativeService(administrativeServiceRequest);
+                AdministrativeService updateAdministrativeService = administrativeMapper.toAdministrativeService(administrativeServiceRequest);
                 updateAdministrativeService.setSampleCollectionMethod(SampleCollectionMethod.AT_CLINIC);
                 updateAdministrativeService.setService(existingService);
                 administrativeServiceRepository.save(updateAdministrativeService);
@@ -196,7 +196,7 @@ public class ServiceTestService {
                         civilServiceRepository.findByService(existingService)
                                 .orElseGet(() -> new CivilService());
 
-                CivilService updateCivilService=civilServiceMapper.toCivilService(civilServiceRequest);
+                CivilService updateCivilService = civilServiceMapper.toCivilService(civilServiceRequest);
                 updateCivilService.setService(existingService);
                 civilServiceRepository.save(updateCivilService);
             }

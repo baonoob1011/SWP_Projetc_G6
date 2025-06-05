@@ -5,20 +5,18 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
-import swp.project.adn_backend.enums.Roles;
 
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @ToString
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "Users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Data
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,8 +50,8 @@ public class Users {
 
     Boolean enabled = true;
 
-     String otpCode;
-     LocalDateTime otpExpiryTime;
+    String otpCode;
+    LocalDateTime otpExpiryTime;
 
     @Column(name = "last_otp_sent_time", nullable = true) // Có thể null
     private LocalDateTime lastOtpSentTime;
@@ -66,18 +64,25 @@ public class Users {
         this.lastOtpSentTime = lastOtpSentTime;
     }
 
-    @CreationTimestamp
+
     @Column(name = "create_at", updatable = false)
-    LocalDateTime createAt;
+    LocalDate createAt;
 
-   String role;
 
-    public String getRole() {
-        return role;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private Set<String> roles;
+
+    public Set<String> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
+
+    public Users() {
     }
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -94,6 +99,14 @@ public class Users {
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Staff> staff;
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
     public String getIdCard() {
         return idCard;
@@ -125,22 +138,6 @@ public class Users {
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
-    }
-
-    public List<Staff> getStaff() {
-        return staff;
-    }
-
-    public void setStaff(List<Staff> staff) {
-        this.staff = staff;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 
     public String getFullName() {
@@ -191,12 +188,27 @@ public class Users {
         this.enabled = enabled;
     }
 
+    public String getOtpCode() {
+        return otpCode;
+    }
 
-    public LocalDateTime getCreateAt() {
+    public void setOtpCode(String otpCode) {
+        this.otpCode = otpCode;
+    }
+
+    public LocalDateTime getOtpExpiryTime() {
+        return otpExpiryTime;
+    }
+
+    public void setOtpExpiryTime(LocalDateTime otpExpiryTime) {
+        this.otpExpiryTime = otpExpiryTime;
+    }
+
+    public LocalDate getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(LocalDateTime createAt) {
+    public void setCreateAt(LocalDate createAt) {
         this.createAt = createAt;
     }
 
@@ -232,20 +244,12 @@ public class Users {
         this.feedbacks = feedbacks;
     }
 
-    public String getOtpCode() {
-        return otpCode;
+    public List<Staff> getStaff() {
+        return staff;
     }
 
-    public void setOtpCode(String otpCode) {
-        this.otpCode = otpCode;
-    }
-
-    public LocalDateTime getOtpExpiryTime() {
-        return otpExpiryTime;
-    }
-
-    public void setOtpExpiryTime(LocalDateTime otpExpiryTime) {
-        this.otpExpiryTime = otpExpiryTime;
+    public void setStaff(List<Staff> staff) {
+        this.staff = staff;
     }
 }
 

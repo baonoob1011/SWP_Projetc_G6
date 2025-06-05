@@ -4,13 +4,13 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.request.LoginDTO;
 import swp.project.adn_backend.dto.response.APIResponse;
 import swp.project.adn_backend.dto.response.AuthenticationResponse;
@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 @RequestMapping("/api/auth")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-
 public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -33,17 +32,23 @@ public class LoginController {
     @PostMapping("/token")
     public APIResponse<AuthenticationResponse> authenticateUser(@Valid @RequestBody LoginDTO loginDTO) {
         AuthenticationResponse result = authenticationUserService.authenticateUser(loginDTO);
+   //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (authentication != null) {
+//            logger.info("User '{}' logged in with roles: {}",
+//                    authentication.getName(),
+//                    authentication.getAuthorities()
+//                            .stream()
+//                            .map(grantedAuthority -> grantedAuthority.getAuthority())
+//                            .toList()
+//            );
+//        } else {
+//            logger.warn("Authentication is null after login for '{}'", loginDTO.getUsername());
+//        }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null) {
-            logger.info("User '{}' logged in with roles: {}",
-                    authentication.getName(),
-                    authentication.getAuthorities());
-        } else {
-            logger.warn("Authentication is null after login for '{}'", loginDTO.getUsername());
-        }
-
+        var authentication= SecurityContextHolder.getContext().getAuthentication();
+        logger.info("Username: {}",authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> logger.info(grantedAuthority.getAuthority()));
         return APIResponse.<AuthenticationResponse>builder()
                 .code(200)
                 .message("Login successful")
@@ -51,8 +56,12 @@ public class LoginController {
                 .build();
     }
 
-
-
+    @GetMapping("/debug")
+    public ResponseEntity<?> debugAuth() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Authorities: " + auth.getAuthorities());
+        return ResponseEntity.ok(auth.getAuthorities());
+    }
 
 
 //    @PostMapping("/introspect")
@@ -64,7 +73,7 @@ public class LoginController {
 //                .message("Login successful")
 //                .result(result)
 //                .build();
-//    }
+//       }
 
 }
 

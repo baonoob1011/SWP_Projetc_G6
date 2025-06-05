@@ -16,7 +16,7 @@ import java.util.Set;
 @Data
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserDTO {
+public class UserRequest {
 
     // Full name with length limit
     @NotBlank(message = "FULLNAME_BLANK")
@@ -46,6 +46,8 @@ public class UserDTO {
     @NotBlank(message = "Email must not be blank")
     @Email(message = "EMAIL_INVALID")
      String email;
+
+    Set<String> roles;
 
     // Confirm Password: ensuring it matches the password
     @NotBlank(message = "CONFIRM_PASSWORD_BLANK")
@@ -81,6 +83,14 @@ public class UserDTO {
 
     public void setPhone(@NotBlank(message = "PHONE_BLANK") @Pattern(regexp = "^\\+?\\d{9,15}$", message = "PHONE_INVALID") String phone) {
         this.phone = phone;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
     public @NotBlank(message = "USERNAME_BLANK") @Size(min = 8, message = "USERNAME_INVALID") String getUsername() {

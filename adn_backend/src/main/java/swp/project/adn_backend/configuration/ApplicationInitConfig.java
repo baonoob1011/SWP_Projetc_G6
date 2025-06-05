@@ -10,7 +10,8 @@ import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.Roles;
 import swp.project.adn_backend.repository.UserRepository;
 
-@Slf4j
+import java.util.HashSet;
+
 @Configuration
 public class ApplicationInitConfig {
     @Autowired
@@ -19,17 +20,17 @@ public class ApplicationInitConfig {
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository) {
         return args -> {
+            HashSet<String> roles = new HashSet<>();
+            roles.add(Roles.ADMIN.name());
             if (userRepository.findByUsername("adminAccount").isEmpty()) {
-
                 // Tạo user mới
                 Users users = new Users();
                 users.setUsername("adminAccount");
                 users.setPassword(passwordEncoder.encode("admin"));
                 users.setFullName("Tran Dinh Bao");
                 users.setEmail("trandinhbao222@gmail.com");
-                users.setRole("ADMIN");
+                users.setRoles(roles);
                 users.setPhone("0357594189");
-
                 userRepository.save(users);
             }
         };

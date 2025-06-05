@@ -14,7 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import swp.project.adn_backend.configuration.UserPrincipal;
+import org.springframework.util.CollectionUtils;
+//import swp.project.adn_backend.configuration.UserPrincipal;
 import swp.project.adn_backend.dto.request.IntrospectRequest;
 import swp.project.adn_backend.dto.request.LoginDTO;
 import swp.project.adn_backend.dto.response.AuthenticationResponse;
@@ -28,6 +29,8 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
+import java.util.StringJoiner;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -51,11 +54,6 @@ public class AuthenticationUserService {
         // Generate JWT
         String token = generateToken(user);
 
-        // Set Authentication into SecurityContext
-        UserPrincipal userPrincipal = new UserPrincipal(user);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                userPrincipal, null, userPrincipal.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return AuthenticationResponse.builder()
                 .token(token)
@@ -82,22 +80,36 @@ public class AuthenticationUserService {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(users.getUsername())
-                .issuer("baotd.com")
+                .issuer("swp.com")
                 .issueTime(new Date())
-                .expirationTime(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
-                .claim("role", users.getRole())
-                .claim("fullName", users.getFullName())
-                .claim("phone", users.getPhone())
-                .claim("email", users.getEmail())
+                .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
+                .claim("role", buildScope(users))
                 .claim("id", users.getUserId())
+                .claim("phone", users.getPhone())
+       //         .claim("address", users.getAddress())
+                .claim("fullName", users.getFullName())
+  //              .claim("dayOfBirth", users.getDateOfBirth().toString()) // nếu là LocalDate
+                .claim("email", users.getEmail())
+//                .claim("enable", users.getEnabled())
+//                .claim("gender", users.getGender())
                 .build();
 
-        SignedJWT signedJWT = new SignedJWT(header, jwtClaimsSet);
+        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
+        JWSObject jwsObject = new JWSObject(header, payload);
         try {
-            signedJWT.sign(new MACSigner(SIGNER_KEY.getBytes()));
-            return signedJWT.serialize();
+            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
+            return jwsObject.serialize();
         } catch (JOSEException e) {
+            System.out.println("Cannot create Token");
             throw new RuntimeException(e);
         }
+    }
+
+    private String buildScope(Users users) {
+        StringJoiner stringJoiner = new StringJoiner("");
+        if (!CollectionUtils.isEmpty(users.getRoles())) {
+            users.getRoles().forEach(stringJoiner::add);
+        }
+        return stringJoiner.toString();
     }
 }

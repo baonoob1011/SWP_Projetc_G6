@@ -1,6 +1,7 @@
 package swp.project.adn_backend.service.roleService;
 
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityManager;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AccessLevel;
 
 import lombok.experimental.FieldDefaults;
@@ -11,7 +12,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.request.ManagerRequest;
 import swp.project.adn_backend.dto.request.StaffRequest;
-import swp.project.adn_backend.dto.request.UserDTO;
+import swp.project.adn_backend.dto.request.UserRequest;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.Roles;
@@ -20,7 +21,9 @@ import swp.project.adn_backend.exception.MultiFieldValidationException;
 import swp.project.adn_backend.mapper.UserMapper;
 import swp.project.adn_backend.repository.UserRepository;
 
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 
@@ -31,51 +34,61 @@ public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    EntityManager entityManager;
+
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, EntityManager entityManager) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
-
+        this.entityManager = entityManager;
     }
 
     // Đăng ký User
-    public Users registerUserAccount(UserDTO userDTO) {
+    public Users registerUserAccount(UserRequest userDTO) {
+        HashSet<String> roles = new HashSet<>();
         validateUser(userDTO);
         // Tạo user từ DTO và mã hóa mật khẩu
         Users users = userMapper.toUser(userDTO);
-        users.setRole("USER");
+        roles.add(Roles.USER.name());
+        users.setRoles(roles);
+
+        users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
     }
 
     public Users registerStaffAccount(StaffRequest staffRequest) {
-
+        HashSet<String> roles = new HashSet<>();
         validateStaff(staffRequest);
         // Tạo user từ DTO và mã hóa mật khẩu
         Users users = userMapper.toStaff(staffRequest);
-        users.setRole("STAFF");
+        roles.add(Roles.STAFF.name());
+        users.setRoles(roles);
+        users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
     }
 
     public Users registerManagerAccount(ManagerRequest managerRequest) {
+        HashSet<String> roles = new HashSet<>();
+
         validateManager(managerRequest);
         // Tạo user từ DTO và mã hóa mật khẩu
         Users users = userMapper.toManager(managerRequest);
-        users.setRole("MANAGER");
+        roles.add(Roles.MANAGER.name());
+        users.setRoles(roles);
+        users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(managerRequest.getPassword()));
-        // Lưu lại để cascade lưu role
-        System.out.println(users);
         return userRepository.save(users);
     }
 
     // Cập nhật User
     @Transactional
-    public Users updateUser(Authentication authentication, UserDTO userDTO) {
+    public Users updateUser(Authentication authentication, UserRequest userDTO) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
         Users existingUser = userRepository.findById(userId)
@@ -118,7 +131,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    private void validateUser(UserDTO userDTO) {
+    private void validateUser(UserRequest userDTO) {
         Map<String, String> errors = new HashMap<>();
 
         if (userRepository.existsByUsername(userDTO.getUsername())) {
@@ -189,8 +202,6 @@ public class UserService {
             throw new MultiFieldValidationException(errors);
         }
     }
-
-
 
 
 }

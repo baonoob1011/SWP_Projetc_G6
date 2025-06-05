@@ -10,4 +10,7 @@ public enum Roles {
     MANAGER,
     PATIENT
     ;
+
+    Roles() {
+    }
 }
