@@ -72,6 +72,7 @@ function GetUserByStaff() {
         size="small"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        sx={{ margin: "10px 5px" }}
       />
       <Typography variant="h6" sx={{ m: 2 }}>
         Danh sách người dùng

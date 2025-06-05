@@ -6,7 +6,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
   Button,
   TextField,
 } from "@mui/material";
@@ -16,7 +15,7 @@ type User = {
   fullName: string;
   email: string;
   enabled: boolean;
-  role: string;
+  roles: string[];
   phone: string;
   createAt: string;
 };
@@ -98,15 +97,13 @@ function GetUserByAdmin() {
 
   return (
     <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
-      <Typography variant="h6" sx={{ m: 2 }}>
-        Danh sách người dùng
-      </Typography>
       <TextField
         label="Nhập số điện thoại"
         variant="outlined"
         size="small"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        sx={{ margin: "10px 5px" }}
       />
       <Table
         sx={{
@@ -160,7 +157,7 @@ function GetUserByAdmin() {
                 {user.phone}
               </TableCell>
               <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
-                {user.role}
+                {user.roles}
               </TableCell>
               <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
                 {user.createAt}

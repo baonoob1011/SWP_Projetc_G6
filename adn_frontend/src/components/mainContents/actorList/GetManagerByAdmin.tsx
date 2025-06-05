@@ -8,7 +8,6 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography,
 } from "@mui/material";
 import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -94,9 +93,6 @@ function GetManagerByAdmin() {
   return (
     <>
       <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
-        <Typography variant="h6" sx={{ m: 2 }}>
-          Danh sách quản lý
-        </Typography>
 
         <TextField
           label="Nhập số điện thoại"
@@ -104,6 +100,7 @@ function GetManagerByAdmin() {
           size="small"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          sx={{ margin: "10px 5px" }}
         />
 
         <Table sx={{ fontSize: "13px", borderCollapse: "collapse" }}>
