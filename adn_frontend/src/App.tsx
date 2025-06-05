@@ -7,7 +7,7 @@ import { Header } from "./components/mainContents/Header.tsx";
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Services from "./components/mainContents/services/Services.tsx";
+import Services from "./components/mainContents/services/CreateServices.tsx";
 import SignUpStaff from "./components/mainContents/feature/SignUpForStaff.tsx";
 import SignUpManager from "./components/mainContents/feature/SignUpForManager.tsx";
 import GetManagerByAdmin from "./components/mainContents/actorList/GetManagerByAdmin.tsx";
@@ -21,6 +21,7 @@ import Map from "./components/page/Map.tsx";
 import AdminSidebar from "./components/page/AdminPage.tsx";
 import { Box } from "@mui/material";
 import DataList from "./components/mainContents/actorList/AllDataList.tsx";
+import BookAppointmentForm from "./components/mainContents/services/SignUpServices.tsx";
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -45,6 +46,7 @@ function App() {
             }}
           >
             <AdminSidebar />
+            
           </Box>
           <Box
             sx={{
@@ -86,6 +88,7 @@ function App() {
             <Route path="/m-userData" element={<GetUserByManager />} />
             <Route path="/m-staffData" element={<GetStaffByManager />} />
             <Route path="/create-services" element={<Services />} />
+            <Route path="/order" element={<BookAppointmentForm/>} />
           </Routes>
           <ToastContainer />
         </>

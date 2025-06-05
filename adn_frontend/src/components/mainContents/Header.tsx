@@ -1,3 +1,5 @@
+// src/components/mainContents/Header.tsx
+
 import React, { useState } from "react";
 import {
   AppBar,
@@ -14,10 +16,24 @@ import {
   MenuItem,
   ListItemButton,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+
+import {
+  Menu as MenuIcon,
+  HomeOutlined,
+  BuildOutlined,
+  ArticleOutlined,
+  CalendarTodayOutlined,
+  BusinessOutlined,
+  LocationOnOutlined,
+  ArrowDropDown,
+} from "@mui/icons-material";
+
+import { NavLink, useNavigate } from "react-router-dom";
+
+
+
 import logo from "../../image/Logo.png";
-import { ArrowDropDown } from "@mui/icons-material";
+import styles from "./Header.module.css";
 
 type HeaderProps = {
   fullName: string;
@@ -29,13 +45,25 @@ export function Header({ fullName, setFullName }: HeaderProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
   const navigate = useNavigate();
-
   const role = localStorage.getItem("role");
 
-  const handleOpenMenu = (
-    event: React.MouseEvent<HTMLElement>,
-    label: string
-  ) => {
+  const navItems = [
+    { label: "Home", path: "/", icon: <HomeOutlined fontSize="small" /> },
+    {
+      label: "Dịch vụ",
+      icon: <BuildOutlined fontSize="small" />,
+      children: [
+        { label: "Hành chính", path: "/service/administrative" },
+        { label: "Dân sự", path: "/service/civil" },
+      ],
+    },
+    { label: "Tin tức", path: "/blog", icon: <ArticleOutlined fontSize="small" /> },
+    { label: "Đặt lịch", path: "/order", icon: <CalendarTodayOutlined fontSize="small" /> },
+    { label: "Chi nhánh", path: "/branch", icon: <BusinessOutlined fontSize="small" /> },
+    { label: "Địa chỉ", path: "/address", icon: <LocationOnOutlined fontSize="small" /> },
+  ];
+
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>, label: string) => {
     setAnchorEl(event.currentTarget);
     setMenuOpen(label);
   };
@@ -62,7 +90,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
       localStorage.removeItem("fullName");
       localStorage.removeItem("role");
       setFullName("");
-
       navigate("/login");
       window.location.href = "/login";
     } catch (error) {
@@ -70,231 +97,304 @@ export function Header({ fullName, setFullName }: HeaderProps) {
     }
   };
 
-  const navItems = [
-    { label: "Home", path: "/" },
-    {
-      label: "Dịch vụ",
-      children: [
-        { label: "Hành chính", path: "/service/administrative" },
-        { label: "Dân sự", path: "/service/civil" },
-      ],
-    },
-    { label: "Tin tức", path: "/blog" },
-    { label: "Đặt lịch", path: "/order" },
-    { label: "Chi nhánh", path: "/branch" },
-  ];
-
   return (
     <>
-      <AppBar position="fixed" sx={{ backgroundColor: "#4A90E2" }}>
-  <Toolbar sx={{ justifyContent: "space-between", minHeight: 64 }}>
-    <Typography
-      variant="h6"
-      component={NavLink}
-      to="/"
-      sx={{ textDecoration: "none", color: "inherit" }}
-    >
-      <Box sx={{ width: 40, mr: 2 }}>
-        <img
-          src={logo}
-          alt="Logo"
-          style={{ width: "100%", objectFit: "contain" }}
-        />
-      </Box>
-    </Typography>
-
-    {/* Desktop Navigation */}
-    <Box sx={{ display: { xs: "none", md: "flex" }, gap: 10 }}>
-      {navItems.map((item) =>
-        item.children ? (
-          <Box key={item.label} sx={{ position: "relative" }}>
-            <Button sx={{ color: "black" }} onClick={(e) => handleOpenMenu(e, item.label)}>
-              {item.label}
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={menuOpen === item.label}
-              onClose={handleCloseMenu}
-              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-              transformOrigin={{ vertical: "top", horizontal: "left" }}
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  bgcolor: "primary.main",
-                  color: "black",
-                  mt: 0,
-                  boxShadow: "none",
-                  "& .MuiMenu-list": { paddingY: 0 },
-                },
+      <AppBar position="fixed" color="inherit" elevation={1}>
+        <Toolbar
+          disableGutters
+          sx={{
+            px: 0,                // loại bỏ hoàn toàn padding ngang
+            minHeight: "auto",    // bỏ chiều cao cố định 64px
+            height: "auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {/* Logo + GENLINK sát mép trái */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              ml: 0,   // margin-left = 0 để bám sát mép trái
+            }}
+          >
+            <NavLink
+              to="/"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                textDecoration: "none",
+                marginLeft: 0,
               }}
             >
-              {item.children.map((child) => (
-                <MenuItem
-                  key={child.label}
+              <img
+                src={logo}
+                alt="Logo"
+                className={styles.logoImage}
+                style={{
+                  width: 40,
+                  height: 40,
+                  display: "block",
+                }}
+              />
+              <Typography
+                variant="h6"
+                component="div"
+                className={styles.brandName}
+                sx={{ ml: 0.5 }} // cách logo 4px
+              >
+                GENLINK
+              </Typography>
+            </NavLink>
+          </Box>
+
+          {/* Navigation giữa */}
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 2,   // khoảng cách 16px giữa các nút
+            }}
+          >
+            {navItems.map((item) =>
+              item.children ? (
+                <Box key={item.label} sx={{ position: "relative" }}>
+                  <Button
+                    className={styles.navButton}
+                    startIcon={item.icon}
+                    endIcon={<ArrowDropDown />}
+                    onClick={(e) => handleOpenMenu(e, item.label)}
+                    sx={{
+                      textTransform: "none",
+                      px: 1.5,  // padding ngang 12px
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={menuOpen === item.label}
+                    onClose={handleCloseMenu}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                    transformOrigin={{ vertical: "top", horizontal: "left" }}
+                    classes={{ paper: styles.menuPaper }}
+                    MenuListProps={{ sx: { py: 0 } }}
+                  >
+                    {item.children!.map((child) => (
+                      <MenuItem
+                        key={child.label}
+                        component={NavLink}
+                        to={child.path}
+                        onClick={handleCloseMenu}
+                        className={styles.menuItem}
+                        sx={{ px: 2, py: 1 }}
+                      >
+                        {child.label}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </Box>
+              ) : (
+                <Button
+                  key={item.label}
                   component={NavLink}
-                  to={child.path}
-                  onClick={handleCloseMenu}
+                  to={item.path}
+                  className={styles.navButton}
+                  startIcon={item.icon}
                   sx={{
-                    color: "black",
-                    "&:hover": { bgcolor: "primary.dark" },
+                    textTransform: "none",
+                    px: 1.5,
                   }}
                 >
-                  {child.label}
-                </MenuItem>
-              ))}
-            </Menu>
+                  {item.label}
+                </Button>
+              )
+            )}
           </Box>
-        ) : (
-          <Button
-            key={item.label}
-            component={NavLink}
-            to={item.path}
-            sx={{ color: "black" }}
+
+          {/* Phần Đăng nhập / Đăng ký sát mép phải */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5, // 12px giữa các nút
+              pr: 0,    // padding-right = 0 để bám sát mép phải
+            }}
           >
-            {item.label}
-          </Button>
-        )
-      )}
-    </Box>
+            {fullName ? (
+              role === "MANAGER" ? (
+                <>
+                  <Button
+                    className={styles.userButton}
+                    onClick={(e) => handleOpenMenu(e, "MANAGER")}
+                    endIcon={<ArrowDropDown />}
+                    sx={{ textTransform: "none", px: 1.5 }}
+                  >
+                    {fullName}
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={menuOpen === "MANAGER"}
+                    onClose={handleCloseMenu}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
+                    classes={{ paper: styles.menuPaper }}
+                    MenuListProps={{ sx: { py: 0 } }}
+                  >
+                    <MenuItem
+                      component={NavLink}
+                      to="/signup-Staff"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Đăng ký nhân viên
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/m-userData"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Danh sách người dùng
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/m-staffData"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Danh sách nhân viên
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/create-services"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Tạo dịch vụ
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleCloseMenu();
+                        handleLogout();
+                      }}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Đăng xuất
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : role === "STAFF" ? (
+                <>
+                  <Button
+                    className={styles.userButton}
+                    onClick={(e) => handleOpenMenu(e, "STAFF")}
+                    endIcon={<ArrowDropDown />}
+                    sx={{ textTransform: "none", px: 1.5 }}
+                  >
+                    {fullName}
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={menuOpen === "STAFF"}
+                    onClose={handleCloseMenu}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
+                    classes={{ paper: styles.menuPaper }}
+                    MenuListProps={{ sx: { py: 0 } }}
+                  >
+                    <MenuItem
+                      component={NavLink}
+                      to="/signup-manager"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Đăng ký quản lý
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleCloseMenu();
+                        handleLogout();
+                      }}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Đăng xuất
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <Typography variant="body2">Welcome, {fullName}</Typography>
+              )
+            ) : (
+              <>
+                <Button
+                  color="inherit"
+                  component={NavLink}
+                  to="/login"
+                  className={styles.authButton}
+                  sx={{ textTransform: "none", px: 1.5 }}
+                >
+                  Đăng nhập
+                </Button>
+                <Typography variant="body2" className={styles.divider}>
+                  |
+                </Typography>
+                <Button
+                  color="inherit"
+                  component={NavLink}
+                  to="/signup"
+                  className={styles.authButton}
+                  sx={{ textTransform: "none", px: 1.5 }}
+                >
+                  Đăng ký
+                </Button>
+              </>
+            )}
 
-    {/* Auth + Mobile Menu */}
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      {fullName ? (
-        role === "MANAGER" ? (
-          <>
-            <Button
-              sx={{ color: "black" }}
-              onClick={(e) => handleOpenMenu(e, "MANAGER")}
-              endIcon={<ArrowDropDown />}
+            {/* Nút menu mobile (chỉ hiện khi < md) */}
+            <IconButton
+              edge="end"
+              color="inherit"
+              aria-label="menu"
+              className={styles.menuIconButton}
+              sx={{ display: { md: "none" } }}
+              onClick={() => setDrawerOpen(true)}
             >
-              {fullName}
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={menuOpen === "MANAGER"}
-              onClose={handleCloseMenu}
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  bgcolor: "primary.main",
-                  color: "black",
-                  mt: 0,
-                  boxShadow: "none",
-                  "& .MuiMenu-list": { paddingY: 0 },
-                },
-              }}
-            >
-              <MenuItem component={NavLink} to="/signup-Staff" onClick={handleCloseMenu}>
-                Đăng ký thông tin nhân viên
-              </MenuItem>
-              <MenuItem component={NavLink} to="/m-userData" onClick={handleCloseMenu}>
-                Danh sách người dùng
-              </MenuItem>
-              <MenuItem component={NavLink} to="/m-staffData" onClick={handleCloseMenu}>
-                Danh sách nhân viên
-              </MenuItem>
-              <MenuItem component={NavLink} to="/create-services" onClick={handleCloseMenu}>
-                Tạo dịch vụ
-              </MenuItem>
-              <MenuItem onClick={() => { handleCloseMenu(); handleLogout(); }}>
-                Đăng xuất
-              </MenuItem>
-            </Menu>
-          </>
-        ) : role === "STAFF" ? (
-          <>
-            <Button
-              sx={{ color: "black" }}
-              onClick={(e) => handleOpenMenu(e, "STAFF")}
-            >
-              {fullName}
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={menuOpen === "STAFF"}
-              onClose={handleCloseMenu}
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  bgcolor: "primary.main",
-                  color: "black",
-                  mt: 0,
-                  boxShadow: "none",
-                  "& .MuiMenu-list": { paddingY: 0 },
-                },
-              }}
-            >
-              <MenuItem component={NavLink} to="/signup-manager" onClick={handleCloseMenu}>
-                Đăng ký thông tin quản lý
-              </MenuItem>
-              <MenuItem onClick={() => { handleCloseMenu(); handleLogout(); }}>
-                Đăng xuất
-              </MenuItem>
-            </Menu>
-          </>
-        ) : (
-          <>
-            <Button
-              sx={{
-                backgroundColor: "#90caf9",
-                color: "#0d47a1",
-                textTransform: "none",
-                fontWeight: "bold",
-                "&:hover": {
-                  backgroundColor: "#64b5f6",
-                },
-              }}
-              onClick={(e) => handleOpenMenu(e, "USER")}
-            >
-              Welcome, {fullName}
-            </Button>
-          </>
-        )
-      ) : (
-        <>
-          <Button color="inherit" component={Link} to="/login">
-            Đăng nhập
-          </Button>
-          <Typography variant="body2" sx={{ color: "black" }}>
-            |
-          </Typography>
-          <Button color="inherit" component={Link} to="/signup">
-            Đăng ký
-          </Button>
-        </>
-      )}
-
-      <IconButton
-        edge="end"
-        color="inherit"
-        aria-label="menu"
-        sx={{ display: { md: "none" } }}
-        onClick={() => setDrawerOpen(true)}
-      >
-        <MenuIcon />
-      </IconButton>
-    </Box>
-  </Toolbar>
-</AppBar>
-
-
-      {/* Mobile Drawer */}
+              <MenuIcon />
+            </IconButton>
+          </Box>
+        </Toolbar>
+      </AppBar>
       <Drawer
         anchor="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
+        classes={{ paper: styles.drawerPaper }}
       >
-        <Box sx={{ width: 250 }} role="presentation">
+        <Box sx={{ width: 260 }} role="presentation">
           <List>
             {navItems.map((item) =>
               item.children ? (
                 <React.Fragment key={item.label}>
                   <ListItem>
-                    <ListItemText primary={item.label} />
+                    <ListItemText
+                      primary={
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          {item.icon}
+                          <Typography variant="body1">{item.label}</Typography>
+                        </Box>
+                      }
+                    />
                   </ListItem>
                   {item.children.map((child) => (
                     <ListItem key={child.label} disablePadding>
@@ -302,6 +402,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         component={NavLink}
                         to={child.path}
                         onClick={() => setDrawerOpen(false)}
+                        className={styles.drawerItemButton}
                         sx={{ pl: 4 }}
                       >
                         <ListItemText primary={child.label} />
@@ -315,11 +416,28 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     component={NavLink}
                     to={item.path}
                     onClick={() => setDrawerOpen(false)}
+                    className={styles.drawerItemButton}
                   >
-                    <ListItemText primary={item.label} />
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      {item.icon}
+                      <ListItemText primary={item.label} />
+                    </Box>
                   </ListItemButton>
                 </ListItem>
               )
+            )}
+            {fullName && (
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    setDrawerOpen(false);
+                    handleLogout();
+                  }}
+                  className={styles.drawerItemButton}
+                >
+                  <ListItemText primary="Đăng xuất" />
+                </ListItemButton>
+              </ListItem>
             )}
           </List>
         </Box>

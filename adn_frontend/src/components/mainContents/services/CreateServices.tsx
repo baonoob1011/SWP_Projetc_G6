@@ -45,7 +45,7 @@ const Services = () => {
     setIsAdmin(localStorage.getItem("role") === "ADMIN" || localStorage.getItem("role")==="MANAGER");
   }, []);
 
-  // Hàm cập nhật nested field theo section và field
+  
   const handleInput = (
     section: "service" | "price" | "type",
     field: string,
