@@ -29,6 +29,7 @@
     "react-timer-hook": "^4.0.5",
     "react-toastify": "^11.0.5",
     "sweetalert2": "^11.22.0",
+    "swiper": "^11.2.8",
     "tailwindcss": "^4.1.8",
     "yup": "^1.6.1"
   },
