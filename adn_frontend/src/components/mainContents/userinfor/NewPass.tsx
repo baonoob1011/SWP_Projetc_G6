@@ -7,17 +7,38 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./NewPass.module.css";
+import CustomSnackBar from "./Snackbar";
+import Swal from "sweetalert2";
+
+type Severity = "success" | "error";
 
 const NewPass = ({ email }: { email: string }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: Severity;
+  }>({
+    open: false,
+    message: "",
+    severity: "error"
+  });
   const navigate = useNavigate();
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      alert("Mật khẩu xác nhận không khớp");
+      setSnackbar({
+        open: true,
+        message: "Mật khẩu xác nhận không khớp",
+        severity: "error"
+      });
       return;
     }
 
@@ -29,10 +50,21 @@ const NewPass = ({ email }: { email: string }) => {
         body: JSON.stringify({ email, newPassword }),
       });
       if (!res.ok) throw new Error("Không thể đặt lại mật khẩu");
-      alert("Đổi mật khẩu thành công");
+      
+      await Swal.fire({
+        icon: "success",
+        title: "Thành công",
+        text: "Đổi mật khẩu thành công",
+        timer: 2000,
+        showConfirmButton: false
+      });
       navigate("/login");
     } catch (err) {
-      alert((err as Error).message);
+      setSnackbar({
+        open: true,
+        message: (err as Error).message,
+        severity: "error"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -40,6 +72,12 @@ const NewPass = ({ email }: { email: string }) => {
 
   return (
     <div className={styles.newPassContainer}>
+      <CustomSnackBar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={handleCloseSnackbar}
+      />
       <Paper className={styles.newPassPaper} elevation={0}>
         <Typography className={styles.newPassTitle} variant="h5">
           Đặt Lại Mật Khẩu
