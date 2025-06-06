@@ -57,10 +57,16 @@ export function Header({ fullName, setFullName }: HeaderProps) {
         { label: "Dân sự", path: "/service/civil" },
       ],
     },
+<<<<<<< Updated upstream
     { label: "Tin tức", path: "/blog", icon: <ArticleOutlined fontSize="small" /> },
     { label: "Đặt lịch", path: "/order", icon: <CalendarTodayOutlined fontSize="small" /> },
     { label: "Chi nhánh", path: "/branch", icon: <BusinessOutlined fontSize="small" /> },
     { label: "Địa chỉ", path: "/address", icon: <LocationOnOutlined fontSize="small" /> },
+=======
+    { label: "Tin tức", path: "/blog" },
+    { label: "Đặt lịch", path: "/order" },
+    { label: "Địa chỉ", path: "/branch-and-map" },
+>>>>>>> Stashed changes
   ];
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>, label: string) => {
