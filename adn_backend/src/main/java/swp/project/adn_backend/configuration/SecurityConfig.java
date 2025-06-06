@@ -63,6 +63,9 @@ public class SecurityConfig {
 =======
                         .requestMatchers("/api/appointment/book-appointment").hasAnyRole("USER")
                         .requestMatchers("/api/user/**").hasAnyRole("USER")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                         .requestMatchers("/api/staff/**").hasAnyRole("STAFF", "MANAGER", "ADMIN")
                         .requestMatchers("/api/staff/update-profile").hasRole("STAFF")

@@ -50,11 +50,14 @@ public class ManagerController {
     }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 //    //update
 //    @PutMapping("/update-profile")
 //    public ResponseEntity<Users> updateStaffById(@RequestBody ManagerRequest managerRequest, Authentication authentication) {
 //        return ResponseEntity.ok(managerService.updateManager(authentication, authentication));
 //    }
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 }

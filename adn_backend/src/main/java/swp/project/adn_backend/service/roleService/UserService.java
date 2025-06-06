@@ -140,6 +140,7 @@ public class UserService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
         if (updateUserRequest.getEmail() != null) {
@@ -194,6 +195,14 @@ public class UserService {
             throw new AppException(ErrorCodeUser.PHONE_EXISTED);
         }
 
+=======
+
+        if (updateUserRequest.getPhone() != null &&
+                userRepository.existsByPhone(updateUserRequest.getPhone())) {
+            throw new AppException(ErrorCodeUser.PHONE_EXISTED);
+        }
+
+>>>>>>> Stashed changes
         if (updateUserRequest.getEmail() != null &&
                 userRepository.existsByEmail(updateUserRequest.getEmail())) {
             throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
@@ -223,6 +232,9 @@ public class UserService {
             existingUser.setFullName(updateUserRequest.getFullName());
         }
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         if (updateUserRequest.getAddress() != null) {
             existingUser.setAddress(updateUserRequest.getAddress());

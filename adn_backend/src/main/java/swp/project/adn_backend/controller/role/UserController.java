@@ -24,7 +24,11 @@ public class UserController {
 
     @PutMapping("/update-user")
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     public ResponseEntity<Users> updateUser(Authentication authentication, @RequestBody @Valid UpdateUserRequest updateUserRequest) {
+=======
+    public ResponseEntity<Users> updateUser(Authentication authentication,@Valid @RequestBody UpdateUserRequest updateUserRequest) {
+>>>>>>> Stashed changes
 =======
     public ResponseEntity<Users> updateUser(Authentication authentication,@Valid @RequestBody UpdateUserRequest updateUserRequest) {
 >>>>>>> Stashed changes

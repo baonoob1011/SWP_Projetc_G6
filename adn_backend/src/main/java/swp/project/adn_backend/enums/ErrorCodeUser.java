@@ -10,10 +10,14 @@ import org.springframework.http.HttpStatusCode;
 public enum ErrorCodeUser {
     USER_EXISTED(1001, "Username is existed", HttpStatus.BAD_REQUEST),
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     INVALID_DATE_OF_BIRTH(1001, "date of birth have to in path", HttpStatus.BAD_REQUEST),
     INVALID_GENDER(1001, "GENDER not mapping format", HttpStatus.BAD_REQUEST),
     OLD_PASSWORD_NOT_MAPPING(1001, "Old password not mapping or not existed", HttpStatus.BAD_REQUEST),
     PASSWORD_EXISTED(1001, "Password is existed", HttpStatus.BAD_REQUEST),
+=======
+    ID_CARD_EXISTED(1001, "ID card is existed", HttpStatus.BAD_REQUEST),
+>>>>>>> Stashed changes
 =======
     ID_CARD_EXISTED(1001, "ID card is existed", HttpStatus.BAD_REQUEST),
 >>>>>>> Stashed changes

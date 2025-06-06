@@ -18,7 +18,12 @@ import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.ManagerRequest;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
+=======
+import swp.project.adn_backend.dto.request.UpdateRequest.UpdateUserRequest;
+import swp.project.adn_backend.entity.Manager;
+>>>>>>> Stashed changes
 =======
 import swp.project.adn_backend.dto.request.UpdateRequest.UpdateUserRequest;
 import swp.project.adn_backend.entity.Manager;

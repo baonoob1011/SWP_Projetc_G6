@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.StaffRequest;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
+=======
+import swp.project.adn_backend.dto.request.UpdateRequest.UpdateUserRequest;
+>>>>>>> Stashed changes
 =======
 import swp.project.adn_backend.dto.request.UpdateRequest.UpdateUserRequest;
 >>>>>>> Stashed changes
@@ -31,8 +35,13 @@ public class StaffController {
 
     @PutMapping("/update-profile")
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     public ResponseEntity<Users> updateStaffById(@RequestBody @Valid UpdateStaffAndManagerRequest staffRequest, Authentication authentication) {
         return ResponseEntity.ok(staffService.updateStaff(authentication, staffRequest));
+=======
+    public ResponseEntity<Staff> updateStaffById(@RequestBody @Valid UpdateUserRequest updateUserRequest, Authentication authentication) {
+        return ResponseEntity.ok(staffService.updateStaffById(authentication, updateUserRequest));
+>>>>>>> Stashed changes
 =======
     public ResponseEntity<Staff> updateStaffById(@RequestBody @Valid UpdateUserRequest updateUserRequest, Authentication authentication) {
         return ResponseEntity.ok(staffService.updateStaffById(authentication, updateUserRequest));
