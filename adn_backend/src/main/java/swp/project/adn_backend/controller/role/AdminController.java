@@ -34,7 +34,6 @@ public class AdminController {
     }
 
     //Get
-
     @GetMapping("/get-all-user")
     ResponseEntity<List<UserInfoDTO>> getAllUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -25,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import swp.project.adn_backend.enums.Roles;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -34,14 +35,14 @@ import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfig {
 
 
     private final String[] PUBLIC_ENDPOINTS = {
             "/api/auth/**",
             "/api/otp/**",
-            "/api/register/user-account"
+            "/api/register/user-account",
+            "/api/user/**"
     };
 
 
@@ -57,15 +58,20 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
                         // STAFF or MANAGER can access /api/staff/**
+<<<<<<< Updated upstream
                         .requestMatchers("/api/appointment/book-appointment","/api/user/**").hasAnyRole("USER")
+=======
+                        .requestMatchers("/api/appointment/book-appointment").hasAnyRole("USER")
+                        .requestMatchers("/api/user/**").hasAnyRole("USER")
+>>>>>>> Stashed changes
                         .requestMatchers("/api/staff/**").hasAnyRole("STAFF", "MANAGER", "ADMIN")
+                        .requestMatchers("/api/staff/update-profile").hasRole("STAFF")
+                        .requestMatchers("/api/manager/update-profile").hasRole("MANAGER")
                         .requestMatchers("/api/services/create-service").hasAnyRole("MANAGER", "ADMIN")
                         .requestMatchers("/api/manager/**").hasAnyRole("MANAGER", "ADMIN")
                         .requestMatchers("/api/register/staff-account").hasAnyRole("MANAGER", "ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").hasRole("ADMIN")  // matcher rộng cuối cùng
-
-
 
                         // Các request khác yêu cầu xác thực
                         .anyRequest().authenticated()

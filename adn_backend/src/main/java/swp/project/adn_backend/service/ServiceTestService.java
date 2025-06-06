@@ -131,11 +131,15 @@ public class ServiceTestService {
         return serviceTestRepository.save(serviceTest);
     }
 
+    public List<ServiceTest> getAllService(){
+        return serviceTestRepository.findByIsActiveTrue();
+    }
 
-    public void deleteServiceTest(long serviceId) {
+    public ServiceTest deleteServiceTest(long serviceId) {
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
         serviceTest.setActive(false);
+        return serviceTestRepository.save(serviceTest);
     }
 
     public ServiceTest updateService(Long serviceId,

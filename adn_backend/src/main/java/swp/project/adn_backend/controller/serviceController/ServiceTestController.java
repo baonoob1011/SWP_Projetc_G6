@@ -1,5 +1,6 @@
 package swp.project.adn_backend.controller.serviceController;
 
+import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -8,7 +9,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
+import swp.project.adn_backend.entity.ServiceTest;
 import swp.project.adn_backend.service.ServiceTestService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/services")
@@ -30,9 +34,17 @@ public class ServiceTestController {
                 request.getCivilServiceRequest(),
                 file
         );
-
         return ResponseEntity.ok("Tạo dịch vụ ADN thành công");
     }
 
+    @DeleteMapping("/delete-serivce")
+    public ResponseEntity<ServiceTest> deleteService(@RequestParam long serviceId) {
+        return ResponseEntity.ok(serviceTestService.deleteServiceTest(serviceId));
+    }
 
+    @GetMapping("/get-all-service")
+    public ResponseEntity<List<ServiceTest>>getAllService(){
+        return ResponseEntity.ok(serviceTestService.getAllService());
+    }
+    
 }

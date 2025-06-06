@@ -17,9 +17,16 @@ public interface ManagerRepository extends JpaRepository<Manager, Long> {
 
     boolean existsByPhone(String phone);
 
-    Optional<Users> deleteByPhone(String phone);
+    boolean existsByIdCard(String idCard);
+
+
+    Optional<Manager> deleteByPhone(String phone);
 
     Optional<Manager> findByUsername(String username);
 
+    Optional<Manager> findByPhone(String phone);
 
+    Optional<Manager> findByEmail(String request);
+
+    Optional<Manager> findById(Long id);
 }

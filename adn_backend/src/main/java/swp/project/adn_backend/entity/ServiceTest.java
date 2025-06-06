@@ -6,15 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
+import org.hibernate.annotations.Where;
 import swp.project.adn_backend.enums.ServiceType;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Where(clause = "is_active = true")
 @Table(name = "Service")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ServiceTest {
