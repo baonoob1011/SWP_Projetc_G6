@@ -2,19 +2,19 @@
 
 /* Container chính của map */
 .map-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-  border-radius: 16px;
-  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  background-color: #ccc;
 }
 
 /* Map element */
 .map-element {
   width: 100%;
   height: 100%;
-  border-radius: 16px;
 }
 
 /* Header title - có thể ẩn hoặc đặt position absolute */
@@ -62,21 +62,4 @@ body.map-fullscreen {
 
 .fullscreen-toggle:hover {
   background: #f5f5f5;
-}
-
-/* Custom InfoWindow styling */
-.gm-style .gm-style-iw {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.gm-style .gm-style-iw-t::after {
-  background: #fff;
-}
-
-.gm-style .gm-style-iw-d {
-  overflow: hidden !important;
-  max-height: none !important;
 }
