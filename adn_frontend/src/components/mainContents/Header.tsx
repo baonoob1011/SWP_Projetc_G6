@@ -19,22 +19,15 @@ import {
 
 import {
   Menu as MenuIcon,
-  HomeOutlined,
-  BuildOutlined,
-  ArticleOutlined,
-  CalendarTodayOutlined,
-  BusinessOutlined,
-  LocationOnOutlined,
   ArrowDropDown,
+  AccountCircle,
+  Phone,
 } from "@mui/icons-material";
 
 import { NavLink, useNavigate } from "react-router-dom";
 
-
-
 import logo from "../../image/Logo.png";
 import styles from "./Header.module.css";
-
 type HeaderProps = {
   fullName: string;
   setFullName: React.Dispatch<React.SetStateAction<string>>;
@@ -48,28 +41,24 @@ export function Header({ fullName, setFullName }: HeaderProps) {
   const role = localStorage.getItem("role");
 
   const navItems = [
-    { label: "Home", path: "/", icon: <HomeOutlined fontSize="small" /> },
+    { label: "Home", path: "/" },
     {
       label: "Dịch vụ",
-      icon: <BuildOutlined fontSize="small" />,
       children: [
         { label: "Hành chính", path: "/service/administrative" },
         { label: "Dân sự", path: "/service/civil" },
       ],
     },
-<<<<<<< Updated upstream
-    { label: "Tin tức", path: "/blog", icon: <ArticleOutlined fontSize="small" /> },
-    { label: "Đặt lịch", path: "/order", icon: <CalendarTodayOutlined fontSize="small" /> },
-    { label: "Chi nhánh", path: "/branch", icon: <BusinessOutlined fontSize="small" /> },
-    { label: "Địa chỉ", path: "/address", icon: <LocationOnOutlined fontSize="small" /> },
-=======
+
     { label: "Tin tức", path: "/blog" },
     { label: "Đặt lịch", path: "/order" },
     { label: "Địa chỉ", path: "/branch-and-map" },
->>>>>>> Stashed changes
   ];
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>, label: string) => {
+  const handleOpenMenu = (
+    event: React.MouseEvent<HTMLElement>,
+    label: string
+  ) => {
     setAnchorEl(event.currentTarget);
     setMenuOpen(label);
   };
@@ -105,33 +94,42 @@ export function Header({ fullName, setFullName }: HeaderProps) {
 
   return (
     <>
-      <AppBar position="fixed" color="inherit" elevation={1}>
+      <AppBar
+        position="fixed"
+        color="inherit"
+        elevation={1}
+        sx={{
+          backgroundColor: "#F1FFFF",
+        }}
+      >
         <Toolbar
           disableGutters
           sx={{
-            px: 0,                // loại bỏ hoàn toàn padding ngang
-            minHeight: "auto",    // bỏ chiều cao cố định 64px
-            height: "auto",
+            px: 0, // loại bỏ hoàn toàn padding ngang
+            minHeight: 20, // bỏ chiều cao cố định 64px
+            height: 100,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
           }}
         >
           {/* Logo + GENLINK sát mép trái */}
+          {/* Logo + slogan dưới logo */}
           <Box
             sx={{
               display: "flex",
-              alignItems: "center",
-              ml: 0,   // margin-left = 0 để bám sát mép trái
+              flexDirection: "column", // đổi thành cột dọc
+              alignItems: "center", // canh giữa theo chiều ngang
+              ml: 0,
+              width: 200, // giữ chiều rộng logo + slogan
             }}
           >
             <NavLink
               to="/"
               style={{
-                display: "flex",
-                alignItems: "center",
+                display: "block",
                 textDecoration: "none",
-                marginLeft: 0,
+                width: "100%",
               }}
             >
               <img
@@ -139,19 +137,12 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                 alt="Logo"
                 className={styles.logoImage}
                 style={{
-                  width: 40,
-                  height: 40,
+                  height: 200,
                   display: "block",
+                  margin: "0 auto",
+                  marginLeft: 80, // căn giữa logo nếu cần
                 }}
               />
-              <Typography
-                variant="h6"
-                component="div"
-                className={styles.brandName}
-                sx={{ ml: 0.5 }} // cách logo 4px
-              >
-                GENLINK
-              </Typography>
             </NavLink>
           </Box>
 
@@ -162,7 +153,8 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
-              gap: 2,   // khoảng cách 16px giữa các nút
+              gap: 5,
+              // khoảng cách 16px giữa các nút
             }}
           >
             {navItems.map((item) =>
@@ -170,12 +162,12 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                 <Box key={item.label} sx={{ position: "relative" }}>
                   <Button
                     className={styles.navButton}
-                    startIcon={item.icon}
                     endIcon={<ArrowDropDown />}
                     onClick={(e) => handleOpenMenu(e, item.label)}
                     sx={{
                       textTransform: "none",
-                      px: 1.5,  // padding ngang 12px
+                      px: 1.5,
+                      fontSize: 20, // padding ngang 12px
                     }}
                   >
                     {item.label}
@@ -196,7 +188,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         to={child.path}
                         onClick={handleCloseMenu}
                         className={styles.menuItem}
-                        sx={{ px: 2, py: 1 }}
+                        sx={{ px: 2, py: 1, fontSize: 20 }}
                       >
                         {child.label}
                       </MenuItem>
@@ -204,30 +196,49 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   </Menu>
                 </Box>
               ) : (
-                <Button
-                  key={item.label}
-                  component={NavLink}
-                  to={item.path}
-                  className={styles.navButton}
-                  startIcon={item.icon}
-                  sx={{
-                    textTransform: "none",
-                    px: 1.5,
-                  }}
-                >
-                  {item.label}
-                </Button>
+                <>
+                  {" "}
+                  <Button
+                    key={item.label}
+                    component={NavLink}
+                    to={item.path}
+                    className={styles.navButton}
+                    sx={{
+                      textTransform: "none",
+                      px: 1.5,
+                      fontSize: 20,
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                </>
               )
             )}
+            
           </Box>
 
           {/* Phần Đăng nhập / Đăng ký sát mép phải */}
+          <>
+              <Box
+                sx={{
+                  display: { xs: "none", md: "flex" },
+                  alignItems: "center",
+                  ml: 2, // margin-left khoảng 48px
+                }}
+              >
+                <Phone sx={{ color: "#DC143C", mr: 1 }} />
+                <Typography sx={{ fontSize: 20, color: "#DC143C" }}>
+                  0922.394.333
+                </Typography>
+              </Box>
+            </>
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
               gap: 1.5, // 12px giữa các nút
-              pr: 0,    // padding-right = 0 để bám sát mép phải
+              pr: 0,
+              ml: 2, // padding-right = 0 để bám sát mép phải
             }}
           >
             {fullName ? (
@@ -339,7 +350,52 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   </Menu>
                 </>
               ) : (
-                <Typography variant="body2">Welcome, {fullName}</Typography>
+                <>
+                  <Button
+                    startIcon={<AccountCircle />}
+                    className={styles.userButton}
+                    onClick={(e) => handleOpenMenu(e, "USER")}
+                    endIcon={<ArrowDropDown />}
+                    sx={{
+                      backgroundColor: "#F1FFFF",
+                      textTransform: "none",
+                      padding: "0 20px",
+                      fontSize: 20,
+                      "&:hover": {
+                        backgroundColor: "#F1FFFF", // giữ nguyên khi hover
+                      },
+                      "&:active": {
+                        backgroundColor: "#F1FFFF", // giữ nguyên khi click
+                      },
+                      "&:focus": {
+                        backgroundColor: "#F1FFFF", // giữ nguyên khi focus bằng tab
+                      },
+                    }}
+                  >
+                    {fullName}
+                  </Button>
+
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={menuOpen === "USER"}
+                    onClose={handleCloseMenu}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
+                    classes={{ paper: styles.menuPaper }}
+                    MenuListProps={{ sx: { py: 0 } }}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        handleCloseMenu();
+                        handleLogout();
+                      }}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Đăng xuất
+                    </MenuItem>
+                  </Menu>
+                </>
               )
             ) : (
               <>
@@ -395,8 +451,9 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   <ListItem>
                     <ListItemText
                       primary={
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                          {item.icon}
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        >
                           <Typography variant="body1">{item.label}</Typography>
                         </Box>
                       }
@@ -425,7 +482,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     className={styles.drawerItemButton}
                   >
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      {item.icon}
                       <ListItemText primary={item.label} />
                     </Box>
                   </ListItemButton>
