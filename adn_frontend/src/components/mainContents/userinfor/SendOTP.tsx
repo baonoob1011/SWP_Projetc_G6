@@ -9,7 +9,6 @@ import { useState } from "react";
 import CountdownTimer from "../feature/CountDown";
 import NewPass from "./NewPass";
 import CustomSnackBar from "./Snackbar";
-import Swal from "sweetalert2";
 import styles from "./SendOTP.module.css";
 
 const SendOTP = ({ email }: { email: string }) => {
@@ -39,11 +38,10 @@ const SendOTP = ({ email }: { email: string }) => {
           severity: "error",
         });
       } else {
-        Swal.fire({
-          icon: "success",
-          title: "Xác thực thành công",
-          showConfirmButton: false,
-          timer: 1300,
+        setSnackbar({
+          open: true,
+          message: "Xác thực thành công",
+          severity: "success",
         });
         setTimeout(() => {
           setVerified(true);
@@ -76,7 +74,11 @@ const SendOTP = ({ email }: { email: string }) => {
       });
       setOtp("");
     } catch (err) {
-      alert((err as Error).message);
+      setSnackbar({
+        open: true,
+        message: (err as Error).message,
+        severity: "error",
+      });
     }
   };
 
