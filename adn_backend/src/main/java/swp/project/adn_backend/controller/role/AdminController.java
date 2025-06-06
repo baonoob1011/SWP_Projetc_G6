@@ -1,6 +1,7 @@
 package swp.project.adn_backend.controller.role;
 
 
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.ManagerRequest;
+import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.service.roleService.AdminService;
 import swp.project.adn_backend.service.roleService.ManagerService;
@@ -34,7 +36,7 @@ public class AdminController {
     //Get
 
     @GetMapping("/get-all-user")
-     ResponseEntity<List<UserInfoDTO>> getAllUsers() {
+    ResponseEntity<List<UserInfoDTO>> getAllUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
         System.out.println("Username: {}" + authentication.getName());
@@ -44,9 +46,7 @@ public class AdminController {
         );
 
         return ResponseEntity.ok(managerService.getAllUser());
-//        return APIResponse.<List<Users>>builder()
-//                .result(managerService.getAllUser())
-//                .build();
+
     }
 
 
@@ -83,7 +83,7 @@ public class AdminController {
 
     //update
     @PutMapping("/update-profile")
-    public ResponseEntity<Users> updateStaffById(@RequestBody ManagerRequest managerRequest, Authentication authentication) {
-        return ResponseEntity.ok(managerService.updateManager(managerRequest, authentication));
+    public ResponseEntity<Users> updateStaffById(@RequestBody @Valid UpdateStaffAndManagerRequest updateStaffAndManagerRequest, Authentication authentication) {
+        return ResponseEntity.ok(managerService.updateManager(authentication, updateStaffAndManagerRequest));
     }
 }

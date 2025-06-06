@@ -46,9 +46,9 @@ public class ManagerController {
         managerService.deleteStaffByPhone(phone);
     }
 
-    //update
-    @PutMapping("/update-profile")
-    public ResponseEntity<Users> updateStaffById(@RequestBody ManagerRequest managerRequest, Authentication authentication) {
-        return ResponseEntity.ok(managerService.updateManager(managerRequest, authentication));
-    }
+//    //update
+//    @PutMapping("/update-profile")
+//    public ResponseEntity<Users> updateStaffById(@RequestBody ManagerRequest managerRequest, Authentication authentication) {
+//        return ResponseEntity.ok(managerService.updateManager(authentication, authentication));
+//    }
 }

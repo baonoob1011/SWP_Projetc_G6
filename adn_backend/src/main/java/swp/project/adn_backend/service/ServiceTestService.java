@@ -86,6 +86,12 @@ public class ServiceTestService {
             }
         }
 
+
+
+
+
+
+
         // Price list
         PriceList priceList = priceListMapper.toPriceList(priceListRequest);
         priceList.setEffectiveDate(LocalDate.now());

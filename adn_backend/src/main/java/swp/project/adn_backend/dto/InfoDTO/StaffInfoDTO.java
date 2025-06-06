@@ -1,6 +1,7 @@
 package swp.project.adn_backend.dto.InfoDTO;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 public class StaffInfoDTO {
@@ -15,20 +16,21 @@ public class StaffInfoDTO {
     private String gender;
     private String address;
     private LocalDate dateOfBirth;
-
-
-    public StaffInfoDTO(String fullName, String phone, String email, boolean enabled, LocalDate createAt, String role, String idCard, String gender, String address, LocalDate dateOfBirth) {
+    public StaffInfoDTO(String fullName, String phone, String email,
+                        boolean enabled, LocalDate createAt,
+                        String idCard, String gender, String address,
+                        LocalDate dateOfBirth) {
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
         this.enabled = enabled;
         this.createAt = createAt;
-        this.role = role;
         this.idCard = idCard;
         this.gender = gender;
         this.address = address;
         this.dateOfBirth = dateOfBirth;
     }
+
 
     public String getIdCard() {
         return idCard;

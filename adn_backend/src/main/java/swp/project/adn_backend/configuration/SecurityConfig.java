@@ -57,7 +57,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
                         // STAFF or MANAGER can access /api/staff/**
-                        .requestMatchers("/api/appointment/book-appointment").hasAnyRole("USER")
+                        .requestMatchers("/api/appointment/book-appointment","/api/user/**").hasAnyRole("USER")
                         .requestMatchers("/api/staff/**").hasAnyRole("STAFF", "MANAGER", "ADMIN")
                         .requestMatchers("/api/services/create-service").hasAnyRole("MANAGER", "ADMIN")
                         .requestMatchers("/api/manager/**").hasAnyRole("MANAGER", "ADMIN")
@@ -117,39 +117,6 @@ public class SecurityConfig {
         authenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return authenticationConverter;
     }
-
-
-//        @Bean
-//    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-//        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-//        grantedAuthoritiesConverter.setAuthoritiesClaimName("role");  // Claim "role" will be used
-//        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");  // Add prefix "ROLE_" to authorities
-//
-//        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-//        return jwtAuthenticationConverter;
-//    }
-//    @Bean
-//    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-//        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-//        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-//            Object roleClaim = jwt.getClaim("role");
-//            if (roleClaim instanceof String) {
-//                String role = (String) roleClaim;
-//                return List.of(new SimpleGrantedAuthority("ROLE_" + role));
-//            }
-//            // Nếu là List<String> (nếu sau này mở rộng)
-//            else if (roleClaim instanceof Collection) {
-//                Collection<?> roles = (Collection<?>) roleClaim;
-//                return roles.stream()
-//                        .filter(r -> r instanceof String)
-//                        .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
-//                        .collect(Collectors.toList());
-//            }
-//            return List.of();  // Không có role thì trả về empty list
-//        });
-//        return converter;
-//    }
 
 
     @Bean
