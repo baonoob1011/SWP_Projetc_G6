@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import swp.project.adn_backend.dto.request.ManagerRequest;
+import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 
-import swp.project.adn_backend.entity.Staff;
+import swp.project.adn_backend.dto.request.ManagerRequest;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.service.roleService.ManagerService;
 
@@ -18,39 +18,17 @@ public class ManagerController {
     @Autowired
     private ManagerService managerService;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    //Get
-    @GetMapping("/get-all-user")
-    public ResponseEntity<List<Users>> getAllUsers() {
-        return ResponseEntity.ok(managerService.getAllUser());
-    }
+//    //Get
+//    @GetMapping("/get-all-user")
+//    public ResponseEntity<List<UserInfoDTO>> getAllUsers() {
+//        return ResponseEntity.ok(managerService.getAllUser());
+//    }
 
     @GetMapping("/get-all-staff")
-    public ResponseEntity<List<Staff>> getAllStaffs() {
+    public ResponseEntity<List<StaffInfoDTO>> getAllStaffs() {
         return ResponseEntity.ok(managerService.getAllStaff());
     }
+
 
     @GetMapping("/get-user-phone")
     public ResponseEntity<Users> getUserByPhone(@RequestParam String phone) {

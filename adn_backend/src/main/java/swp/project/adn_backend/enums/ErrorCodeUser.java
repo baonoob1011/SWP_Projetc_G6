@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatusCode;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum ErrorCodeUser {
     USER_EXISTED(1001, "Username is existed", HttpStatus.BAD_REQUEST),
+    SERVICE_NOT_EXISTED(1001, "Service is not existed", HttpStatus.BAD_REQUEST),
+    STAFF_NOT_EXISTED(1001, "Staff is not existed", HttpStatus.BAD_REQUEST),
+    USER_DISABLED(1001, "User is not active", HttpStatus.BAD_REQUEST),
     USERNAME_INVALID(1002, "Username must be at least 8 characters", HttpStatus.BAD_REQUEST),
     EMAIL_INVALID(1003, "Email format is invalid", HttpStatus.BAD_REQUEST),
     PASSWORD_WEAK(1004, "Password must contain at least one uppercase letter, one digit, and one special character", HttpStatus.BAD_REQUEST),
