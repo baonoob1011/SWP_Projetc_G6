@@ -16,12 +16,12 @@ import GetUserByAdmin from "./components/mainContents/actorList/GetUserByAdmin.t
 import GetUserByManager from "./components/mainContents/actorList/GetUserByManager.tsx";
 import GetStaffByManager from "./components/mainContents/actorList/GetStaffByManager.tsx";
 // import GetUserByStaff from "./components/mainContents/actorList/GetUserByStaff.tsx";
-import Branch from "./components/page/Branch.tsx";
 import Map from "./components/page/Map.tsx";
 import AdminSidebar from "./components/page/AdminPage.tsx";
 import { Box } from "@mui/material";
 import DataList from "./components/mainContents/actorList/AllDataList.tsx";
 import BookAppointmentForm from "./components/mainContents/services/SignUpServices.tsx";
+import BranchAndMap from "./components/page/BranchAndMap.tsx";
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -83,7 +83,7 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/forget" element={<Forget />} />
             <Route path="/signup-staff" element={<SignUpStaff />} />
-            <Route path="/branch" element={<Branch />} />
+            <Route path="/branch-and-map" element={<BranchAndMap />} />
             <Route path="/map" element={<Map />} />
             <Route path="/m-userData" element={<GetUserByManager />} />
             <Route path="/m-staffData" element={<GetStaffByManager />} />

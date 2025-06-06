@@ -51,7 +51,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
     },
     { label: "Tin tức", path: "/blog" },
     { label: "Đặt lịch", path: "/order" },
-    { label: "Địa chỉ", path: "/branch" },
+    { label: "Địa chỉ", path: "/branch-and-map" },
   ];
 
   const handleOpenMenu = (
