@@ -22,6 +22,7 @@ import { Box } from "@mui/material";
 import DataList from "./components/mainContents/actorList/AllDataList.tsx";
 import BookAppointmentForm from "./components/mainContents/services/SignUpServices.tsx";
 import BranchAndMap from "./components/page/BranchAndMap.tsx";
+// import NewPassWord from "./components/mainContents/actorList/ResetPassword.tsx";
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -46,7 +47,7 @@ function App() {
             }}
           >
             <AdminSidebar />
-            
+
           </Box>
           <Box
             sx={{
@@ -55,16 +56,18 @@ function App() {
               bgcolor: "#f9fafb",
               height: "100vh",
               overflowY: "auto",
+              m: 0
             }}
           >
             <Routes>
               <Route path="/admin" element={<DataList />}>
-                <Route path="data"/>
+                <Route path="data" />
                 <Route path="manager" element={<GetManagerByAdmin />} />
                 <Route path="staff" element={<GetStaffByAdmin />} />
                 <Route path="user" element={<GetUserByAdmin />} />
               </Route>
               <Route path="signup-manager" element={<SignUpManager />} />
+              <Route path="signup-staff" element={<SignUpManager />} />
               <Route path="services" element={<Services />} />
             </Routes>
           </Box>
@@ -74,7 +77,10 @@ function App() {
           {!shouldHideHeader && (
             <Header fullName={fullname} setFullName={setFullName} />
           )}
+          
           <Routes>
+
+
             <Route path="/" element={<Home />} />
             <Route
               path="/login"
@@ -88,9 +94,10 @@ function App() {
             <Route path="/m-userData" element={<GetUserByManager />} />
             <Route path="/m-staffData" element={<GetStaffByManager />} />
             <Route path="/create-services" element={<Services />} />
-            <Route path="/order" element={<BookAppointmentForm/>} />
+            <Route path="/order" element={<BookAppointmentForm />} />
           </Routes>
           <ToastContainer />
+          {/* <NewPassWord /> */}
         </>
       )}
     </>

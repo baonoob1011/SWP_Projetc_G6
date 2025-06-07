@@ -11,6 +11,8 @@ import CustomSnackBar from "../mainContents/userinfor/Snackbar";
 import SendOTP from "../mainContents/userinfor/SendOTP";
 import EmailIcon from "@mui/icons-material/Email";
 import styles from "./Forget.module.css";
+import bg from "../../image/bg5.png"
+import logo from "../../image/Logo.png";
 
 const Forget = () => {
   const [email, setEmail] = useState("");
@@ -62,66 +64,139 @@ const Forget = () => {
   }
 
   return (
-    <Box className={styles.forgetContainer}>
-      <Paper elevation={6} className={styles.forgetPaper}>
-        <Typography 
-          variant="h5" 
-          className={styles.forgetTitle}
-        >
-          Quên Mật Khẩu
-        </Typography>
-        
-        <Typography
-          variant="body2"
-          className={styles.forgetSubtitle}
-        >
-          Vui lòng nhập email để nhận mã xác thực (OTP)
-        </Typography>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        background: "linear-gradient(to right, #74ebd5, #ACB6E5)",
+        backgroundImage: `url(${bg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        padding: "0 60px",
+        boxSizing: "border-box",
+        position: "relative",
+      }}
+    >
+      {/* Phần bên phải để trống hoặc animation nếu cần */}
+      <div
+        style={{
+          position: "absolute",
+          right: 0,
+          top: 0,
+          width: "40%",
+          height: "100%",
+          opacity: 1,
+        }}
+      ></div>
 
-        <Box component="form" onSubmit={handleSendEmail}>
-          <Box className={styles.inputGroup}>
-            <TextField
-              label="Địa chỉ Email"
-              type="email"
+      <Box>
+        <Paper
+          elevation={20}
+          sx={{
+            width: 400,
+            borderRadius: "16px",
+            p: 4,
+            backgroundColor: "rgba(255, 255, 255, 0.25)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            boxShadow: "0 12px 32px rgba(0, 0, 0, 0.3)",
+            height: "70vh",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            position: "relative",
+            marginLeft: "auto",
+            paddingRight: "40px",
+            boxSizing: "border-box",
+            marginRight: 10,
+            border: "1px solid rgba(255, 255, 255, 0.3)",
+          }}
+        >
+          <img
+            src={logo}
+            alt="Logo"
+            style={{
+              position: "absolute",
+              top: -0,
+              right: 0,
+              width: "100px", // chỉnh kích thước logo phù hợp
+              height: "auto",
+            }}
+          />
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: "bold",
+              mb: 2,
+              color: "#fff",
+              textAlign: "center",
+            }}
+          >
+            Quên Mật Khẩu
+          </Typography>
+
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#fff",
+              textAlign: "center",
+              mb: 3,
+            }}
+          >
+            Vui lòng nhập email để nhận mã xác thực (OTP)
+          </Typography>
+
+          <Box component="form" onSubmit={handleSendEmail}>
+            <Box sx={{ mb: 2 }}>
+              <TextField
+                label="Địa chỉ Email"
+                type="email"
+                fullWidth
+                variant="outlined"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                sx={{
+                  backgroundColor: "#fff",
+                  borderRadius: 1,
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EmailIcon sx={{ color: "#666" }} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
+
+            <Button
+              type="submit"
               fullWidth
-              variant="outlined"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className={styles.customTextField}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <EmailIcon sx={{ color: "#666" }} />
-                  </InputAdornment>
-                ),
+              variant="contained"
+              size="large"
+              disabled={sending}
+              sx={{
+                mt: 1,
               }}
-            />
+              startIcon={sending && <div className={styles.spinner} />}
+            >
+              {sending ? "Đang gửi..." : "Gửi OTP"}
+            </Button>
           </Box>
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            size="large"
-            className={styles.forgetButton}
-            disabled={sending}
-            startIcon={
-              sending && <div className={styles.spinner} />
-            }
-          >
-            {sending ? "Đang gửi..." : "Gửi OTP"}
-          </Button>
-        </Box>
+          <CustomSnackBar
+            open={snackbar.open}
+            message={snackbar.message}
+            severity={snackbar.severity}
+            onClose={() => setSnackbar({ ...snackbar, open: false })}
+          />
+        </Paper>
+      </Box>
+    </div>
 
-        <CustomSnackBar
-          open={snackbar.open}
-          message={snackbar.message}
-          severity={snackbar.severity}
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
-        />
-      </Paper>
-    </Box>
   );
 };
 
