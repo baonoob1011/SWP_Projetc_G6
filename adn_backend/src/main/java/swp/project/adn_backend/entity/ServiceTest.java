@@ -62,17 +62,17 @@ public class ServiceTest {
     )
     List<Appointment> appointments;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
             CascadeType.ALL
     })
     List<CivilService> civilServices;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
             CascadeType.ALL
     })
     List<AdministrativeService> administrativeService;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
             CascadeType.ALL
     })
     List<Feedback> feedbacks;
@@ -82,7 +82,7 @@ public class ServiceTest {
     })
     List<PriceList> priceLists;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
             CascadeType.ALL
     })
     List<Discount> discounts;

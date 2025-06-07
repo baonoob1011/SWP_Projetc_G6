@@ -232,11 +232,10 @@ public class ServiceTestService {
     }
 
 
-    public ServiceTest deleteServiceTest(long serviceId) {
+    public void deleteServiceTest(long serviceId) {
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
-        serviceTest.setActive(false);
-        return serviceTestRepository.save(serviceTest);
+        serviceTestRepository.delete(serviceTest);
     }
 
     public ServiceTest updateService(Long serviceId,

@@ -41,8 +41,9 @@ public class ServiceTestController {
     }
 
     @DeleteMapping("/delete-service")
-    public ResponseEntity<ServiceTest> deleteService(@RequestParam long serviceId) {
-        return ResponseEntity.ok(serviceTestService.deleteServiceTest(serviceId));
+    public ResponseEntity<String> deleteService(@RequestParam long serviceId) {
+        serviceTestService.deleteServiceTest(serviceId);
+        return ResponseEntity.ok("Delete Successful");
     }
 
     @GetMapping("/get-all-service")
