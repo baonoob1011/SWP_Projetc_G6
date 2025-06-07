@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatusCode;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum ErrorCodeUser {
     USER_EXISTED(1001, "Username is existed", HttpStatus.BAD_REQUEST),
+    ID_CARD_EXISTED(1001, "ID card is existed", HttpStatus.BAD_REQUEST),
     SERVICE_NOT_EXISTED(1001, "Service is not existed", HttpStatus.BAD_REQUEST),
     STAFF_NOT_EXISTED(1001, "Staff is not existed", HttpStatus.BAD_REQUEST),
     USER_DISABLED(1001, "User is not active", HttpStatus.BAD_REQUEST),
@@ -25,6 +26,8 @@ public enum ErrorCodeUser {
     PASSWORD_TOO_SHORT(1012, "Password must be at least 8 characters", HttpStatus.BAD_REQUEST),
     EMAIL_EXISTED(1013, "Email is already registered", HttpStatus.BAD_REQUEST),
     PHONE_EXISTED(1014, "Phone number already in use", HttpStatus.BAD_REQUEST),
+    PASSWORD_EXISTED(1014, "Password already in use before", HttpStatus.BAD_REQUEST),
+    OLD_PASSWORD_NOT_MAPPING(1014, "Ole password do not mapping", HttpStatus.BAD_REQUEST),
     ADDRESS_EXISTED(1014, "address  already in use", HttpStatus.BAD_REQUEST),
     INVALID_KEY(1015, "Valid Message Key", HttpStatus.BAD_REQUEST),
     CONFIRM_PASSWORD_BLANK(1016, "Confirm password must not be blank", HttpStatus.BAD_REQUEST),
