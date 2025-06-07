@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 //import swp.project.adn_backend.configuration.UserPrincipal;
-import swp.project.adn_backend.dto.request.IntrospectRequest;
+import swp.project.adn_backend.dto.request.authentication.IntrospectRequest;
 import swp.project.adn_backend.dto.request.authentication.LoginDTO;
 import swp.project.adn_backend.dto.response.AuthenticationResponse;
 import swp.project.adn_backend.dto.response.IntrospectResponse;

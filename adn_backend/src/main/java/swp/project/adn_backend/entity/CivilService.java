@@ -45,6 +45,9 @@ public class CivilService {
     })
     List<Kit> kits;
 
+    public CivilService() {
+    }
+
     public long getCivilServiceId() {
         return civilServiceId;
     }

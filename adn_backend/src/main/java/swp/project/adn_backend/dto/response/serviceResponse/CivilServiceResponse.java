@@ -1,15 +1,15 @@
-package swp.project.adn_backend.dto.test;
+package swp.project.adn_backend.dto.response.serviceResponse;
 
 import swp.project.adn_backend.enums.SampleCollectionMethod;
 
-public class AdministrativeServiceResponse {
+public class CivilServiceResponse {
    private SampleCollectionMethod sampleCollectionMethod;
 
-    public AdministrativeServiceResponse(SampleCollectionMethod sampleCollectionMethod) {
+    public CivilServiceResponse(SampleCollectionMethod sampleCollectionMethod) {
         this.sampleCollectionMethod = sampleCollectionMethod;
     }
 
-    public AdministrativeServiceResponse() {
+    public CivilServiceResponse() {
     }
 
     public SampleCollectionMethod getSampleCollectionMethod() {

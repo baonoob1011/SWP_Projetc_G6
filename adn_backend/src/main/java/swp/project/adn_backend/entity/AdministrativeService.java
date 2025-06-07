@@ -32,6 +32,9 @@ public class AdministrativeService {
     @JoinColumn(name = "service_id", nullable = false)
     ServiceTest service;
 
+    public AdministrativeService() {
+    }
+
     public long getAdministrativeServiceId() {
         return administrativeServiceId;
     }

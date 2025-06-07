@@ -1,4 +1,4 @@
-package swp.project.adn_backend.dto.test;
+package swp.project.adn_backend.dto.response.serviceResponse;
 
 import swp.project.adn_backend.enums.ServiceType;
 

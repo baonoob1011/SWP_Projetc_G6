@@ -10,11 +10,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import swp.project.adn_backend.dto.request.*;
-import swp.project.adn_backend.dto.response.serviceResponse.ServiceResponse;
-import swp.project.adn_backend.dto.test.AdministrativeServiceResponse;
-import swp.project.adn_backend.dto.test.FullServiceResponse;
-import swp.project.adn_backend.dto.test.PriceListResponse;
-import swp.project.adn_backend.dto.test.ServiceTestResponse;
+import swp.project.adn_backend.dto.response.serviceResponse.*;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.SampleCollectionMethod;
@@ -23,11 +19,10 @@ import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.*;
 import swp.project.adn_backend.repository.*;
 import swp.project.adn_backend.dto.request.AdministrativeServiceRequest;
+
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 
 @Service
@@ -103,26 +98,18 @@ public class ServiceTestService {
         // Branch logic by service type
         switch (serviceRequest.getServiceType()) {
             case ADMINISTRATIVE -> {
-                if (administrativeServiceRequest == null) {
-                    throw new AppException(ErrorCodeUser.INVALID_REQUEST);
-                }
-                AdministrativeService administrativeService = administrativeMapper.toAdministrativeService(administrativeServiceRequest);
-                if (administrativeService == null) {
-                    throw new AppException(ErrorCodeUser.INTERNAL_ERROR);
-                }
+                AdministrativeService administrativeService = new AdministrativeService();
                 administrativeService.setSampleCollectionMethod(SampleCollectionMethod.AT_CLINIC);
                 administrativeService.setService(serviceTest);
                 administrativeServiceRepository.save(administrativeService);
             }
 
             case CIVIL -> {
-                if (civilServiceRequest == null) {
-                    throw new AppException(ErrorCodeUser.INVALID_REQUEST);
-                }
-                CivilService civilService = civilServiceMapper.toCivilService(civilServiceRequest);
-                if (civilService == null) {
-                    throw new AppException(ErrorCodeUser.INTERNAL_ERROR);
-                }
+                CivilService civilService = new CivilService();
+                Set<SampleCollectionMethod> defaultMethods = new HashSet<>();
+                defaultMethods.add(SampleCollectionMethod.AT_CLINIC);
+                defaultMethods.add(SampleCollectionMethod.AT_HOME);
+                civilService.setSampleCollectionMethods(defaultMethods);
                 civilService.setService(serviceTest);
                 civilServiceRepository.save(civilService);
             }
@@ -138,46 +125,87 @@ public class ServiceTestService {
         return serviceTestMapper.toServiceList(serviceTests);  // <-- dùng toServiceList
     }
 
-//    @Transactional(readOnly = true)
-//    public List<ServiceResponse> getAdministrativeService() {
-//        List<ServiceTest> serviceTests = serviceTestRepository.findAllByServiceType(ServiceType.ADMINISTRATIVE);
-//    }
-public List<FullServiceResponse> getAdministrativeServices() {
-    List<ServiceTest> services = serviceTestRepository.findAllByServiceType(ServiceType.ADMINISTRATIVE);
+    public List<FullServiceResponse> getAdministrativeServices() {
+        List<ServiceTest> services = serviceTestRepository.findAllByServiceType(ServiceType.ADMINISTRATIVE);
+        List<FullServiceResponse> responses = new ArrayList<>();
 
-    List<FullServiceResponse> responses = new ArrayList<>();
+        for (ServiceTest s : services) {
+            // Convert service entity to DTO
+            ServiceTestResponse serviceReq = serviceTestMapper.toServiceTestResponse(s);
 
-    for (ServiceTest s : services) {
-        ServiceTestResponse serviceReq = new ServiceTestResponse();
-        serviceReq.setServiceName(s.getServiceName());
-        serviceReq.setDescription(s.getDescription());
-        serviceReq.setServiceType(s.getServiceType());
-        serviceReq.setImage(s.getImage());
+            // Convert price list
+            List<PriceListResponse> priceReqs = new ArrayList<>();
+            if (s.getPriceLists() != null && !s.getPriceLists().isEmpty()) {
+                for (PriceList p : s.getPriceLists()) {
+                    PriceListResponse res = new PriceListResponse();
+                    res.setTime(p.getTime());
+                    res.setPrice(p.getPrice());
+                    priceReqs.add(res);
+                }
+            }
 
-        PriceListResponse priceReq = null;
-        if (s.getPriceLists() != null && !s.getPriceLists().isEmpty()) {
-            PriceList p = s.getPriceLists().get(0); // hoặc logic chọn giá phù hợp
-            priceReq = new PriceListResponse();
-            priceReq.setTime(p.getTime());
-            priceReq.setPrice(p.getPrice());
+            // Convert administrative services
+            List<AdministrativeServiceResponse> administrativeServiceRequests = new ArrayList<>();
+            if (s.getAdministrativeService() != null && !s.getAdministrativeService().isEmpty()) {
+                for (AdministrativeService admin : s.getAdministrativeService()) {
+                    AdministrativeServiceResponse adminRes = new AdministrativeServiceResponse();
+                    adminRes.setSampleCollectionMethod(admin.getSampleCollectionMethod());
+                    administrativeServiceRequests.add(adminRes);
+                }
+            }
+
+            // Build full response
+            FullServiceResponse fullResp = new FullServiceResponse();
+            fullResp.setServiceRequest(serviceReq);
+            fullResp.setPriceListRequest(priceReqs);
+            fullResp.setAdministrativeServiceRequest(administrativeServiceRequests);
+
+            responses.add(fullResp);
         }
-        AdministrativeServiceResponse administrativeServiceRequest = null;
 
-        if (s.getAdministrativeService() != null && !s.getAdministrativeService().isEmpty()) {
-            AdministrativeService administrativeService = s.getAdministrativeService().get(0); // ✅ Lấy phần tử đầu tiên
-            administrativeServiceRequest = new AdministrativeServiceResponse();
-            administrativeServiceRequest.setSampleCollectionMethod(administrativeService.getSampleCollectionMethod());
-        }
-
-        FullServiceResponse fullResp = new FullServiceResponse();
-        fullResp.setServiceRequest(serviceReq);
-        fullResp.setPriceListRequest(priceReq);
-        fullResp.setAdministrativeServiceRequest(administrativeServiceRequest);
-        responses.add(fullResp);
+        return responses;
     }
 
-    return responses;
-}
+    public List<FullServiceResponse> getCivilServices() {
+        List<ServiceTest> services = serviceTestRepository.findAllByServiceType(ServiceType.CIVIL);
+        List<FullServiceResponse> responses = new ArrayList<>();
+
+        for (ServiceTest s : services) {
+            // Convert service entity to DTO
+            ServiceTestResponse serviceReq = serviceTestMapper.toServiceTestResponse(s);
+
+            // Convert price list
+            List<PriceListResponse> priceReqs = new ArrayList<>();
+            if (s.getPriceLists() != null && !s.getPriceLists().isEmpty()) {
+                for (PriceList p : s.getPriceLists()) {
+                    PriceListResponse res = new PriceListResponse();
+                    res.setTime(p.getTime());
+                    res.setPrice(p.getPrice());
+                    priceReqs.add(res);
+                }
+            }
+
+            // Convert administrative services
+            List<CivilServiceResponse> administrativeServiceRequests = new ArrayList<>();
+            if (s.getAdministrativeService() != null && !s.getAdministrativeService().isEmpty()) {
+                for (AdministrativeService admin : s.getAdministrativeService()) {
+                    AdministrativeServiceResponse adminRes = new AdministrativeServiceResponse();
+                    adminRes.setSampleCollectionMethod(admin.getSampleCollectionMethod());
+                    administrativeServiceRequests.add(adminRes);
+                }
+            }
+
+            // Build full response
+            FullServiceResponse fullResp = new FullServiceResponse();
+            fullResp.setServiceRequest(serviceReq);
+            fullResp.setPriceListRequest(priceReqs);
+            fullResp.setAdministrativeServiceRequest(administrativeServiceRequests);
+
+            responses.add(fullResp);
+        }
+
+        return responses;
+    }
 
 
     public ServiceTest deleteServiceTest(long serviceId) {

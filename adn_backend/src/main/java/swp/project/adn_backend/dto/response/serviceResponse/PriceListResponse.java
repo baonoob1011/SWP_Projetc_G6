@@ -1,4 +1,4 @@
-package swp.project.adn_backend.dto.test;
+package swp.project.adn_backend.dto.response.serviceResponse;
 
 public class PriceListResponse {
     private String time;
