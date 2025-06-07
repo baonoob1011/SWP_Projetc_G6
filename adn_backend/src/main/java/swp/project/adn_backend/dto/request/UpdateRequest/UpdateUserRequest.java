@@ -1,4 +1,4 @@
-package swp.project.adn_backend.dto.request.UpdateRequest;
+package swp.project.adn_backend.dto.request.updateRequest;
 
 
 import jakarta.validation.constraints.*;

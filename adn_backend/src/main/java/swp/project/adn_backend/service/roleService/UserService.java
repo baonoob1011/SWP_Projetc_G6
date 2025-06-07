@@ -13,8 +13,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.request.ManagerRequest;
 import swp.project.adn_backend.dto.request.StaffRequest;
-import swp.project.adn_backend.dto.request.UpdateRequest.UpdateUserRequest;
 import swp.project.adn_backend.dto.request.UserRequest;
+import swp.project.adn_backend.dto.request.updateRequest.UpdateUserRequest;
 import swp.project.adn_backend.entity.Manager;
 import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
@@ -133,36 +133,47 @@ public class UserService {
     public Users updateUser(Authentication authentication, UpdateUserRequest updateUserRequest) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
-        System.out.println("Updating userId = " + userId);
-
         Users existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
-        if (updateUserRequest.getPhone() != null &&
-                userRepository.existsByPhone(updateUserRequest.getPhone())) {
-            throw new AppException(ErrorCodeUser.PHONE_EXISTED);
-        }
-
-        if (updateUserRequest.getEmail() != null &&
-                userRepository.existsByEmail(updateUserRequest.getEmail())) {
-            throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
-        }
-        if (updateUserRequest.getPassword() != null) {
-            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-            if (!passwordEncoder.matches(updateUserRequest.getPassword(), existingUser.getPassword())) {
-                throw new AppException(ErrorCodeUser.PASSWORD_EXISTED); // Bạn cần định nghĩa lỗi này
+        if (updateUserRequest.getEmail() != null) {
+            if (!updateUserRequest.getEmail().equals(existingUser.getEmail()) &&
+                    userRepository.existsByEmail(updateUserRequest.getEmail())) {
+                throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
             }
         }
-        // Cập nhật mật khẩu nếu có
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+
+
+        if (updateUserRequest.getPhone() != null) {
+            if (!updateUserRequest.getPhone().equals(existingUser.getPhone()) &&
+                    userRepository.existsByPhone(updateUserRequest.getPhone())) {
+                throw new AppException(ErrorCodeUser.PHONE_EXISTED);
+            }
+        }
+
         if (updateUserRequest.getPassword() != null) {
             if (updateUserRequest.getOldPassword() == null ||
                     !passwordEncoder.matches(updateUserRequest.getOldPassword(), existingUser.getPassword())) {
                 throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
             }
-            existingUser.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
+
+            if (!passwordEncoder.matches(updateUserRequest.getPassword(), existingUser.getPassword())) {
+                existingUser.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
+            } else {
+                throw new AppException(ErrorCodeUser.PASSWORD_EXISTED);
+            }
         }
+
+        if (updateUserRequest.getAddress() != null) {
+            String oldAddress = existingUser.getAddress();
+            if ((oldAddress == null || !oldAddress.equals(updateUserRequest.getAddress())) &&
+                    userRepository.existsByAddress(updateUserRequest.getAddress())) {
+                throw new AppException(ErrorCodeUser.ADDRESS_EXISTED);
+            }
+        }
+
         if (updateUserRequest.getPhone() != null) {
             existingUser.setPhone(updateUserRequest.getPhone());
         }
@@ -172,13 +183,11 @@ public class UserService {
         if (updateUserRequest.getFullName() != null) {
             existingUser.setFullName(updateUserRequest.getFullName());
         }
-
         if (updateUserRequest.getAddress() != null) {
             existingUser.setAddress(updateUserRequest.getAddress());
         }
         return userRepository.save(existingUser);
     }
-
 
     public void updatePasswordByEmail(String email, String newPassword) {
         Users user = userRepository.findByEmail(email)

@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.StaffRequest;
-import swp.project.adn_backend.dto.request.UpdateRequest.UpdateUserRequest;
+import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
 import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.service.roleService.StaffService;
@@ -26,8 +26,8 @@ public class StaffController {
     }
 
     @PutMapping("/update-profile")
-    public ResponseEntity<Staff> updateStaffById(@RequestBody @Valid UpdateUserRequest updateUserRequest, Authentication authentication) {
-        return ResponseEntity.ok(staffService.updateStaffById(authentication, updateUserRequest));
+    public ResponseEntity<Users> updateStaffById(@RequestBody @Valid UpdateStaffAndManagerRequest staffRequest, Authentication authentication) {
+        return ResponseEntity.ok(staffService.updateStaff(authentication, staffRequest));
     }
 
 }

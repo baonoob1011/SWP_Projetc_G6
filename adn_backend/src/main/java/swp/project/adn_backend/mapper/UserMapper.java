@@ -5,7 +5,6 @@ import org.mapstruct.Mapper;
 
 import swp.project.adn_backend.dto.request.ManagerRequest;
 import swp.project.adn_backend.dto.request.StaffRequest;
-import swp.project.adn_backend.dto.request.UpdateRequest.UpdateUserRequest;
 import swp.project.adn_backend.dto.request.UserRequest;
 import swp.project.adn_backend.entity.Users;
 
@@ -16,5 +15,4 @@ public interface UserMapper {
     Users toStaff(StaffRequest staffRequest);
 
     Users toManager(ManagerRequest managerRequest);
-    Users toUserUpdate(UpdateUserRequest updateUserRequest);
 }
