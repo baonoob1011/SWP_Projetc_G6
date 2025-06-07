@@ -10,57 +10,16 @@ public class UserInfoDTO {
     private boolean enabled;
     private LocalDate createAt;
     private Set<String> roles;
-    private String address;
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     public UserInfoDTO(String fullName, String phone, String email,
-                       boolean enabled, LocalDate createAt, String address) {
+                       boolean enabled, LocalDate createAt) {
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
         this.enabled = enabled;
         this.createAt = createAt;
-        this.address = address;
     }
 
-    public UserInfoDTO(String fullName, String phone, String email, boolean enabled, LocalDate createAt, String address) {
-        this.fullName = fullName;
-        this.phone = phone;
-        this.email = email;
-        this.enabled = enabled;
-        this.createAt = createAt;
-        this.address = address;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public UserInfoDTO(String fullName, String phone, String email, boolean enabled, LocalDate createAt, String address) {
-        this.fullName = fullName;
-        this.phone = phone;
-        this.email = email;
-        this.enabled = enabled;
-        this.createAt = createAt;
-        this.address = address;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
 
     public LocalDate getCreateAt() {
         return createAt;
@@ -102,13 +61,6 @@ public class UserInfoDTO {
         this.enabled = enabled;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
 
     public Set<String> getRoles() {
         return roles;

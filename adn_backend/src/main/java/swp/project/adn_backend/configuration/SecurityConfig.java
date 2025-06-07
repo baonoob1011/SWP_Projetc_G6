@@ -25,7 +25,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import swp.project.adn_backend.enums.Roles;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -35,14 +34,14 @@ import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
 
     private final String[] PUBLIC_ENDPOINTS = {
             "/api/auth/**",
             "/api/otp/**",
-            "/api/register/user-account",
-            "/api/user/**"
+            "/api/register/user-account"
     };
 
 
@@ -58,23 +57,15 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
                         // STAFF or MANAGER can access /api/staff/**
-<<<<<<< Updated upstream
-                        .requestMatchers("/api/appointment/book-appointment","/api/user/**").hasAnyRole("USER")
-=======
                         .requestMatchers("/api/appointment/book-appointment").hasAnyRole("USER")
-                        .requestMatchers("/api/user/**").hasAnyRole("USER")
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
                         .requestMatchers("/api/staff/**").hasAnyRole("STAFF", "MANAGER", "ADMIN")
-                        .requestMatchers("/api/staff/update-profile").hasRole("STAFF")
-                        .requestMatchers("/api/manager/update-profile").hasRole("MANAGER")
                         .requestMatchers("/api/services/create-service").hasAnyRole("MANAGER", "ADMIN")
                         .requestMatchers("/api/manager/**").hasAnyRole("MANAGER", "ADMIN")
                         .requestMatchers("/api/register/staff-account").hasAnyRole("MANAGER", "ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").hasRole("ADMIN")  // matcher rộng cuối cùng
+
+
 
                         // Các request khác yêu cầu xác thực
                         .anyRequest().authenticated()
@@ -126,6 +117,39 @@ public class SecurityConfig {
         authenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return authenticationConverter;
     }
+
+
+//        @Bean
+//    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+//        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+//        grantedAuthoritiesConverter.setAuthoritiesClaimName("role");  // Claim "role" will be used
+//        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");  // Add prefix "ROLE_" to authorities
+//
+//        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+//        return jwtAuthenticationConverter;
+//    }
+//    @Bean
+//    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+//        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+//        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+//            Object roleClaim = jwt.getClaim("role");
+//            if (roleClaim instanceof String) {
+//                String role = (String) roleClaim;
+//                return List.of(new SimpleGrantedAuthority("ROLE_" + role));
+//            }
+//            // Nếu là List<String> (nếu sau này mở rộng)
+//            else if (roleClaim instanceof Collection) {
+//                Collection<?> roles = (Collection<?>) roleClaim;
+//                return roles.stream()
+//                        .filter(r -> r instanceof String)
+//                        .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
+//                        .collect(Collectors.toList());
+//            }
+//            return List.of();  // Không có role thì trả về empty list
+//        });
+//        return converter;
+//    }
 
 
     @Bean
