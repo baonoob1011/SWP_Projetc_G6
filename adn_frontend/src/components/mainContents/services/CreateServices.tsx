@@ -71,12 +71,7 @@ const Services = () => {
     }
   };
 
-  const getOptions = () =>
-    form.service.serviceType === "ADMINISTRATIVE"
-      ? ["Lấy mẫu xét nghiệm tại cơ sở"]
-      : form.service.serviceType === "CIVIL"
-        ? ["Lấy mẫu xét nghiệm tại cơ sở", "Lấy mẫu xét nghiệm tại nhà"]
-        : [];
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -181,24 +176,16 @@ const Services = () => {
       </div>
 
       <div className={styles.formGroup}>
-        <label className={styles.label}>Hình thức</label>
-        <select
+        <label className={styles.label}>Mô tả</label>
+        <input
+          type="text"
           name="description"
           value={form.service.description}
-          onChange={(e) =>
-            handleInput("service", "description", e.target.value)
-          }
-          disabled={!getOptions().length}
-          className={styles.select}
+          onChange={(e) => handleInput("service", "description", e.target.value)}
+          placeholder="Nhập mô tả"
+          className={styles.input}
           required
-        >
-          <option value="">-- Chọn hình thức --</option>
-          {getOptions().map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
+        />
       </div>
 
       {/* Price section */}
