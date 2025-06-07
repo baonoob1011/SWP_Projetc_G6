@@ -9,8 +9,9 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import { Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
 type Staff = {
   idCard: string;
   dateOfBirth: string;
@@ -80,7 +81,7 @@ function GetStaffByAdmin() {
       }
     }
   };
-
+  
   if (!isAdmin) {
     return;
   }
@@ -88,7 +89,7 @@ function GetStaffByAdmin() {
   return (
     <>
       <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
-        
+
         <TextField
           label="Nhập số điện thoại"
           variant="outlined"
@@ -191,8 +192,18 @@ function GetStaffByAdmin() {
             ))}
           </TableBody>
         </Table>
-        
+        <>
+
+        </>
       </TableContainer>
+      <Button
+        component={NavLink}
+        to="/signup-manager"
+        className="normal-case"
+        style={{ textDecoration: "none" }}
+      >
+        <Plus size={20} />
+      </Button>
     </>
   );
 }
