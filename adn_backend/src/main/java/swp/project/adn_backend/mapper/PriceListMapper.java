@@ -3,6 +3,7 @@ package swp.project.adn_backend.mapper;
 import org.mapstruct.Mapper;
 import swp.project.adn_backend.dto.request.PriceListRequest;
 import swp.project.adn_backend.dto.request.ServiceRequest;
+import swp.project.adn_backend.dto.response.serviceResponse.PriceListResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.PriceListRespose;
 import swp.project.adn_backend.entity.PriceList;
 import swp.project.adn_backend.entity.ServiceTest;
@@ -10,5 +11,5 @@ import swp.project.adn_backend.entity.ServiceTest;
 @Mapper(componentModel = "spring")
 public interface PriceListMapper {
     PriceList toPriceList(PriceListRequest priceListRequest);
-    PriceListRespose toPriceListResponse(PriceList priceList);
+    PriceListResponse toPriceListResponse(PriceList priceList);
 }

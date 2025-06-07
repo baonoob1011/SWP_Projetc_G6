@@ -77,7 +77,7 @@ public class ServiceTest {
     })
     List<Feedback> feedbacks;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
             CascadeType.ALL
     })
     List<PriceList> priceLists;
@@ -86,6 +86,18 @@ public class ServiceTest {
             CascadeType.ALL
     })
     List<Discount> discounts;
+
+    public ServiceTest() {
+    }
+
+    public ServiceTest(String serviceName, LocalDate registerDate, String description, ServiceType serviceType, boolean isActive, String image) {
+        this.serviceName = serviceName;
+        this.registerDate = registerDate;
+        this.description = description;
+        this.serviceType = serviceType;
+        this.isActive = isActive;
+        this.image = image;
+    }
 
     public long getServiceId() {
         return serviceId;

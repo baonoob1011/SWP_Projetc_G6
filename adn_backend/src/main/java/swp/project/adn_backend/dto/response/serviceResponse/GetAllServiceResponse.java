@@ -1,30 +1,21 @@
 package swp.project.adn_backend.dto.response.serviceResponse;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
-import swp.project.adn_backend.entity.*;
+import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ServiceType;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class ServiceResponse {
-    long serviceId;
+public class GetAllServiceResponse {
     String serviceName;
     LocalDate registerDate;
     String description;
     private ServiceType serviceType;
     boolean isActive;
     private String image;
-    public ServiceResponse() {
-    }
 
-    public ServiceResponse(long serviceId, String serviceName, LocalDate registerDate, String description, ServiceType serviceType, boolean isActive, String image) {
-        this.serviceId = serviceId;
+
+    public GetAllServiceResponse(String serviceName, LocalDate registerDate, String description, ServiceType serviceType, boolean isActive, String image) {
         this.serviceName = serviceName;
         this.registerDate = registerDate;
         this.description = description;
@@ -33,12 +24,7 @@ public class ServiceResponse {
         this.image = image;
     }
 
-    public long getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(long serviceId) {
-        this.serviceId = serviceId;
+    public GetAllServiceResponse() {
     }
 
     public String getServiceName() {
@@ -88,23 +74,5 @@ public class ServiceResponse {
     public void setImage(String image) {
         this.image = image;
     }
-
-//    public List<CivilService> getCivilServices() {
-//        return civilServices;
-//    }
-//
-//    public void setCivilServices(List<CivilService> civilServices) {
-//        this.civilServices = civilServices;
-//    }
-//
-//    public List<AdministrativeService> getAdministrativeService() {
-//        return administrativeService;
-//    }
-//
-//    public void setAdministrativeService(List<AdministrativeService> administrativeService) {
-//        this.administrativeService = administrativeService;
-//    }
-
-
 
 }

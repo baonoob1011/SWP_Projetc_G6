@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
 import swp.project.adn_backend.dto.response.serviceResponse.FullCivilServiceResponse;
+import swp.project.adn_backend.dto.response.serviceResponse.FullServiceTestResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.ServiceResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.FullAdministrationServiceResponse;
 import swp.project.adn_backend.entity.ServiceTest;
@@ -45,9 +46,10 @@ public class ServiceTestController {
     }
 
     @GetMapping("/get-all-service")
-    public ResponseEntity<List<ServiceResponse>>getAllService(){
+    public ResponseEntity<List<FullServiceTestResponse>> getAllService() {
         return ResponseEntity.ok(serviceTestService.getAllService());
     }
+
     @GetMapping("/get-all-administrative-service")
     public ResponseEntity<List<FullAdministrationServiceResponse>> getAdministrativeServices() {
         List<FullAdministrationServiceResponse> responses = serviceTestService.getAdministrativeServices();
@@ -59,5 +61,5 @@ public class ServiceTestController {
         List<FullCivilServiceResponse> responses = serviceTestService.getCivilServices();
         return ResponseEntity.ok(responses);
     }
-    
+
 }

@@ -40,9 +40,10 @@ public class ServiceTestService {
     CivilServiceRepository civilServiceRepository;
     PriceListRepository priceListRepository;
     EntityManager entityManager;
+    UserMapper userMapper;
 
     @Autowired
-    public ServiceTestService(UserRepository userRepository, ServiceTestMapper serviceTestMapper, ServiceTestRepository serviceTestRepository, PriceListMapper priceListMapper, FeedbackMapper feedbackMapper, AdministrativeMapper administrativeMapper, CivilServiceMapper civilServiceMapper, AdministrativeServiceRepository administrativeServiceRepository, CivilServiceRepository civilServiceRepository, PriceListRepository priceListRepository, EntityManager entityManager) {
+    public ServiceTestService(UserRepository userRepository, ServiceTestMapper serviceTestMapper, ServiceTestRepository serviceTestRepository, PriceListMapper priceListMapper, FeedbackMapper feedbackMapper, AdministrativeMapper administrativeMapper, CivilServiceMapper civilServiceMapper, AdministrativeServiceRepository administrativeServiceRepository, CivilServiceRepository civilServiceRepository, PriceListRepository priceListRepository, EntityManager entityManager, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.serviceTestMapper = serviceTestMapper;
         this.serviceTestRepository = serviceTestRepository;
@@ -54,6 +55,7 @@ public class ServiceTestService {
         this.civilServiceRepository = civilServiceRepository;
         this.priceListRepository = priceListRepository;
         this.entityManager = entityManager;
+        this.userMapper = userMapper;
     }
 
     public ServiceTest createService(ServiceRequest serviceRequest,
@@ -120,9 +122,27 @@ public class ServiceTestService {
         return serviceTestRepository.save(serviceTest);
     }
 
-    public List<ServiceResponse> getAllService() {
+    public List<FullServiceTestResponse> getAllService() {
         List<ServiceTest> serviceTests = serviceTestRepository.findAll();
-        return serviceTestMapper.toServiceList(serviceTests);  // <-- dùng toServiceList
+        List<FullServiceTestResponse> responses = new ArrayList<>();
+        FullServiceTestResponse fullServiceTestResponse = null;
+        for (ServiceTest serviceTest : serviceTests) {
+            GetAllServiceResponse getAllServiceResponse = serviceTestMapper.toGetAllServiceTestResponse(serviceTest);
+            // get Price List
+            List<PriceListResponse> priceListResponses = new ArrayList<>();
+            for (PriceList priceList : serviceTest.getPriceLists()) {
+                PriceListResponse priceListResponse = priceListMapper.toPriceListResponse(priceList);
+                priceListResponses.add(priceListResponse);
+            }
+            UserCreateServiceResponse userResponse = userMapper.toUserCreateServiceResponse(serviceTest.getUsers());
+
+            fullServiceTestResponse = new FullServiceTestResponse();
+            fullServiceTestResponse.setServiceRequest(getAllServiceResponse);
+            fullServiceTestResponse.setPriceListRequest(priceListResponses);
+            fullServiceTestResponse.setUserCreateServiceResponse(userResponse);
+            responses.add(fullServiceTestResponse);
+        }
+        return responses;
     }
 
     public List<FullAdministrationServiceResponse> getAdministrativeServices() {
@@ -146,8 +166,8 @@ public class ServiceTestService {
 
             // Convert administrative services
             List<AdministrativeServiceResponse> administrativeServiceResponses = new ArrayList<>();
-            List<AdministrativeService> administrativeServices=s.getAdministrativeService();
-            if (administrativeServices!= null && !administrativeServices.isEmpty()) {
+            List<AdministrativeService> administrativeServices = s.getAdministrativeService();
+            if (administrativeServices != null && !administrativeServices.isEmpty()) {
                 for (AdministrativeService administrativeService : s.getAdministrativeService()) {
                     AdministrativeServiceResponse administrativeServiceResponse = new AdministrativeServiceResponse();
                     administrativeServiceResponse.setSampleCollectionMethod(administrativeService.getSampleCollectionMethod()); // Set enum list
