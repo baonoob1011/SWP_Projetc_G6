@@ -11,9 +11,7 @@ import lombok.experimental.FieldDefaults;
 import swp.project.adn_backend.enums.SampleCollectionMethod;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Table(name = "AdministrativeService")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdministrativeService {
@@ -22,6 +20,7 @@ public class AdministrativeService {
     @Column(name = "administrative_service_id")
     long administrativeServiceId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "sample_collection_method ")
     SampleCollectionMethod sampleCollectionMethod;
 

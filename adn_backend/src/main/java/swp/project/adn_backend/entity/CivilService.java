@@ -14,9 +14,6 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "CivilService")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CivilService {
@@ -28,7 +25,7 @@ public class CivilService {
     // Lưu nhiều enum
     @ElementCollection(targetClass = SampleCollectionMethod.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "admin_service_sample_methods", joinColumns = @JoinColumn(name = "admin_service_id"))
+    @CollectionTable(name = "civil_service_sample_methods", joinColumns = @JoinColumn(name = "admin_service_id"))
     @Column(name = "sample_collection_method")
     private Set<SampleCollectionMethod> sampleCollectionMethods = new HashSet<>();
 

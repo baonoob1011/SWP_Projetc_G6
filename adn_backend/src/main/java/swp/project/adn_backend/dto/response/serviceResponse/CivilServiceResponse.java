@@ -2,21 +2,23 @@ package swp.project.adn_backend.dto.response.serviceResponse;
 
 import swp.project.adn_backend.enums.SampleCollectionMethod;
 
-public class CivilServiceResponse {
-   private SampleCollectionMethod sampleCollectionMethod;
+import java.util.Set;
 
-    public CivilServiceResponse(SampleCollectionMethod sampleCollectionMethod) {
-        this.sampleCollectionMethod = sampleCollectionMethod;
-    }
+public class CivilServiceResponse {
+    private Set<SampleCollectionMethod> sampleCollectionMethods;
 
     public CivilServiceResponse() {
     }
 
-    public SampleCollectionMethod getSampleCollectionMethod() {
-        return sampleCollectionMethod;
+    public CivilServiceResponse(Set<SampleCollectionMethod> sampleCollectionMethods) {
+        this.sampleCollectionMethods = sampleCollectionMethods;
     }
 
-    public void setSampleCollectionMethod(SampleCollectionMethod sampleCollectionMethod) {
-        this.sampleCollectionMethod = sampleCollectionMethod;
+    public Set<SampleCollectionMethod> getSampleCollectionMethods() {
+        return sampleCollectionMethods;
+    }
+
+    public void setSampleCollectionMethods(Set<SampleCollectionMethod> sampleCollectionMethods) {
+        this.sampleCollectionMethods = sampleCollectionMethods;
     }
 }

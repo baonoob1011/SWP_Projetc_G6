@@ -125,9 +125,9 @@ public class ServiceTestService {
         return serviceTestMapper.toServiceList(serviceTests);  // <-- dùng toServiceList
     }
 
-    public List<FullServiceResponse> getAdministrativeServices() {
+    public List<FullAdministrationServiceResponse> getAdministrativeServices() {
         List<ServiceTest> services = serviceTestRepository.findAllByServiceType(ServiceType.ADMINISTRATIVE);
-        List<FullServiceResponse> responses = new ArrayList<>();
+        List<FullAdministrationServiceResponse> responses = new ArrayList<>();
 
         for (ServiceTest s : services) {
             // Convert service entity to DTO
@@ -145,20 +145,22 @@ public class ServiceTestService {
             }
 
             // Convert administrative services
-            List<AdministrativeServiceResponse> administrativeServiceRequests = new ArrayList<>();
-            if (s.getAdministrativeService() != null && !s.getAdministrativeService().isEmpty()) {
-                for (AdministrativeService admin : s.getAdministrativeService()) {
-                    AdministrativeServiceResponse adminRes = new AdministrativeServiceResponse();
-                    adminRes.setSampleCollectionMethod(admin.getSampleCollectionMethod());
-                    administrativeServiceRequests.add(adminRes);
+            List<AdministrativeServiceResponse> administrativeServiceResponses = new ArrayList<>();
+            List<AdministrativeService> administrativeServices=s.getAdministrativeService();
+            if (administrativeServices!= null && !administrativeServices.isEmpty()) {
+                for (AdministrativeService administrativeService : s.getAdministrativeService()) {
+                    AdministrativeServiceResponse administrativeServiceResponse = new AdministrativeServiceResponse();
+                    administrativeServiceResponse.setSampleCollectionMethod(administrativeService.getSampleCollectionMethod()); // Set enum list
+                    administrativeServiceResponses.add(administrativeServiceResponse);
                 }
             }
 
+
             // Build full response
-            FullServiceResponse fullResp = new FullServiceResponse();
+            FullAdministrationServiceResponse fullResp = new FullAdministrationServiceResponse();
             fullResp.setServiceRequest(serviceReq);
             fullResp.setPriceListRequest(priceReqs);
-            fullResp.setAdministrativeServiceRequest(administrativeServiceRequests);
+            fullResp.setAdministrativeServiceRequest(administrativeServiceResponses);
 
             responses.add(fullResp);
         }
@@ -166,9 +168,9 @@ public class ServiceTestService {
         return responses;
     }
 
-    public List<FullServiceResponse> getCivilServices() {
+    public List<FullCivilServiceResponse> getCivilServices() {
         List<ServiceTest> services = serviceTestRepository.findAllByServiceType(ServiceType.CIVIL);
-        List<FullServiceResponse> responses = new ArrayList<>();
+        List<FullCivilServiceResponse> responses = new ArrayList<>();
 
         for (ServiceTest s : services) {
             // Convert service entity to DTO
@@ -186,20 +188,22 @@ public class ServiceTestService {
             }
 
             // Convert administrative services
-            List<CivilServiceResponse> administrativeServiceRequests = new ArrayList<>();
-            if (s.getAdministrativeService() != null && !s.getAdministrativeService().isEmpty()) {
-                for (AdministrativeService admin : s.getAdministrativeService()) {
-                    AdministrativeServiceResponse adminRes = new AdministrativeServiceResponse();
-                    adminRes.setSampleCollectionMethod(admin.getSampleCollectionMethod());
-                    administrativeServiceRequests.add(adminRes);
+            List<CivilServiceResponse> serviceResponses = new ArrayList<>();
+            List<CivilService> civilServices = s.getCivilServices();
+            if (civilServices != null && !civilServices.isEmpty()) {
+                for (CivilService civilService : civilServices) {
+                    CivilServiceResponse response = new CivilServiceResponse();
+                    response.setSampleCollectionMethods(civilService.getSampleCollectionMethods()); // ✅ Truyền Set
+                    serviceResponses.add(response);
                 }
             }
 
+
             // Build full response
-            FullServiceResponse fullResp = new FullServiceResponse();
+            FullCivilServiceResponse fullResp = new FullCivilServiceResponse();
             fullResp.setServiceRequest(serviceReq);
             fullResp.setPriceListRequest(priceReqs);
-            fullResp.setAdministrativeServiceRequest(administrativeServiceRequests);
+            fullResp.setServiceResponses(serviceResponses);
 
             responses.add(fullResp);
         }

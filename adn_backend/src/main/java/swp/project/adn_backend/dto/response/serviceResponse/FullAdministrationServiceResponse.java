@@ -2,10 +2,13 @@ package swp.project.adn_backend.dto.response.serviceResponse;
 
 import java.util.List;
 
-public class FullServiceResponse {
+public class FullAdministrationServiceResponse {
     private ServiceTestResponse serviceRequest;
     private List<PriceListResponse> priceListRequest; // ✅ CHỈNH Ở ĐÂY
     private List<AdministrativeServiceResponse> administrativeServiceRequest;
+
+
+
 
     public ServiceTestResponse getServiceRequest() {
         return serviceRequest;

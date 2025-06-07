@@ -8,8 +8,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
+import swp.project.adn_backend.dto.response.serviceResponse.FullCivilServiceResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.ServiceResponse;
-import swp.project.adn_backend.dto.response.serviceResponse.FullServiceResponse;
+import swp.project.adn_backend.dto.response.serviceResponse.FullAdministrationServiceResponse;
 import swp.project.adn_backend.entity.ServiceTest;
 import swp.project.adn_backend.service.ServiceTestService;
 
@@ -48,8 +49,14 @@ public class ServiceTestController {
         return ResponseEntity.ok(serviceTestService.getAllService());
     }
     @GetMapping("/get-all-administrative-service")
-    public ResponseEntity<List<FullServiceResponse>> getAdministrativeServices() {
-        List<FullServiceResponse> responses = serviceTestService.getAdministrativeServices();
+    public ResponseEntity<List<FullAdministrationServiceResponse>> getAdministrativeServices() {
+        List<FullAdministrationServiceResponse> responses = serviceTestService.getAdministrativeServices();
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/get-all-civil-service")
+    public ResponseEntity<List<FullCivilServiceResponse>> getCivilServices() {
+        List<FullCivilServiceResponse> responses = serviceTestService.getCivilServices();
         return ResponseEntity.ok(responses);
     }
     
