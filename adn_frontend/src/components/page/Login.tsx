@@ -1,17 +1,15 @@
-import {
-  Box,
-  Button,
-  Paper,
-  TextField,
-  Typography
-} from "@mui/material";
+import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 import CustomSnackBar from "../mainContents/userinfor/Snackbar";
-import styles from "./Login.module.css"; // 👈 Import CSS module
+import bg from "../../image/bg5.png";
+import logo from "../../image/Logo.png";
+import "./Login.module.css";
+import { motion } from "framer-motion";
+
 
 type UserInfo = {
   username: string;
@@ -27,13 +25,13 @@ const Login = ({ setFullName }: LoginProps) => {
 
   const [user, setUser] = useState<UserInfo>({
     username: "",
-    password: ""
+    password: "",
   });
 
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
-    severity: "success" as "success" | "error"
+    severity: "success" as "success" | "error",
   });
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +41,7 @@ const Login = ({ setFullName }: LoginProps) => {
 
   const TimeLeftLogout = (exp: number) => {
     const now = Date.now() / 1000;
-    const timeleft = (exp - now) * 1000 ;
+    const timeleft = (exp - now) * 1000;
     if (timeleft > 0) {
       setTimeout(() => {
         toast.error("Hết thời gian đăng nhập");
@@ -60,14 +58,14 @@ const Login = ({ setFullName }: LoginProps) => {
       const response = await fetch("http://localhost:8080/api/auth/token", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user)
+        body: JSON.stringify(user),
       });
 
       if (!response.ok) {
         setSnackbar({
           open: true,
           message: "Sai tên đăng nhập hoặc mật khẩu",
-          severity: "error"
+          severity: "error",
         });
       } else {
         const data = await response.json();
@@ -93,7 +91,7 @@ const Login = ({ setFullName }: LoginProps) => {
             icon: "success",
             title: "Đăng nhập thành công!",
             showConfirmButton: false,
-            timer: 1300
+            timer: 1300,
           });
 
           setTimeout(() => navigate("/"), 1500);
@@ -101,7 +99,7 @@ const Login = ({ setFullName }: LoginProps) => {
           Swal.fire({
             icon: "error",
             title: "Token không hợp lệ!",
-            text: "Vui lòng thử lại hoặc liên hệ quản trị viên"
+            text: "Vui lòng thử lại hoặc liên hệ quản trị viên",
           });
         }
       }
@@ -109,35 +107,103 @@ const Login = ({ setFullName }: LoginProps) => {
       Swal.fire({
         icon: "error",
         title: "Lỗi hệ thống!",
-        text: "Không thể kết nối tới máy chủ"
+        text: "Không thể kết nối tới máy chủ",
       });
     }
   };
 
-//    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//    const handleGoogleLoginSuccess = (fullName: string, token: string) => {
-//   setFullName(fullName);
+  //    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //    const handleGoogleLoginSuccess = (fullName: string, token: string) => {
+  //   setFullName(fullName);
 
-//   Swal.fire({
-//     icon: "success",
-//     title: "Đăng nhập Google thành công!",
-//     showConfirmButton: false,
-//     timer: 1300,
-//   });
+  //   Swal.fire({
+  //     icon: "success",
+  //     title: "Đăng nhập Google thành công!",
+  //     showConfirmButton: false,
+  //     timer: 1300,
+  //   });
 
-//   navigate("/");
-// };
+  //   navigate("/");
+  // };
 
   return (
-    <div className={styles.container}>
-      {/* DNA Icons Container - Bên phải */}
-      <div className={styles.dnaIconsContainer}></div>
-      
-      {/* Form Section - Bên trái */}
-      <Paper elevation={20} className={styles.paper}>
-        <div className={styles.formContainer}>
-          <Box component={"form"} onSubmit={handleSubmit}>
-            <Typography variant="h5" className={styles.title}>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        alignItems: "center",
+        justifyContent: "flex-end", // chia 2 bên
+        background: "linear-gradient(to right, #74ebd5, #ACB6E5)",
+        position: "relative",
+        backgroundImage: `url(${bg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        padding: "0 60px", // thêm padding trái phải
+        boxSizing: "border-box",
+      }}
+    >
+      {/* DNA Icons Container - Bên phải (trống, có thể thêm hình ảnh/animation) */}
+      <div
+        style={{
+          position: "absolute",
+          right: 0,
+          top: 0,
+          width: "40%",
+          height: "100%",
+          opacity: 1,
+        }}
+      ></div>
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -50 }}
+        transition={{ duration: 0.6, ease: "easeInOut" }}
+      >
+        {/* Form Section */}
+        <Paper
+          elevation={20}
+          sx={{
+            width: 400,
+            borderRadius: "16px",
+            p: 4,
+            backgroundColor: "rgba(255, 255, 255, 0.25)", // tăng opacity
+            backdropFilter: "blur(16px)", // tăng blur
+            WebkitBackdropFilter: "blur(16px)", // hỗ trợ Safari
+            boxShadow: "0 12px 32px rgba(0, 0, 0, 0.3)",
+            height: "70vh",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            position: "relative", // để làm vị trí tham chiếu cho logo
+            marginLeft: "auto",
+            paddingRight: "40px",
+            boxSizing: "border-box",
+            marginRight: 10,
+            border: "1px solid rgba(255, 255, 255, 0.3)",
+          }}
+        >
+          <img
+            src={logo}
+            alt="Logo"
+            style={{
+              position: "absolute",
+              top: -0,
+              right: 0,
+              width: "100px", // chỉnh kích thước logo phù hợp
+              height: "auto",
+            }}
+          />
+
+          <Box component="form" onSubmit={handleSubmit}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: "bold",
+                mb: 2,
+                color: "#fff",
+                textAlign: "center",
+              }}
+            >
               Đăng nhập
             </Typography>
 
@@ -161,25 +227,35 @@ const Login = ({ setFullName }: LoginProps) => {
               variant="outlined"
             />
 
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ mt: 2 }}
+            >
               Đăng nhập
             </Button>
 
-            <Box className={styles.linkContainer}>
-              <Typography variant="body2">
-                <Link to="/forget">Quên mật khẩu ?</Link>
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="body2" align="center">
+                <Link to="/forget" style={{ color: "#fff" }}>
+                  Quên mật khẩu ?
+                </Link>
               </Typography>
             </Box>
-            {/* <LoginByGoogle onLoginSuccess={handleGoogleLoginSuccess} /> */}
-            <Box className={styles.linkContainer}>
-              <Typography variant="body2">
-                Bạn chưa có tài khoản? <Link to="/signup">Đăng ký</Link>
+
+            <Box sx={{ mt: 1 }}>
+              <Typography variant="body2" align="center">
+                Bạn chưa có tài khoản?{" "}
+                <Link to="/signup" style={{ color: "#fff" }}>
+                  Đăng ký
+                </Link>
               </Typography>
             </Box>
           </Box>
-        </div>
-      </Paper>
-
+        </Paper>
+      </motion.div>
       <CustomSnackBar
         open={snackbar.open}
         message={snackbar.message}

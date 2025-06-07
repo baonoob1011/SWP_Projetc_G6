@@ -15,7 +15,18 @@ const CustomSnackBar = ({ open, message, severity, onClose }: CustomPopup) => {
       onClose={onClose}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
     >
-      <Alert onClose={onClose} severity={severity} sx={{ width: "100%" }}>
+      <Alert 
+        onClose={onClose} 
+        severity={severity} 
+        sx={{ 
+          width: "100%",
+          "& .MuiAlert-message": {
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
+          }
+        }}
+      >
         {message}
       </Alert>
     </Snackbar>
