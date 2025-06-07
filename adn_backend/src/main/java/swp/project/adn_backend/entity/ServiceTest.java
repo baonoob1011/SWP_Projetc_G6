@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Where;
 import swp.project.adn_backend.enums.ServiceType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class ServiceTest {
     String serviceName;
 
     @Column(name = "registed_date",columnDefinition = "nvarchar(255)")
-    LocalDateTime registedDate;
+    LocalDate registerDate;
 
     @Column(columnDefinition = "nvarchar(255)")
     String description;
@@ -35,7 +36,6 @@ public class ServiceTest {
     @Enumerated(EnumType.STRING)
     @Column(name = "service_type", columnDefinition = "nvarchar(255)")
     private ServiceType serviceType;
-
 
     @Column(name = "is_active")
     boolean isActive;
@@ -103,12 +103,12 @@ public class ServiceTest {
         this.serviceName = serviceName;
     }
 
-    public LocalDateTime getRegistedDate() {
-        return registedDate;
+    public LocalDate getRegisterDate() {
+        return registerDate;
     }
 
-    public void setRegistedDate(LocalDateTime registedDate) {
-        this.registedDate = registedDate;
+    public void setRegisterDate(LocalDate registerDate) {
+        this.registerDate = registerDate;
     }
 
     public String getImage() {

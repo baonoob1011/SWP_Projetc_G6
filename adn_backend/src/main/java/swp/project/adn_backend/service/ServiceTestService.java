@@ -1,6 +1,7 @@
 package swp.project.adn_backend.service;
 
 
+import jakarta.persistence.EntityManager;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,19 +10,21 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import swp.project.adn_backend.dto.request.*;
+import swp.project.adn_backend.dto.response.serviceResponse.ServiceResponse;
+import swp.project.adn_backend.dto.test.AdministrativeServiceResponse;
+import swp.project.adn_backend.dto.test.FullServiceResponse;
+import swp.project.adn_backend.dto.test.PriceListResponse;
+import swp.project.adn_backend.dto.test.ServiceTestResponse;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.SampleCollectionMethod;
+import swp.project.adn_backend.enums.ServiceType;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.*;
-import swp.project.adn_backend.repository.AdministrativeServiceRepository;
-import swp.project.adn_backend.repository.CivilServiceRepository;
-import swp.project.adn_backend.repository.ServiceTestRepository;
-import swp.project.adn_backend.repository.UserRepository;
-
+import swp.project.adn_backend.repository.*;
+import swp.project.adn_backend.dto.request.AdministrativeServiceRequest;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -30,6 +33,7 @@ import java.util.List;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ServiceTestService {
+
     UserRepository userRepository;
     ServiceTestMapper serviceTestMapper;
     ServiceTestRepository serviceTestRepository;
@@ -39,9 +43,11 @@ public class ServiceTestService {
     CivilServiceMapper civilServiceMapper;
     AdministrativeServiceRepository administrativeServiceRepository;
     CivilServiceRepository civilServiceRepository;
+    PriceListRepository priceListRepository;
+    EntityManager entityManager;
 
     @Autowired
-    public ServiceTestService(UserRepository userRepository, ServiceTestMapper serviceTestMapper, ServiceTestRepository serviceTestRepository, PriceListMapper priceListMapper, FeedbackMapper feedbackMapper, AdministrativeMapper administrativeMapper, CivilServiceMapper civilServiceMapper, AdministrativeServiceRepository administrativeServiceRepository, CivilServiceRepository civilServiceRepository) {
+    public ServiceTestService(UserRepository userRepository, ServiceTestMapper serviceTestMapper, ServiceTestRepository serviceTestRepository, PriceListMapper priceListMapper, FeedbackMapper feedbackMapper, AdministrativeMapper administrativeMapper, CivilServiceMapper civilServiceMapper, AdministrativeServiceRepository administrativeServiceRepository, CivilServiceRepository civilServiceRepository, PriceListRepository priceListRepository, EntityManager entityManager) {
         this.userRepository = userRepository;
         this.serviceTestMapper = serviceTestMapper;
         this.serviceTestRepository = serviceTestRepository;
@@ -51,6 +57,8 @@ public class ServiceTestService {
         this.civilServiceMapper = civilServiceMapper;
         this.administrativeServiceRepository = administrativeServiceRepository;
         this.civilServiceRepository = civilServiceRepository;
+        this.priceListRepository = priceListRepository;
+        this.entityManager = entityManager;
     }
 
     public ServiceTest createService(ServiceRequest serviceRequest,
@@ -72,7 +80,7 @@ public class ServiceTestService {
 
         // Map ServiceTest
         ServiceTest serviceTest = serviceTestMapper.toServiceTest(serviceRequest);
-        serviceTest.setRegistedDate(LocalDateTime.now());
+        serviceTest.setRegisterDate(LocalDate.now());
         serviceTest.setActive(true);
         serviceTest.setUsers(users);
 
@@ -85,12 +93,6 @@ public class ServiceTestService {
                 throw new AppException(ErrorCodeUser.INTERNAL_ERROR);
             }
         }
-
-
-
-
-
-
 
         // Price list
         PriceList priceList = priceListMapper.toPriceList(priceListRequest);
@@ -131,9 +133,52 @@ public class ServiceTestService {
         return serviceTestRepository.save(serviceTest);
     }
 
-    public List<ServiceTest> getAllService(){
-        return serviceTestRepository.findByIsActiveTrue();
+    public List<ServiceResponse> getAllService() {
+        List<ServiceTest> serviceTests = serviceTestRepository.findAll();
+        return serviceTestMapper.toServiceList(serviceTests);  // <-- dùng toServiceList
     }
+
+//    @Transactional(readOnly = true)
+//    public List<ServiceResponse> getAdministrativeService() {
+//        List<ServiceTest> serviceTests = serviceTestRepository.findAllByServiceType(ServiceType.ADMINISTRATIVE);
+//    }
+public List<FullServiceResponse> getAdministrativeServices() {
+    List<ServiceTest> services = serviceTestRepository.findAllByServiceType(ServiceType.ADMINISTRATIVE);
+
+    List<FullServiceResponse> responses = new ArrayList<>();
+
+    for (ServiceTest s : services) {
+        ServiceTestResponse serviceReq = new ServiceTestResponse();
+        serviceReq.setServiceName(s.getServiceName());
+        serviceReq.setDescription(s.getDescription());
+        serviceReq.setServiceType(s.getServiceType());
+        serviceReq.setImage(s.getImage());
+
+        PriceListResponse priceReq = null;
+        if (s.getPriceLists() != null && !s.getPriceLists().isEmpty()) {
+            PriceList p = s.getPriceLists().get(0); // hoặc logic chọn giá phù hợp
+            priceReq = new PriceListResponse();
+            priceReq.setTime(p.getTime());
+            priceReq.setPrice(p.getPrice());
+        }
+        AdministrativeServiceResponse administrativeServiceRequest = null;
+
+        if (s.getAdministrativeService() != null && !s.getAdministrativeService().isEmpty()) {
+            AdministrativeService administrativeService = s.getAdministrativeService().get(0); // ✅ Lấy phần tử đầu tiên
+            administrativeServiceRequest = new AdministrativeServiceResponse();
+            administrativeServiceRequest.setSampleCollectionMethod(administrativeService.getSampleCollectionMethod());
+        }
+
+        FullServiceResponse fullResp = new FullServiceResponse();
+        fullResp.setServiceRequest(serviceReq);
+        fullResp.setPriceListRequest(priceReq);
+        fullResp.setAdministrativeServiceRequest(administrativeServiceRequest);
+        responses.add(fullResp);
+    }
+
+    return responses;
+}
+
 
     public ServiceTest deleteServiceTest(long serviceId) {
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)

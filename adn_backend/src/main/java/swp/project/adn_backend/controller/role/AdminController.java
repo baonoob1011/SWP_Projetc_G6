@@ -45,9 +45,7 @@ public class AdminController {
         );
 
         return ResponseEntity.ok(managerService.getAllUser());
-
     }
-
 
     @GetMapping("/get-all-staff")
     public ResponseEntity<List<StaffInfoDTO>> getAllStaffs() {

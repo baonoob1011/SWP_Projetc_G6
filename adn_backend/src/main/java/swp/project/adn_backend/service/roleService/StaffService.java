@@ -121,8 +121,8 @@ public class StaffService {
         Users users = userRepository.findByPhone(phone)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PHONE_NOT_EXISTS));
 
-        String jpql = "Select new swp.project.adn_backend.dto.InfoDTO(" +
-                "u.fullName, u.phone, u.email, u.enabled, u.createdAt, u.role) " +
+        String jpql = "Select new swp.project.adn_backend.dto.InfoDTO.UserInfoDTO(" +
+                "u.fullName, u.phone, u.email, u.enabled, u.createAt, u.address) " +
                 "From Users u Where u.phone=:phone";
         TypedQuery<UserInfoDTO> query = entityManager.createQuery(jpql, UserInfoDTO.class);
         query.setParameter("phone", phone);

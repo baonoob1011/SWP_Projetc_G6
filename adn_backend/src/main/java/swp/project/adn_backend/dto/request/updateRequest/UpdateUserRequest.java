@@ -20,7 +20,7 @@ public class UpdateUserRequest {
 
     @Size(min = 8, message = "USERNAME_INVALID")
     String username;
-
+    String confirmPassword;
     @Size(min = 8, message = "PASSWORD_WEAK")
     @Pattern(
             regexp = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+=!\\-_]).{8,}$",
@@ -33,26 +33,16 @@ public class UpdateUserRequest {
     String email;
 
     String oldPassword;
-    String idCard;
-    String gender;
     String address;
     @Past(message = "Date of birth must be in the past")
     LocalDate dateOfBirth;
 
-    public String getIdCard() {
-        return idCard;
+    public String getConfirmPassword() {
+        return confirmPassword;
     }
 
-    public void setIdCard(String idCard) {
-        this.idCard = idCard;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 
     public String getAddress() {

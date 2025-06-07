@@ -59,6 +59,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
                         // STAFF or MANAGER can access /api/staff/**
                         .requestMatchers("/api/appointment/book-appointment").hasAnyRole("USER")
+
+                        .requestMatchers("/api/services/get-all-service").permitAll()
+                        .requestMatchers("/api/services/**").permitAll()
+
                         .requestMatchers("/api/user/**").hasAnyRole("USER")
                         .requestMatchers("/api/staff/**").hasAnyRole("STAFF", "MANAGER", "ADMIN")
                         .requestMatchers("/api/staff/update-profile").hasRole("STAFF")
@@ -97,8 +101,6 @@ public class SecurityConfig {
 
                     chain.doFilter(request, response);
                 }, BearerTokenAuthenticationFilter.class) // 🔄 Sửa filter này
-
-
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter())

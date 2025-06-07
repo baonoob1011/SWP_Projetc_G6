@@ -33,14 +33,21 @@ public class AdminService {
     @Transactional(readOnly = true)
     public List<StaffInfoDTO> getAllManager() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO(" +
-                "u.fullName, u.phone, u.email, u.enabled, u.createAt, u.role, u.idCard, u.gender, u.address, u.dateOfBirth) " +
-                "FROM Manager u WHERE u.role = :input";
-
+                "u.fullName, u.phone, u.email, u.enabled, u.createAt, " +
+                "u.idCard, u.gender, u.address, u.dateOfBirth) " +
+                "FROM Users u JOIN u.roles r WHERE r = :input";
         TypedQuery<StaffInfoDTO> query = entityManager.createQuery(jpql, StaffInfoDTO.class);
         query.setParameter("input", "MANAGER");
 
-        return query.getResultList();
+        List<StaffInfoDTO> staffList = query.getResultList();
+
+        for (StaffInfoDTO dto : staffList) {
+            dto.setRole("MANAGER"); // thủ công set lại role
+        }
+
+        return staffList;
     }
+
 
     @Transactional
     public void deleteManagerByPhone(String phone) {

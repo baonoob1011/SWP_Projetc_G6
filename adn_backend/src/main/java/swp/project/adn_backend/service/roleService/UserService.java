@@ -135,7 +135,6 @@ public class UserService {
         Long userId = jwt.getClaim("id");
         Users existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
-
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
         if (updateUserRequest.getEmail() != null) {
@@ -144,8 +143,6 @@ public class UserService {
                 throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
             }
         }
-
-
         if (updateUserRequest.getPhone() != null) {
             if (!updateUserRequest.getPhone().equals(existingUser.getPhone()) &&
                     userRepository.existsByPhone(updateUserRequest.getPhone())) {
@@ -153,16 +150,19 @@ public class UserService {
             }
         }
 
-        if (updateUserRequest.getPassword() != null) {
-            if (updateUserRequest.getOldPassword() == null ||
-                    !passwordEncoder.matches(updateUserRequest.getOldPassword(), existingUser.getPassword())) {
-                throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
-            }
 
-            if (!passwordEncoder.matches(updateUserRequest.getPassword(), existingUser.getPassword())) {
+        if (updateUserRequest.getPassword() != null && updateUserRequest.getConfirmPassword()!=null) {
+            if (!passwordEncoder.matches(updateUserRequest.getPassword(), existingUser.getPassword())
+            && updateUserRequest.getConfirmPassword().equals(updateUserRequest.getPassword())) {
                 existingUser.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
             } else {
                 throw new AppException(ErrorCodeUser.PASSWORD_EXISTED);
+            }
+        }
+
+        if(updateUserRequest.getOldPassword()!=null){
+            if (!passwordEncoder.matches(updateUserRequest.getOldPassword(), existingUser.getPassword())) {
+                throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
             }
         }
 
@@ -173,6 +173,7 @@ public class UserService {
                 throw new AppException(ErrorCodeUser.ADDRESS_EXISTED);
             }
         }
+
 
         if (updateUserRequest.getPhone() != null) {
             existingUser.setPhone(updateUserRequest.getPhone());
