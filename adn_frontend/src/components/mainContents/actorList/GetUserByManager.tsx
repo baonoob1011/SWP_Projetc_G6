@@ -159,7 +159,7 @@ function GetUserByManager() {
                 {user.phone}
               </TableCell>
               <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
-                [{user.role}]
+                {user.role}
               </TableCell>
               <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
                 {user.createAt}

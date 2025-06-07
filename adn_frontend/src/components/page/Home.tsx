@@ -1,7 +1,8 @@
 import banner from "../../image/banner.jpg";
 import doctor from "../../image/doctor.jpg";
-import adn from "../../image/adn.jpg";
-import item from "../../image/pic1.jpg";
+import doctor2 from "../../image/bg5.png";
+// import adn from "../../image/adn.jpg";
+import item from "../../image/nurse.jpg";
 import { Swiper, SwiperSlide, type SwiperRef } from "swiper/react"; // <-- thêm SwiperRef
 import { Autoplay, Scrollbar } from "swiper/modules";
 import { useRef, useState } from "react";
@@ -44,7 +45,7 @@ export default function Home() {
       gradient: "from-blue-900/80",
     },
     {
-      src: adn,
+      src: doctor2,
       title: "Công nghệ tiên tiến",
       desc: "Thiết bị hiện đại hàng đầu",
       gradient: "from-green-900/80",
@@ -56,7 +57,7 @@ export default function Home() {
       gradient: "from-purple-900/80",
     },
     {
-      src: adn,
+      src: doctor2,
       title: "Bảo mật tuyệt đối",
       desc: "Bảo vệ thông tin cá nhân",
       gradient: "from-orange-900/80",
@@ -201,13 +202,13 @@ export default function Home() {
             </h2>
             <br />
             <li className="flex items-start">
-              <ShieldCheck style={{ color: "green", marginRight:10 }} />
+              <ShieldCheck style={{ color: "green", marginRight: 10 }} />
               <p className="text-base">
                 <strong>ADN huyết thống trực hệ (Cha | Mẹ - Con)</strong>
               </p>
             </li>
             <li className="flex items-start">
-              <ShieldCheck style={{ color: "green", marginRight:10 }} />
+              <ShieldCheck style={{ color: "green", marginRight: 10 }} />
               <p className="text-base">
                 <strong>
                   ADN huyết thống trực hệ (Cha | Mẹ - Con) - Làm giấy khai sinh
@@ -215,7 +216,7 @@ export default function Home() {
               </p>
             </li>
             <li className="flex items-start">
-              <ShieldCheck style={{ color: "green", marginRight:10 }} />
+              <ShieldCheck style={{ color: "green", marginRight: 10 }} />
               <p className="text-base">
                 <strong>
                   ADN huyết thống trực hệ (Cha | Mẹ - Con) - để thực hiện các
@@ -278,7 +279,7 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-stretch">
             {/* Left side: Reasons list + 4 interactive sections */}
-            <div className="lg:col-span-3 flex flex-col">
+            <div className="lg:col-span-3 flex flex-col h-full">
               {/* Reasons grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 pl-4 sm:pl-6 lg:pl-8">
                 {reasons.map(({ icon, text, desc }, i) => (
@@ -303,11 +304,10 @@ export default function Home() {
                   <div
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`relative overflow-hidden rounded-lg shadow-sm h-40 group cursor-pointer transition-all duration-300 ${
-                      selectedImage === index
+                    className={`relative overflow-hidden rounded-lg shadow-sm h-40 group cursor-pointer transition-all duration-300 ${selectedImage === index
                         ? "ring-4 ring-blue-500 ring-opacity-60 transform scale-105"
                         : "hover:scale-105"
-                    }`}
+                      }`}
                   >
                     <img
                       src={image.src}
@@ -335,9 +335,9 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right side: Dynamic Image Display - Matches left side height */}
-            <div className="lg:col-span-2 px-4 sm:px-6 lg:px-8 flex">
-              <div className="rounded-xl overflow-hidden shadow-lg relative w-full h-full min-h-[500px] lg:min-h-0">
+            {/* Right side: Dynamic Image Display - Matches left side height exactly */}
+            <div className="lg:col-span-2 px-4 sm:px-6 lg:px-8 flex h-full">
+              <div className="rounded-xl overflow-hidden shadow-lg relative w-full flex-1">
                 <img
                   src={imageData[selectedImage].src}
                   alt={imageData[selectedImage].title}
