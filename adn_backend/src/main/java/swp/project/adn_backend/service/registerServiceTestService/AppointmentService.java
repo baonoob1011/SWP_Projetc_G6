@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.request.serviceRequest.ServiceRequest;
 import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
 import swp.project.adn_backend.dto.request.serviceRequest.AppointmentRequest;
-import swp.project.adn_backend.dto.request.serviceRequest.SlotRequest;
+import swp.project.adn_backend.dto.request.slot.SlotRequest;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.ErrorCodeUser;

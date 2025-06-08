@@ -19,7 +19,6 @@ public interface ManagerRepository extends JpaRepository<Manager, Long> {
 
     boolean existsByIdCard(String idCard);
 
-
     Optional<Manager> deleteByPhone(String phone);
 
     Optional<Manager> findByUsername(String username);

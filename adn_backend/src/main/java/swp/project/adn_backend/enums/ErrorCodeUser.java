@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatusCode;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum ErrorCodeUser {
     USER_EXISTED(1001, "Username is existed", HttpStatus.BAD_REQUEST),
+    STAFF_EXISTED(1001, "Staff not is exist", HttpStatus.BAD_REQUEST),
     PRICE_LIST_NOT_FOUND(1001, "price list not found", HttpStatus.BAD_REQUEST),
     INVALID_DATE_OF_BIRTH(1001, "date of birth have to in path", HttpStatus.BAD_REQUEST),
     INVALID_GENDER(1001, "GENDER not mapping format", HttpStatus.BAD_REQUEST),

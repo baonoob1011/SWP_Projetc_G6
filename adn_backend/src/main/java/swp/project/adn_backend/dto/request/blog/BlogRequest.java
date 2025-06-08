@@ -1,11 +1,9 @@
-package swp.project.adn_backend.dto.request.Blogs;
+package swp.project.adn_backend.dto.request.blog;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import swp.project.adn_backend.entity.Users;
 
 import java.time.LocalDate;
 

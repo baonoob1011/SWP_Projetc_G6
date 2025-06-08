@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import swp.project.adn_backend.dto.request.Blogs.BlogRequest;
+import swp.project.adn_backend.dto.request.blog.BlogRequest;
 import swp.project.adn_backend.entity.Blog;
 import swp.project.adn_backend.service.blog.BlogService;
 

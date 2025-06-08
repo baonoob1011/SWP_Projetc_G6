@@ -86,7 +86,7 @@ public class AuthenticationUserService {
                 .claim("role", buildScope(users))
                 .claim("id", users.getUserId())
                 .claim("phone", users.getPhone())
-                //         .claim("address", users.getAddress())
+                .claim("address", users.getAddress())
                 .claim("fullName", users.getFullName())
                 //              .claim("dayOfBirth", users.getDateOfBirth().toString()) // nếu là LocalDate
                 .claim("email", users.getEmail())

@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import swp.project.adn_backend.dto.request.Blogs.BlogRequest;
+import swp.project.adn_backend.dto.request.blog.BlogRequest;
 import swp.project.adn_backend.entity.Blog;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;

@@ -1,8 +1,8 @@
 package swp.project.adn_backend.dto.GlobalRequest;
 
-import jakarta.validation.Valid;
 import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
 import swp.project.adn_backend.dto.request.serviceRequest.*;
+import swp.project.adn_backend.dto.request.slot.SlotRequest;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateServiceTestRequest;
 
 public class CreateServiceRequest {

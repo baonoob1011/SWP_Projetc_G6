@@ -1,7 +1,6 @@
-package swp.project.adn_backend.dto.request.serviceRequest;
+package swp.project.adn_backend.dto.request.slot;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import swp.project.adn_backend.entity.Appointment;
@@ -18,9 +17,10 @@ public class SlotRequest {
     Time startTime;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    Time endTime;;
+    Time endTime;
+
     int maxSlot;
-    List<Appointment> appointment;
+
 
     public int getMaxSlot() {
         return maxSlot;
@@ -62,11 +62,4 @@ public class SlotRequest {
         this.slotName = slotName;
     }
 
-    public List<Appointment> getAppointment() {
-        return appointment;
-    }
-
-    public void setAppointment(List<Appointment> appointment) {
-        this.appointment = appointment;
-    }
 }

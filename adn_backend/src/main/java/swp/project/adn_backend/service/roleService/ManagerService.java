@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
+import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
@@ -103,16 +104,19 @@ public class ManagerService {
     public void deleteUserByPhone(String phone) {
         Users users = userRepository.findByPhone(phone)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PHONE_NOT_EXISTS));
-
         userRepository.delete(users);
     }
 
     @Transactional
     public void deleteStaffByPhone(String phone) {
-        Users staff = userRepository.findByPhone(phone)
+        Users users = userRepository.findByPhone(phone)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.PHONE_NOT_EXISTS));
+        Staff staff = staffRepository.findByPhone(phone)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PHONE_NOT_EXISTS));
 
-        userRepository.delete(staff);
+        // xoa o ca 2 bang
+        userRepository.delete(users);
+        staffRepository.delete(staff);
     }
 
     @Transactional

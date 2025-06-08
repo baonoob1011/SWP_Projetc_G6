@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,6 +35,14 @@ public class GlobalException {
 
     @ExceptionHandler(value = RuntimeException.class)
     ResponseEntity<APIResponse> handlingRunTimeException(RuntimeException e) {
+        APIResponse apiResponse = new APIResponse<>();
+        apiResponse.setCode(1001);
+        apiResponse.setMessage(e.getMessage());
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    @ExceptionHandler(value = MissingPathVariableException.class)
+    ResponseEntity<APIResponse> handlingMissingPathVariableException(MissingPathVariableException e) {
         APIResponse apiResponse = new APIResponse<>();
         apiResponse.setCode(1001);
         apiResponse.setMessage(e.getMessage());
