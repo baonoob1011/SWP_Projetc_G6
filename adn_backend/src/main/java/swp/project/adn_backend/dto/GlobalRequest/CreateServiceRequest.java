@@ -1,19 +1,18 @@
 package swp.project.adn_backend.dto.GlobalRequest;
 
-import jakarta.validation.Valid;
-import swp.project.adn_backend.dto.request.*;
-import swp.project.adn_backend.dto.request.serviceRequest.AppointmentRequest;
-import swp.project.adn_backend.dto.request.serviceRequest.SlotRequest;
+import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
+import swp.project.adn_backend.dto.request.serviceRequest.*;
+import swp.project.adn_backend.dto.request.slot.SlotRequest;
+import swp.project.adn_backend.dto.request.updateRequest.UpdateServiceTestRequest;
 
 public class CreateServiceRequest {
 
     private ServiceRequest serviceRequest;
-
-    @Valid
     private PriceListRequest priceListRequest;
     private SlotRequest slotRequest;
     private AppointmentRequest appointmentRequest;
     private StaffRequest staffRequest;
+    private UpdateServiceTestRequest updateServiceTestRequest;
 
     private AdministrativeServiceRequest administrativeServiceRequest;
 
@@ -26,6 +25,14 @@ public class CreateServiceRequest {
 
     public void setCivilServiceRequest(CivilServiceRequest civilServiceRequest) {
         this.civilServiceRequest = civilServiceRequest;
+    }
+
+    public UpdateServiceTestRequest getUpdateServiceTestRequest() {
+        return updateServiceTestRequest;
+    }
+
+    public void setUpdateServiceTestRequest(UpdateServiceTestRequest updateServiceTestRequest) {
+        this.updateServiceTestRequest = updateServiceTestRequest;
     }
 
     public SlotRequest getSlotRequest() {

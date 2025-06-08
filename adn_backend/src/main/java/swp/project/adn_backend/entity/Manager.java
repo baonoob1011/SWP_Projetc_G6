@@ -28,8 +28,6 @@ public class Manager {
     String idCard;
 
     String email;
-    String username;
-    String password;
     boolean enabled = true;
     String role;
     @Column(columnDefinition = "NVARCHAR(10)")
@@ -100,21 +98,6 @@ public class Manager {
         this.email = email;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public boolean isEnabled() {
         return enabled;

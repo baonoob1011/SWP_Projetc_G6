@@ -1,4 +1,6 @@
 package swp.project.adn_backend.service.roleService;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
-import swp.project.adn_backend.dto.request.ManagerRequest;
+import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
 import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
@@ -27,10 +29,11 @@ import swp.project.adn_backend.repository.StaffRepository;
 import swp.project.adn_backend.repository.UserRepository;
 
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 
 @Service
@@ -62,109 +65,157 @@ public class ManagerService {
         return users;
     }
 
-//    @Transactional(readOnly = true)
-//    public List<Users> getAllUser() {
-//        return userRepository.findAll();
-//    }
-
     @Transactional(readOnly = true)
     public List<UserInfoDTO> getAllUser() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.UserInfoDTO(" +
-                "u.fullName, u.phone, u.email, u.enabled, u.createAt) " +
+                "u.fullName, u.phone, u.email, u.enabled, u.createAt, u.address) " +
                 "FROM Users u JOIN u.roles r WHERE r = :input";
 
         TypedQuery<UserInfoDTO> query = entityManager.createQuery(jpql, UserInfoDTO.class);
         query.setParameter("input", "USER");
 
         List<UserInfoDTO> users = query.getResultList();
-
         for (UserInfoDTO userDto : users) {
-            List<Users> matchedUsers = entityManager.createQuery(
-                            "SELECT u FROM Users u WHERE u.fullName = :fullName", Users.class)
-                    .setParameter("fullName", userDto.getFullName())
-                    .getResultList();
-
-            if (!matchedUsers.isEmpty()) {
-                userDto.setRoles(matchedUsers.get(0).getRoles());
-            }
+            userDto.setRoles(Set.of("USER"));  // vì bạn đã lọc trước đó là chỉ "USER"
         }
-
         return users;
     }
-
-
-
 
     @Transactional(readOnly = true)
     public List<StaffInfoDTO> getAllStaff() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO(" +
-                "u.fullName, u.phone, u.email, u.enabled, u.createAt, u.role, u.idCard, u.gender, u.address, u.dateOfBirth) " +
-                "FROM Staff u WHERE u.role = :input";
+                "s.staffId, s.fullName, s.phone, s.email, s.enabled, s.createAt, " +
+                "s.role, s.idCard, s.gender, s.address, s.dateOfBirth) " +
+                "FROM Staff s";
 
         TypedQuery<StaffInfoDTO> query = entityManager.createQuery(jpql, StaffInfoDTO.class);
-        query.setParameter("input", "STAFF");
-
         return query.getResultList();
     }
+
 
     @Transactional
     public void deleteUserByPhone(String phone) {
         Users users = userRepository.findByPhone(phone)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PHONE_NOT_EXISTS));
-
         userRepository.delete(users);
     }
 
     @Transactional
     public void deleteStaffByPhone(String phone) {
-        Users staff = userRepository.findByPhone(phone)
+        Users users = userRepository.findByPhone(phone)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.PHONE_NOT_EXISTS));
+        Staff staff = staffRepository.findByPhone(phone)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PHONE_NOT_EXISTS));
 
-        userRepository.delete(staff);
+        // xoa o ca 2 bang
+        userRepository.delete(users);
+        staffRepository.delete(staff);
     }
 
     @Transactional
-    public Users updateManager(ManagerRequest managerRequest, Authentication authentication) {
-        validateUpdateManager(managerRequest, authentication);
-        Users manager = userMapper.toManager(managerRequest);
-        return userRepository.save(manager);
+    public Users updateManager(Authentication authentication, UpdateStaffAndManagerRequest updateStaffAndManagerRequest) {
 
-    }
-
-
-    private void validateUpdateManager(ManagerRequest managerRequest, Authentication authentication) {
-        Map<String, String> errors = new HashMap<>();
         Jwt jwt = (Jwt) authentication.getPrincipal();
-        Long staffId = jwt.getClaim("id");
-        Staff existingStaff = staffRepository.findById(staffId)
+        Long userId = jwt.getClaim("id");
+        Users existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        validateUpdateManager(updateStaffAndManagerRequest, existingUser);
 
-        if (!existingStaff.getUsername().equals(managerRequest.getUsername()) &&
-                staffRepository.existsByUsername(managerRequest.getUsername())) {
-            errors.put("username", "USER_EXISTED");
+
+        // Validate và cập nhật password
+        if (updateStaffAndManagerRequest.getPassword() != null) {
+            if (updateStaffAndManagerRequest.getOldPassword() == null ||
+                    !passwordEncoder.matches(updateStaffAndManagerRequest.getOldPassword(), existingUser.getPassword())) {
+                throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
+            }
+
+            if (!passwordEncoder.matches(updateStaffAndManagerRequest.getPassword(), existingUser.getPassword())) {
+                existingUser.setPassword(passwordEncoder.encode(updateStaffAndManagerRequest.getPassword()));
+            } else {
+                throw new AppException(ErrorCodeUser.PASSWORD_EXISTED);
+            }
         }
 
-        if (!existingStaff.getEmail().equals(managerRequest.getEmail()) &&
-                staffRepository.existsByEmail(managerRequest.getEmail())) {
+        // --- Bổ sung validate và cập nhật dateOfBirth ---
+        if (updateStaffAndManagerRequest.getDateOfBirth() != null) {
+            LocalDate dob = updateStaffAndManagerRequest.getDateOfBirth();
+            LocalDate today = LocalDate.now();
+
+            if (!dob.isBefore(today)) {
+                throw new AppException(ErrorCodeUser.INVALID_DATE_OF_BIRTH);
+            }
+
+        }
+
+        // Cập nhật các trường (giữ nguyên logic cũ)
+        if (updateStaffAndManagerRequest.getPhone() != null) {
+            existingUser.setPhone(updateStaffAndManagerRequest.getPhone());
+        }
+        if (updateStaffAndManagerRequest.getEmail() != null) {
+            existingUser.setEmail(updateStaffAndManagerRequest.getEmail());
+        }
+        if (updateStaffAndManagerRequest.getFullName() != null) {
+            existingUser.setFullName(updateStaffAndManagerRequest.getFullName());
+        }
+        if (updateStaffAndManagerRequest.getAddress() != null) {
+            existingUser.setAddress(updateStaffAndManagerRequest.getAddress());
+        }
+        if (updateStaffAndManagerRequest.getGender() != null) {
+            existingUser.setGender(updateStaffAndManagerRequest.getGender().trim());
+        }
+        if (updateStaffAndManagerRequest.getDateOfBirth() != null) {
+            existingUser.setDateOfBirth(updateStaffAndManagerRequest.getDateOfBirth());
+        }
+
+        return userRepository.save(existingUser);
+    }
+
+    private void validateUpdateManager(UpdateStaffAndManagerRequest updateStaffAndManagerRequest, Users existingStaff) {
+        Map<String, String> errors = new HashMap<>();
+
+        if (!existingStaff.getEmail().equals(updateStaffAndManagerRequest.getEmail()) &&
+                staffRepository.existsByEmail(updateStaffAndManagerRequest.getEmail())) {
             errors.put("email", "EMAIL_EXISTED");
         }
 
-        if (!existingStaff.getPhone().equals(managerRequest.getPhone()) &&
-                staffRepository.existsByPhone(managerRequest.getPhone())) {
+        if (!existingStaff.getPhone().equals(updateStaffAndManagerRequest.getPhone()) &&
+                staffRepository.existsByPhone(updateStaffAndManagerRequest.getPhone())) {
             errors.put("phone", "PHONE_EXISTED");
         }
-        if (!existingStaff.getAddress().equals(managerRequest.getAddress()) &&
-                staffRepository.existsByAddress(managerRequest.getAddress())) {
+
+        if (!existingStaff.getAddress().equals(updateStaffAndManagerRequest.getAddress()) &&
+                staffRepository.existsByAddress(updateStaffAndManagerRequest.getAddress())) {
             errors.put("address", "ADDRESS_EXISTED");
         }
-        if (!existingStaff.getIdCard().equals(managerRequest.getIdCard()) &&
-                staffRepository.existsByAddress(managerRequest.getIdCard())) {
-            errors.put("id card", "ID_CART_EXISTED");
+
+        if (!existingStaff.getIdCard().equals(updateStaffAndManagerRequest.getIdCard()) &&
+                staffRepository.existsByIdCard(updateStaffAndManagerRequest.getIdCard())) {
+            errors.put("idCard", "ID_CARD_EXISTED");
         }
+
+        // Validate gender
+        if (updateStaffAndManagerRequest.getGender() != null) {
+            String gender = updateStaffAndManagerRequest.getGender().trim();
+            if (!(gender.equalsIgnoreCase("Male") ||
+                    gender.equalsIgnoreCase("Female") ||
+                    gender.equalsIgnoreCase("Other"))) {
+                errors.put("gender", "INVALID_GENDER");
+            }
+        }
+
+        // Validate dateOfBirth
+        if (updateStaffAndManagerRequest.getDateOfBirth() != null) {
+            LocalDate dob = updateStaffAndManagerRequest.getDateOfBirth();
+            LocalDate today = LocalDate.now();
+            if (!dob.isBefore(today)) {
+                errors.put("dateOfBirth", "INVALID_DATE_OF_BIRTH");
+            }
+        }
+
         if (!errors.isEmpty()) {
             throw new MultiFieldValidationException(errors);
         }
     }
-
 }

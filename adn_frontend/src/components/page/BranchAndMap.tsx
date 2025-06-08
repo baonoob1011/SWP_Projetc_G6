@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, Divider } from "@mui/material";
+import { Box, Paper, Divider } from "@mui/material";
 import Branch from "./Branch";
 import Map from "./Map";
 

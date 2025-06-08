@@ -11,27 +11,22 @@ export default function Branch() {
           Thông Tin Chi Nhánh
         </Typography>
 
-        {/* Address */}
+        {/* Địa chỉ */}
         <Box className="info-box">
           <LocationOn className="info-icon location" />
           <Box>
-            <Typography className="info-label">
-              Địa Chỉ:
-            </Typography>
+            <Typography className="info-label">Địa Chỉ:</Typography>
             <Typography className="info-text">
-              22/14 Đ. Phan Văn Hớn, Tân Thới Nhất, Quận 12, Hồ Chí Minh 70000,
-              Việt Nam
+              22/14 Đ. Phan Văn Hớn, Tân Thới Nhất, Quận 12, Hồ Chí Minh 70000, Việt Nam
             </Typography>
           </Box>
         </Box>
 
-        {/* Phone */}
+        {/* Số điện thoại */}
         <Box className="info-box">
           <Phone className="info-icon phone" />
           <Box>
-            <Typography className="info-label">
-              Số điện thoại:
-            </Typography>
+            <Typography className="info-label">Số điện thoại:</Typography>
             <Typography
               component="a"
               href="tel:0943283195"
@@ -42,13 +37,11 @@ export default function Branch() {
           </Box>
         </Box>
 
-        {/* Opening Hours */}
+        {/* Giờ mở cửa */}
         <Box className="info-box">
           <AccessTime className="info-icon time" />
           <Box>
-            <Typography className="info-label">
-              Giờ mở cửa:
-            </Typography>
+            <Typography className="info-label">Giờ mở cửa:</Typography>
             <Typography className="info-text">
               7h - 17h30 từ thứ 2 tới thứ 6
             </Typography>

@@ -1,6 +1,7 @@
 package swp.project.adn_backend.service.roleService;
 
 import jakarta.persistence.EntityManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.AccessLevel;
 
@@ -10,9 +11,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import swp.project.adn_backend.dto.request.ManagerRequest;
-import swp.project.adn_backend.dto.request.StaffRequest;
-import swp.project.adn_backend.dto.request.UserRequest;
+import swp.project.adn_backend.dto.request.roleRequest.ManagerRequest;
+import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
+import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
+import swp.project.adn_backend.dto.request.updateRequest.UpdateUserRequest;
 import swp.project.adn_backend.entity.Manager;
 import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
@@ -73,7 +75,7 @@ public class UserService {
         return userRepository.save(users);
     }
 
-    public Users registerStaffAccount(StaffRequest staffRequest,Authentication authentication) {
+    public Users registerStaffAccount(StaffRequest staffRequest, Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
         Users userRegister = userRepository.findById(userId)
@@ -93,14 +95,13 @@ public class UserService {
         Staff staff = staffMapper.toStaff(staffRequest);
         staff.setRole("STAFF");
         staff.setCreateAt(LocalDate.now());
-        staff.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
         staff.setUsers(userRegister);
         staffRepository.save(staff);
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
     }
 
-    public Users registerManagerAccount(ManagerRequest managerRequest,Authentication authentication) {
+    public Users registerManagerAccount(ManagerRequest managerRequest, Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
         Users userRegister = userRepository.findById(userId)
@@ -119,7 +120,6 @@ public class UserService {
         Manager manager = managerMapper.toManager(managerRequest);
         manager.setRole("MANAGER");
         manager.setCreateAt(LocalDate.now());
-        manager.setPassword(passwordEncoder.encode(managerRequest.getPassword()));
         manager.setUsers(userRegister);
         managerRepository.save(manager);
 
@@ -128,37 +128,64 @@ public class UserService {
 
     // Cập nhật User
     @Transactional
-    public Users updateUser(Authentication authentication, UserRequest userDTO) {
+    public Users updateUser(Authentication authentication, UpdateUserRequest updateUserRequest) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
         Users existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
-        if (!existingUser.getUsername().equals(userDTO.getUsername()) &&
-                userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new AppException(ErrorCodeUser.USER_EXISTED);
+        if (updateUserRequest.getEmail() != null) {
+            if (!updateUserRequest.getEmail().equals(existingUser.getEmail()) &&
+                    userRepository.existsByEmail(updateUserRequest.getEmail())) {
+                throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
+            }
+        }
+        if (updateUserRequest.getPhone() != null) {
+            if (!updateUserRequest.getPhone().equals(existingUser.getPhone()) &&
+                    userRepository.existsByPhone(updateUserRequest.getPhone())) {
+                throw new AppException(ErrorCodeUser.PHONE_EXISTED);
+            }
         }
 
-        if (!existingUser.getEmail().equals(userDTO.getEmail()) &&
-                userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
+        if (updateUserRequest.getPassword() != null && updateUserRequest.getConfirmPassword() != null) {
+            if (!passwordEncoder.matches(updateUserRequest.getPassword(), existingUser.getPassword())
+                    && updateUserRequest.getConfirmPassword().equals(updateUserRequest.getPassword())) {
+                existingUser.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
+            } else {
+                throw new AppException(ErrorCodeUser.PASSWORD_EXISTED);
+            }
         }
 
-        if (!existingUser.getPhone().equals(userDTO.getPhone()) &&
-                userRepository.existsByPhone(userDTO.getPhone())) {
-            throw new AppException(ErrorCodeUser.PHONE_EXISTED);
-        }
-        if (!existingUser.getPassword().equals(userDTO.getPassword()) &&
-                userRepository.existsByPassword(userDTO.getPassword())) {
-            throw new AppException(ErrorCodeUser.PHONE_EXISTED);
+        if (updateUserRequest.getOldPassword() != null) {
+            if (!passwordEncoder.matches(updateUserRequest.getOldPassword(), existingUser.getPassword())) {
+                throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
+            }
+            System.out.println("dung mk");
         }
 
+        if (updateUserRequest.getAddress() != null) {
+            String oldAddress = existingUser.getAddress();
+            if ((oldAddress == null || !oldAddress.equals(updateUserRequest.getAddress())) &&
+                    userRepository.existsByAddress(updateUserRequest.getAddress())) {
+                throw new AppException(ErrorCodeUser.ADDRESS_EXISTED);
+            }
+        }
 
-        Users updatedUser = userMapper.toUser(userDTO);
-        updatedUser.setUserId(existingUser.getUserId());
-        updatedUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-        return userRepository.save(updatedUser);
+        if (updateUserRequest.getPhone() != null) {
+            existingUser.setPhone(updateUserRequest.getPhone());
+        }
+        if (updateUserRequest.getEmail() != null) {
+            existingUser.setEmail(updateUserRequest.getEmail());
+        }
+        if (updateUserRequest.getFullName() != null) {
+            existingUser.setFullName(updateUserRequest.getFullName());
+        }
+        if (updateUserRequest.getAddress() != null) {
+            existingUser.setAddress(updateUserRequest.getAddress());
+        }
+        return userRepository.save(existingUser);
     }
 
     public void updatePasswordByEmail(String email, String newPassword) {
@@ -209,6 +236,9 @@ public class UserService {
         if (userRepository.existsByPhone(staffRequest.getPhone())) {
             errors.put("phone", "PHONE_EXISTED");
         }
+        if (userRepository.existsByIdCard(staffRequest.getIdCard())) {
+            errors.put("idCard", "ID_CARD_EXISTED");
+        }
 
         if (!staffRequest.getPassword().equals(staffRequest.getConfirmPassword())) {
             errors.put("confirmPassword", "CONFIRM_PASSWORD_NOT_MATCHING");
@@ -233,7 +263,9 @@ public class UserService {
         if (userRepository.existsByPhone(managerRequest.getPhone())) {
             errors.put("phone", "PHONE_EXISTED");
         }
-
+        if (userRepository.existsByIdCard(managerRequest.getIdCard())) {
+            errors.put("idCard", "ID_CARD_EXISTED");
+        }
         if (!managerRequest.getPassword().equals(managerRequest.getConfirmPassword())) {
             errors.put("confirmPassword", "CONFIRM_PASSWORD_NOT_MATCHING");
         }

@@ -1,6 +1,7 @@
 import * as yup from "yup";
 
 const noSpace = /^\S+$/;
+const today = new Date().getTime();
 
 const baseSchema = yup.object().shape({
   fullName: yup
@@ -52,14 +53,15 @@ const baseSchema = yup.object().shape({
 
   idCard: yup
   .string()
-  .matches( /^\d{12}$/)
+  .matches( /^\d{12}$/, "Số CCCD không hợp lệ")
   .trim()
   .required("Không được bỏ trống"),
 
   dateOfBirth: yup
   .string()
   .required("Vui lòng chọn ngày sinh")
-  .matches(/^\d{4}-\d{2}-\d{2}$/, "Ngày không đúng định dạng"),
+  .matches(/^\d{4}-\d{2}-\d{2}$/, "Ngày không đúng định dạng")
+  .max(today, "Ngày sinh không được vượt quá hôm nay"),
 });
 
 export const signUpSchema = baseSchema.pick([

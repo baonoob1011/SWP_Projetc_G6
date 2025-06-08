@@ -42,10 +42,11 @@ const Services = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    setIsAdmin(localStorage.getItem("role") === "ADMIN" || localStorage.getItem("role")==="MANAGER");
+    setIsAdmin(localStorage.getItem("role") === "ADMIN" || localStorage.getItem("role") === "MANAGER");
   }, []);
 
-  
+  const role = localStorage.getItem("role")
+
   const handleInput = (
     section: "service" | "price" | "type",
     field: string,
@@ -70,83 +71,78 @@ const Services = () => {
     }
   };
 
-  const getOptions = () =>
-    form.service.serviceType === "ADMINISTRATIVE"
-      ? ["Lấy mẫu xét nghiệm tại cơ sở"]
-      : form.service.serviceType === "CIVIL"
-      ? ["Lấy mẫu xét nghiệm tại cơ sở", "Lấy mẫu xét nghiệm tại nhà"]
-      : [];
+
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!file) return alert("Chưa chọn ảnh");
+    if (!file) return alert("Chưa chọn ảnh");
 
-  const parsedPrice = Number(form.price.price);
-  if (isNaN(parsedPrice)) {
-    return alert("Giá phải là số");
-  }
-
-  const request = {
-    serviceRequest: {
-      serviceName: form.service.serviceName,
-      description: form.service.description,
-      serviceType: form.service.serviceType,
-    },
-    priceListRequest: {
-      time: form.price.time,
-      price: parsedPrice,
-    },
-    administrativeServiceRequest:
-      form.service.serviceType === "ADMINISTRATIVE" ? form.type : {},
-    civilServiceRequest:
-      form.service.serviceType === "CIVIL" ? form.type : {},
-  };
-
-  const formData = new FormData();
-  formData.append(
-    "request",
-    new Blob([JSON.stringify(request)], { type: "application/json" })
-  );
-  formData.append("file", file);
-
-  try {
-    const res = await fetch(
-      "http://localhost:8080/api/services/create-service",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-        },
-        body: formData,
-      }
-    );
-
-    if (res.ok) {
-      alert("Tạo dịch vụ thành công");
-      setForm({
-        service: { serviceName: "", description: "", serviceType: "" },
-        price: { time: "", price: "" },
-        type: { someCivilField: "" },
-      });
-      setFile(null);
-      setPreview("");
-      if (fileRef.current) fileRef.current.value = "";
-    } else {
-      const error = await res.text();
-      alert("Lỗi: " + error);
+    const parsedPrice = Number(form.price.price);
+    if (isNaN(parsedPrice)) {
+      return alert("Giá phải là số");
     }
-  } catch (err) {
-    console.error(err);
-    alert("Đã xảy ra lỗi khi gửi dữ liệu.");
-  }
-};
+
+    const request = {
+      serviceRequest: {
+        serviceName: form.service.serviceName,
+        description: form.service.description,
+        serviceType: form.service.serviceType,
+      },
+      priceListRequest: {
+        time: form.price.time,
+        price: parsedPrice,
+      },
+      administrativeServiceRequest:
+        form.service.serviceType === "ADMINISTRATIVE" ? form.type : {},
+      civilServiceRequest:
+        form.service.serviceType === "CIVIL" ? form.type : {},
+    };
+
+    const formData = new FormData();
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(request)], { type: "application/json" })
+    );
+    formData.append("file", file);
+
+    try {
+      const res = await fetch(
+        "http://localhost:8080/api/services/create-service",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+          body: formData,
+        }
+      );
+
+      if (res.ok) {
+        alert("Tạo dịch vụ thành công");
+        setForm({
+          service: { serviceName: "", description: "", serviceType: "" },
+          price: { time: "", price: "" },
+          type: { someCivilField: "" },
+        });
+        setFile(null);
+        setPreview("");
+        if (fileRef.current) fileRef.current.value = "";
+      } else {
+        const error = await res.text();
+        alert("Lỗi: " + error);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Đã xảy ra lỗi khi gửi dữ liệu.");
+    }
+  };
 
 
   if (!isAdmin) return null;
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
+    <form onSubmit={handleSubmit} className={styles.form} style={role !== "ADMIN" ? { marginTop: 120 } : undefined}>
       {/* Service section */}
       <div className={styles.formGroup}>
         <label className={styles.label}>Tên dịch vụ</label>
@@ -180,24 +176,16 @@ const Services = () => {
       </div>
 
       <div className={styles.formGroup}>
-        <label className={styles.label}>Hình thức</label>
-        <select
+        <label className={styles.label}>Mô tả</label>
+        <input
+          type="text"
           name="description"
           value={form.service.description}
-          onChange={(e) =>
-            handleInput("service", "description", e.target.value)
-          }
-          disabled={!getOptions().length}
-          className={styles.select}
+          onChange={(e) => handleInput("service", "description", e.target.value)}
+          placeholder="Nhập mô tả"
+          className={styles.input}
           required
-        >
-          <option value="">-- Chọn hình thức --</option>
-          {getOptions().map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
+        />
       </div>
 
       {/* Price section */}

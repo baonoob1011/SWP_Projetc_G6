@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import swp.project.adn_backend.dto.request.PatientRequest;
+import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.entity.Patient;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;

@@ -7,6 +7,9 @@ export default function Map() {
   useEffect(() => {
     const apiKey = "AIzaSyBj1OypObsb65agJ1tR05X6JA8trtx6_g8";
 
+    // Thêm class cho body để làm fullscreen
+    document.body.classList.add('map-fullscreen');
+
     // Kiểm tra nếu đã load rồi thì không load lại
     if (document.getElementById("google-maps-script")) {
       initMap();
@@ -42,17 +45,20 @@ export default function Map() {
       }
     }
 
-    // Cleanup: Xóa script khi component unmount
+    // Cleanup: Xóa script và class khi component unmount
     return () => {
       const scriptEl = document.getElementById("google-maps-script");
       if (scriptEl) {
         scriptEl.remove();
       }
+      // Xóa class fullscreen khi component bị unmount
+      document.body.classList.remove('map-fullscreen');
     };
   }, []);
 
   return (
     <div className="map-container">
+      <h2 className="map-title">Google Map Example</h2>
       <div
         ref={mapRef}
         className="map-element"

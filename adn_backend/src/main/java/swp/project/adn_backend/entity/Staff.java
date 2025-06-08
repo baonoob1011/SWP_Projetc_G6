@@ -31,8 +31,6 @@ public class Staff {
     String idCard;
 
     String email;
-    String username;
-    String password;
     boolean enabled = true;
     String role;
     @Column(columnDefinition = "NVARCHAR(10)")
@@ -68,6 +66,17 @@ public class Staff {
     })
     @JoinColumn(name = "user_id", nullable = false)
     Users users;
+
+    @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<Slot> slots;
+
+    public List<Slot> getSlots() {
+        return slots;
+    }
+
+    public void setSlots(List<Slot> slots) {
+        this.slots = slots;
+    }
 
     public Users getUsers() {
         return users;
@@ -109,21 +118,7 @@ public class Staff {
         this.email = email;
     }
 
-    public String getUsername() {
-        return username;
-    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public boolean isEnabled() {
         return enabled;

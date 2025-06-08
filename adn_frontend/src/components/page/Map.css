@@ -24,26 +24,6 @@ body.map-fullscreen {
   overflow: hidden;
 }
 
-/* Button để toggle fullscreen (tùy chọn) */
-.fullscreen-toggle {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 1001;
-  background: #fff;
-  border: none;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.fullscreen-toggle:hover {
-  background: #f5f5f5;
-}
-
-/* Custom InfoWindow styling */
 .gm-style .gm-style-iw {
   background-color: #fff;
   border-radius: 8px;
