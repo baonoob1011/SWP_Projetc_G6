@@ -148,19 +148,20 @@ public class UserService {
             }
         }
 
-        if (updateUserRequest.getPassword() != null && updateUserRequest.getConfirmPassword()!=null) {
+        if (updateUserRequest.getPassword() != null && updateUserRequest.getConfirmPassword() != null) {
             if (!passwordEncoder.matches(updateUserRequest.getPassword(), existingUser.getPassword())
-            && updateUserRequest.getConfirmPassword().equals(updateUserRequest.getPassword())) {
+                    && updateUserRequest.getConfirmPassword().equals(updateUserRequest.getPassword())) {
                 existingUser.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
             } else {
                 throw new AppException(ErrorCodeUser.PASSWORD_EXISTED);
             }
         }
 
-        if(updateUserRequest.getOldPassword()!=null){
+        if (updateUserRequest.getOldPassword() != null) {
             if (!passwordEncoder.matches(updateUserRequest.getOldPassword(), existingUser.getPassword())) {
                 throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
             }
+            System.out.println("dung mk");
         }
 
         if (updateUserRequest.getAddress() != null) {
@@ -235,6 +236,9 @@ public class UserService {
         if (userRepository.existsByPhone(staffRequest.getPhone())) {
             errors.put("phone", "PHONE_EXISTED");
         }
+        if (userRepository.existsByIdCard(staffRequest.getIdCard())) {
+            errors.put("idCard", "ID_CARD_EXISTED");
+        }
 
         if (!staffRequest.getPassword().equals(staffRequest.getConfirmPassword())) {
             errors.put("confirmPassword", "CONFIRM_PASSWORD_NOT_MATCHING");
@@ -259,7 +263,9 @@ public class UserService {
         if (userRepository.existsByPhone(managerRequest.getPhone())) {
             errors.put("phone", "PHONE_EXISTED");
         }
-
+        if (userRepository.existsByIdCard(managerRequest.getIdCard())) {
+            errors.put("idCard", "ID_CARD_EXISTED");
+        }
         if (!managerRequest.getPassword().equals(managerRequest.getConfirmPassword())) {
             errors.put("confirmPassword", "CONFIRM_PASSWORD_NOT_MATCHING");
         }

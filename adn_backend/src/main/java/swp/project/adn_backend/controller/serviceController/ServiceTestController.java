@@ -42,7 +42,7 @@ public class ServiceTestController {
 
     @PutMapping(value = "/update-service/{serviceId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> updateServiceTest(
-            @RequestBody CreateServiceRequest request,
+            @RequestPart("request") @Valid CreateServiceRequest request,
             @RequestPart(value = "file", required = false) MultipartFile file,
             @PathVariable long serviceId,
             Authentication authentication) {
