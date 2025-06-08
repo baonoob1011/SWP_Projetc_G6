@@ -21,7 +21,7 @@ public class Slot {
     @Column(name = "slot_id")
     long slotId;
     @Column(name = "slot_name")
-    String slotName;
+    LocalDate slotDate;
     @Column(name = "start_time")
     Time startTime;
     @Column(name = "end_time")
@@ -42,11 +42,18 @@ public class Slot {
 
     @Column(name = "max_slot")
     int maxSlot;
-//    @OneToMany(mappedBy = "slot", fetch = FetchType.LAZY, cascade = {
-//            CascadeType.PERSIST, CascadeType.MERGE,
-//            CascadeType.DETACH, CascadeType.REFRESH
-//    })
-//    List<Appointment> appointment;
+    @OneToMany(mappedBy = "slot", fetch = FetchType.LAZY, cascade = {
+            CascadeType.ALL
+    })
+    List<Appointment> appointment;
+
+    public List<Appointment> getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(List<Appointment> appointment) {
+        this.appointment = appointment;
+    }
 
     public Time getStartTime() {
         return startTime;
@@ -96,15 +103,15 @@ public class Slot {
         this.slotId = slotId;
     }
 
-    public String getSlotName() {
-        return slotName;
+    public LocalDate getSlotDate() {
+        return slotDate;
     }
 
-    public void setSlotName(String slotName) {
-        this.slotName = slotName;
+    public void setSlotDate(LocalDate slotDate) {
+        this.slotDate = slotDate;
     }
 
-//    public List<Appointment> getAppointment() {
+    //    public List<Appointment> getAppointment() {
 //        return appointment;
 //    }
 //

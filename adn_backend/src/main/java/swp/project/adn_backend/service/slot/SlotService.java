@@ -35,7 +35,7 @@ public class SlotService {
 
     public Slot createSlot(SlotRequest slotRequest,
                            Authentication authentication,
-                           Long staffId) {
+                           long staffId) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
         Users userCreated = userRepository.findById(userId)

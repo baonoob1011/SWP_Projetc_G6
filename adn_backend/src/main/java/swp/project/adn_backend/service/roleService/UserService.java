@@ -66,6 +66,7 @@ public class UserService {
         validateUser(userDTO);
         // Tạo user từ DTO và mã hóa mật khẩu
         Users users = userMapper.toUser(userDTO);
+        Users users1=new Users();
         roles.add(Roles.USER.name());
         users.setRoles(roles);
 

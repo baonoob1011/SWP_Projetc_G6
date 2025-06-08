@@ -6,13 +6,14 @@ import lombok.experimental.FieldDefaults;
 import swp.project.adn_backend.entity.Appointment;
 
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.List;
 
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SlotRequest {
     long slotId;
-    String slotName;
+    LocalDate slotDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     Time startTime;
 
@@ -54,12 +55,11 @@ public class SlotRequest {
         this.slotId = slotId;
     }
 
-    public String getSlotName() {
-        return slotName;
+    public LocalDate getSlotDate() {
+        return slotDate;
     }
 
-    public void setSlotName(String slotName) {
-        this.slotName = slotName;
+    public void setSlotDate(LocalDate slotDate) {
+        this.slotDate = slotDate;
     }
-
 }
