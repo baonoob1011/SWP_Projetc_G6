@@ -24,7 +24,7 @@ public class ServiceTestController {
     private ServiceTestService serviceTestService;
 
     @PostMapping(value = "/create-service", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> createAdministrativeService(
+    public ResponseEntity<String> createService(
             @RequestPart("request") @Valid CreateServiceRequest request,
             @RequestPart(value = "file", required = false) MultipartFile file,
             Authentication authentication) {
@@ -38,6 +38,23 @@ public class ServiceTestController {
                 file
         );
         return ResponseEntity.ok("Tạo dịch vụ ADN thành công");
+    }
+
+    @PutMapping(value = "/update-service/{serviceId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateServiceTest(
+            @RequestBody CreateServiceRequest request,
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @PathVariable long serviceId,
+            Authentication authentication) {
+
+        serviceTestService.updateService(
+                serviceId,
+                request.getUpdateServiceTestRequest(),
+                authentication,
+                request.getPriceListRequest(),
+                file
+        );
+        return ResponseEntity.ok("edit dịch vụ ADN thành công");
     }
 
     @DeleteMapping("/delete-service")

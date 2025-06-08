@@ -3,9 +3,9 @@ package swp.project.adn_backend.mapper;
 import org.mapstruct.Mapper;
 
 
-import swp.project.adn_backend.dto.request.ManagerRequest;
-import swp.project.adn_backend.dto.request.StaffRequest;
-import swp.project.adn_backend.dto.request.UserRequest;
+import swp.project.adn_backend.dto.request.roleRequest.ManagerRequest;
+import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
+import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
 import swp.project.adn_backend.dto.response.serviceResponse.UserCreateServiceResponse;
 import swp.project.adn_backend.entity.Users;
 

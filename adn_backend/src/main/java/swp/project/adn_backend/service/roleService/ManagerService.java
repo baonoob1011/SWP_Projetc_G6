@@ -16,9 +16,7 @@ import org.springframework.stereotype.Service;
 
 import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
-import swp.project.adn_backend.dto.request.ManagerRequest;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
-import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
@@ -34,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Service

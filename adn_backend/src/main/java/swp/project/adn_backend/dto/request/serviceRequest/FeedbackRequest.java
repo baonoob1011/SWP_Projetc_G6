@@ -1,9 +1,5 @@
-package swp.project.adn_backend.dto.request;
+package swp.project.adn_backend.dto.request.serviceRequest;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import swp.project.adn_backend.entity.ServiceTest;
 import swp.project.adn_backend.entity.Users;
 

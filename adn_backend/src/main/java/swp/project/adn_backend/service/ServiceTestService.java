@@ -8,8 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import swp.project.adn_backend.dto.request.*;
+import swp.project.adn_backend.dto.request.serviceRequest.CivilServiceRequest;
+import swp.project.adn_backend.dto.request.serviceRequest.PriceListRequest;
+import swp.project.adn_backend.dto.request.serviceRequest.ServiceRequest;
+import swp.project.adn_backend.dto.request.updateRequest.UpdateServiceTestRequest;
 import swp.project.adn_backend.dto.response.serviceResponse.*;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.ErrorCodeUser;
@@ -18,7 +22,7 @@ import swp.project.adn_backend.enums.ServiceType;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.*;
 import swp.project.adn_backend.repository.*;
-import swp.project.adn_backend.dto.request.AdministrativeServiceRequest;
+import swp.project.adn_backend.dto.request.serviceRequest.AdministrativeServiceRequest;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -238,80 +242,92 @@ public class ServiceTestService {
         serviceTestRepository.delete(serviceTest);
     }
 
-    public ServiceTest updateService(Long serviceId,
-                                     ServiceRequest serviceRequest,
+    @Transactional
+    public ServiceTest updateService(long serviceId,
+                                     UpdateServiceTestRequest updateServiceTest,
+                                     Authentication authentication,
                                      PriceListRequest priceListRequest,
-                                     AdministrativeServiceRequest administrativeServiceRequest,
-                                     CivilServiceRequest civilServiceRequest,
-                                     MultipartFile file) {
+                                      MultipartFile file
+    ) {
 
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users users = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+        System.out.println("Service ID " + serviceId);
         ServiceTest existingService = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
 
-        // Kiểm tra nếu tên dịch vụ mới đã tồn tại ở service khác
-        if (!existingService.getServiceName().equals(serviceRequest.getServiceName()) &&
-                serviceTestRepository.existsByServiceName(serviceRequest.getServiceName())) {
-            throw new AppException(ErrorCodeUser.SERVICE_NAME_IS_EXISTED);
+
+        if (updateServiceTest.getServiceName() != null) {
+            if (!existingService.getServiceName().equals(updateServiceTest.getServiceName()) &&
+                    serviceTestRepository.existsByServiceName(updateServiceTest.getServiceName())) {
+                throw new AppException(ErrorCodeUser.SERVICE_NAME_IS_EXISTED);
+            }
         }
 
-        // Cập nhật thông tin cơ bản
-        existingService.setServiceName(serviceRequest.getServiceName());
-        existingService.setDescription(serviceRequest.getDescription());
-        existingService.setServiceType(serviceRequest.getServiceType());
-
-        // Cập nhật ảnh nếu có
-//        if (file != null && !file.isEmpty()) {
-//            try {
-//                String base64Image = Base64.getEncoder().encodeToString(file.getBytes());
-//                existingService.setImage(base64Image);
-//            } catch (IOException e) {
-//                throw new AppException(ErrorCodeUser.INTERNAL_ERROR);
-//            }
-//        }
+        if (updateServiceTest.getDescription() != null) {
+            existingService.setDescription(updateServiceTest.getDescription());
+        }
+        if (updateServiceTest.getServiceName() != null) {
+            existingService.setServiceName(updateServiceTest.getServiceName());
+        }
+        existingService.setServiceId(existingService.getServiceId());
+        existingService.setRegisterDate(LocalDate.now());
+        existingService.setUsers(users);
+        if (file != null && !file.isEmpty()) {
+            try {
+                String base64Image = Base64.getEncoder().encodeToString(file.getBytes());
+                existingService.setImage(base64Image);
+            } catch (IOException e) {
+                throw new AppException(ErrorCodeUser.INTERNAL_ERROR);
+            }
+        }
 
         // Cập nhật PriceList mới
-        if (priceListRequest != null) {
-            PriceList priceList = priceListMapper.toPriceList(priceListRequest);
-            priceList.setEffectiveDate(LocalDate.now());
-            priceList.setService(existingService);
-            List<PriceList> updatedPriceLists = new ArrayList<>(existingService.getPriceLists());
-            updatedPriceLists.add(priceList);
-            existingService.setPriceLists(updatedPriceLists);
+        if (priceListRequest != null && existingService.getPriceLists() != null) {
+            List<PriceList> existingPriceLists = existingService.getPriceLists();
+            for (PriceList priceList : existingPriceLists) {
+                if (priceListRequest.getTime() != null) {
+                    priceList.setTime(priceListRequest.getTime());
+                }
+                if (priceListRequest.getPrice() != null && Double.compare(priceListRequest.getPrice(), priceList.getPrice()) != 0) {
+                    priceList.setPrice(priceListRequest.getPrice());
+                }
+
+                if (priceListRequest.getEffectiveDate() != null) {
+                    priceList.setEffectiveDate(priceListRequest.getEffectiveDate());
+                }
+            }
         }
 
-        // Cập nhật service con theo loại
-        switch (serviceRequest.getServiceType()) {
-            case ADMINISTRATIVE -> {
-                if (administrativeServiceRequest == null) {
-                    throw new AppException(ErrorCodeUser.INVALID_REQUEST);
+        if (updateServiceTest.getServiceType() != null) {
+            existingService.setServiceType(updateServiceTest.getServiceType());
+            switch (updateServiceTest.getServiceType()) {
+                case ADMINISTRATIVE -> {
+                    AdministrativeService existing = administrativeServiceRepository.findByService(existingService)
+                            .orElse(new AdministrativeService());
+                    existing.setSampleCollectionMethod(SampleCollectionMethod.AT_CLINIC);
+                    existing.setService(existingService);
+                    administrativeServiceRepository.save(existing);
                 }
-                AdministrativeService administrativeService =
-                        administrativeServiceRepository.findByService(existingService)
-                                .orElseGet(() -> new AdministrativeService());
-                AdministrativeService updateAdministrativeService = administrativeMapper.toAdministrativeService(administrativeServiceRequest);
-                updateAdministrativeService.setSampleCollectionMethod(SampleCollectionMethod.AT_CLINIC);
-                updateAdministrativeService.setService(existingService);
-                administrativeServiceRepository.save(updateAdministrativeService);
-            }
 
-            case CIVIL -> {
-                if (civilServiceRequest == null) {
-                    throw new AppException(ErrorCodeUser.INVALID_REQUEST);
+                case CIVIL -> {
+                    CivilService existing = civilServiceRepository.findByService(existingService)
+                            .orElse(new CivilService());
+                    Set<SampleCollectionMethod> defaultMethods = new HashSet<>();
+                    defaultMethods.add(SampleCollectionMethod.AT_CLINIC);
+                    defaultMethods.add(SampleCollectionMethod.AT_HOME);
+                    existing.setSampleCollectionMethods(defaultMethods);
+                    existing.setService(existingService);
+                    civilServiceRepository.save(existing);
                 }
-                CivilService civilService =
-                        civilServiceRepository.findByService(existingService)
-                                .orElseGet(() -> new CivilService());
 
-                CivilService updateCivilService = civilServiceMapper.toCivilService(civilServiceRequest);
-                updateCivilService.setService(existingService);
-                civilServiceRepository.save(updateCivilService);
+                default -> throw new AppException(ErrorCodeUser.INVALID_REQUEST);
             }
-
-            default -> throw new AppException(ErrorCodeUser.INVALID_REQUEST);
         }
 
         return serviceTestRepository.save(existingService);
     }
-
-
 }
