@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import swp.project.adn_backend.dto.InfoDTO.ManagerInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
@@ -52,7 +53,7 @@ public class AdminController {
     }
 
     @GetMapping("/get-all-manager")
-    public ResponseEntity<List<StaffInfoDTO>> getAllManager() {
+    public ResponseEntity<List<ManagerInfoDTO>> getAllManager() {
         return ResponseEntity.ok(adminService.getAllManager());
     }
 

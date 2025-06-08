@@ -66,7 +66,6 @@ public class UserService {
         validateUser(userDTO);
         // Tạo user từ DTO và mã hóa mật khẩu
         Users users = userMapper.toUser(userDTO);
-        Users users1=new Users();
         roles.add(Roles.USER.name());
         users.setRoles(roles);
 
@@ -96,7 +95,6 @@ public class UserService {
         Staff staff = staffMapper.toStaff(staffRequest);
         staff.setRole("STAFF");
         staff.setCreateAt(LocalDate.now());
-        staff.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
         staff.setUsers(userRegister);
         staffRepository.save(staff);
         // Lưu lại để cascade lưu role
@@ -122,7 +120,6 @@ public class UserService {
         Manager manager = managerMapper.toManager(managerRequest);
         manager.setRole("MANAGER");
         manager.setCreateAt(LocalDate.now());
-        manager.setPassword(passwordEncoder.encode(managerRequest.getPassword()));
         manager.setUsers(userRegister);
         managerRepository.save(manager);
 

@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.InfoDTO.ManagerInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 import swp.project.adn_backend.entity.Manager;
 import swp.project.adn_backend.entity.Users;
@@ -36,22 +37,16 @@ public class AdminService {
     }
 
     @Transactional(readOnly = true)
-    public List<StaffInfoDTO> getAllManager() {
-        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO(" +
-                "u.fullName, u.phone, u.email, u.enabled, u.createAt, " +
-                "u.idCard, u.gender, u.address, u.dateOfBirth) " +
-                "FROM Users u JOIN u.roles r WHERE r = :input";
-        TypedQuery<StaffInfoDTO> query = entityManager.createQuery(jpql, StaffInfoDTO.class);
-        query.setParameter("input", "MANAGER");
+    public List<ManagerInfoDTO> getAllManager() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.ManagerInfoDTO(" +
+                "s.managerId, s.fullName, s.phone, s.email, s.enabled, s.createAt, " +
+                "s.role, s.idCard, s.gender, s.address, s.dateOfBirth) " +
+                "FROM Manager s";
 
-        List<StaffInfoDTO> staffList = query.getResultList();
-
-        for (StaffInfoDTO dto : staffList) {
-            dto.setRole("MANAGER"); // thủ công set lại role
-        }
-
-        return staffList;
+        TypedQuery<ManagerInfoDTO> query = entityManager.createQuery(jpql, ManagerInfoDTO.class);
+        return query.getResultList();
     }
+
 
 
     @Transactional

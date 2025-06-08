@@ -1,11 +1,9 @@
 package swp.project.adn_backend.dto.InfoDTO;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
 
-public class StaffInfoDTO {
-    private long staffId;
+public class ManagerInfoDTO {
+    private long managerId;
     private String fullName;
     private String phone;
     private String email;
@@ -17,8 +15,8 @@ public class StaffInfoDTO {
     private String address;
     private LocalDate dateOfBirth;
 
-    public StaffInfoDTO(long staffId, String fullName, String phone, String email, boolean enabled, LocalDate createAt, String role, String idCard, String gender, String address, LocalDate dateOfBirth) {
-        this.staffId = staffId;
+    public ManagerInfoDTO(long managerId, String fullName, String phone, String email, boolean enabled, LocalDate createAt, String role, String idCard, String gender, String address, LocalDate dateOfBirth) {
+        this.managerId = managerId;
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
@@ -31,12 +29,12 @@ public class StaffInfoDTO {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public long getStaffId() {
-        return staffId;
+    public long getManagerId() {
+        return managerId;
     }
 
-    public void setStaffId(long staffId) {
-        this.staffId = staffId;
+    public void setManagerId(long managerId) {
+        this.managerId = managerId;
     }
 
     public String getIdCard() {

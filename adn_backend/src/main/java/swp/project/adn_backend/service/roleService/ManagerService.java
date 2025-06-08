@@ -1,4 +1,5 @@
 package swp.project.adn_backend.service.roleService;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,22 +84,14 @@ public class ManagerService {
     @Transactional(readOnly = true)
     public List<StaffInfoDTO> getAllStaff() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO(" +
-                "u.fullName, u.phone, u.email, u.enabled, u.createAt, " +
-                "u.idCard, u.gender, u.address, u.dateOfBirth) " +
-                "FROM Users u JOIN u.roles r WHERE r = :input";
-
+                "s.staffId, s.fullName, s.phone, s.email, s.enabled, s.createAt, " +
+                "s.role, s.idCard, s.gender, s.address, s.dateOfBirth) " +
+                "FROM Staff s";
 
         TypedQuery<StaffInfoDTO> query = entityManager.createQuery(jpql, StaffInfoDTO.class);
-        query.setParameter("input", "STAFF");
-
-        List<StaffInfoDTO> staffList = query.getResultList();
-
-        for (StaffInfoDTO dto : staffList) {
-            dto.setRole("STAFF"); // thủ công set lại role
-        }
-
-        return staffList;
+        return query.getResultList();
     }
+
 
     @Transactional
     public void deleteUserByPhone(String phone) {
@@ -178,7 +171,8 @@ public class ManagerService {
 
         return userRepository.save(existingUser);
     }
-    private void validateUpdateManager(UpdateStaffAndManagerRequest updateStaffAndManagerRequest,Users existingStaff) {
+
+    private void validateUpdateManager(UpdateStaffAndManagerRequest updateStaffAndManagerRequest, Users existingStaff) {
         Map<String, String> errors = new HashMap<>();
 
         if (!existingStaff.getEmail().equals(updateStaffAndManagerRequest.getEmail()) &&
