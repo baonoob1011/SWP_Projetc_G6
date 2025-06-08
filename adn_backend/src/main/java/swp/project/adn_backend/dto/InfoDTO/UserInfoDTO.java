@@ -11,6 +11,7 @@ public class UserInfoDTO {
     private LocalDate createAt;
     private Set<String> roles;
     private String address;
+
     public UserInfoDTO(String fullName, String phone, String email,
                        boolean enabled, LocalDate createAt) {
         this.fullName = fullName;
