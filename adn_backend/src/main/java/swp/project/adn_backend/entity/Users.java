@@ -84,6 +84,8 @@ public class Users {
 
     public Users() {
     }
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<Blog> blogs;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Patient> patients;

@@ -150,7 +150,6 @@ public class UserService {
             }
         }
 
-
         if (updateUserRequest.getPassword() != null && updateUserRequest.getConfirmPassword()!=null) {
             if (!passwordEncoder.matches(updateUserRequest.getPassword(), existingUser.getPassword())
             && updateUserRequest.getConfirmPassword().equals(updateUserRequest.getPassword())) {

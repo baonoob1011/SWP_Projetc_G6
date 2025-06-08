@@ -59,8 +59,8 @@ public class SecurityConfig {
     private final String[] MANAGER_ENDPOINTS = {
             "/api/manager/update-profile",
             "/api/manager/**",
-            "/api/register/staff-account",
-            "/api/services/create-service"
+            "/api/services/**",
+            "/api/blog/**"
     };
 
     private final String[] ADMIN_ENDPOINTS = {
