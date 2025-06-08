@@ -305,8 +305,8 @@ export default function Home() {
                     key={index}
                     onClick={() => setSelectedImage(index)}
                     className={`relative overflow-hidden rounded-lg shadow-sm h-40 group cursor-pointer transition-all duration-300 ${selectedImage === index
-                        ? "ring-4 ring-blue-500 ring-opacity-60 transform scale-105"
-                        : "hover:scale-105"
+                      ? "ring-4 ring-blue-500 ring-opacity-60 transform scale-105"
+                      : "hover:scale-105"
                       }`}
                   >
                     <img
