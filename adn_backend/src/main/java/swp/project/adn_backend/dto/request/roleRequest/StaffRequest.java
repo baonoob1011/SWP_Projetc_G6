@@ -1,14 +1,10 @@
-package swp.project.adn_backend.dto.request;
+package swp.project.adn_backend.dto.request.roleRequest;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import swp.project.adn_backend.entity.Users;
-import swp.project.adn_backend.enums.Roles;
 
 import java.time.LocalDate;
 @Data

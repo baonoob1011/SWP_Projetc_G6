@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import swp.project.adn_backend.dto.request.ManagerRequest;
-import swp.project.adn_backend.dto.request.StaffRequest;
-import swp.project.adn_backend.dto.request.UserRequest;
+import swp.project.adn_backend.dto.request.roleRequest.ManagerRequest;
+import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
+import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.service.roleService.UserService;
 

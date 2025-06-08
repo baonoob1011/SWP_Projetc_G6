@@ -10,7 +10,7 @@ public class UserInfoDTO {
     private boolean enabled;
     private LocalDate createAt;
     private Set<String> roles;
-
+    private String address;
     public UserInfoDTO(String fullName, String phone, String email,
                        boolean enabled, LocalDate createAt) {
         this.fullName = fullName;
@@ -20,6 +20,22 @@ public class UserInfoDTO {
         this.createAt = createAt;
     }
 
+    public UserInfoDTO(String fullName, String phone, String email, boolean enabled, LocalDate createAt, String address) {
+        this.fullName = fullName;
+        this.phone = phone;
+        this.email = email;
+        this.enabled = enabled;
+        this.createAt = createAt;
+        this.address = address;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public LocalDate getCreateAt() {
         return createAt;

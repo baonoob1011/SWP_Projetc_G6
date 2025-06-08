@@ -58,7 +58,7 @@ public class Patient {
     @JoinColumn(name = "user_id", nullable = false)
     Users users;
 
-    @OneToMany(mappedBy = "", fetch = FetchType.LAZY, cascade = {
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = {
             CascadeType.ALL
     })
     List<Sample> samples;

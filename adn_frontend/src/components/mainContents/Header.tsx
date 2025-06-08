@@ -49,9 +49,11 @@ export function Header({ fullName, setFullName }: HeaderProps) {
         { label: 'Dân sự', path: '/service/civil' },
       ],
     },
+
     { label: 'Tin tức', path: '/blog' },
     { label: 'Đặt lịch', path: '/order' },
     { label: 'Địa chỉ', path: '/branch-and-map' },
+
   ];
 
   const handleOpenMenu = (

@@ -3,7 +3,7 @@ package swp.project.adn_backend.validator;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import swp.project.adn_backend.annotation.RequireBirthCertificateIfUnder18;
-import swp.project.adn_backend.dto.request.PatientRequest;
+import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 
 import java.time.LocalDate;
 import java.time.Period;

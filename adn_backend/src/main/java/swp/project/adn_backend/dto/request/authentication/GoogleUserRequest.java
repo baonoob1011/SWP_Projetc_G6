@@ -1,4 +1,4 @@
-package swp.project.adn_backend.dto.request;
+package swp.project.adn_backend.dto.request.authentication;
 
 public class GoogleUserRequest {
     private String sub;

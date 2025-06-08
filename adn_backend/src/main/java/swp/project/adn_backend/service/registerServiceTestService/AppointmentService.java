@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import swp.project.adn_backend.dto.request.ServiceRequest;
-import swp.project.adn_backend.dto.request.StaffRequest;
+import swp.project.adn_backend.dto.request.serviceRequest.ServiceRequest;
+import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
 import swp.project.adn_backend.dto.request.serviceRequest.AppointmentRequest;
-import swp.project.adn_backend.dto.request.serviceRequest.SlotRequest;
+import swp.project.adn_backend.dto.request.slot.SlotRequest;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.ErrorCodeUser;
@@ -22,7 +22,6 @@ import swp.project.adn_backend.repository.ServiceTestRepository;
 import swp.project.adn_backend.repository.StaffRepository;
 import swp.project.adn_backend.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
