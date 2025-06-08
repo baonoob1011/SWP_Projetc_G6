@@ -9,6 +9,12 @@ import org.springframework.http.HttpStatusCode;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum ErrorCodeUser {
     USER_EXISTED(1001, "Username is existed", HttpStatus.BAD_REQUEST),
+    STAFF_EXISTED(1001, "Staff not is exist", HttpStatus.BAD_REQUEST),
+    PRICE_LIST_NOT_FOUND(1001, "price list not found", HttpStatus.BAD_REQUEST),
+    INVALID_DATE_OF_BIRTH(1001, "date of birth have to in path", HttpStatus.BAD_REQUEST),
+    INVALID_GENDER(1001, "GENDER not mapping format", HttpStatus.BAD_REQUEST),
+    OLD_PASSWORD_NOT_MAPPING(1001, "Old password not mapping or not existed", HttpStatus.BAD_REQUEST),
+    PASSWORD_EXISTED(1001, "Password is existed", HttpStatus.BAD_REQUEST),
     SERVICE_NOT_EXISTED(1001, "Service is not existed", HttpStatus.BAD_REQUEST),
     STAFF_NOT_EXISTED(1001, "Staff is not existed", HttpStatus.BAD_REQUEST),
     USER_DISABLED(1001, "User is not active", HttpStatus.BAD_REQUEST),
@@ -42,7 +48,7 @@ public enum ErrorCodeUser {
     //
 
     // Trường hợp đặc biệt
-     INVALID_REQUEST(1021, "Invalid request"),
+    INVALID_REQUEST(1021, "Invalid request"),
     INTERNAL_ERROR(1022, "Internal server error. Please try again later.")
 
     ;

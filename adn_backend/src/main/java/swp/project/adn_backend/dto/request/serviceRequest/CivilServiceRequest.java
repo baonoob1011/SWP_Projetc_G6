@@ -1,6 +1,5 @@
-package swp.project.adn_backend.dto.request;
+package swp.project.adn_backend.dto.request.serviceRequest;
 
-import jakarta.persistence.*;
 import swp.project.adn_backend.entity.Kit;
 import swp.project.adn_backend.entity.ServiceTest;
 import swp.project.adn_backend.enums.SampleCollectionMethod;

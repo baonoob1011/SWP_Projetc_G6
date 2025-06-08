@@ -1,9 +1,5 @@
-package swp.project.adn_backend.dto.request;
+package swp.project.adn_backend.dto.response.serviceResponse;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import swp.project.adn_backend.entity.ServiceTest;
@@ -11,7 +7,7 @@ import swp.project.adn_backend.entity.ServiceTest;
 import java.time.LocalDate;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PriceListRequest {
+public class PriceListRespose {
 
     LocalDate effectiveDate;
     String time;

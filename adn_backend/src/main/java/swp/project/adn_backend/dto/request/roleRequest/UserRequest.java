@@ -1,4 +1,4 @@
-package swp.project.adn_backend.dto.request;
+package swp.project.adn_backend.dto.request.roleRequest;
 
 
 import jakarta.validation.constraints.Email;
@@ -85,20 +85,20 @@ public class UserRequest {
         this.phone = phone;
     }
 
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
-
     public @NotBlank(message = "USERNAME_BLANK") @Size(min = 8, message = "USERNAME_INVALID") String getUsername() {
         return username;
     }
 
     public void setUsername(@NotBlank(message = "USERNAME_BLANK") @Size(min = 8, message = "USERNAME_INVALID") String username) {
         this.username = username;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
     public @NotBlank(message = "PASSWORD_BLANK") @Size(min = 8, message = "PASSWORD_WEAK") @Pattern(

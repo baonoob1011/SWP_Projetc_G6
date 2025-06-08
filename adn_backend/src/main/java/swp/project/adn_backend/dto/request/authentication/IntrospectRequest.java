@@ -1,4 +1,4 @@
-package swp.project.adn_backend.dto.request;
+package swp.project.adn_backend.dto.request.authentication;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

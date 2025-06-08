@@ -1,10 +1,7 @@
-package swp.project.adn_backend.dto.request;
+package swp.project.adn_backend.dto.request.serviceRequest;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import swp.project.adn_backend.enums.ServiceType;
-
-import java.time.LocalDateTime;
 
 public class ServiceRequest {
 

@@ -69,6 +69,17 @@ public class Staff {
     @JoinColumn(name = "user_id", nullable = false)
     Users users;
 
+    @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<Slot> slots;
+
+    public List<Slot> getSlots() {
+        return slots;
+    }
+
+    public void setSlots(List<Slot> slots) {
+        this.slots = slots;
+    }
+
     public Users getUsers() {
         return users;
     }

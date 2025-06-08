@@ -1,11 +1,10 @@
-package swp.project.adn_backend.dto.request;
+package swp.project.adn_backend.dto.request.roleRequest;
 
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import swp.project.adn_backend.annotation.RequireBirthCertificateIfUnder18;
 import swp.project.adn_backend.annotation.RequireIdCardIf18OrOlder;
-import swp.project.adn_backend.entity.Users;
 
 
 import java.time.LocalDate;
