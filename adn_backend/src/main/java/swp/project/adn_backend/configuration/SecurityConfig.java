@@ -42,7 +42,30 @@ public class SecurityConfig {
             "/api/auth/**",
             "/api/otp/**",
             "/api/register/user-account",
+            "/api/services/get-all-administrative-service",
+            "/api/services/get-all-civil-service"
+    };
+
+    private final String[] USER_ENDPOINTS = {
+            "/api/appointment/book-appointment",
             "/api/user/**"
+    };
+
+    private final String[] STAFF_ENDPOINTS = {
+            "/api/staff/update-profile",
+            "/api/staff/**"
+    };
+
+    private final String[] MANAGER_ENDPOINTS = {
+            "/api/manager/update-profile",
+            "/api/manager/**",
+            "/api/register/staff-account",
+            "/api/services/create-service"
+    };
+
+    private final String[] ADMIN_ENDPOINTS = {
+            "/api/admin/**",
+            "/api/**"  // các api còn lại mặc định ADMIN
     };
 
 
@@ -55,23 +78,19 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // cấu hình CORS
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
-                        // STAFF or MANAGER can access /api/staff/**
-                        .requestMatchers("/api/appointment/book-appointment").hasAnyRole("USER")
+                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
 
-                        .requestMatchers("/api/services/get-all-service").permitAll()
-                        .requestMatchers("/api/services/**").permitAll()
+                        // Quyền USER
+                        .requestMatchers(USER_ENDPOINTS).hasRole("USER")
 
-                        .requestMatchers("/api/user/**").hasAnyRole("USER")
-                        .requestMatchers("/api/staff/**").hasAnyRole("STAFF", "MANAGER", "ADMIN")
-                        .requestMatchers("/api/staff/update-profile").hasRole("STAFF")
-                        .requestMatchers("/api/manager/update-profile").hasRole("MANAGER")
-                        .requestMatchers("/api/services/create-service").hasAnyRole("MANAGER", "ADMIN")
-                        .requestMatchers("/api/manager/**").hasAnyRole("MANAGER", "ADMIN")
-                        .requestMatchers("/api/register/staff-account").hasAnyRole("MANAGER", "ADMIN")
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/**").hasRole("ADMIN")  // matcher rộng cuối cùng
+                        // Quyền STAFF
+                        .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")
+
+                        // Quyền MANAGER
+                        .requestMatchers(MANAGER_ENDPOINTS).hasAnyRole("MANAGER", "ADMIN")
+
+                        // Quyền ADMIN
+                        .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
 
                         // Các request khác yêu cầu xác thực
                         .anyRequest().authenticated()
