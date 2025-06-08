@@ -36,6 +36,7 @@ type ErrorResponse = {
     username?: string;
     email?: string;
     phone?: string;
+    idCard?: string;
   };
 };
 
@@ -71,6 +72,26 @@ const SignUpManager = () => {
       setError((prev) => ({ ...prev, [name]: "" }));
     } catch (err) {
       if (err instanceof ValidationError) {
+        // Hiển thị thông báo chung cho trường hợp trống
+        if (value === "") {
+          setSnackbar({
+            open: true,
+            message: "Vui lòng điền đầy đủ thông tin",
+            severity: "error",
+          });
+          return;
+        }
+        
+        // Thông báo riêng cho số điện thoại
+        if (name === "phone") {
+          setSnackbar({
+            open: true,
+            message: "Vui lòng nhập số điện thoại",
+            severity: "error",
+          });
+          return;
+        }
+
         setError((prev) => ({ ...prev, [name]: err.message }));
       }
     }
@@ -98,24 +119,23 @@ const SignUpManager = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Kiểm tra xem có trường nào bị trống không
+    const emptyFields = Object.entries(manager).filter(([key, value]) => !value && key !== "gender");
+    if (emptyFields.length > 0) {
+      setSnackbar({
+        open: true,
+        message: "Vui lòng điền đầy đủ thông tin",
+        severity: "error",
+      });
+      return;
+    }
+
     try {
       await signUpStaffSchema.validate(manager, { abortEarly: false });
       setError({});
 
-      // Chuẩn bị data để gửi
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { ...dataToSend } = manager;
-
       const token = localStorage.getItem("token");
-
-      //   if (!token) {
-      //     setSnackbar({
-      //       open: true,
-      //       message: "Bạn cần đăng nhập để thực hiện chức năng này",
-      //       severity: "error",
-      //     });
-      //     return;
-      //   }
 
       const response = await fetch(
         "http://localhost:8080/api/register/manager-account",
@@ -123,71 +143,47 @@ const SignUpManager = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Fix 3: Thêm Authorization header
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(dataToSend),
         }
       );
 
-      console.log("Response status:", response.status);
-
       if (!response.ok) {
-
         const errorData: ErrorResponse = await response.json();
 
-        // Nếu server trả về lỗi từng field
         if (errorData.errors) {
-          const newServerErrors: { [key: string]: string } = {};
-          
-          // Xử lý tất cả các lỗi cùng lúc thay vì dừng ở lỗi đầu tiên
-          if (errorData.errors.username) {
-            newServerErrors.username = "Tên đăng nhập đã tồn tại";
-          }
-          if (errorData.errors.email) {
-            newServerErrors.email = "Email đã tồn tại";
-          }
-          if (errorData.errors.phone) {
-            newServerErrors.phone = "Số điện thoại đã tồn tại";
-          }
+          const messages = [];
+          if (errorData.errors.username) messages.push("Tên đăng nhập đã tồn tại");
+          if (errorData.errors.email) messages.push("Email đã tồn tại");
+          if (errorData.errors.phone) messages.push("Số điện thoại đã tồn tại");
+          if (errorData.errors.idCard) messages.push("CCCD không hợp lệ");
 
-          // Hiển thị tất cả lỗi lên các field cùng lúc
-          setError((prev) => ({ ...prev, ...newServerErrors }));
-          
-          // Không return ở đây để tránh dừng xử lý
-          // return; // <- Xóa dòng này
-        } else {
-          // Nếu không phải lỗi cụ thể
           setSnackbar({
             open: true,
-            message: errorData.message || "Đã xảy ra lỗi",
+            message: messages.join(", "),
+            severity: "error",
+          });
+        } else {
+          let errorMessage = "Có lỗi xảy ra";
+          if (response.status === 401) errorMessage = "Bạn không có quyền thực hiện chức năng này";
+          else if (response.status === 403) errorMessage = "Truy cập bị từ chối";
+          else if (response.status === 400) errorMessage = "Dữ liệu không hợp lệ";
+
+          setSnackbar({
+            open: true,
+            message: errorMessage,
             severity: "error",
           });
         }
-        let errorMessage = "Tên đăng nhập hoặc email đã tồn tại";
-
-        // Kiểm tra các lỗi cụ thể
-        if (response.status === 401) {
-          errorMessage = "Bạn không có quyền thực hiện chức năng này";
-        } else if (response.status === 403) {
-          errorMessage = "Truy cập bị từ chối";
-        } else if (response.status === 400) {
-          errorMessage = "Dữ liệu không hợp lệ";
-        }
-
-        setSnackbar({
-          open: true,
-          message: errorMessage,
-          severity: "error",
-        });
       } else {
         Swal.fire({
           icon: "success",
-          title: "Đăng ký nhân viên thành công!",
+          title: "Đăng ký quản lý thành công!",
           showConfirmButton: false,
           timer: 1500,
         });
 
-        // Reset form sau khi thành công
         setManager({
           fullName: "",
           idCard: "",
@@ -202,16 +198,12 @@ const SignUpManager = () => {
         });
       }
     } catch (error) {
-      console.error("Submit error:", error);
-
       if (error instanceof ValidationError) {
-        const newErrors: { [key: string]: string } = {};
-        error.inner.forEach((item) => {
-          if (item.path) {
-            newErrors[item.path] = item.message;
-          }
+        setSnackbar({
+          open: true,
+          message: "Vui lòng kiểm tra lại thông tin đã nhập",
+          severity: "error",
         });
-        setError(newErrors);
       } else {
         setSnackbar({
           open: true,
