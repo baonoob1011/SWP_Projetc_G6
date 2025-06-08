@@ -26,6 +26,10 @@ public class Blog {
     @Column(columnDefinition = "nvarchar(255)")
     String content;
 
+    @Column(name = "image", columnDefinition = "nvarchar(max)")
+    @Lob
+    private String image;
+
     @Column(name = "created_at")
     LocalDate createdAt;
 
@@ -54,6 +58,14 @@ public class Blog {
 
     public String getContent() {
         return content;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public void setContent(String content) {
