@@ -132,8 +132,10 @@ public class ServiceTestService {
         FullServiceTestResponse fullServiceTestResponse = null;
         for (ServiceTest serviceTest : serviceTests) {
             GetAllServiceResponse getAllServiceResponse = serviceTestMapper.toGetAllServiceTestResponse(serviceTest);
+
             // get Price List
             List<PriceListResponse> priceListResponses = new ArrayList<>();
+
             for (PriceList priceList : serviceTest.getPriceLists()) {
                 PriceListResponse priceListResponse = priceListMapper.toPriceListResponse(priceList);
                 priceListResponses.add(priceListResponse);
@@ -221,7 +223,6 @@ public class ServiceTestService {
                     serviceResponses.add(response);
                 }
             }
-
 
             // Build full response
             FullCivilServiceResponse fullResp = new FullCivilServiceResponse();

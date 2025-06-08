@@ -57,8 +57,8 @@ public class ServiceTestController {
         return ResponseEntity.ok("edit dịch vụ ADN thành công");
     }
 
-    @DeleteMapping("/delete-service")
-    public ResponseEntity<String> deleteService(@RequestParam long serviceId) {
+    @DeleteMapping("/delete-service/{serviceId}")
+    public ResponseEntity<String> deleteService(@PathVariable("serviceId") long serviceId) {
         serviceTestService.deleteServiceTest(serviceId);
         return ResponseEntity.ok("Delete Successful");
     }

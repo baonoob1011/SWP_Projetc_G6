@@ -7,6 +7,7 @@ import swp.project.adn_backend.enums.ServiceType;
 import java.time.LocalDate;
 
 public class GetAllServiceResponse {
+    long serviceId;
     String serviceName;
     LocalDate registerDate;
     String description;
@@ -15,13 +16,22 @@ public class GetAllServiceResponse {
     private String image;
 
 
-    public GetAllServiceResponse(String serviceName, LocalDate registerDate, String description, ServiceType serviceType, boolean isActive, String image) {
+    public GetAllServiceResponse(long serviceId, String serviceName, LocalDate registerDate, String description, ServiceType serviceType, boolean isActive, String image) {
+        this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.registerDate = registerDate;
         this.description = description;
         this.serviceType = serviceType;
         this.isActive = isActive;
         this.image = image;
+    }
+
+    public long getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(long serviceId) {
+        this.serviceId = serviceId;
     }
 
     public GetAllServiceResponse() {
