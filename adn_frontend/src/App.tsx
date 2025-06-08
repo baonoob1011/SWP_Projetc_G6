@@ -27,6 +27,7 @@ import { Header } from './components/mainContents/Header';
 import OldPassWord from './components/mainContents/feature/OldPassword';
 import NewProfile from './components/mainContents/actorList/StaffAndManagerProfile';
 import NewUserProfile from './components/mainContents/actorList/UserProfile';
+import CivilServiceList from './components/mainContents/services/GetCivilService';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -154,6 +155,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/service/civil" element={<CivilServiceList />} />
           </Routes>
 
           <ToastContainer />
