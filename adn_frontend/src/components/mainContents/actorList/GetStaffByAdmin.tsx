@@ -17,7 +17,7 @@ type Staff = {
   dateOfBirth: string;
   address: string;
   gender: string;
-  userId: string;
+  staffId: number;
   fullName: string;
   email: string;
   enabled: boolean;
@@ -176,7 +176,7 @@ function GetStaffByAdmin() {
                 <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
                   {user.enabled ? 'Đã kích hoạt' : 'Chưa kích hoạt'}
                 </TableCell>
-                <TableCell sx={{ border: '1px solid #ccc' }}>
+                <TableCell sx={{ border: '1px solid #ccc', gap: 10 }}>
                   <Button
                     variant="contained"
                     color="error"
@@ -185,6 +185,16 @@ function GetStaffByAdmin() {
                     onClick={() => handleDelete(user.phone, user.fullName)}
                   >
                     <Trash2 size={16} />
+                  </Button>
+                  <Button
+                    variant="contained"
+                    component={NavLink}
+                    to={`/s-slot/${user.staffId}`}
+                    color="error"
+                    size="small"
+                    sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}
+                  >
+                    <Plus size={16} />
                   </Button>
                 </TableCell>
               </TableRow>
