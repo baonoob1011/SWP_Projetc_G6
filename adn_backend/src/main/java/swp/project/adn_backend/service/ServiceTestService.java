@@ -45,9 +45,10 @@ public class ServiceTestService {
     PriceListRepository priceListRepository;
     EntityManager entityManager;
     UserMapper userMapper;
+    ManagerRepository managerRepository;
 
     @Autowired
-    public ServiceTestService(UserRepository userRepository, ServiceTestMapper serviceTestMapper, ServiceTestRepository serviceTestRepository, PriceListMapper priceListMapper, FeedbackMapper feedbackMapper, AdministrativeMapper administrativeMapper, CivilServiceMapper civilServiceMapper, AdministrativeServiceRepository administrativeServiceRepository, CivilServiceRepository civilServiceRepository, PriceListRepository priceListRepository, EntityManager entityManager, UserMapper userMapper) {
+    public ServiceTestService(UserRepository userRepository, ServiceTestMapper serviceTestMapper, ServiceTestRepository serviceTestRepository, PriceListMapper priceListMapper, FeedbackMapper feedbackMapper, AdministrativeMapper administrativeMapper, CivilServiceMapper civilServiceMapper, AdministrativeServiceRepository administrativeServiceRepository, CivilServiceRepository civilServiceRepository, PriceListRepository priceListRepository, EntityManager entityManager, UserMapper userMapper, ManagerRepository managerRepository) {
         this.userRepository = userRepository;
         this.serviceTestMapper = serviceTestMapper;
         this.serviceTestRepository = serviceTestRepository;
@@ -60,30 +61,22 @@ public class ServiceTestService {
         this.priceListRepository = priceListRepository;
         this.entityManager = entityManager;
         this.userMapper = userMapper;
+        this.managerRepository = managerRepository;
     }
 
     public ServiceTest createService(ServiceRequest serviceRequest,
                                      Authentication authentication,
                                      PriceListRequest priceListRequest,
-                                     AdministrativeServiceRequest administrativeServiceRequest,
-                                     CivilServiceRequest civilServiceRequest,
                                      MultipartFile file) {
 
 
         if (serviceTestRepository.existsByServiceName(serviceRequest.getServiceName())) {
             throw new AppException(ErrorCodeUser.SERVICE_NAME_IS_EXISTED);
         }
-
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        Long userId = jwt.getClaim("id");
-        Users users = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
-
         // Map ServiceTest
         ServiceTest serviceTest = serviceTestMapper.toServiceTest(serviceRequest);
         serviceTest.setRegisterDate(LocalDate.now());
         serviceTest.setActive(true);
-        serviceTest.setUsers(users);
 
         // Upload image if present
         if (file != null && !file.isEmpty()) {
@@ -140,12 +133,9 @@ public class ServiceTestService {
                 PriceListResponse priceListResponse = priceListMapper.toPriceListResponse(priceList);
                 priceListResponses.add(priceListResponse);
             }
-            UserCreateServiceResponse userResponse = userMapper.toUserCreateServiceResponse(serviceTest.getUsers());
-
             fullServiceTestResponse = new FullServiceTestResponse();
             fullServiceTestResponse.setServiceRequest(getAllServiceResponse);
             fullServiceTestResponse.setPriceListRequest(priceListResponses);
-            fullServiceTestResponse.setUserCreateServiceResponse(userResponse);
             responses.add(fullServiceTestResponse);
         }
         return responses;
@@ -248,13 +238,9 @@ public class ServiceTestService {
                                      UpdateServiceTestRequest updateServiceTest,
                                      Authentication authentication,
                                      PriceListRequest priceListRequest,
-                                      MultipartFile file
+                                     MultipartFile file
     ) {
 
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        Long userId = jwt.getClaim("id");
-        Users users = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
         System.out.println("Service ID " + serviceId);
         ServiceTest existingService = serviceTestRepository.findById(serviceId)
@@ -276,7 +262,6 @@ public class ServiceTestService {
         }
         existingService.setServiceId(existingService.getServiceId());
         existingService.setRegisterDate(LocalDate.now());
-        existingService.setUsers(users);
         if (file != null && !file.isEmpty()) {
             try {
                 String base64Image = Base64.getEncoder().encodeToString(file.getBytes());

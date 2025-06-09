@@ -5,19 +5,11 @@ import java.util.List;
 public class FullServiceTestResponse {
     private GetAllServiceResponse serviceRequest;
     private List<PriceListResponse> priceListRequest; //
-    private UserCreateServiceResponse userCreateServiceResponse;
 
     public GetAllServiceResponse getServiceRequest() {
         return serviceRequest;
     }
 
-    public UserCreateServiceResponse getUserCreateServiceResponse() {
-        return userCreateServiceResponse;
-    }
-
-    public void setUserCreateServiceResponse(UserCreateServiceResponse userCreateServiceResponse) {
-        this.userCreateServiceResponse = userCreateServiceResponse;
-    }
 
     public void setServiceRequest(GetAllServiceResponse serviceRequest) {
         this.serviceRequest = serviceRequest;

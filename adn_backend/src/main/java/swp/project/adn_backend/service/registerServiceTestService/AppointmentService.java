@@ -20,6 +20,7 @@ import swp.project.adn_backend.mapper.AppointmentMapper;
 import swp.project.adn_backend.mapper.SlotMapper;
 import swp.project.adn_backend.repository.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -73,14 +74,21 @@ public class AppointmentService {
         appointment.setAppointmentDate(slot.getSlotDate());
         appointment.setAppointmentStatus(AppointmentStatus.PENDING);
         appointment.setStaff(slot.getStaff());
-        appointment.setServices(List.of(serviceTest));
-        if(slot.getAppointment().size()<=slot.getMaxSlot()){
-            appointment.setSlot(slot);
-        }
+        appointment.setServices(serviceTest);
+
+        //người đăng kí dịch vụ
+        List<Users> users = new ArrayList<>();
+        users.add(userBookAppointment);
+        serviceTest.setUsers(users);
+
+        //những dịch vụ mà người này đăng kí
+        List<ServiceTest> serviceTests = new ArrayList<>();
+        serviceTests.add(serviceTest);
+        userBookAppointment.setServices(serviceTests);
 
         // Associate user <-> appointment bidirectionally
-        appointment.setUsers(List.of(userBookAppointment));
-        userBookAppointment.getAppointments().add(appointment);
+        appointment.setUsers(userBookAppointment);
+        userBookAppointment.setAppointments(appointment);
 
         // Save appointment
         Appointment saved = appointmentRepository.save(appointment);

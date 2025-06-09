@@ -16,7 +16,6 @@ import java.util.Set;
 @Entity
 @Table(name = "Users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Data
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -84,24 +83,25 @@ public class Users {
 
     public Users() {
     }
+
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Blog> blogs;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Patient> patients;
 
+    @OneToOne(mappedBy = "users", cascade = CascadeType.ALL)
+    Appointment appointments;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
     @JoinTable(
-            name = "appointment_user",
+            name = "user_service",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "appointment_id")
+            inverseJoinColumns = @JoinColumn(name = "service)id")
     )
-    List<Appointment> appointments;
-
-    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<ServiceTest> services;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -110,14 +110,17 @@ public class Users {
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Staff> staff;
 
-    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<Slot> slots;
+    @OneToOne(mappedBy = "users", cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    Slot slots;
 
-    public List<Slot> getSlots() {
+    public Slot getSlots() {
         return slots;
     }
 
-    public void setSlots(List<Slot> slots) {
+    public void setSlots(Slot slots) {
         this.slots = slots;
     }
 
@@ -249,11 +252,11 @@ public class Users {
         this.patients = patients;
     }
 
-    public List<Appointment> getAppointments() {
+    public Appointment getAppointments() {
         return appointments;
     }
 
-    public void setAppointments(List<Appointment> appointments) {
+    public void setAppointments(Appointment appointments) {
         this.appointments = appointments;
     }
 

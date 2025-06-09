@@ -27,12 +27,13 @@ public class Slot {
     @Column(name = "end_time")
     Time endTime;
 
-    @ManyToOne(cascade = {
+    @OneToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     Users users;
+
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
@@ -40,8 +41,6 @@ public class Slot {
     @JoinColumn(name = "staff_id", nullable = false)
     Staff staff;
 
-    @Column(name = "max_slot")
-    int maxSlot;
     @OneToMany(mappedBy = "slot", fetch = FetchType.LAZY, cascade = {
             CascadeType.ALL
     })
@@ -75,13 +74,7 @@ public class Slot {
         this.staff = staff;
     }
 
-    public int getMaxSlot() {
-        return maxSlot;
-    }
 
-    public void setMaxSlot(int maxSlot) {
-        this.maxSlot = maxSlot;
-    }
 
     public void setStartTime(Time startTime) {
         this.startTime = startTime;
