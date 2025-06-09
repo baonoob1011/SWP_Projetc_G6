@@ -124,6 +124,7 @@ public class ManagerService {
         validateUpdateManager(updateStaffAndManagerRequest, existingUser);
 
 
+        
         // Validate và cập nhật password
         if (updateStaffAndManagerRequest.getOldPassword() != null) {
             if (!passwordEncoder.matches(updateStaffAndManagerRequest.getOldPassword(), existingUser.getPassword())) {
