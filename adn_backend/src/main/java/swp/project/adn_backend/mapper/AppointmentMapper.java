@@ -1,7 +1,7 @@
 package swp.project.adn_backend.mapper;
 
 import org.mapstruct.Mapper;
-import swp.project.adn_backend.dto.request.serviceRequest.AppointmentRequest;
+import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.Appointment;
 

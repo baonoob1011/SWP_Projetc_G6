@@ -48,6 +48,7 @@ public class SecurityConfig {
 
     private final String[] USER_ENDPOINTS = {
             "/api/appointment/book-appointment",
+            "/api/patient/register-info",
             "/api/user/**"
     };
 
@@ -83,7 +84,7 @@ public class SecurityConfig {
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
 
                         // Quyền USER
-                        .requestMatchers(USER_ENDPOINTS).hasRole("USER")
+                        .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN")
 
                         // Quyền STAFF
                         .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")

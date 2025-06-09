@@ -33,8 +33,6 @@ public class ServiceTestController {
                 request.getServiceRequest(),
                 authentication,
                 request.getPriceListRequest(),
-                request.getAdministrativeServiceRequest(),
-                request.getCivilServiceRequest(),
                 file
         );
         return ResponseEntity.ok("Tạo dịch vụ ADN thành công");

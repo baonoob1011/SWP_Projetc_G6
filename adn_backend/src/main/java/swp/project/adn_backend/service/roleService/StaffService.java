@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
 import swp.project.adn_backend.entity.Users;
@@ -24,6 +25,7 @@ import swp.project.adn_backend.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -122,6 +124,19 @@ public class StaffService {
         return query.getSingleResult();
     }
 
+    public List<SlotInfoDTO> getSlotByStaffId(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long staffId = jwt.getClaim("id");
+        System.out.println(staffId);
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
+                "s.slotId, s.slotDate, s.startTime, s.endTime, s.location) " +
+                "FROM Slot s WHERE s.staff.staffId = :staffId";
+
+
+        TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
+        query.setParameter("staffId", staffId);
+        return query.getResultList();
+    }
 
     private void validateUpdateStaff(UpdateStaffAndManagerRequest updateStaffAndManagerRequest,Users existingStaff) {
         Map<String, String> errors = new HashMap<>();

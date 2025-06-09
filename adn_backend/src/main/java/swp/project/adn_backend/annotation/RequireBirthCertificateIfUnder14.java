@@ -10,8 +10,8 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = BirthCertificateValidator.class)
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RequireBirthCertificateIfUnder18 {
-    String message() default "Birth certificate is required for patients under 18 years old";
+public @interface RequireBirthCertificateIfUnder14 {
+    String message() default "Birth certificate is required for patients under 14 years old";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

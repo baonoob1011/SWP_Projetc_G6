@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Menu,
   X,
   User,
-//   Settings,
+  //   Settings,
   LogOut,
   Bell,
   Home,
@@ -12,51 +12,63 @@ import {
   // FileText,
   Shield,
   List,
-} from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
-import { RoomService } from "@mui/icons-material";
+  ShoppingBag,
+} from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { Button } from '@mui/material';
+import { RoomService } from '@mui/icons-material';
 
 const AdminSidebar = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState("dashboard");
+  const [activeItem, setActiveItem] = useState('dashboard');
   const [notifications] = useState(0);
   const navigate = useNavigate();
-  const [fullName,setFullName] = useState<string>("")
-  
+  const [fullName, setFullName] = useState<string>('');
+
   useEffect(() => {
-    const storeName = localStorage.getItem("fullName") || "";
-    setFullName(storeName)
-  }, [])
+    const storeName = localStorage.getItem('fullName') || '';
+    setFullName(storeName);
+  }, []);
 
   const menuItems = [
-    { id: "dashboard", icon: Home, label: "Home", path: "" },
-    { id: "data", icon: List, label: "Danh sách", path: "admin/data" },
-    { id: "services", icon: RoomService, label: "Dịch vụ", path: "services" },
+    { id: 'dashboard', icon: Home, label: 'Home', path: '' },
+    { id: 'data', icon: List, label: 'Danh sách', path: 'admin/data' },
+    {
+      id: 'services',
+      icon: RoomService,
+      label: 'Tạo Dịch vụ',
+      path: 'services',
+    },
+    {
+      id: 'servicesInfo',
+      icon: ShoppingBag,
+      label: 'Tất cả dịch vụ',
+      path: 'a-getAllService',
+    },
   ];
 
   const handleLogout = async () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     try {
       if (token) {
-        await fetch("http://localhost:8080/api/auth/logout", {
-          method: "POST",
+        await fetch('http://localhost:8080/api/auth/logout', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
         });
       }
-      localStorage.removeItem("token");
-      localStorage.removeItem("username");
-      localStorage.removeItem("fullName");
-      localStorage.removeItem("role");
-      setFullName("");
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+      localStorage.removeItem('fullName');
+      localStorage.removeItem('role');
+      setFullName('');
 
-      navigate("/login");
-      window.location.href = "/login";
+      navigate('/login');
+      window.location.href = '/login';
     } catch (error) {
-      console.error("Logout API error:", error);
+      console.error('Logout API error:', error);
     }
   };
 
@@ -107,7 +119,7 @@ const AdminSidebar = () => {
         className={`
         fixed lg:static inset-y-0 left-0 z-50 
         w-64
-        ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         bg-white shadow-lg border-r border-gray-200 transition-all duration-300 ease-in-out
         flex flex-col
         h-screen
@@ -147,8 +159,8 @@ const AdminSidebar = () => {
                   px-0 py-0 normal-case rounded-lg transition-all duration-200 w-full text-left
                     ${
                       isActive
-                        ? "bg-blue-50 text-blue-600 border-r-2 border-blue-600"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+                        ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'
                     }
                 `}
               >
@@ -185,7 +197,7 @@ const AdminSidebar = () => {
           {/* User Profile */}
           <div className="flex items-center space-x-3 px-3 py-3 rounded-lg bg-gray-50">
             <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
-              <User className="h-4 w-4 text-gray-600"/>
+              <User className="h-4 w-4 text-gray-600" />
             </div>
             <span className="text-sm text-gray-700">{fullName}</span>
           </div>

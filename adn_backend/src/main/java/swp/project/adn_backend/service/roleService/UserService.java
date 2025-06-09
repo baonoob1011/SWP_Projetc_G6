@@ -90,10 +90,12 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
-
+        userRepository.save(users);
         //add vao bang staff
+
         Staff staff = staffMapper.toStaff(staffRequest);
         staff.setRole("STAFF");
+        staff.setStaffId(users.getUserId());
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);
         staffRepository.save(staff);
@@ -115,10 +117,11 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(managerRequest.getPassword()));
-
+        userRepository.save(users);
         //add vao bang staff
         Manager manager = managerMapper.toManager(managerRequest);
         manager.setRole("MANAGER");
+        manager.setManagerId(users.getUserId());
         manager.setCreateAt(LocalDate.now());
         manager.setUsers(userRegister);
         managerRepository.save(manager);
@@ -147,6 +150,14 @@ public class UserService {
                 throw new AppException(ErrorCodeUser.PHONE_EXISTED);
             }
         }
+        if (updateUserRequest.getOldPassword() != null) {
+            System.out.println("mk chuyen vao:"+updateUserRequest.getOldPassword());
+            System.out.println("mk cu:"+passwordEncoder.matches(updateUserRequest.getOldPassword(), existingUser.getPassword()));
+            if (!passwordEncoder.matches(updateUserRequest.getOldPassword(), existingUser.getPassword())) {
+                throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
+            }
+            System.out.println("dung mk");
+        }
 
         if (updateUserRequest.getPassword() != null && updateUserRequest.getConfirmPassword() != null) {
             if (!passwordEncoder.matches(updateUserRequest.getPassword(), existingUser.getPassword())
@@ -157,12 +168,7 @@ public class UserService {
             }
         }
 
-        if (updateUserRequest.getOldPassword() != null) {
-            if (!passwordEncoder.matches(updateUserRequest.getOldPassword(), existingUser.getPassword())) {
-                throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
-            }
-            System.out.println("dung mk");
-        }
+
 
         if (updateUserRequest.getAddress() != null) {
             String oldAddress = existingUser.getAddress();

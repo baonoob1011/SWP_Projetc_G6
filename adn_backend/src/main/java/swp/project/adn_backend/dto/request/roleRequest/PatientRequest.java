@@ -3,16 +3,16 @@ package swp.project.adn_backend.dto.request.roleRequest;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
-import swp.project.adn_backend.annotation.RequireBirthCertificateIfUnder18;
-import swp.project.adn_backend.annotation.RequireIdCardIf18OrOlder;
+import swp.project.adn_backend.annotation.RequireBirthCertificateIfUnder14;
+import swp.project.adn_backend.annotation.RequireIdCardIf16OrOlder;
 
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
-@RequireBirthCertificateIfUnder18
-@RequireIdCardIf18OrOlder
+@RequireBirthCertificateIfUnder14
+@RequireIdCardIf16OrOlder
 public class PatientRequest {
 
     @NotBlank(message = "Full name is required")
@@ -32,6 +32,7 @@ public class PatientRequest {
     @NotNull(message = "Date of birth is required")
     @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
+
 
     private String identityNumber;
 

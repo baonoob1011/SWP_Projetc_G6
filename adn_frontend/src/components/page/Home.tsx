@@ -1,12 +1,13 @@
 import banner from "../../image/banner.jpg";
 import doctor from "../../image/doctor.jpg";
-import doctor2 from "../../image/bg5.png";
-// import adn from "../../image/adn.jpg";
-import item from "../../image/nurse.jpg";
+import adn from "../../image/adn.jpg";
+import item from "../../image/pic1.jpg";
+import geneLinkImage from "../../image/Intro_image.png";
 import { Swiper, SwiperSlide, type SwiperRef } from "swiper/react"; // <-- thêm SwiperRef
 import { Autoplay, Scrollbar } from "swiper/modules";
 import { useRef, useState } from "react";
 import "./Home.module.css";
+
 
 import {
   ClipboardCheck,
@@ -45,7 +46,7 @@ export default function Home() {
       gradient: "from-blue-900/80",
     },
     {
-      src: doctor2,
+      src: adn,
       title: "Công nghệ tiên tiến",
       desc: "Thiết bị hiện đại hàng đầu",
       gradient: "from-green-900/80",
@@ -57,7 +58,7 @@ export default function Home() {
       gradient: "from-purple-900/80",
     },
     {
-      src: doctor2,
+      src: adn,
       title: "Bảo mật tuyệt đối",
       desc: "Bảo vệ thông tin cá nhân",
       gradient: "from-orange-900/80",
@@ -154,91 +155,280 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 relative overflow-x-hidden">
-      {/* Banner Image */}
-      <div className="banner-container">
+      {/* Banner + Đăng Ký Tư Vấn */}
+      <div className="relative mt-24 overflow-visible">
+        {/* Banner Image */}
         <img
           src={banner}
           alt="Banner"
-          className="banner-image"
+          className="w-full h-auto object-contain"
           loading="lazy"
-          style={{ marginTop: 100 }}
         />
+
+        {/* Form đăng ký đè lên đáy banner */}
+        <section
+          className="
+      absolute bottom-0 left-1/2
+      transform -translate-x-1/2 translate-y-1/2
+      w-[90%] max-w-4xl
+      bg-blue-100 rounded-xl p-6
+      shadow-xl z-10
+    "
+        >
+          <h2 className="text-center text-2xl font-bold text-blue-700 mb-4">
+            ĐĂNG KÝ TƯ VẤN
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <input
+              type="text"
+              placeholder="Tên*"
+              className="bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <input
+              type="text"
+              placeholder="Số điện thoại*"
+              className="bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <input
+              type="text"
+              placeholder="Dịch vụ quan tâm"
+              className="bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <button className="bg-orange-500 border border-orange-500 text-white font-semibold rounded-lg px-6 py-2 hover:bg-orange-600 transition">
+              TƯ VẤN NGAY
+            </button>
+          </div>
+        </section>
       </div>
-      {/* About Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div>
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
-              Về GeneLink
-            </h2>
-            <div className="text-gray-700 space-y-4 leading-relaxed text-justify">
-              <p>
-                Công ty Cổ phần Dịch vụ Phân tích Di truyền (GeneLink) - thành
-                viên Tập đoàn Eurofins - là một doanh nghiệp y tế tiên phong
-                trong lĩnh vực xét nghiệm được thành lập ngày 26/10/2010 bởi đội
-                ngũ các nhà khoa học đầu ngành.
-              </p>
-              <p>
-                Trong hành trình nỗ lực phát triển không ngừng, GeneLink vẫn
-                luôn giữ vững và khẳng định vai trò dẫn đầu về phân tích di
-                truyền nói riêng cũng như trong ngành xét nghiệm hỗ trợ chẩn
-                đoán lâm sàng nói chung.
-              </p>
-              <p>
-                Việc gia nhập Tập đoàn Y tế Số 1 Thế giới Eurofins là một trong
-                những bước đi chiến lược nhằm trở thành doanh nghiệp có vốn đầu
-                tư nước ngoài và xây dựng thương hiệu uy tín đa quốc gia.
-              </p>
+
+      {/* About Section - kéo lên để khỏi trắng */}
+      <section className="relative -mt-20 pt-20 pb-4 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+        {/* …nội dung Về GeneLink… */}
+      </section>
+
+{/* {Section giới thiệu geneLink} */}
+      <section className="relative mt-32 mb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Subtle background decorations */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-20 left-10 w-24 h-24 bg-blue-200/30 rounded-full blur-xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-32 h-32 bg-purple-200/20 rounded-full blur-2xl animate-pulse delay-1000"></div>
+        </div>
+
+        {/* Card container */}
+        <div className="relative z-10 max-w-6xl mx-auto bg-gradient-to-br from-blue-50 to-white 
+                      rounded-3xl shadow-xl border border-blue-100/50 
+                      transform transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 
+                      backdrop-blur-sm p-6 sm:p-8">
+
+          {/* Subtle top border gradient */}
+          <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent rounded-full"></div>
+
+          <div className="flex flex-col md:flex-row items-start gap-8">
+
+            {/* Text bên trái */}
+            <div className="md:w-2/3">
+              <div className="relative mb-6">
+                <h2 className="text-3xl md:text-4xl font-bold 
+                             bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 
+                             bg-clip-text text-transparent mb-2
+                             transform transition-all duration-300 hover:scale-105">
+                  Về GeneLink
+                </h2>
+                <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full 
+                              transform transition-all duration-500 hover:w-24"></div>
+              </div>
+
+              <div className="text-gray-700 space-y-6 leading-relaxed text-justify">
+                <p className="transform transition-all duration-300 hover:text-gray-800 
+                           p-4 rounded-xl hover:bg-blue-50/50 hover:shadow-sm
+                           border-l-2 border-transparent hover:border-blue-300">
+                  <span className="font-semibold text-blue-700">Công ty Cổ phần Dịch vụ Phân tích Di truyền (GeneLink)</span> - thành
+                  viên <span className="font-semibold text-purple-700">Tập đoàn Eurofins</span> - là một doanh nghiệp y tế tiên phong
+                  trong lĩnh vực xét nghiệm được thành lập ngày <span className="font-medium text-blue-600">26/10/2010</span> bởi đội
+                  ngũ các nhà khoa học đầu ngành.
+                </p>
+
+                <p className="transform transition-all duration-300 hover:text-gray-800 
+                           p-4 rounded-xl hover:bg-purple-50/50 hover:shadow-sm
+                           border-l-2 border-transparent hover:border-purple-300">
+                  Trong hành trình nỗ lực phát triển không ngừng, <span className="font-semibold text-blue-700">GeneLink</span> vẫn
+                  luôn giữ vững và khẳng định vai trò <span className="font-semibold text-purple-700">dẫn đầu về phân tích di
+                    truyền</span> nói riêng cũng như trong ngành xét nghiệm hỗ trợ chẩn
+                  đoán lâm sàng nói chung.
+                </p>
+
+                <p className="transform transition-all duration-300 hover:text-gray-800 
+                           p-4 rounded-xl hover:bg-blue-50/50 hover:shadow-sm
+                           border-l-2 border-transparent hover:border-blue-300">
+                  Việc gia nhập <span className="font-semibold text-blue-700">Tập đoàn Y tế Số 1 Thế giới Eurofins</span> là một trong
+                  những bước đi chiến lược nhằm trở thành doanh nghiệp có vốn đầu
+                  tư nước ngoài và xây dựng <span className="font-semibold text-purple-700">thương hiệu uy tín đa quốc gia</span>.
+                </p>
+              </div>
+            </div>
+
+            {/* Ảnh bên phải */}
+            {/* Ảnh bên phải */}
+            <div className="md:w-1/2 flex justify-center">  {/* Tăng từ 1/3 lên 1/2 */}
+              <div className="w-full max-w-md">                {/* Đặt max-width cho ảnh */}
+                <img
+                  src={geneLinkImage}
+                  alt="GeneLink Laboratory"
+                  className="w-full h-auto object-cover rounded-2xl shadow-lg 
+                 border border-blue-100/50 bg-white/80 backdrop-blur-sm
+                 transform transition-all duration-300 hover:shadow-xl"
+                />
+              </div>
+            </div>
+
+
+          </div>
+
+          {/* Bottom accent line */}
+          <div className="absolute bottom-0 left-1/3 right-1/3 h-0.5 bg-gradient-to-r from-transparent via-purple-400/50 to-transparent rounded-full"></div>
+        </div>
+      </section>
+
+      {/* YouTube Video Embed */}
+      <section className="flex justify-center mt-4">
+        <iframe
+          width="1000"
+          height="600"
+          className="rounded-lg shadow-lg"
+          src="https://www.youtube.com/embed/ffpkreH-cfk"
+          title="YouTube video player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </section>
+
+       <section className="relative py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-10 left-10 w-32 h-32 bg-green-200/20 rounded-full blur-2xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-blue-200/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/4 w-20 h-20 bg-gradient-to-r from-green-300/20 to-blue-300/20 rounded-full blur-xl"></div>
+      </div>
+
+      {/* Main container with frame */}
+      <div className="relative z-10 bg-gradient-to-br from-white via-green-50/30 to-blue-50/30 
+                      rounded-3xl shadow-2xl border border-gray-100/50 
+                      transform transition-all duration-500 hover:shadow-3xl hover:-translate-y-1 
+                      backdrop-blur-sm p-8 sm:p-12 overflow-hidden">
+        
+        {/* Top decorative border */}
+        <div className="absolute top-0 left-1/4 right-1/4 h-1 bg-gradient-to-r from-transparent via-green-400 to-blue-400 to-transparent rounded-full"></div>
+        
+        {/* Side accent lines */}
+        <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-gradient-to-b from-transparent via-green-400/50 to-transparent rounded-full"></div>
+        <div className="absolute right-0 top-1/3 bottom-1/3 w-1 bg-gradient-to-b from-transparent via-blue-400/50 to-transparent rounded-full"></div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <ul className="pl-4 space-y-4">
+            <div className="relative mb-8">
+              <h2 className="text-2xl font-bold mb-6 text-left
+                             transform transition-all duration-300 hover:scale-105">
+                <strong className="bg-gradient-to-r from-green-600 via-blue-600 to-green-700 
+                                 bg-clip-text text-transparent">
+                  Gói xét nghiệm ADN Huyết thống
+                </strong>
+              </h2>
+              <div className="absolute -left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-green-400 to-blue-400 rounded-full"></div>
+            </div>
+            <br />
+            
+            <li className="flex items-start group transform transition-all duration-300 hover:translate-x-2">
+              <div className="flex-shrink-0 mr-3 p-1 rounded-full bg-green-100 group-hover:bg-green-200 transition-colors duration-300">
+                <ShieldCheck 
+                  style={{ color: "green" }} 
+                  className="transform transition-all duration-300 group-hover:scale-110" 
+                />
+              </div>
+              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-green-100/50 
+                              group-hover:bg-white/80 group-hover:shadow-md transition-all duration-300
+                              group-hover:border-green-200">
+                <p className="text-base group-hover:text-green-800 transition-colors duration-300">
+                  <strong>ADN huyết thống trực hệ (Cha | Mẹ - Con)</strong>
+                </p>
+              </div>
+            </li>
+            
+            <li className="flex items-start group transform transition-all duration-300 hover:translate-x-2">
+              <div className="flex-shrink-0 mr-3 p-1 rounded-full bg-green-100 group-hover:bg-green-200 transition-colors duration-300">
+                <ShieldCheck 
+                  style={{ color: "green" }} 
+                  className="transform transition-all duration-300 group-hover:scale-110" 
+                />
+              </div>
+              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-green-100/50 
+                              group-hover:bg-white/80 group-hover:shadow-md transition-all duration-300
+                              group-hover:border-green-200">
+                <p className="text-base group-hover:text-green-800 transition-colors duration-300">
+                  <strong>
+                    ADN huyết thống trực hệ (Cha | Mẹ - Con) - Làm giấy khai sinh
+                  </strong>
+                </p>
+              </div>
+            </li>
+            
+            <li className="flex items-start group transform transition-all duration-300 hover:translate-x-2">
+              <div className="flex-shrink-0 mr-3 p-1 rounded-full bg-green-100 group-hover:bg-green-200 transition-colors duration-300">
+                <ShieldCheck 
+                  style={{ color: "green" }} 
+                  className="transform transition-all duration-300 group-hover:scale-110" 
+                />
+              </div>
+              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-green-100/50 
+                              group-hover:bg-white/80 group-hover:shadow-md transition-all duration-300
+                              group-hover:border-green-200">
+                <p className="text-base group-hover:text-green-800 transition-colors duration-300">
+                  <strong>
+                    ADN huyết thống trực hệ (Cha | Mẹ - Con) - để thực hiện các
+                    thủ tục pháp lý
+                  </strong>
+                </p>
+              </div>
+            </li>
+          </ul>
+          
+          <div
+            className="relative rounded-2xl shadow-2xl overflow-hidden group"
+            style={{ width: "60%", marginLeft: 150 }}
+          >
+            {/* Enhanced glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-blue-400/20 
+                            rounded-2xl blur-xl opacity-0 group-hover:opacity-100 
+                            transition-all duration-500 scale-110 z-0"></div>
+            
+            {/* Image container */}
+            <div className="relative transform transition-all duration-500 
+                            group-hover:scale-105 group-hover:-rotate-1 z-10">
+              <img
+                src={doctor}
+                alt="Phòng xét nghiệm ADN"
+                className="h-full object-cover rounded-2xl border-2 border-white/50"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/30 to-transparent rounded-2xl"></div>
+              
+              {/* Floating accent elements */}
+              <div className="absolute -top-2 -right-2 w-4 h-4 bg-green-400 rounded-full 
+                              opacity-60 animate-bounce"></div>
+              <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-blue-400 rounded-full 
+                              opacity-60 animate-pulse"></div>
             </div>
           </div>
         </div>
-      </section>
-      {/* Hero Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <ul className="pl-4 space-y-4">
-            <h2 className="text-2xl font-bold mb-6 text-left">
-              <strong>Gói xét nghiệm ADN Huyết thống</strong>
-            </h2>
-            <br />
-            <li className="flex items-start">
-              <ShieldCheck style={{ color: "green", marginRight: 10 }} />
-              <p className="text-base">
-                <strong>ADN huyết thống trực hệ (Cha | Mẹ - Con)</strong>
-              </p>
-            </li>
-            <li className="flex items-start">
-              <ShieldCheck style={{ color: "green", marginRight: 10 }} />
-              <p className="text-base">
-                <strong>
-                  ADN huyết thống trực hệ (Cha | Mẹ - Con) - Làm giấy khai sinh
-                </strong>
-              </p>
-            </li>
-            <li className="flex items-start">
-              <ShieldCheck style={{ color: "green", marginRight: 10 }} />
-              <p className="text-base">
-                <strong>
-                  ADN huyết thống trực hệ (Cha | Mẹ - Con) - để thực hiện các
-                  thủ tục pháp lý
-                </strong>
-              </p>
-            </li>
-          </ul>
-          <div
-            className="relative rounded-2xl shadow-2xl overflow-hidden"
-            style={{ width: "60%", marginLeft: 150 }}
-          >
-            <img
-              src={doctor}
-              alt="Phòng xét nghiệm ADN"
-              className=" h-full object-cover"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-blue-900/30 to-transparent"></div>
-          </div>
-        </div>
-      </section>
+        
+        {/* Bottom decorative border */}
+        <div className="absolute bottom-0 left-1/3 right-1/3 h-1 bg-gradient-to-r from-transparent via-blue-400 to-green-400 to-transparent rounded-full"></div>
+        
+        {/* Corner accents */}
+        <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-green-300/50 rounded-tl-lg"></div>
+        <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-blue-300/50 rounded-br-lg"></div>
+      </div>
+    </section>
       {/* Services Section */}
       <section className="bg-white py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto rounded-xl">
         <h2 className="text-3xl font-bold text-center mb-12 text-blue-700">
@@ -279,7 +469,7 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-stretch">
             {/* Left side: Reasons list + 4 interactive sections */}
-            <div className="lg:col-span-3 flex flex-col h-full">
+            <div className="lg:col-span-3 flex flex-col">
               {/* Reasons grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 pl-4 sm:pl-6 lg:pl-8">
                 {reasons.map(({ icon, text, desc }, i) => (
@@ -335,9 +525,9 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right side: Dynamic Image Display - Matches left side height exactly */}
-            <div className="lg:col-span-2 px-4 sm:px-6 lg:px-8 flex h-full">
-              <div className="rounded-xl overflow-hidden shadow-lg relative w-full flex-1">
+            {/* Right side: Dynamic Image Display - Matches left side height */}
+            <div className="lg:col-span-2 px-4 sm:px-6 lg:px-8 flex">
+              <div className="rounded-xl overflow-hidden shadow-lg relative w-full h-full min-h-[500px] lg:min-h-0">
                 <img
                   src={imageData[selectedImage].src}
                   alt={imageData[selectedImage].title}

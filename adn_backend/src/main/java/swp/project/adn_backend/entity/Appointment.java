@@ -24,6 +24,7 @@ public class Appointment {
 
     @Column(name = "appointment_date")
     LocalDate appointmentDate;
+
     @Column(columnDefinition = "nvarchar(255)")
     String location;
 
@@ -33,16 +34,11 @@ public class Appointment {
     @Column(columnDefinition = "nvarchar(255)")
     String note;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+    @OneToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    @JoinTable(
-            name = "appointment_user",
-            joinColumns = @JoinColumn(name = "appointment_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    List<Users> users;
+            CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "user_id")
+    Users users;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -58,24 +54,27 @@ public class Appointment {
     @JoinColumn(name = "slot_id", nullable = false)
     Slot slot;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+    @OneToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    @JoinTable(
-            name = "appointment_service",
-            joinColumns = @JoinColumn(name = "appointment_id"),
-            inverseJoinColumns = @JoinColumn(name = "service_id")
-    )
-    List<ServiceTest> services;
+            CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "service_id")
+    ServiceTest services;
 
-    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    List<Patient> patients;
+//    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    List<Patient> patients;
 
     public Appointment() {
+    }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
     public Slot getSlot() {
@@ -93,7 +92,6 @@ public class Appointment {
     public void setAppointmentId(long appointmentId) {
         this.appointmentId = appointmentId;
     }
-
 
 
     public LocalDate getAppointmentDate() {
@@ -128,13 +126,6 @@ public class Appointment {
         this.note = note;
     }
 
-    public List<Users> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<Users> users) {
-        this.users = users;
-    }
 
     public Staff getStaff() {
         return staff;
@@ -144,19 +135,19 @@ public class Appointment {
         this.staff = staff;
     }
 
-    public List<ServiceTest> getServices() {
+    public ServiceTest getServices() {
         return services;
     }
 
-    public void setServices(List<ServiceTest> services) {
+    public void setServices(ServiceTest services) {
         this.services = services;
     }
 
-    public List<Patient> getPatients() {
-        return patients;
-    }
-
-    public void setPatients(List<Patient> patients) {
-        this.patients = patients;
-    }
+//    public List<Patient> getPatients() {
+//        return patients;
+//    }
+//
+//    public void setPatients(List<Patient> patients) {
+//        this.patients = patients;
+//    }
 }

@@ -20,15 +20,14 @@ public class SlotRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     Time endTime;
 
-    int maxSlot;
+    String room;
 
-
-    public int getMaxSlot() {
-        return maxSlot;
+    public String getRoom() {
+        return room;
     }
 
-    public void setMaxSlot(int maxSlot) {
-        this.maxSlot = maxSlot;
+    public void setRoom(String room) {
+        this.room = room;
     }
 
     public Time getStartTime() {

@@ -16,7 +16,6 @@ import java.util.Set;
 @Entity
 @Table(name = "Users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Data
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -84,25 +83,26 @@ public class Users {
 
     public Users() {
     }
+
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Blog> blogs;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Patient> patients;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    @JoinTable(
-            name = "appointment_user",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "appointment_id")
-    )
-    List<Appointment> appointments;
+    @OneToOne(mappedBy = "users", cascade = CascadeType.ALL)
+    Appointment appointments;
 
-    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<ServiceTest> services;
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    @ManyToOne(cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "service_id")
+//    ServiceTest services;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Feedback> feedbacks;
@@ -110,16 +110,19 @@ public class Users {
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Staff> staff;
 
-    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<Slot> slots;
+//    @OneToOne(mappedBy = "users", cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    Slot slots;
 
-    public List<Slot> getSlots() {
-        return slots;
-    }
-
-    public void setSlots(List<Slot> slots) {
-        this.slots = slots;
-    }
+//    public Slot getSlots() {
+//        return slots;
+//    }
+//
+//    public void setSlots(Slot slots) {
+//        this.slots = slots;
+//    }
 
     public List<Blog> getBlogs() {
         return blogs;
@@ -249,21 +252,14 @@ public class Users {
         this.patients = patients;
     }
 
-    public List<Appointment> getAppointments() {
+    public Appointment getAppointments() {
         return appointments;
     }
 
-    public void setAppointments(List<Appointment> appointments) {
+    public void setAppointments(Appointment appointments) {
         this.appointments = appointments;
     }
 
-    public List<ServiceTest> getServices() {
-        return services;
-    }
-
-    public void setServices(List<ServiceTest> services) {
-        this.services = services;
-    }
 
     public List<Feedback> getFeedbacks() {
         return feedbacks;

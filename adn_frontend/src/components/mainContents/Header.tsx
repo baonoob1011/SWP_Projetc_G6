@@ -53,7 +53,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
     { label: 'Tin tức', path: '/blog' },
     { label: 'Đặt lịch', path: '/order' },
     { label: 'Địa chỉ', path: '/branch-and-map' },
-
   ];
 
   const handleOpenMenu = (
@@ -299,6 +298,15 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     </MenuItem>
                     <MenuItem
                       component={NavLink}
+                      to="/m-getAllService"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Xem dịch vụ
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
                       to="/s-m-profile"
                       onClick={handleCloseMenu}
                       className={styles.menuItem}
@@ -337,6 +345,33 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     classes={{ paper: styles.menuPaper }}
                     MenuListProps={{ sx: { py: 0 } }}
                   >
+                    <MenuItem
+                      component={NavLink}
+                      to="/s-m-profile"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Xem thông tin
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/s-slot"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Xem lịch làm
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/s-userData"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Xem danh sách người dùng
+                    </MenuItem>
                     <MenuItem
                       onClick={() => {
                         handleCloseMenu();

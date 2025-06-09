@@ -20,28 +20,28 @@ public class Slot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "slot_id")
     long slotId;
-    @Column(name = "slot_name")
+    @Column(name = "slot_date")
     LocalDate slotDate;
     @Column(name = "start_time")
     Time startTime;
     @Column(name = "end_time")
     Time endTime;
+    String room;
+
+//    @OneToOne(cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "user_id")
+//    Users users;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    @JoinColumn(name = "user_id", nullable = false)
-    Users users;
-    @ManyToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    @JoinColumn(name = "staff_id", nullable = false)
+    @JoinColumn(name = "staff_id")
     Staff staff;
 
-    @Column(name = "max_slot")
-    int maxSlot;
     @OneToMany(mappedBy = "slot", fetch = FetchType.LAZY, cascade = {
             CascadeType.ALL
     })
@@ -59,13 +59,22 @@ public class Slot {
         return startTime;
     }
 
-    public Users getUsers() {
-        return users;
+    public String getRoom() {
+        return room;
     }
 
-    public void setUsers(Users users) {
-        this.users = users;
+    public void setRoom(String room) {
+        this.room = room;
     }
+
+    //
+//    public Users getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(Users users) {
+//        this.users = users;
+//    }
 
     public Staff getStaff() {
         return staff;
@@ -75,13 +84,7 @@ public class Slot {
         this.staff = staff;
     }
 
-    public int getMaxSlot() {
-        return maxSlot;
-    }
 
-    public void setMaxSlot(int maxSlot) {
-        this.maxSlot = maxSlot;
-    }
 
     public void setStartTime(Time startTime) {
         this.startTime = startTime;

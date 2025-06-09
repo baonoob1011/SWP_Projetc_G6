@@ -44,23 +44,24 @@ public class ServiceTest {
     @Lob
     private String image;
 
-    @ManyToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    @JoinColumn(name = "user_id", nullable = false)
-    Users users;
+//    @OneToOne(mappedBy = "services",cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    List<Users> users;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+//    @ManyToOne(cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "manager_id", nullable = false)
+//    Manager manager;
+
+    @OneToOne(mappedBy = "services",cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    @JoinTable(
-            name = "appointment_service",
-            joinColumns = @JoinColumn(name = "service_id"),
-            inverseJoinColumns = @JoinColumn(name = "appointment_id")
-    )
-    List<Appointment> appointments;
+   Appointment appointments;
 
     @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
             CascadeType.ALL
@@ -98,6 +99,14 @@ public class ServiceTest {
         this.isActive = isActive;
         this.image = image;
     }
+
+//    public Manager getManager() {
+//        return manager;
+//    }
+//
+//    public void setManager(Manager manager) {
+//        this.manager = manager;
+//    }
 
     public long getServiceId() {
         return serviceId;
@@ -155,19 +164,19 @@ public class ServiceTest {
         isActive = active;
     }
 
-    public Users getUsers() {
-        return users;
-    }
+//    public List<Users> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(List<Users> users) {
+//        this.users = users;
+//    }
 
-    public void setUsers(Users users) {
-        this.users = users;
-    }
-
-    public List<Appointment> getAppointments() {
+    public Appointment getAppointments() {
         return appointments;
     }
 
-    public void setAppointments(List<Appointment> appointments) {
+    public void setAppointments(Appointment appointments) {
         this.appointments = appointments;
     }
 

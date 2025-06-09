@@ -18,7 +18,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Manager {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "manager_id")
     long managerId;
 
@@ -49,6 +48,12 @@ public class Manager {
     })
     @JoinColumn(name = "user_id", nullable = false)
     Users users;
+
+//    @OneToMany(mappedBy = "manager", fetch = FetchType.LAZY, cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    List<ServiceTest> serviceTests;
 
     public Users getUsers() {
         return users;

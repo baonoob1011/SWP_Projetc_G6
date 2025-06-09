@@ -16,6 +16,8 @@ public class PriceListRequest {
     ServiceTest service;
     Double  price;
 
+
+
     public List<PriceListRequest> getPriceListRequests() {
         return priceListRequests;
     }
