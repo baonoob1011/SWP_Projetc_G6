@@ -3,7 +3,7 @@ package swp.project.adn_backend.dto.GlobalRequest;
 
 import swp.project.adn_backend.dto.request.serviceRequest.ServiceRequest;
 import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
-import swp.project.adn_backend.dto.request.serviceRequest.AppointmentRequest;
+import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.request.slot.SlotRequest;
 
 public class BookAppointmentRequest {

@@ -48,14 +48,14 @@ public class Patient {
     @ManyToOne(cascade = {
          CascadeType.ALL
     })
-    @JoinColumn(name = "appointment_id", nullable = false)
+    @JoinColumn(name = "appointment_id")
     Appointment appointment;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     Users users;
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = {

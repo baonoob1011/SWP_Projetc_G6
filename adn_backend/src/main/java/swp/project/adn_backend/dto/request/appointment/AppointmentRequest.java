@@ -1,18 +1,10 @@
-package swp.project.adn_backend.dto.request.serviceRequest;
+package swp.project.adn_backend.dto.request.appointment;
 
-import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.AppointmentStatus;
 
-import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 
 @FieldDefaults(level = AccessLevel.PRIVATE)

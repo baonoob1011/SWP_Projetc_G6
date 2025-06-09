@@ -10,8 +10,8 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = IdCardValidator.class)
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RequireIdCardIf18OrOlder {
-    String message() default "ID Card is required for patients 18 years old or older";
+public @interface RequireIdCardIf16OrOlder {
+    String message() default "ID Card is required for patients 16 years old or older";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

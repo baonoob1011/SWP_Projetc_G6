@@ -38,7 +38,7 @@ public class Slot {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    @JoinColumn(name = "staff_id", nullable = false)
+    @JoinColumn(name = "staff_id")
     Staff staff;
 
     @OneToMany(mappedBy = "slot", fetch = FetchType.LAZY, cascade = {
