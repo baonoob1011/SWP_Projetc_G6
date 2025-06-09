@@ -39,6 +39,7 @@ public class StaffService {
     PasswordEncoder passwordEncoder;
     EntityManager entityManager;
 
+
     @Autowired
     public StaffService(UserRepository userRepository, StaffRepository staffRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, EntityManager entityManager) {
         this.userRepository = userRepository;
@@ -52,7 +53,8 @@ public class StaffService {
     // update staff
 
     @Transactional
-    public Users updateStaff(Authentication authentication, UpdateStaffAndManagerRequest updateStaffAndManagerRequest) {
+    public Users updateStaff(Authentication authentication,
+                             UpdateStaffAndManagerRequest updateStaffAndManagerRequest) {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");

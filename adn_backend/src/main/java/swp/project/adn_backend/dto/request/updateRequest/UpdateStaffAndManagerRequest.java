@@ -34,8 +34,8 @@ public class UpdateStaffAndManagerRequest {
     @Email(message = "EMAIL_INVALID")
     String email;
 
-    @Size(min = 6, message = "Old password must be at least 6 characters")
     private String oldPassword;
+    private String confirmPassword;
 
     @Size(max = 255, message = "Address must be less than 255 characters")
     private String address;
@@ -46,6 +46,14 @@ public class UpdateStaffAndManagerRequest {
 
     public void setPhone(@Pattern(regexp = "^\\+?\\d{9,15}$", message = "PHONE_INVALID") String phone) {
         this.phone = phone;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 
     public String getFullName() {
