@@ -184,7 +184,7 @@ function GetStaffByAdmin() {
                     sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}
                     onClick={() => handleDelete(user.phone, user.fullName)}
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={10} />
                   </Button>
                   <Button
                     variant="contained"
@@ -194,7 +194,7 @@ function GetStaffByAdmin() {
                     size="small"
                     sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}
                   >
-                    <Plus size={16} />
+                    <Plus size={10} />
                   </Button>
                 </TableCell>
               </TableRow>

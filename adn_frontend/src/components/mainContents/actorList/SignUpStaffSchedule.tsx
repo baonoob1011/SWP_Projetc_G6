@@ -8,15 +8,17 @@ type Schedule = {
   slotDate: string;
   startTime: string;
   endTime: string;
+  location: string;
 };
 
-const StaffSchedule = () => {
+const SignUpStaffSchedule = () => {
   const { staffId } = useParams<{ staffId: string }>();
   const [isSchedule, setIsSchedule] = useState<Schedule>({
     staffId: staffId || '',
     slotDate: '',
     startTime: '',
     endTime: '',
+    location: '',
   });
   const [auth, setAuth] = useState(true);
   useEffect(() => {
@@ -115,6 +117,20 @@ const StaffSchedule = () => {
       >
         <div className="mb-3">
           <label htmlFor="slotDate" className="form-label fw-bold">
+            Phòng
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="location"
+            name="location"
+            value={isSchedule.location}
+            onChange={handleInput}
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="slotDate" className="form-label fw-bold">
             Ngày tạo lịch
           </label>
           <input
@@ -173,4 +189,4 @@ const StaffSchedule = () => {
   );
 };
 
-export default StaffSchedule;
+export default SignUpStaffSchedule;
