@@ -356,6 +356,15 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     </MenuItem>
                     <MenuItem
                       component={NavLink}
+                      to="/s-slot"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Xem lịch làm
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
                       to="/s-userData"
                       onClick={handleCloseMenu}
                       className={styles.menuItem}

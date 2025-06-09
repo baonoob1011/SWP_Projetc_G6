@@ -4,7 +4,6 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import Login from './components/page/Login';
 import SignUp from './components/page/SignUp';
 import Forget from './components/page/Forget';
@@ -29,11 +28,11 @@ import NewUserProfile from './components/mainContents/actorList/UserProfile';
 import CivilServiceList from './components/mainContents/services/GetCivilService';
 import AdministrativeServiceList from './components/mainContents/services/GetAdmintrativeService';
 import ServiceList from './components/mainContents/services/GetService';
-import StaffSchedule from './components/mainContents/actorList/StaffSchedule';
 import GetUserByStaff from './components/mainContents/actorList/GetUserByStaff';
-
 import Blog from './components/page/Blog';
 import ProtectedRoute from './components/mainContents/feature/ProtectedRoute';
+import StaffSlot from './components/mainContents/actorList/StaffShedule';
+import SignUpStaffSchedule from './components/mainContents/actorList/SignUpStaffSchedule';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -82,7 +81,10 @@ function App() {
                 <Route path="/signup-staff" element={<SignUpStaff />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/a-getAllService" element={<ServiceList />} />
-                <Route path="/s-slot/:staffId" element={<StaffSchedule />} />
+                <Route
+                  path="/s-slot/:staffId"
+                  element={<SignUpStaffSchedule />}
+                />
               </Routes>
             </Box>
           </Box>
@@ -176,15 +178,41 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/service/civil" element={<CivilServiceList />} />
+            <Route
+              path="/s-slot"
+              element={
+                <ProtectedRoute allowedRoles={['STAFF']}>
+                  <StaffSlot />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/service/civil"
+              element={
+                <ProtectedRoute allowedRoles={['MANAGER']}>
+                  <CivilServiceList />
+                </ProtectedRoute>
+              }
+            />
 
             <Route path="/blog" element={<Blog />} />
 
             <Route
               path="/service/administrative"
-              element={<AdministrativeServiceList />}
+              element={
+                <ProtectedRoute allowedRoles={['MANAGER']}>
+                  <AdministrativeServiceList />
+                </ProtectedRoute>
+              }
             />
-            <Route path="/m-getAllService" element={<ServiceList />} />
+            <Route
+              path="/m-getAllService"
+              element={
+                <ProtectedRoute allowedRoles={['MANAGER']}>
+                  <ServiceList />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
           <ToastContainer />
         </>
