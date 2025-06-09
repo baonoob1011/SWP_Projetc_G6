@@ -44,23 +44,18 @@ public class ServiceTest {
     @Lob
     private String image;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    @JoinTable(
-            name = "user_service",
-            joinColumns = @JoinColumn(name = "service_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    List<Users> users;
+//    @OneToOne(mappedBy = "services",cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    List<Users> users;
 
-    @ManyToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    @JoinColumn(name = "user_id", nullable = false)
-    Manager manager;
+//    @ManyToOne(cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "manager_id", nullable = false)
+//    Manager manager;
 
     @OneToOne(mappedBy = "services",cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -105,13 +100,13 @@ public class ServiceTest {
         this.image = image;
     }
 
-    public Manager getManager() {
-        return manager;
-    }
-
-    public void setManager(Manager manager) {
-        this.manager = manager;
-    }
+//    public Manager getManager() {
+//        return manager;
+//    }
+//
+//    public void setManager(Manager manager) {
+//        this.manager = manager;
+//    }
 
     public long getServiceId() {
         return serviceId;
@@ -169,13 +164,13 @@ public class ServiceTest {
         isActive = active;
     }
 
-    public List<Users> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<Users> users) {
-        this.users = users;
-    }
+//    public List<Users> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(List<Users> users) {
+//        this.users = users;
+//    }
 
     public Appointment getAppointments() {
         return appointments;

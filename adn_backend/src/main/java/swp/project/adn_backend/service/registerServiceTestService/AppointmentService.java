@@ -71,25 +71,28 @@ public class AppointmentService {
         if (appointment == null) {
             throw new RuntimeException("Mapper returned null appointment!");
         }
+        appointment.setSlot(slot);
         appointment.setAppointmentDate(slot.getSlotDate());
         appointment.setAppointmentStatus(AppointmentStatus.PENDING);
         appointment.setStaff(slot.getStaff());
         appointment.setServices(serviceTest);
 
-        //người đăng kí dịch vụ
-        List<Users> users = new ArrayList<>();
-        users.add(userBookAppointment);
-        serviceTest.setUsers(users);
+//        //người đăng kí dịch vụ
+//        List<Users> users = new ArrayList<>();
+//        users.add(userBookAppointment);
+//        serviceTest.setUsers(users);
 
-        //những dịch vụ mà người này đăng kí
-        List<ServiceTest> serviceTests = new ArrayList<>();
-        serviceTests.add(serviceTest);
-        userBookAppointment.setServices(serviceTests);
+//        //những dịch vụ mà người này đăng kí
+//        List<ServiceTest> serviceTests = new ArrayList<>();
+//        serviceTests.add(serviceTest);
+//        userBookAppointment.setServices(serviceTests);
 
         // Associate user <-> appointment bidirectionally
         appointment.setUsers(userBookAppointment);
         userBookAppointment.setAppointments(appointment);
 
+        //nguoi dang ki slot do
+        slot.setUsers(userBookAppointment);
         // Save appointment
         Appointment saved = appointmentRepository.save(appointment);
 

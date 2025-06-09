@@ -20,7 +20,7 @@ public class Slot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "slot_id")
     long slotId;
-    @Column(name = "slot_name")
+    @Column(name = "slot_date")
     LocalDate slotDate;
     @Column(name = "start_time")
     Time startTime;

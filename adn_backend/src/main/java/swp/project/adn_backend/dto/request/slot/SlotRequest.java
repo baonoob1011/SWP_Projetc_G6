@@ -20,16 +20,6 @@ public class SlotRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     Time endTime;
 
-    int maxSlot;
-
-
-    public int getMaxSlot() {
-        return maxSlot;
-    }
-
-    public void setMaxSlot(int maxSlot) {
-        this.maxSlot = maxSlot;
-    }
 
     public Time getStartTime() {
         return startTime;

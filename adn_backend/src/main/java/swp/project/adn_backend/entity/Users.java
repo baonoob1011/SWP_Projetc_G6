@@ -93,16 +93,16 @@ public class Users {
     @OneToOne(mappedBy = "users", cascade = CascadeType.ALL)
     Appointment appointments;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    @JoinTable(
-            name = "user_service",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "service)id")
-    )
-    List<ServiceTest> services;
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    @ManyToOne(cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "service_id")
+//    ServiceTest services;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Feedback> feedbacks;
@@ -260,13 +260,6 @@ public class Users {
         this.appointments = appointments;
     }
 
-    public List<ServiceTest> getServices() {
-        return services;
-    }
-
-    public void setServices(List<ServiceTest> services) {
-        this.services = services;
-    }
 
     public List<Feedback> getFeedbacks() {
         return feedbacks;
