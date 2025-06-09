@@ -22,13 +22,20 @@ public class SlotController {
     SlotService slotService;
 
     @PostMapping("/create-slot/{staffId}")
-    public ResponseEntity<Slot>staffId(@RequestBody @Valid SlotRequest slotRequest,
-                                          Authentication authentication,
-                                          @PathVariable("staffId")long staffId){
-        return ResponseEntity.ok(slotService.createSlot(slotRequest,authentication,staffId));
+    public ResponseEntity<Slot> staffId(@RequestBody @Valid SlotRequest slotRequest,
+                                        Authentication authentication,
+                                        @PathVariable("staffId") long staffId) {
+        return ResponseEntity.ok(slotService.createSlot(slotRequest, authentication, staffId));
     }
+
     @GetMapping("/get-all-slot")
-    public ResponseEntity<List<GetFullSlotResponse>>getAllSlot(){
+    public ResponseEntity<List<GetFullSlotResponse>> getAllSlot() {
         return ResponseEntity.ok(slotService.getAllSlot());
+    }
+
+    @DeleteMapping("/delete-slot/{slotId}")
+    public ResponseEntity<String> deleteSlot(@PathVariable("slotId") long slotId) {
+        slotService.deleteSlot(slotId);
+        return ResponseEntity.ok("Delete Successful");
     }
 }

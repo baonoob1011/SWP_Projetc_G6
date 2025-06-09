@@ -61,18 +61,18 @@ public class SlotService {
             SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
 
             //lay staff
-            StaffSlotResponse staffSlotResponse=new StaffSlotResponse();
+            StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
             staffSlotResponse.setStaffId(slot.getStaff().getStaffId());
             staffSlotResponse.setFullName(slot.getStaff().getFullName());
 
             //lay user
-            UserSlotResponse userSlotResponse=new UserSlotResponse();
+            UserSlotResponse userSlotResponse = new UserSlotResponse();
             userSlotResponse.setUserId(slot.getUsers().getUserId());
             userSlotResponse.setEmail(slot.getUsers().getEmail());
             userSlotResponse.setPhone(slot.getUsers().getPhone());
             userSlotResponse.setAddress(slot.getUsers().getAddress());
 
-            GetFullSlotResponse getFullSlotResponse=new GetFullSlotResponse();
+            GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
             getFullSlotResponse.setSlotResponse(slotResponse);
             getFullSlotResponse.setStaffSlotResponse(staffSlotResponse);
             getFullSlotResponse.setUserSlotResponse(userSlotResponse);
@@ -81,5 +81,11 @@ public class SlotService {
             fullSlotResponses.add(getFullSlotResponse);
         }
         return fullSlotResponses;
+    }
+
+    public void deleteSlot(long slotId) {
+        Slot slot = slotRepository.findById(slotId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
+        slotRepository.delete(slot);
     }
 }
