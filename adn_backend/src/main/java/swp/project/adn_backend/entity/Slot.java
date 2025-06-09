@@ -20,32 +20,61 @@ public class Slot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "slot_id")
     long slotId;
-    @Column(name = "slot_name")
-    String slotName;
+    @Column(name = "slot_date")
+    LocalDate slotDate;
     @Column(name = "start_time")
     Time startTime;
     @Column(name = "end_time")
     Time endTime;
 
-    @Column(name = "max_slot")
-    int maxSlot;
-    @OneToMany(mappedBy = "slot", fetch = FetchType.LAZY, cascade = {
+    @OneToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
+    @JoinColumn(name = "user_id")
+    Users users;
+
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    @JoinColumn(name = "staff_id")
+    Staff staff;
+
+    @OneToMany(mappedBy = "slot", fetch = FetchType.LAZY, cascade = {
+            CascadeType.ALL
+    })
     List<Appointment> appointment;
+
+    public List<Appointment> getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(List<Appointment> appointment) {
+        this.appointment = appointment;
+    }
 
     public Time getStartTime() {
         return startTime;
     }
 
-    public int getMaxSlot() {
-        return maxSlot;
+    public Users getUsers() {
+        return users;
     }
 
-    public void setMaxSlot(int maxSlot) {
-        this.maxSlot = maxSlot;
+    public void setUsers(Users users) {
+        this.users = users;
     }
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
+    }
+
+
 
     public void setStartTime(Time startTime) {
         this.startTime = startTime;
@@ -67,19 +96,19 @@ public class Slot {
         this.slotId = slotId;
     }
 
-    public String getSlotName() {
-        return slotName;
+    public LocalDate getSlotDate() {
+        return slotDate;
     }
 
-    public void setSlotName(String slotName) {
-        this.slotName = slotName;
+    public void setSlotDate(LocalDate slotDate) {
+        this.slotDate = slotDate;
     }
 
-    public List<Appointment> getAppointment() {
-        return appointment;
-    }
-
-    public void setAppointment(List<Appointment> appointment) {
-        this.appointment = appointment;
-    }
+    //    public List<Appointment> getAppointment() {
+//        return appointment;
+//    }
+//
+//    public void setAppointment(List<Appointment> appointment) {
+//        this.appointment = appointment;
+//    }
 }

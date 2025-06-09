@@ -28,8 +28,6 @@ public class Manager {
     String idCard;
 
     String email;
-    String username;
-    String password;
     boolean enabled = true;
     String role;
     @Column(columnDefinition = "NVARCHAR(10)")
@@ -51,6 +49,12 @@ public class Manager {
     })
     @JoinColumn(name = "user_id", nullable = false)
     Users users;
+
+//    @OneToMany(mappedBy = "manager", fetch = FetchType.LAZY, cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    List<ServiceTest> serviceTests;
 
     public Users getUsers() {
         return users;
@@ -100,21 +104,6 @@ public class Manager {
         this.email = email;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public boolean isEnabled() {
         return enabled;

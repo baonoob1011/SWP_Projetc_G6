@@ -6,15 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
+import org.hibernate.annotations.Where;
 import swp.project.adn_backend.enums.ServiceType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Where(clause = "is_active = true")
 @Table(name = "Service")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ServiceTest {
@@ -27,7 +28,7 @@ public class ServiceTest {
     String serviceName;
 
     @Column(name = "registed_date",columnDefinition = "nvarchar(255)")
-    LocalDateTime registedDate;
+    LocalDate registerDate;
 
     @Column(columnDefinition = "nvarchar(255)")
     String description;
@@ -36,7 +37,6 @@ public class ServiceTest {
     @Column(name = "service_type", columnDefinition = "nvarchar(255)")
     private ServiceType serviceType;
 
-
     @Column(name = "is_active")
     boolean isActive;
 
@@ -44,48 +44,69 @@ public class ServiceTest {
     @Lob
     private String image;
 
-    @ManyToOne(cascade = {
+//    @OneToOne(mappedBy = "services",cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    List<Users> users;
+
+//    @ManyToOne(cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "manager_id", nullable = false)
+//    Manager manager;
+
+    @OneToOne(mappedBy = "services",cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    @JoinColumn(name = "user_id", nullable = false)
-    Users users;
+   Appointment appointments;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    @JoinTable(
-            name = "appointment_service",
-            joinColumns = @JoinColumn(name = "service_id"),
-            inverseJoinColumns = @JoinColumn(name = "appointment_id")
-    )
-    List<Appointment> appointments;
-
-    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
             CascadeType.ALL
     })
     List<CivilService> civilServices;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
             CascadeType.ALL
     })
     List<AdministrativeService> administrativeService;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
             CascadeType.ALL
     })
     List<Feedback> feedbacks;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
             CascadeType.ALL
     })
     List<PriceList> priceLists;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
             CascadeType.ALL
     })
     List<Discount> discounts;
+
+    public ServiceTest() {
+    }
+
+    public ServiceTest(String serviceName, LocalDate registerDate, String description, ServiceType serviceType, boolean isActive, String image) {
+        this.serviceName = serviceName;
+        this.registerDate = registerDate;
+        this.description = description;
+        this.serviceType = serviceType;
+        this.isActive = isActive;
+        this.image = image;
+    }
+
+//    public Manager getManager() {
+//        return manager;
+//    }
+//
+//    public void setManager(Manager manager) {
+//        this.manager = manager;
+//    }
 
     public long getServiceId() {
         return serviceId;
@@ -103,12 +124,12 @@ public class ServiceTest {
         this.serviceName = serviceName;
     }
 
-    public LocalDateTime getRegistedDate() {
-        return registedDate;
+    public LocalDate getRegisterDate() {
+        return registerDate;
     }
 
-    public void setRegistedDate(LocalDateTime registedDate) {
-        this.registedDate = registedDate;
+    public void setRegisterDate(LocalDate registerDate) {
+        this.registerDate = registerDate;
     }
 
     public String getImage() {
@@ -143,19 +164,19 @@ public class ServiceTest {
         isActive = active;
     }
 
-    public Users getUsers() {
-        return users;
-    }
+//    public List<Users> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(List<Users> users) {
+//        this.users = users;
+//    }
 
-    public void setUsers(Users users) {
-        this.users = users;
-    }
-
-    public List<Appointment> getAppointments() {
+    public Appointment getAppointments() {
         return appointments;
     }
 
-    public void setAppointments(List<Appointment> appointments) {
+    public void setAppointments(Appointment appointments) {
         this.appointments = appointments;
     }
 

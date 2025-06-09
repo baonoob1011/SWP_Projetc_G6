@@ -26,7 +26,7 @@ public class AppointmentResponse {
     String note;
 
     ServiceTest serviceTest;
-    List<Users> users;
+    Users users;
     Staff staff;
     Slot slot;
 
@@ -70,11 +70,11 @@ public class AppointmentResponse {
         this.serviceTest = serviceTest;
     }
 
-    public List<Users> getUsers() {
+    public Users getUsers() {
         return users;
     }
 
-    public void setUsers(List<Users> users) {
+    public void setUsers(Users users) {
         this.users = users;
     }
 

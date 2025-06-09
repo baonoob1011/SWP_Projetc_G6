@@ -1,5 +1,6 @@
 package swp.project.adn_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class PriceList {
     @Column(name = "effective_date")
     LocalDate effectiveDate;
 
+    @Column(columnDefinition = "nvarchar(255)")
     String time;
 
     double price;

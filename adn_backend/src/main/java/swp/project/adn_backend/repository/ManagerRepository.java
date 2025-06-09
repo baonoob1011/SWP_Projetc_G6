@@ -11,15 +11,17 @@ import java.util.Optional;
 
 @RepositoryRestResource(path = "manager")
 public interface ManagerRepository extends JpaRepository<Manager, Long> {
-    boolean existsByUsername(String username);
-
     boolean existsByEmail(String email);
 
     boolean existsByPhone(String phone);
 
-    Optional<Users> deleteByPhone(String phone);
+    boolean existsByIdCard(String idCard);
 
-    Optional<Manager> findByUsername(String username);
+    Optional<Manager> deleteByPhone(String phone);
 
+    Optional<Manager> findByPhone(String phone);
 
+    Optional<Manager> findByEmail(String request);
+
+    Optional<Manager> findById(Long id);
 }

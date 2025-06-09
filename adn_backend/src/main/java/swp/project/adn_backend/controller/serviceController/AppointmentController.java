@@ -19,7 +19,8 @@ public class AppointmentController {
     AppointmentService appointmentService;
 
     @PostMapping("/book-appointment")
-    public AppointmentResponse bookAppointment(@RequestBody BookAppointmentRequest request, Authentication authentication) {
+    public AppointmentResponse bookAppointment(@RequestBody BookAppointmentRequest request,
+                                               Authentication authentication) {
         return appointmentService.bookAppointment(
                 request.getAppointmentRequest(),
                 authentication,

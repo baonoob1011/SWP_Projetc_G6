@@ -9,8 +9,10 @@ import { useState } from "react";
 import CountdownTimer from "../feature/CountDown";
 import NewPass from "./NewPass";
 import CustomSnackBar from "./Snackbar";
-import Swal from "sweetalert2";
 import styles from "./SendOTP.module.css";
+import bg from "../../../image/bg5.png"
+// import logo from "../../image/Logo.png";
+import { motion } from "framer-motion";
 
 const SendOTP = ({ email }: { email: string }) => {
   const [otp, setOtp] = useState("");
@@ -39,11 +41,10 @@ const SendOTP = ({ email }: { email: string }) => {
           severity: "error",
         });
       } else {
-        Swal.fire({
-          icon: "success",
-          title: "Xác thực thành công",
-          showConfirmButton: false,
-          timer: 1300,
+        setSnackbar({
+          open: true,
+          message: "Xác thực thành công",
+          severity: "success",
         });
         setTimeout(() => {
           setVerified(true);
@@ -63,20 +64,25 @@ const SendOTP = ({ email }: { email: string }) => {
 
   const resendOtp = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/otp/send", {
+      const res = await fetch("http://localhost:8080/api/otp/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      if (!res.ok) throw new Error("Không thể gửi lại OTP");
+      if (!res.ok) { alert("Không thể gửi lại OTP") } else {
+        setSnackbar({
+          open: true,
+          message: "Gửi OTP thành công",
+          severity: "success",
+        });
+        setOtp("");
+      }
+    } catch (err) {
       setSnackbar({
         open: true,
-        message: "Gửi OTP thành công",
-        severity: "success",
+        message: (err as Error).message,
+        severity: "error",
       });
-      setOtp("");
-    } catch (err) {
-      alert((err as Error).message);
     }
   };
 
@@ -89,17 +95,80 @@ const SendOTP = ({ email }: { email: string }) => {
   if (verified) return <NewPass email={email} />;
 
   return (
-    <Box className={styles.forgetContainer}>
-      <Paper className={styles.forgetPaper} elevation={0}>
-        <Typography className={styles.forgetTitle}>
-          Xác thực OTP
-        </Typography>
-        <Typography className={styles.forgetSubtitle}>
-          Mã OTP đã gửi tới: {maskEmail(email)}
-        </Typography>
-        
-        <form onSubmit={handleVerifyOtp}>
-          <div className={styles.inputGroup}>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        background: "linear-gradient(to right, #74ebd5, #ACB6E5)",
+        position: "relative",
+        backgroundImage: `url(${bg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        padding: "0 60px",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* Bên phải để hình ảnh/animation nếu cần */}
+      <div
+        style={{
+          position: "absolute",
+          right: 0,
+          top: 0,
+          width: "40%",
+          height: "100%",
+          opacity: 1,
+        }}
+      ></div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -50 }}
+        transition={{ duration: 0.6, ease: "easeInOut" }}
+      >
+        <Paper
+          elevation={20}
+          sx={{
+            width: 400,
+            borderRadius: "16px",
+            p: 4,
+            backgroundColor: "rgba(255, 255, 255, 0.25)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            boxShadow: "0 12px 32px rgba(0, 0, 0, 0.3)",
+            height: "70vh",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            position: "relative",
+            marginLeft: "auto",
+            paddingRight: "40px",
+            boxSizing: "border-box",
+            marginRight: 10,
+            border: "1px solid rgba(255, 255, 255, 0.3)",
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: "bold",
+              mb: 2,
+              color: "#fff",
+              textAlign: "center",
+            }}
+          >
+            Xác thực OTP
+          </Typography>
+
+          <Typography
+            sx={{ color: "#fff", textAlign: "center", mb: 2 }}
+          >
+            Mã OTP đã gửi tới: {maskEmail(email)}
+          </Typography>
+
+          <form onSubmit={handleVerifyOtp}>
             <TextField
               fullWidth
               placeholder="Nhập mã OTP"
@@ -107,47 +176,48 @@ const SendOTP = ({ email }: { email: string }) => {
               onChange={(e) => setOtp(e.target.value)}
               required
               size="medium"
-              className={styles.customTextField}
-              InputLabelProps={{
-                shrink: false,
-              }}
+              InputLabelProps={{ shrink: false }}
+              sx={{ backgroundColor: "#fff", borderRadius: 1, mb: 2 }}
             />
-          </div>
-          
-          <Box
-            mb={2}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <CountdownTimer
-              duration={60000}
-              onComplete={() => {}}
-              onResend={resendOtp}
-            />
-          </Box>
-          
-          <Button
-            type="submit"
-            className={styles.forgetButton}
-            disabled={isVerifying}
-          >
-            {isVerifying ? (
-              <div className={styles.spinner} />
-            ) : (
-              "Xác nhận OTP"
-            )}
-          </Button>
-        </form>
-        
-        <CustomSnackBar
-          open={snackbar.open}
-          message={snackbar.message}
-          severity={snackbar.severity}
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
-        />
-      </Paper>
-    </Box>
+
+            <Box
+              mb={2}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <CountdownTimer
+                duration={60000}
+                onComplete={() => { }}
+                onResend={resendOtp}
+              />
+            </Box>
+
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={isVerifying}
+            >
+              {isVerifying ? (
+                <div className={styles.spinner} />
+              ) : (
+                "Xác nhận OTP"
+              )}
+            </Button>
+          </form>
+
+          <CustomSnackBar
+            open={snackbar.open}
+            message={snackbar.message}
+            severity={snackbar.severity}
+            onClose={() => setSnackbar({ ...snackbar, open: false })}
+          />
+        </Paper>
+      </motion.div>
+    </div>
+
   );
 };
 
