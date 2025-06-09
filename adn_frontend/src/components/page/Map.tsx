@@ -58,7 +58,6 @@ export default function Map() {
 
   return (
     <div className="map-container">
-      <h2 className="map-title">Google Map Example</h2>
       <div
         ref={mapRef}
         className="map-element"
