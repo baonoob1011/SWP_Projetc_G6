@@ -70,6 +70,7 @@ public class AppointmentService {
             throw new RuntimeException("Mapper returned null appointment!");
         }
         appointment.setSlot(slot);
+        appointment.setLocation(slot.getLocation());
         appointment.setAppointmentDate(slot.getSlotDate());
         appointment.setAppointmentStatus(AppointmentStatus.PENDING);
         appointment.setStaff(slot.getStaff());

@@ -90,10 +90,12 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
-
+        userRepository.save(users);
         //add vao bang staff
+
         Staff staff = staffMapper.toStaff(staffRequest);
         staff.setRole("STAFF");
+        staff.setStaffId(users.getUserId());
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);
         staffRepository.save(staff);
@@ -115,10 +117,11 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(managerRequest.getPassword()));
-
+        userRepository.save(users);
         //add vao bang staff
         Manager manager = managerMapper.toManager(managerRequest);
         manager.setRole("MANAGER");
+        manager.setManagerId(users.getUserId());
         manager.setCreateAt(LocalDate.now());
         manager.setUsers(userRegister);
         managerRepository.save(manager);

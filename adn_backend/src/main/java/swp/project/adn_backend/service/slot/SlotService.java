@@ -1,11 +1,15 @@
 package swp.project.adn_backend.service.slot;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 import swp.project.adn_backend.dto.request.slot.*;
 //import swp.project.adn_backend.dto.response.SlotReponse;
 import swp.project.adn_backend.dto.response.serviceResponse.GetAllServiceResponse;
@@ -29,13 +33,15 @@ public class SlotService {
     SlotRepository slotRepository;
     UserRepository userRepository;
     StaffRepository staffRepository;
+    EntityManager entityManager;
 
     @Autowired
-    public SlotService(SlotMapper slotMapper, SlotRepository slotRepository, UserRepository userRepository, StaffRepository staffRepository) {
+    public SlotService(SlotMapper slotMapper, SlotRepository slotRepository, UserRepository userRepository, StaffRepository staffRepository, EntityManager entityManager) {
         this.slotMapper = slotMapper;
         this.slotRepository = slotRepository;
         this.userRepository = userRepository;
         this.staffRepository = staffRepository;
+        this.entityManager = entityManager;
     }
 
     public Slot createSlot(SlotRequest slotRequest,
@@ -52,6 +58,7 @@ public class SlotService {
 //        slot.setUsers(userCreated);
         return slotRepository.save(slot);
     }
+
 
     public List<GetFullSlotResponse> getAllSlot() {
         List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();

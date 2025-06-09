@@ -26,6 +26,7 @@ public class Slot {
     Time startTime;
     @Column(name = "end_time")
     Time endTime;
+    String location;
 
     @OneToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -56,6 +57,14 @@ public class Slot {
 
     public Time getStartTime() {
         return startTime;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Users getUsers() {
