@@ -20,14 +20,14 @@ public class SlotRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     Time endTime;
 
-    String location;
+    String room;
 
-    public String getLocation() {
-        return location;
+    public String getRoom() {
+        return room;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setRoom(String room) {
+        this.room = room;
     }
 
     public Time getStartTime() {

@@ -24,6 +24,7 @@ public class Appointment {
 
     @Column(name = "appointment_date")
     LocalDate appointmentDate;
+
     @Column(columnDefinition = "nvarchar(255)")
     String location;
 

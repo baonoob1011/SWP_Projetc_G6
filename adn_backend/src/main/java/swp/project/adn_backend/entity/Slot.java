@@ -26,14 +26,14 @@ public class Slot {
     Time startTime;
     @Column(name = "end_time")
     Time endTime;
-    String location;
+    String room;
 
-    @OneToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    @JoinColumn(name = "user_id")
-    Users users;
+//    @OneToOne(cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "user_id")
+//    Users users;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -59,21 +59,22 @@ public class Slot {
         return startTime;
     }
 
-    public String getLocation() {
-        return location;
+    public String getRoom() {
+        return room;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setRoom(String room) {
+        this.room = room;
     }
 
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
-    }
+    //
+//    public Users getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(Users users) {
+//        this.users = users;
+//    }
 
     public Staff getStaff() {
         return staff;

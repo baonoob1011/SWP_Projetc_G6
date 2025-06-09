@@ -72,17 +72,10 @@ public class SlotService {
             staffSlotResponse.setStaffId(slot.getStaff().getStaffId());
             staffSlotResponse.setFullName(slot.getStaff().getFullName());
 
-            //lay user
-            UserSlotResponse userSlotResponse = new UserSlotResponse();
-            userSlotResponse.setUserId(slot.getUsers().getUserId());
-            userSlotResponse.setEmail(slot.getUsers().getEmail());
-            userSlotResponse.setPhone(slot.getUsers().getPhone());
-            userSlotResponse.setAddress(slot.getUsers().getAddress());
 
             GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
             getFullSlotResponse.setSlotResponse(slotResponse);
             getFullSlotResponse.setStaffSlotResponse(staffSlotResponse);
-            getFullSlotResponse.setUserSlotResponse(userSlotResponse);
 
             //lay full response
             fullSlotResponses.add(getFullSlotResponse);

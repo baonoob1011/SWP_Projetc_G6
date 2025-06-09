@@ -3,15 +3,14 @@ package swp.project.adn_backend.dto.request.slot;
 public class GetFullSlotResponse {
     private SlotResponse slotResponse;
     private StaffSlotResponse staffSlotResponse;
-    private UserSlotResponse userSlotResponse;
+//    private UserSlotResponse userSlotResponse;
 
     public GetFullSlotResponse() {
     }
 
-    public GetFullSlotResponse(SlotResponse slotResponse, StaffSlotResponse staffSlotResponse, UserSlotResponse userSlotResponse) {
+    public GetFullSlotResponse(SlotResponse slotResponse, StaffSlotResponse staffSlotResponse) {
         this.slotResponse = slotResponse;
         this.staffSlotResponse = staffSlotResponse;
-        this.userSlotResponse = userSlotResponse;
     }
 
     public SlotResponse getSlotResponse() {
@@ -30,11 +29,11 @@ public class GetFullSlotResponse {
         this.staffSlotResponse = staffSlotResponse;
     }
 
-    public UserSlotResponse getUserSlotResponse() {
-        return userSlotResponse;
-    }
-
-    public void setUserSlotResponse(UserSlotResponse userSlotResponse) {
-        this.userSlotResponse = userSlotResponse;
-    }
+//    public UserSlotResponse getUserSlotResponse() {
+//        return userSlotResponse;
+//    }
+//
+//    public void setUserSlotResponse(UserSlotResponse userSlotResponse) {
+//        this.userSlotResponse = userSlotResponse;
+//    }
 }

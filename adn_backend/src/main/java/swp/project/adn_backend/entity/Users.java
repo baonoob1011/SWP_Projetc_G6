@@ -110,19 +110,19 @@ public class Users {
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Staff> staff;
 
-    @OneToOne(mappedBy = "users", cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    Slot slots;
+//    @OneToOne(mappedBy = "users", cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    Slot slots;
 
-    public Slot getSlots() {
-        return slots;
-    }
-
-    public void setSlots(Slot slots) {
-        this.slots = slots;
-    }
+//    public Slot getSlots() {
+//        return slots;
+//    }
+//
+//    public void setSlots(Slot slots) {
+//        this.slots = slots;
+//    }
 
     public List<Blog> getBlogs() {
         return blogs;
