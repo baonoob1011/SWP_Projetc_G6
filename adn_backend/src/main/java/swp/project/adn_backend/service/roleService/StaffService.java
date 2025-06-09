@@ -65,14 +65,16 @@ public class StaffService {
         validateUpdateStaff(updateStaffAndManagerRequest, existingUser);
 
 
-        // Validate và cập nhật password
-        if (updateStaffAndManagerRequest.getPassword() != null) {
-            if (updateStaffAndManagerRequest.getOldPassword() == null ||
-                    !passwordEncoder.matches(updateStaffAndManagerRequest.getOldPassword(), existingUser.getPassword())) {
+        if (updateStaffAndManagerRequest.getOldPassword() != null) {
+            if (!passwordEncoder.matches(updateStaffAndManagerRequest.getOldPassword(), existingUser.getPassword())) {
                 throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
             }
+        }
 
-            if (!passwordEncoder.matches(updateStaffAndManagerRequest.getPassword(), existingUser.getPassword())) {
+        // Validate và cập nhật password
+        if (updateStaffAndManagerRequest.getPassword() != null && updateStaffAndManagerRequest.getConfirmPassword() != null) {
+            if (!passwordEncoder.matches(updateStaffAndManagerRequest.getPassword(), existingUser.getPassword())
+                    && updateStaffAndManagerRequest.getConfirmPassword().equals(updateStaffAndManagerRequest.getPassword())) {
                 existingUser.setPassword(passwordEncoder.encode(updateStaffAndManagerRequest.getPassword()));
             } else {
                 throw new AppException(ErrorCodeUser.PASSWORD_EXISTED);
