@@ -53,7 +53,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
     { label: 'Tin tức', path: '/blog' },
     { label: 'Đặt lịch', path: '/order' },
     { label: 'Địa chỉ', path: '/branch-and-map' },
-
   ];
 
   const handleOpenMenu = (
@@ -296,6 +295,15 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       sx={{ px: 2, py: 1 }}
                     >
                       Tạo dịch vụ
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/m-getAllService"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Xem dịch vụ
                     </MenuItem>
                     <MenuItem
                       component={NavLink}
