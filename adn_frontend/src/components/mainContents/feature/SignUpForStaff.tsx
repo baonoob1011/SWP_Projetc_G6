@@ -8,13 +8,13 @@ import {
   RadioGroup,
   TextField,
   Typography,
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import CustomSnackBar from "../userinfor/Snackbar";
-import { signUpStaffSchema } from "../userinfor/Validation";
-import { ValidationError } from "yup";
-import Swal from "sweetalert2";
-import styles from "./Staff.module.css";
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import CustomSnackBar from '../userinfor/Snackbar';
+import { signUpStaffSchema } from '../userinfor/Validation';
+import { ValidationError } from 'yup';
+import Swal from 'sweetalert2';
+import styles from './Staff.module.css';
 
 type Staff = {
   fullName: string;
@@ -23,7 +23,7 @@ type Staff = {
   username: string;
   password: string;
   confirmPassword: string;
-  gender: "Male" | "Female";
+  gender: 'Male' | 'Female';
   address: string;
   phone: string;
   dateOfBirth: string;
@@ -42,51 +42,54 @@ type ErrorResponse = {
 const SignUpStaff = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [staff, setStaff] = useState<Staff>({
-    fullName: "",
-    idCard: "",
-    email: "",
-    username: "",
-    password: "",
-    confirmPassword: "",
-    gender: "Male",
-    address: "",
-    phone: "",
-    dateOfBirth: "",
+    fullName: '',
+    idCard: '',
+    email: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+    gender: 'Male',
+    address: '',
+    phone: '',
+    dateOfBirth: '',
   });
   const [error, setError] = useState<{ [key: string]: string }>({});
   const [snackbar, setSnackbar] = useState({
     open: false,
-    message: "",
-    severity: "success" as "success" | "error",
+    message: '',
+    severity: 'success' as 'success' | 'error',
   });
 
   useEffect(() => {
-    setIsAdmin(localStorage.getItem("role") === "MANAGER");
+    setIsAdmin(
+      localStorage.getItem('role') === 'MANAGER' ||
+        localStorage.getItem('role') === 'ADMIN'
+    );
   }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const validateField = async (name: string, value: any) => {
     try {
       await signUpStaffSchema.validateAt(name, { ...staff, [name]: value });
-      setError((prev) => ({ ...prev, [name]: "" }));
+      setError((prev) => ({ ...prev, [name]: '' }));
     } catch (err) {
       if (err instanceof ValidationError) {
         // Hiển thị thông báo chung cho trường hợp trống
-        if (value === "") {
+        if (value === '') {
           setSnackbar({
             open: true,
-            message: "Vui lòng điền đầy đủ thông tin",
-            severity: "error",
+            message: 'Vui lòng điền đầy đủ thông tin',
+            severity: 'error',
           });
           return;
         }
-        
+
         // Thông báo riêng cho số điện thoại
-        if (name === "phone") {
+        if (name === 'phone') {
           setSnackbar({
             open: true,
-            message: "Vui lòng nhập số điện thoại",
-            severity: "error",
+            message: 'Vui lòng nhập số điện thoại',
+            severity: 'error',
           });
           return;
         }
@@ -103,8 +106,8 @@ const SignUpStaff = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let newValue: any = value;
 
-    if (name === "phone" || name === "idCard") {
-      newValue = value.replace(/\D/g, "");
+    if (name === 'phone' || name === 'idCard') {
+      newValue = value.replace(/\D/g, '');
     }
 
     setStaff((prev) => ({
@@ -118,12 +121,14 @@ const SignUpStaff = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const emptyFields = Object.entries(staff).filter(([key, value]) => !value && key !== "gender");
+    const emptyFields = Object.entries(staff).filter(
+      ([key, value]) => !value && key !== 'gender'
+    );
     if (emptyFields.length > 0) {
       setSnackbar({
         open: true,
-        message: "Vui lòng điền đầy đủ thông tin",
-        severity: "error",
+        message: 'Vui lòng điền đầy đủ thông tin',
+        severity: 'error',
       });
       return;
     }
@@ -133,23 +138,23 @@ const SignUpStaff = () => {
       setError({});
 
       const { ...dataToSend } = staff;
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
 
       if (!token) {
         setSnackbar({
           open: true,
-          message: "Bạn cần đăng nhập để thực hiện chức năng này",
-          severity: "error",
+          message: 'Bạn cần đăng nhập để thực hiện chức năng này',
+          severity: 'error',
         });
         return;
       }
 
       const response = await fetch(
-        "http://localhost:8080/api/register/staff-account",
+        'http://localhost:8080/api/register/staff-account',
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(dataToSend),
@@ -161,61 +166,65 @@ const SignUpStaff = () => {
 
         if (errorData.errors) {
           const messages = [];
-          if (errorData.errors.username) messages.push("Tên đăng nhập đã tồn tại");
-          if (errorData.errors.email) messages.push("Email đã tồn tại");
-          if (errorData.errors.phone) messages.push("Số điện thoại đã tồn tại");
-          if (errorData.errors.idCard) messages.push("CCCD không hợp lệ");
+          if (errorData.errors.username)
+            messages.push('Tên đăng nhập đã tồn tại');
+          if (errorData.errors.email) messages.push('Email đã tồn tại');
+          if (errorData.errors.phone) messages.push('Số điện thoại đã tồn tại');
+          if (errorData.errors.idCard) messages.push('CCCD không hợp lệ');
 
           setSnackbar({
             open: true,
-            message: messages.join(", "),
-            severity: "error",
+            message: messages.join(', '),
+            severity: 'error',
           });
         } else {
-          let errorMessage = "Có lỗi xảy ra";
-          if (response.status === 401) errorMessage = "Bạn không có quyền thực hiện chức năng này";
-          else if (response.status === 403) errorMessage = "Truy cập bị từ chối";
-          else if (response.status === 400) errorMessage = "Dữ liệu không hợp lệ";
+          let errorMessage = 'Có lỗi xảy ra';
+          if (response.status === 401)
+            errorMessage = 'Bạn không có quyền thực hiện chức năng này';
+          else if (response.status === 403)
+            errorMessage = 'Truy cập bị từ chối';
+          else if (response.status === 400)
+            errorMessage = 'Dữ liệu không hợp lệ';
 
           setSnackbar({
             open: true,
             message: errorMessage,
-            severity: "error",
+            severity: 'error',
           });
         }
       } else {
         Swal.fire({
-          icon: "success",
-          title: "Đăng ký nhân viên thành công!",
+          icon: 'success',
+          title: 'Đăng ký nhân viên thành công!',
           showConfirmButton: false,
           timer: 1500,
         });
 
         setStaff({
-          fullName: "",
-          idCard: "",
-          email: "",
-          username: "",
-          password: "",
-          confirmPassword: "",
-          gender: "Male",
-          address: "",
-          phone: "",
-          dateOfBirth: "",
+          fullName: '',
+          idCard: '',
+          email: '',
+          username: '',
+          password: '',
+          confirmPassword: '',
+          gender: 'Male',
+          address: '',
+          phone: '',
+          dateOfBirth: '',
         });
       }
     } catch (error) {
       if (error instanceof ValidationError) {
         setSnackbar({
           open: true,
-          message: "Vui lòng kiểm tra lại thông tin đã nhập",
-          severity: "error",
+          message: 'Vui lòng kiểm tra lại thông tin đã nhập',
+          severity: 'error',
         });
       } else {
         setSnackbar({
           open: true,
-          message: "Không thể kết nối tới máy chủ",
-          severity: "error",
+          message: 'Không thể kết nối tới máy chủ',
+          severity: 'error',
         });
       }
     }
@@ -293,7 +302,7 @@ const SignUpStaff = () => {
           />
           <FormHelperText
             id="rulePass"
-            sx={{ textAlign: "left" }}
+            sx={{ textAlign: 'left' }}
             component="div"
           >
             <ul style={{ margin: 0, paddingLeft: 20 }}>
@@ -326,7 +335,7 @@ const SignUpStaff = () => {
             <FormControlLabel value="Female" control={<Radio />} label="Nữ" />
           </RadioGroup>
           {error.gender && (
-            <FormHelperText error sx={{ textAlign: "left", mb: 1 }}>
+            <FormHelperText error sx={{ textAlign: 'left', mb: 1 }}>
               {error.gender}
             </FormHelperText>
           )}

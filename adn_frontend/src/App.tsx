@@ -22,7 +22,6 @@ import AdminSidebar from './components/page/AdminPage';
 import DataList from './components/mainContents/actorList/AllDataList';
 import BookAppointmentForm from './components/mainContents/services/SignUpServices';
 import BranchAndMap from './components/page/BranchAndMap';
-import ProtectedRoute from './components/mainContents/feature/ProtectedRoute';
 import { Header } from './components/mainContents/Header';
 import OldPassWord from './components/mainContents/feature/OldPassword';
 import NewProfile from './components/mainContents/actorList/StaffAndManagerProfile';
@@ -32,6 +31,9 @@ import AdministrativeServiceList from './components/mainContents/services/GetAdm
 import ServiceList from './components/mainContents/services/GetService';
 import StaffSchedule from './components/mainContents/actorList/StaffSchedule';
 import GetUserByStaff from './components/mainContents/actorList/GetUserByStaff';
+
+import Blog from './components/page/Blog';
+import ProtectedRoute from './components/mainContents/feature/ProtectedRoute';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -103,6 +105,10 @@ function App() {
             <Route path="/branch-and-map" element={<BranchAndMap />} />
             <Route path="/map" element={<Map />} />
 
+            <Route path="/m-userData" element={<GetUserByManager />} />
+            <Route path="/m-staffData" element={<GetStaffByManager />} />
+            <Route path="/create-services" element={<Services />} />
+
             <Route
               path="/change-pass"
               element={
@@ -144,6 +150,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/s-userData"
               element={
@@ -170,6 +177,9 @@ function App() {
               }
             />
             <Route path="/service/civil" element={<CivilServiceList />} />
+
+            <Route path="/blog" element={<Blog />} />
+
             <Route
               path="/service/administrative"
               element={<AdministrativeServiceList />}
