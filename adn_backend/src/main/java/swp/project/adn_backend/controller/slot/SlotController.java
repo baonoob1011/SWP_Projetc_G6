@@ -7,9 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import swp.project.adn_backend.dto.request.slot.GetFullSlotResponse;
 import swp.project.adn_backend.dto.request.slot.SlotRequest;
 import swp.project.adn_backend.entity.Slot;
 import swp.project.adn_backend.service.slot.SlotService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/slot")
@@ -23,5 +26,9 @@ public class SlotController {
                                           Authentication authentication,
                                           @PathVariable("staffId")long staffId){
         return ResponseEntity.ok(slotService.createSlot(slotRequest,authentication,staffId));
+    }
+    @GetMapping("/get-all-slot")
+    public ResponseEntity<List<GetFullSlotResponse>>getAllSlot(){
+        return ResponseEntity.ok(slotService.getAllSlot());
     }
 }

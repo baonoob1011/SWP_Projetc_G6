@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import swp.project.adn_backend.dto.request.slot.SlotRequest;
+import swp.project.adn_backend.dto.request.slot.*;
+//import swp.project.adn_backend.dto.response.SlotReponse;
+import swp.project.adn_backend.dto.response.serviceResponse.GetAllServiceResponse;
 import swp.project.adn_backend.entity.Slot;
 import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
@@ -17,6 +19,7 @@ import swp.project.adn_backend.repository.SlotRepository;
 import swp.project.adn_backend.repository.StaffRepository;
 import swp.project.adn_backend.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -49,7 +52,34 @@ public class SlotService {
 //        slot.setUsers(userCreated);
         return slotRepository.save(slot);
     }
-    public List<Slot>getAllSlot(){
-        
+
+    public List<GetFullSlotResponse> getAllSlot() {
+        List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();
+        List<Slot> slotList = slotRepository.findAll();
+        GetFullSlotResponse getAllServiceResponse = null;
+        for (Slot slot : slotList) {
+            SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
+
+            //lay staff
+            StaffSlotResponse staffSlotResponse=new StaffSlotResponse();
+            staffSlotResponse.setStaffId(slot.getStaff().getStaffId());
+            staffSlotResponse.setFullName(slot.getStaff().getFullName());
+
+            //lay user
+            UserSlotResponse userSlotResponse=new UserSlotResponse();
+            userSlotResponse.setUserId(slot.getUsers().getUserId());
+            userSlotResponse.setEmail(slot.getUsers().getEmail());
+            userSlotResponse.setPhone(slot.getUsers().getPhone());
+            userSlotResponse.setAddress(slot.getUsers().getAddress());
+
+            GetFullSlotResponse getFullSlotResponse=new GetFullSlotResponse();
+            getFullSlotResponse.setSlotResponse(slotResponse);
+            getFullSlotResponse.setStaffSlotResponse(staffSlotResponse);
+            getFullSlotResponse.setUserSlotResponse(userSlotResponse);
+
+            //lay full response
+            fullSlotResponses.add(getFullSlotResponse);
+        }
+        return fullSlotResponses;
     }
 }
