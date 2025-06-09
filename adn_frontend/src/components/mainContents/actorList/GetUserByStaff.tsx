@@ -8,8 +8,8 @@ import {
   TableRow,
   Typography,
   TextField,
-} from "@mui/material";
-import { useEffect, useState } from "react";
+} from '@mui/material';
+import { useEffect, useState } from 'react';
 
 type User = {
   fullName: string;
@@ -23,10 +23,16 @@ type User = {
 function GetUserByStaff() {
   const [account, setAccount] = useState<User[]>([]);
   const [isManager, setIsManager] = useState(true);
-  const [search, setSearch] = useState("");
-  // ✅ Gọi API lấy dữ liệu
+  const [search, setSearch] = useState('');
+
+  // ✅ Gọi API lấy dữ liệu người dùng theo số điện thoại
   const fetchData = async () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
+    if (!search) {
+      setAccount([]);
+      return;
+    }
+
     try {
       const res = await fetch(
         `http://localhost:8080/api/staff/get-user-phone?phone=${search}`,
@@ -37,42 +43,37 @@ function GetUserByStaff() {
         }
       );
 
-      if (!res.ok) throw new Error("Không thể lấy dữ liệu");
+      if (!res.ok) throw new Error('Không thể lấy dữ liệu');
 
       const data = await res.json();
-
-      if (!Array.isArray(data)) throw new Error("Dữ liệu không hợp lệ");
-
-      setAccount(data);
+      setAccount([data]); // ép object thành array
     } catch (error) {
-      console.error("Lỗi fetch:", error);
-      alert("Lỗi khi tải dữ liệu người dùng.");
+      console.error('Lỗi fetch:', error);
+      setAccount([]); // clear kết quả cũ
+      alert('Lỗi khi tải dữ liệu người dùng.');
     }
   };
 
   useEffect(() => {
-    setIsManager(localStorage.getItem("role") === "STAFF");
-  }, []);
-
-  useEffect(() => {
-    fetchData(); // gọi lần đầu khi component mount
+    setIsManager(localStorage.getItem('role') === 'STAFF');
   }, []);
 
   if (!isManager) {
-    return;
+    return null;
   }
 
-  const searchByPhone = account.find((user) => user.phone === search);
-
   return (
-    <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
+    <TableContainer component={Paper} sx={{ flexGrow: 1, marginTop: 20 }}>
       <TextField
         label="Tìm theo SĐT"
         variant="outlined"
         size="small"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        sx={{ margin: "10px 5px" }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') fetchData();
+        }}
+        sx={{ margin: '10px 5px' }}
       />
       <Typography variant="h6" sx={{ m: 2 }}>
         Danh sách người dùng
@@ -101,20 +102,22 @@ function GetUserByStaff() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {searchByPhone ? (
-            <TableRow>
-              <TableCell>{searchByPhone.fullName}</TableCell>
-              <TableCell>{searchByPhone.email}</TableCell>
-              <TableCell>{searchByPhone.phone}</TableCell>
-              <TableCell>{searchByPhone.role}</TableCell>
-              <TableCell>{searchByPhone.createAt}</TableCell>
-              <TableCell>
-                {searchByPhone.enabled ? "Đã kích hoạt" : "Chưa kích hoạt"}
-              </TableCell>
-            </TableRow>
+          {account.length > 0 ? (
+            account.map((user, index) => (
+              <TableRow key={index}>
+                <TableCell>{user.fullName}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.phone}</TableCell>
+                <TableCell>{user.role}</TableCell>
+                <TableCell>{user.createAt}</TableCell>
+                <TableCell>
+                  {user.enabled ? 'Đã kích hoạt' : 'Chưa kích hoạt'}
+                </TableCell>
+              </TableRow>
+            ))
           ) : (
             <TableRow>
-              <TableCell colSpan={7} align="center">
+              <TableCell colSpan={6} align="center">
                 Không tìm thấy người dùng
               </TableCell>
             </TableRow>
