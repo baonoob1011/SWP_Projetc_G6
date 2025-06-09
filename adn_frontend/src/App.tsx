@@ -30,6 +30,7 @@ import NewUserProfile from './components/mainContents/actorList/UserProfile';
 import CivilServiceList from './components/mainContents/services/GetCivilService';
 import AdministrativeServiceList from './components/mainContents/services/GetAdmintrativeService';
 import ServiceList from './components/mainContents/services/GetService';
+import StaffSchedule from './components/mainContents/actorList/StaffSchedule';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -78,6 +79,7 @@ function App() {
                 <Route path="/signup-staff" element={<SignUpStaff />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/a-getAllService" element={<ServiceList />} />
+                <Route path="/s-slot/:staffId" element={<StaffSchedule />} />
               </Routes>
             </Box>
           </Box>
