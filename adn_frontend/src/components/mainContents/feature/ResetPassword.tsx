@@ -1,5 +1,7 @@
 import { Button, Paper, TextField, Box } from '@mui/material';
 import { useState } from 'react';
+import CustomSnackBar from '../userinfor/Snackbar';
+import Swal from 'sweetalert2';
 
 type ChangPass = {
   password: string;
@@ -15,6 +17,12 @@ const NewPassWord = ({ role }: NewPassWordProps) => {
     password: '',
     confirmPassword: '',
   });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error',
+  });
+
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewPassWord({
@@ -22,13 +30,36 @@ const NewPassWord = ({ role }: NewPassWordProps) => {
       [name]: value,
     });
   };
+
   const handleChangPass = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Kiểm tra các trường bắt buộc
+    if (!newPassword.password || !newPassword.confirmPassword) {
+      setSnackbar({
+        open: true,
+        message: 'Vui lòng điền đầy đủ thông tin',
+        severity: 'error',
+      });
+      return;
+    }
+
+    // Kiểm tra mật khẩu khớp nhau
+    if (newPassword.password !== newPassword.confirmPassword) {
+      setSnackbar({
+        open: true,
+        message: 'Mật khẩu không khớp',
+        severity: 'error',
+      });
+      return;
+    }
+
     const apiMap = {
       user: 'http://localhost:8080/api/user/update-user',
       staff: 'http://localhost:8080/api/staff/update-staff',
       manager: 'http://localhost:8080/api/manager/update-manager',
     };
+
     try {
       const res = await fetch(apiMap[role], {
         method: 'PUT',
@@ -43,15 +74,30 @@ const NewPassWord = ({ role }: NewPassWordProps) => {
       });
 
       if (!res.ok) {
-        alert('Mật khẩu cũ không đúng');
+        setSnackbar({
+          open: true,
+          message: 'Mật khẩu cũ không đúng',
+          severity: 'error',
+        });
       } else {
-        alert('Đổi mật khẩu thành công');
-        // Điều hướng nếu cần
-        // navigate("/chang-pass");
+        Swal.fire({
+          icon: 'success',
+          title: 'Đổi mật khẩu thành công',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setNewPassWord({
+          password: '',
+          confirmPassword: '',
+        });
       }
     } catch (error) {
       console.log(error);
-      alert('Lỗi hệ thống');
+      setSnackbar({
+        open: true,
+        message: 'Lỗi hệ thống',
+        severity: 'error',
+      });
     }
   };
 
@@ -91,6 +137,12 @@ const NewPassWord = ({ role }: NewPassWordProps) => {
           Xác nhận
         </Button>
       </Paper>
+      <CustomSnackBar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </Box>
   );
 };
