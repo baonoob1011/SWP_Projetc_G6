@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import Forget from "./components/page/Forget.tsx";
 import Login from "./components/page/Login.tsx";
 import SignUp from "./components/page/SignUp.tsx";
@@ -22,6 +23,39 @@ import AdminSidebar from "./components/page/AdminPage.tsx";
 import { Box } from "@mui/material";
 import DataList from "./components/mainContents/actorList/AllDataList.tsx";
 
+=======
+// App.tsx
+import React, { useState } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import { Box } from '@mui/material';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import Login from './components/page/Login';
+import SignUp from './components/page/SignUp';
+import Forget from './components/page/Forget';
+import Home from './components/page/Home';
+import Services from './components/mainContents/services/CreateServices';
+import SignUpStaff from './components/mainContents/feature/SignUpForStaff';
+import SignUpManager from './components/mainContents/feature/SignUpForManager';
+import GetManagerByAdmin from './components/mainContents/actorList/GetManagerByAdmin';
+import GetStaffByAdmin from './components/mainContents/actorList/GetStaffByAdmin';
+import GetUserByAdmin from './components/mainContents/actorList/GetUserByAdmin';
+import GetUserByManager from './components/mainContents/actorList/GetUserByManager';
+import GetStaffByManager from './components/mainContents/actorList/GetStaffByManager';
+import Map from './components/page/Map';
+import AdminSidebar from './components/page/AdminPage';
+import DataList from './components/mainContents/actorList/AllDataList';
+import BookAppointmentForm from './components/mainContents/services/SignUpServices';
+import BranchAndMap from './components/page/BranchAndMap';
+import ProtectedRoute from './components/mainContents/feature/ProtectedRoute';
+import { Header } from './components/mainContents/Header';
+import OldPassWord from './components/mainContents/feature/OldPassword';
+import NewProfile from './components/mainContents/actorList/StaffAndManagerProfile';
+import NewUserProfile from './components/mainContents/actorList/UserProfile';
+import CivilServiceList from './components/mainContents/services/GetCivilService';
+import Blog from './components/page/Blog';
+>>>>>>> Stashed changes
 function App() {
   const [fullname, setFullName] = useState(
     localStorage.getItem("fullName") || ""
@@ -83,9 +117,73 @@ function App() {
             <Route path="/signup-staff" element={<SignUpStaff />} />
             <Route path="/branch" element={<Branch />} />
             <Route path="/map" element={<Map />} />
+<<<<<<< Updated upstream
             <Route path="/m-userData" element={<GetUserByManager />} />
             <Route path="/m-staffData" element={<GetStaffByManager />} />
             <Route path="/create-services" element={<Services />} />
+=======
+
+            <Route
+              path="/change-pass"
+              element={
+                <ProtectedRoute allowedRoles={['USER', 'MANAGER', 'STAFF']}>
+                  <OldPassWord role={role as 'user' | 'staff' | 'manager'} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/order"
+              element={
+                <ProtectedRoute allowedRoles={['USER', 'MANAGER', 'STAFF']}>
+                  <BookAppointmentForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/u-profile"
+              element={
+                <ProtectedRoute allowedRoles={['USER', 'MANAGER', 'STAFF']}>
+                  <NewUserProfile />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/m-userData"
+              element={
+                <ProtectedRoute allowedRoles={['MANAGER']}>
+                  <GetUserByManager />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/m-staffData"
+              element={
+                <ProtectedRoute allowedRoles={['MANAGER']}>
+                  <GetStaffByManager />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/create-services"
+              element={
+                <ProtectedRoute allowedRoles={['STAFF', 'MANAGER']}>
+                  <Services />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/s-m-profile"
+              element={
+                <ProtectedRoute allowedRoles={['STAFF', 'MANAGER']}>
+                  <NewProfile role={role as 'staff' | 'manager'} />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/service/civil" element={<CivilServiceList />} />
+            <Route path='/blog' element={<Blog/>}/>
+>>>>>>> Stashed changes
           </Routes>
           <ToastContainer />
         </>
