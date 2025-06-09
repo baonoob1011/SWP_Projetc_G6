@@ -346,6 +346,24 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     MenuListProps={{ sx: { py: 0 } }}
                   >
                     <MenuItem
+                      component={NavLink}
+                      to="/s-m-profile"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Xem thông tin
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/s-userData"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Xem danh sách người dùng
+                    </MenuItem>
+                    <MenuItem
                       onClick={() => {
                         handleCloseMenu();
                         handleLogout();

@@ -31,6 +31,7 @@ import CivilServiceList from './components/mainContents/services/GetCivilService
 import AdministrativeServiceList from './components/mainContents/services/GetAdmintrativeService';
 import ServiceList from './components/mainContents/services/GetService';
 import StaffSchedule from './components/mainContents/actorList/StaffSchedule';
+import GetUserByStaff from './components/mainContents/actorList/GetUserByStaff';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -106,7 +107,7 @@ function App() {
               path="/change-pass"
               element={
                 <ProtectedRoute allowedRoles={['USER', 'MANAGER', 'STAFF']}>
-                  <OldPassWord role={role as 'user' | 'staff' | 'manager'} />
+                  <OldPassWord role={role as 'USER' | 'STAFF' | 'MANAGER'} />
                 </ProtectedRoute>
               }
             />
@@ -143,6 +144,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/s-userData"
+              element={
+                <ProtectedRoute allowedRoles={['STAFF']}>
+                  <GetUserByStaff />
+                </ProtectedRoute>
+              }
+            />
 
             <Route
               path="/create-services"
@@ -156,7 +165,7 @@ function App() {
               path="/s-m-profile"
               element={
                 <ProtectedRoute allowedRoles={['STAFF', 'MANAGER']}>
-                  <NewProfile role={role as 'staff' | 'manager'} />
+                  <NewProfile role={role as 'STAFF' | 'MANAGER'} />
                 </ProtectedRoute>
               }
             />

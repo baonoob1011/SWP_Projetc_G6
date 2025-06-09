@@ -5,7 +5,7 @@ import CustomSnackBar from '../userinfor/Snackbar';
 import Swal from 'sweetalert2';
 
 type OldPassWordProps = {
-  role: 'user' | 'staff' | 'manager';
+  role: 'USER' | 'STAFF' | 'MANAGER';
 };
 
 const OldPassWord = ({ role }: OldPassWordProps) => {
@@ -31,9 +31,9 @@ const OldPassWord = ({ role }: OldPassWordProps) => {
     }
 
     const apiMap = {
-      user: 'http://localhost:8080/api/user/update-user',
-      staff: 'http://localhost:8080/api/staff/update-staff',
-      manager: 'http://localhost:8080/api/manager/update-manager',
+      USER: 'http://localhost:8080/api/user/update-user',
+      STAFF: 'http://localhost:8080/api/staff/update-staff',
+      MANAGER: 'http://localhost:8080/api/manager/update-manager',
     };
 
     try {

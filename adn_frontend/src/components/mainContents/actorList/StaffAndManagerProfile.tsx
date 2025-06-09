@@ -10,7 +10,7 @@ type OldProfile = {
 };
 
 type Profile = {
-  role: 'manager' | 'staff';
+  role: 'MANAGER' | 'STAFF';
 };
 
 const NewProfile = ({ role }: Profile) => {
@@ -45,8 +45,8 @@ const NewProfile = ({ role }: Profile) => {
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const apiMap = {
-      staff: 'http://localhost:8080/api/staff/update-staff',
-      manager: 'http://localhost:8080/api/manager/update-manager',
+      STAFF: 'http://localhost:8080/api/staff/update-staff',
+      MANAGER: 'http://localhost:8080/api/manager/update-manager',
     };
     try {
       const res = await fetch(apiMap[role], {

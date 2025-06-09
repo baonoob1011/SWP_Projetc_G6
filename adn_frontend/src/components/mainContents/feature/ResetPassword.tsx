@@ -2,6 +2,7 @@ import { Button, Paper, TextField, Box } from '@mui/material';
 import { useState } from 'react';
 import CustomSnackBar from '../userinfor/Snackbar';
 import Swal from 'sweetalert2';
+import { NavLink } from 'react-router-dom';
 
 type ChangPass = {
   password: string;
@@ -9,7 +10,7 @@ type ChangPass = {
 };
 
 type NewPassWordProps = {
-  role: 'user' | 'staff' | 'manager';
+  role: 'USER' | 'STAFF' | 'MANAGER';
 };
 
 const NewPassWord = ({ role }: NewPassWordProps) => {
@@ -55,9 +56,9 @@ const NewPassWord = ({ role }: NewPassWordProps) => {
     }
 
     const apiMap = {
-      user: 'http://localhost:8080/api/user/update-user',
-      staff: 'http://localhost:8080/api/staff/update-staff',
-      manager: 'http://localhost:8080/api/manager/update-manager',
+      USER: 'http://localhost:8080/api/user/update-user',
+      STAFF: 'http://localhost:8080/api/staff/update-staff',
+      MANAGER: 'http://localhost:8080/api/manager/update-manager',
     };
 
     try {
@@ -133,7 +134,14 @@ const NewPassWord = ({ role }: NewPassWordProps) => {
           sx={{ mb: 2 }}
         />
 
-        <Button variant="contained" color="primary" type="submit" fullWidth>
+        <Button
+          component={NavLink}
+          to="/u-profile"
+          variant="contained"
+          color="primary"
+          type="submit"
+          fullWidth
+        >
           Xác nhận
         </Button>
       </Paper>
