@@ -17,6 +17,7 @@ import swp.project.adn_backend.repository.PatientRepository;
 import swp.project.adn_backend.repository.UserRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,33 +36,26 @@ public class PatientService {
         this.userRepository = userRepository;
     }
 
-    public List<Patient> registerServiceTest(PatientRequest patientRequest, Authentication authentication) {
-
+    public List<Patient> registerServiceTest(List<PatientRequest> patientRequest
+            , Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
         Users userCreated = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+        List<Patient> patientList = new ArrayList<>();
+        for (PatientRequest request : patientRequest) {
+            Patient patient = patientMapper.toPatientRequest(request);
+            patient.setCreateAt(LocalDate.now());
+            patient.setRole(Roles.PATIENT.name());
+            patient.setUsers(userCreated);
+            patientList.add(patient);
+        }
 
-        // Bệnh nhân 1
-        Patient patient1 = patientMapper.toPatientRequest(patientRequest);
-        patient1.setCreateAt(LocalDate.now());
-        patient1.setRole(Roles.PATIENT.name());
-
-        // Bệnh nhân 2
-        Patient patient2 = patientMapper.toPatientRequest(patientRequest);
-        patient2.setCreateAt(LocalDate.now());
-        patient2.setRole(Roles.PATIENT.name());
-
-        // Gán người đăng ký cho cả hai bệnh nhân
-        patient1.setUsers(userCreated);
-        patient2.setUsers(userCreated);
-
-        // Lưu bệnh nhân vào cơ sở dữ liệu
-        patientRepository.save(patient1);
-        patientRepository.save(patient2);
+        userCreated.setPatients(patientList);
+        patientRepository.saveAll(patientList);
 
         // Trả về danh sách bệnh nhân đã được lưu
-        return Arrays.asList(patient1, patient2);
+        return patientList;
     }
 
 }

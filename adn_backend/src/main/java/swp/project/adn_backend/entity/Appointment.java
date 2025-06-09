@@ -59,11 +59,11 @@ public class Appointment {
     @JoinColumn(name = "service_id")
     ServiceTest services;
 
-    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    List<Patient> patients;
+//    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    List<Patient> patients;
 
     public Appointment() {
     }
@@ -142,11 +142,11 @@ public class Appointment {
         this.services = services;
     }
 
-    public List<Patient> getPatients() {
-        return patients;
-    }
-
-    public void setPatients(List<Patient> patients) {
-        this.patients = patients;
-    }
+//    public List<Patient> getPatients() {
+//        return patients;
+//    }
+//
+//    public void setPatients(List<Patient> patients) {
+//        this.patients = patients;
+//    }
 }

@@ -45,11 +45,11 @@ public class Patient {
     @Column(name = "birth_certificate")
     String birthCertificate;
 
-    @ManyToOne(cascade = {
-         CascadeType.ALL
-    })
-    @JoinColumn(name = "appointment_id")
-    Appointment appointment;
+//    @ManyToOne(cascade = {
+//         CascadeType.ALL
+//    })
+//    @JoinColumn(name = "appointment_id")
+//    Appointment appointment;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -161,13 +161,13 @@ public class Patient {
         this.birthCertificate = birthCertificate;
     }
 
-    public Appointment getAppointment() {
-        return appointment;
-    }
-
-    public void setAppointment(Appointment appointment) {
-        this.appointment = appointment;
-    }
+//    public Appointment getAppointment() {
+//        return appointment;
+//    }
+//
+//    public void setAppointment(Appointment appointment) {
+//        this.appointment = appointment;
+//    }
 
     public Users getUsers() {
         return users;

@@ -147,6 +147,14 @@ public class UserService {
                 throw new AppException(ErrorCodeUser.PHONE_EXISTED);
             }
         }
+        if (updateUserRequest.getOldPassword() != null) {
+            System.out.println("mk chuyen vao:"+updateUserRequest.getOldPassword());
+            System.out.println("mk cu:"+passwordEncoder.matches(updateUserRequest.getOldPassword(), existingUser.getPassword()));
+            if (!passwordEncoder.matches(updateUserRequest.getOldPassword(), existingUser.getPassword())) {
+                throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
+            }
+            System.out.println("dung mk");
+        }
 
         if (updateUserRequest.getPassword() != null && updateUserRequest.getConfirmPassword() != null) {
             if (!passwordEncoder.matches(updateUserRequest.getPassword(), existingUser.getPassword())
@@ -157,12 +165,7 @@ public class UserService {
             }
         }
 
-        if (updateUserRequest.getOldPassword() != null) {
-            if (!passwordEncoder.matches(updateUserRequest.getOldPassword(), existingUser.getPassword())) {
-                throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
-            }
-            System.out.println("dung mk");
-        }
+
 
         if (updateUserRequest.getAddress() != null) {
             String oldAddress = existingUser.getAddress();
