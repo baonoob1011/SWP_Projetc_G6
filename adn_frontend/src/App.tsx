@@ -28,6 +28,8 @@ import OldPassWord from './components/mainContents/feature/OldPassword';
 import NewProfile from './components/mainContents/actorList/StaffAndManagerProfile';
 import NewUserProfile from './components/mainContents/actorList/UserProfile';
 import CivilServiceList from './components/mainContents/services/GetCivilService';
+import AdministrativeServiceList from './components/mainContents/services/GetAdmintrativeService';
+import ServiceList from './components/mainContents/services/GetService';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -75,6 +77,7 @@ function App() {
                 <Route path="/signup-manager" element={<SignUpManager />} />
                 <Route path="/signup-staff" element={<SignUpStaff />} />
                 <Route path="/services" element={<Services />} />
+                <Route path="/a-getAllService" element={<ServiceList />} />
               </Routes>
             </Box>
           </Box>
@@ -156,8 +159,12 @@ function App() {
               }
             />
             <Route path="/service/civil" element={<CivilServiceList />} />
+            <Route
+              path="/service/administrative"
+              element={<AdministrativeServiceList />}
+            />
+            <Route path="/m-getAllService" element={<ServiceList />} />
           </Routes>
-
           <ToastContainer />
         </>
       )}

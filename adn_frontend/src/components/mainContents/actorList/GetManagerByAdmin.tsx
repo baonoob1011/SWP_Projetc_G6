@@ -8,10 +8,10 @@ import {
   TableHead,
   TableRow,
   TextField,
-} from "@mui/material";
-import { Plus, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+} from '@mui/material';
+import { Plus, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 type Staff = {
   idCard: string;
@@ -30,14 +30,14 @@ type Staff = {
 function GetManagerByAdmin() {
   const [account, setAccount] = useState<Staff[]>([]);
   const [isAdmin, setIsAdmin] = useState(true);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const fetchData = async () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     try {
       const res = await fetch(
-        "http://localhost:8080/api/admin/get-all-manager",
+        'http://localhost:8080/api/admin/get-all-manager',
         {
-          method: "GET",
+          method: 'GET',
           headers: { Authorization: `Bearer ${token}` },
         }
       );
@@ -45,11 +45,11 @@ function GetManagerByAdmin() {
       setAccount(data);
     } catch (error) {
       console.log(error);
-      alert("không thể lấy dữ liệu");
+      alert('không thể lấy dữ liệu');
     }
   };
   useEffect(() => {
-    setIsAdmin(localStorage.getItem("role") === "ADMIN");
+    setIsAdmin(localStorage.getItem('role') === 'ADMIN');
   }, []);
 
   useEffect(() => {
@@ -63,25 +63,25 @@ function GetManagerByAdmin() {
     if (!mes) {
       return;
     } else {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
 
       try {
         const res = await fetch(
           `http://localhost:8080/api/admin/delete-manager?phone=${phone}`,
           {
-            method: "DELETE",
+            method: 'DELETE',
             headers: { Authorization: `Bearer ${token}` },
           }
         );
         if (!res) {
-          alert("không thể thể xóa");
+          alert('không thể thể xóa');
         } else {
-          alert("xóa thành công");
+          alert('xóa thành công');
           fetchData();
         }
       } catch (error) {
         console.log(error);
-        alert("Mất kết nối với hệ thống");
+        alert('Mất kết nối với hệ thống');
       }
     }
   };
@@ -93,54 +93,53 @@ function GetManagerByAdmin() {
   return (
     <>
       <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
-
         <TextField
           label="Nhập số điện thoại"
           variant="outlined"
           size="small"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          sx={{ margin: "10px 5px" }}
+          sx={{ margin: '10px 5px' }}
         />
 
-        <Table sx={{ fontSize: "13px", borderCollapse: "collapse" }}>
+        <Table sx={{ fontSize: '13px', borderCollapse: 'collapse' }}>
           <TableHead>
             <TableRow>
               {/** Dòng tiêu đề với border */}
-              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
+              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
                 ID
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
+              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
                 Họ tên
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
+              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
                 CCCD
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
+              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
                 Ngày sinh
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
+              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
                 Giới tính
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
+              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
                 Email
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
+              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
                 SĐT
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
+              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
                 Địa chỉ
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
+              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
                 Vai trò
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
+              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
                 Ngày đăng ký
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
+              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
                 Trạng thái
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", border: "1px solid #ccc" }}>
+              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
                 Thao tác
               </TableCell>
             </TableRow>
@@ -149,45 +148,45 @@ function GetManagerByAdmin() {
           <TableBody>
             {searchByphone.map((user, index) => (
               <TableRow key={index}>
-                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
                   {index + 1}
                 </TableCell>
-                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
                   {user.fullName}
                 </TableCell>
-                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
                   {user.idCard}
                 </TableCell>
-                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
                   {user.dateOfBirth}
                 </TableCell>
-                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
                   {user.gender}
                 </TableCell>
-                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
                   {user.email}
                 </TableCell>
-                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
                   {user.phone}
                 </TableCell>
-                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
                   {user.address}
                 </TableCell>
-                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
                   {user.role}
                 </TableCell>
-                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
+                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
                   {user.createAt}
                 </TableCell>
-                <TableCell sx={{ fontSize: "10px", border: "1px solid #ccc" }}>
-                  {user.enabled ? "Đã kích hoạt" : "Chưa kích hoạt"}
+                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
+                  {user.enabled ? 'Đã kích hoạt' : 'Chưa kích hoạt'}
                 </TableCell>
-                <TableCell sx={{ border: "1px solid #ccc" }}>
+                <TableCell sx={{ border: '1px solid #ccc' }}>
                   <Button
                     variant="contained"
                     color="error"
                     size="small"
-                    sx={{ minWidth: 0, padding: "6px", borderRadius: "4px" }}
+                    sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}
                     onClick={() => handleDelete(user.phone, user.fullName)}
                   >
                     <Trash2 size={16} />
@@ -203,7 +202,7 @@ function GetManagerByAdmin() {
           component={NavLink}
           to="/signup-manager"
           className="normal-case"
-          style={{ textDecoration: "none" }}
+          style={{ textDecoration: 'none' }}
         >
           <Plus size={20} />
         </Button>
