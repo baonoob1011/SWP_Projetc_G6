@@ -12,6 +12,7 @@ import {
   // FileText,
   Shield,
   List,
+  ShoppingBag,
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
@@ -32,11 +33,16 @@ const AdminSidebar = () => {
   const menuItems = [
     { id: 'dashboard', icon: Home, label: 'Home', path: '' },
     { id: 'data', icon: List, label: 'Danh sách', path: 'admin/data' },
-    { id: 'services', icon: RoomService, label: 'Dịch vụ', path: 'services' },
+    {
+      id: 'services',
+      icon: RoomService,
+      label: 'Tạo Dịch vụ',
+      path: 'services',
+    },
     {
       id: 'servicesInfo',
-      icon: RoomService,
-      label: 'Dịch vụ',
+      icon: ShoppingBag,
+      label: 'Tất cả dịch vụ',
       path: 'a-getAllService',
     },
   ];
