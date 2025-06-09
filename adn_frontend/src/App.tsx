@@ -1,28 +1,3 @@
-
-import Forget from "./components/page/Forget.tsx";
-import Login from "./components/page/Login.tsx";
-import SignUp from "./components/page/SignUp.tsx";
-import { Route, Routes, useLocation } from "react-router-dom";
-import Home from "./components/page/Home.tsx";
-import { Header } from "./components/mainContents/Header.tsx";
-import { useState } from "react";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Services from "./components/mainContents/services/Services.tsx";
-import SignUpStaff from "./components/mainContents/feature/SignUpForStaff.tsx";
-import SignUpManager from "./components/mainContents/feature/SignUpForManager.tsx";
-import GetManagerByAdmin from "./components/mainContents/actorList/GetManagerByAdmin.tsx";
-import GetStaffByAdmin from "./components/mainContents/actorList/GetStaffByAdmin.tsx";
-import GetUserByAdmin from "./components/mainContents/actorList/GetUserByAdmin.tsx";
-import GetUserByManager from "./components/mainContents/actorList/GetUserByManager.tsx";
-import GetStaffByManager from "./components/mainContents/actorList/GetStaffByManager.tsx";
-// import GetUserByStaff from "./components/mainContents/actorList/GetUserByStaff.tsx";
-import Branch from "./components/page/Branch.tsx";
-import Map from "./components/page/Map.tsx";
-import AdminSidebar from "./components/page/AdminPage.tsx";
-import { Box } from "@mui/material";
-import DataList from "./components/mainContents/actorList/AllDataList.tsx";
-=======
 // App.tsx
 import React, { useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
@@ -47,7 +22,6 @@ import AdminSidebar from './components/page/AdminPage';
 import DataList from './components/mainContents/actorList/AllDataList';
 import BookAppointmentForm from './components/mainContents/services/SignUpServices';
 import BranchAndMap from './components/page/BranchAndMap';
-import ProtectedRoute from './components/mainContents/feature/ProtectedRoute';
 import { Header } from './components/mainContents/Header';
 import OldPassWord from './components/mainContents/feature/OldPassword';
 import NewProfile from './components/mainContents/actorList/StaffAndManagerProfile';
@@ -58,9 +32,8 @@ import ServiceList from './components/mainContents/services/GetService';
 import StaffSchedule from './components/mainContents/actorList/StaffSchedule';
 import GetUserByStaff from './components/mainContents/actorList/GetUserByStaff';
 
-
-
 import Blog from './components/page/Blog';
+import ProtectedRoute from './components/mainContents/feature/ProtectedRoute';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -140,11 +113,7 @@ function App() {
               path="/change-pass"
               element={
                 <ProtectedRoute allowedRoles={['USER', 'MANAGER', 'STAFF']}>
-
-                  <OldPassWord role={role as 'user' | 'staff' | 'manager'} />
-
                   <OldPassWord role={role as 'USER' | 'STAFF' | 'MANAGER'} />
-
                 </ProtectedRoute>
               }
             />
@@ -203,24 +172,19 @@ function App() {
               path="/s-m-profile"
               element={
                 <ProtectedRoute allowedRoles={['STAFF', 'MANAGER']}>
-
-                  <NewProfile role={role as 'staff' | 'manager'} />
-
                   <NewProfile role={role as 'STAFF' | 'MANAGER'} />
-
                 </ProtectedRoute>
               }
             />
             <Route path="/service/civil" element={<CivilServiceList />} />
 
-            <Route path='/blog' element={<Blog/>}/>
+            <Route path="/blog" element={<Blog />} />
 
             <Route
               path="/service/administrative"
               element={<AdministrativeServiceList />}
             />
             <Route path="/m-getAllService" element={<ServiceList />} />
-
           </Routes>
           <ToastContainer />
         </>
