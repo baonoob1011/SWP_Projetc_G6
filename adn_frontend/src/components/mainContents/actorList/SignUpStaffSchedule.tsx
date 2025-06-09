@@ -1,31 +1,37 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
+import CustomSnackBar from '../userinfor/Snackbar';
+import Swal from 'sweetalert2';
 
 type Schedule = {
   staffId: string;
   slotDate: string;
   startTime: string;
   endTime: string;
+  location: string;
 };
 
-const StaffSchedule = () => {
+const SignUpStaffSchedule = () => {
   const { staffId } = useParams<{ staffId: string }>();
   const [isSchedule, setIsSchedule] = useState<Schedule>({
     staffId: staffId || '',
     slotDate: '',
     startTime: '',
     endTime: '',
+    location: '',
   });
   const [auth, setAuth] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     setAuth(
       localStorage.getItem('role') === 'ADMIN' ||
         localStorage.getItem('role') === 'MANAGER'
     );
   }, []);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error',
+  });
 
   useEffect(() => {
     setIsSchedule((prev) => ({
@@ -65,20 +71,32 @@ const StaffSchedule = () => {
       );
 
       if (!res.ok) {
-        setError('Không thể đăng ký');
-        return;
+        setSnackbar({
+          open: true,
+          message: 'Không thể đăng ký',
+          severity: 'error',
+        });
+      } else {
+        Swal.fire({
+          icon: 'success',
+          title: 'Xếp lịch thành công',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setIsSchedule((prev) => ({
+          ...prev,
+          slotDate: '',
+          startTime: '',
+          endTime: '',
+        }));
       }
-
-      showSuccessAlert('Thành công', 'Xếp lịch thành công');
-      setIsSchedule((prev) => ({
-        ...prev,
-        slotDate: '',
-        startTime: '',
-        endTime: '',
-      }));
     } catch (error) {
       console.log(error);
-      setError('Lỗi hệ thống');
+      setSnackbar({
+        open: true,
+        message: 'Lỗi hệ thống',
+        severity: 'error',
+      });
     }
   };
 
@@ -92,12 +110,25 @@ const StaffSchedule = () => {
 
   return (
     <>
-      {error && showErrorSnackbar(error)}
       <form
         onSubmit={handleSubmit}
         className="p-4 border rounded bg-light"
         style={{ maxWidth: 400, margin: '20px auto' }}
       >
+        <div className="mb-3">
+          <label htmlFor="slotDate" className="form-label fw-bold">
+            Phòng
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="location"
+            name="location"
+            value={isSchedule.location}
+            onChange={handleInput}
+            required
+          />
+        </div>
         <div className="mb-3">
           <label htmlFor="slotDate" className="form-label fw-bold">
             Ngày tạo lịch
@@ -147,8 +178,15 @@ const StaffSchedule = () => {
           Đăng ký
         </button>
       </form>
+
+      <CustomSnackBar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </>
   );
 };
 
-export default StaffSchedule;
+export default SignUpStaffSchedule;
