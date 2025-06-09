@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
+import Swal from 'sweetalert2';
 
 type Staff = {
   idCard: string;
@@ -30,6 +32,8 @@ function GetStaffByManager() {
   const [account, setAccount] = useState<Staff[]>([]);
   const [isManager, setIsManager] = useState(true);
   const [search, setSearch] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -40,48 +44,61 @@ function GetStaffByManager() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      if (!res.ok) {
+        setError('Không thể lấy dữ liệu');
+        return;
+      }
       const data = await res.json();
       setAccount(data);
     } catch (error) {
       console.log(error);
-      alert("không thể lấy dữ liệu");
+      setError('Không thể lấy dữ liệu');
     }
   };
+
   useEffect(() => {
     setIsManager(localStorage.getItem("role") === "MANAGER");
   }, []);
 
   useEffect(() => {
-    fetchData(); // gọi lần đầu khi component mount
+    fetchData();
   }, []);
 
   const handleDelete = async (phone: string, fullName: string) => {
-    const mes = window.confirm(
-      `bạn có chắc chắn muốn xóa nhân viên có tên là ${fullName} ?`
-    );
-    if (!mes) {
-      return;
-    } else {
-      const token = localStorage.getItem("token");
+    try {
+      const result = await Swal.fire({
+        title: 'Xác nhận xóa?',
+        text: `Bạn có chắc chắn muốn xóa nhân viên ${fullName}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy'
+      });
 
-      try {
-        const res = await fetch(
-          `http://localhost:8080/api/manager/delete-staff?phone=${phone}`,
-          {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        if (!res) {
-          alert("không thể thể xóa");
-        } else {
-          alert("xóa thành công");
-          fetchData();
-        }
-      } catch (error) {
-        console.log(error);
-        alert("Mất kết nối với hệ thống");
+      if (!result.isConfirmed) {
+        return;
       }
+
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `http://localhost:8080/api/manager/delete-staff?phone=${phone}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error('Không thể xóa nhân viên');
+      }
+
+      showSuccessAlert('Thành công', 'Xóa nhân viên thành công');
+      fetchData();
+    } catch (error) {
+      console.error(error);
+      showErrorSnackbar(error instanceof Error ? error.message : 'Mất kết nối với hệ thống');
     }
   };
 
@@ -93,6 +110,7 @@ function GetStaffByManager() {
 
   return (
     <>
+      {error && showErrorSnackbar(error)}
       <TableContainer component={Paper} sx={{flexGrow: 1}}>
         <TextField
           label="Nhập số điện thoại"

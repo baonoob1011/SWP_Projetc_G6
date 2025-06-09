@@ -69,7 +69,11 @@ const SendOTP = ({ email }: { email: string }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      if (!res.ok) { alert("Không thể gửi lại OTP") } else {
+      if (!res.ok) { setSnackbar({
+        open: true,
+        message: "Không thể gửi lại OTP",
+        severity: "error",
+      }) } else {
         setSnackbar({
           open: true,
           message: "Gửi OTP thành công",
