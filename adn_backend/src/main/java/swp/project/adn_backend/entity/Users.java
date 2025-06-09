@@ -90,8 +90,8 @@ public class Users {
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Patient> patients;
 
-    @OneToOne(mappedBy = "users", cascade = CascadeType.ALL)
-    Appointment appointments;
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<Appointment> appointments;
 
 //    @ManyToMany(fetch = FetchType.LAZY, cascade = {
 //            CascadeType.PERSIST, CascadeType.MERGE,
@@ -252,14 +252,13 @@ public class Users {
         this.patients = patients;
     }
 
-    public Appointment getAppointments() {
+    public List<Appointment> getAppointments() {
         return appointments;
     }
 
-    public void setAppointments(Appointment appointments) {
+    public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
     }
-
 
     public List<Feedback> getFeedbacks() {
         return feedbacks;

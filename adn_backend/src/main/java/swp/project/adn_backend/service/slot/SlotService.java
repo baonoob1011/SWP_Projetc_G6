@@ -1,21 +1,18 @@
 package swp.project.adn_backend.service.slot;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
-import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 import swp.project.adn_backend.dto.request.slot.*;
 //import swp.project.adn_backend.dto.response.SlotReponse;
-import swp.project.adn_backend.dto.response.serviceResponse.GetAllServiceResponse;
+import swp.project.adn_backend.dto.response.slot.GetFullSlotResponse;
+import swp.project.adn_backend.dto.response.slot.SlotResponse;
+import swp.project.adn_backend.dto.response.slot.StaffSlotResponse;
 import swp.project.adn_backend.entity.Slot;
 import swp.project.adn_backend.entity.Staff;
-import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.SlotMapper;

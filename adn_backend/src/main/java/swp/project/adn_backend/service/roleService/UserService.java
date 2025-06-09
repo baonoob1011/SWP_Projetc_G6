@@ -168,8 +168,6 @@ public class UserService {
             }
         }
 
-
-
         if (updateUserRequest.getAddress() != null) {
             String oldAddress = existingUser.getAddress();
             if ((oldAddress == null || !oldAddress.equals(updateUserRequest.getAddress())) &&

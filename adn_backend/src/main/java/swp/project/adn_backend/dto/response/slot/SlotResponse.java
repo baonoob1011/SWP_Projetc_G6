@@ -1,6 +1,4 @@
-package swp.project.adn_backend.dto.request.slot;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+package swp.project.adn_backend.dto.response.slot;
 
 import java.sql.Time;
 import java.time.LocalDate;
