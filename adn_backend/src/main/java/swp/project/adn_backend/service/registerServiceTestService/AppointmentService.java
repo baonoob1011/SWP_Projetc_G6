@@ -86,7 +86,7 @@ public class AppointmentService {
 
         appointment.setSlot(slot);
         appointment.setAppointmentDate(slot.getSlotDate());
-        appointment.setAppointmentStatus(AppointmentStatus.PENDING);
+        appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
         appointment.setStaff(slot.getStaff());
         appointment.setServices(serviceTest);
         appointment.setLocation(location);
