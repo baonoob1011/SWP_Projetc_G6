@@ -14,7 +14,8 @@ type SlotInfo = {
   slotDate: string;
   startTime: string;
   endTime: string;
-  location: string | null;
+  location: string;
+  room: string;
 };
 
 const StaffSlot = () => {
@@ -54,15 +55,12 @@ const StaffSlot = () => {
   }
 
   return (
-    <TableContainer sx={{ marginTop: 20 }}>
+    <TableContainer>
       <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-              #
-            </TableCell>
-            <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-              Slot ID
+              Number
             </TableCell>
             <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
               Room
@@ -85,10 +83,7 @@ const StaffSlot = () => {
                 {index + 1}
               </TableCell>
               <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-                {s.slotId}
-              </TableCell>
-              <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-                {s.location ?? '–'}
+                {s.room}
               </TableCell>
               <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
                 {s.startTime}

@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import styles from "./Services.module.css";
+import { useState, useRef, useEffect } from 'react';
+import styles from './Services.module.css';
 
 type FormService = {
   serviceName: string;
@@ -23,32 +23,33 @@ const Services = () => {
     type: TypeService;
   }>({
     service: {
-      serviceName: "",
-      description: "",
-      serviceType: "",
+      serviceName: '',
+      description: '',
+      serviceType: '',
     },
     price: {
-      time: "",
-      price: "",
+      time: '',
+      price: '',
     },
     type: {
-      someCivilField: "",
+      someCivilField: '',
     },
   });
 
   const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string>("");
+  const [preview, setPreview] = useState<string>('');
   const fileRef = useRef<HTMLInputElement>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    setIsAdmin(localStorage.getItem("role") === "ADMIN" || localStorage.getItem("role") === "MANAGER");
+    setIsAdmin(
+      localStorage.getItem('role') === 'ADMIN' ||
+        localStorage.getItem('role') === 'MANAGER'
+    );
   }, []);
 
-  const role = localStorage.getItem("role")
-
   const handleInput = (
-    section: "service" | "price" | "type",
+    section: 'service' | 'price' | 'type',
     field: string,
     value: string
   ) => {
@@ -63,24 +64,22 @@ const Services = () => {
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
-    if (selected?.type.startsWith("image/")) {
+    if (selected?.type.startsWith('image/')) {
       setFile(selected);
       setPreview(URL.createObjectURL(selected));
     } else {
-      alert("Vui lòng chọn ảnh hợp lệ");
+      alert('Vui lòng chọn ảnh hợp lệ');
     }
   };
-
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!file) return alert("Chưa chọn ảnh");
+    if (!file) return alert('Chưa chọn ảnh');
 
     const parsedPrice = Number(form.price.price);
     if (isNaN(parsedPrice)) {
-      return alert("Giá phải là số");
+      return alert('Giá phải là số');
     }
 
     const request = {
@@ -94,55 +93,54 @@ const Services = () => {
         price: parsedPrice,
       },
       administrativeServiceRequest:
-        form.service.serviceType === "ADMINISTRATIVE" ? form.type : {},
+        form.service.serviceType === 'ADMINISTRATIVE' ? form.type : {},
       civilServiceRequest:
-        form.service.serviceType === "CIVIL" ? form.type : {},
+        form.service.serviceType === 'CIVIL' ? form.type : {},
     };
 
     const formData = new FormData();
     formData.append(
-      "request",
-      new Blob([JSON.stringify(request)], { type: "application/json" })
+      'request',
+      new Blob([JSON.stringify(request)], { type: 'application/json' })
     );
-    formData.append("file", file);
+    formData.append('file', file);
 
     try {
       const res = await fetch(
-        "http://localhost:8080/api/services/create-service",
+        'http://localhost:8080/api/services/create-service',
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
           },
           body: formData,
         }
       );
 
       if (res.ok) {
-        alert("Tạo dịch vụ thành công");
+        alert('Tạo dịch vụ thành công');
         setForm({
-          service: { serviceName: "", description: "", serviceType: "" },
-          price: { time: "", price: "" },
-          type: { someCivilField: "" },
+          service: { serviceName: '', description: '', serviceType: '' },
+          price: { time: '', price: '' },
+          type: { someCivilField: '' },
         });
         setFile(null);
-        setPreview("");
-        if (fileRef.current) fileRef.current.value = "";
+        setPreview('');
+        if (fileRef.current) fileRef.current.value = '';
       } else {
         const error = await res.text();
-        alert("Lỗi: " + error);
+        alert('Lỗi: ' + error);
       }
     } catch (err) {
       console.error(err);
-      alert("Đã xảy ra lỗi khi gửi dữ liệu.");
+      alert('Đã xảy ra lỗi khi gửi dữ liệu.');
     }
   };
-
 
   if (!isAdmin) return null;
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form} style={role !== "ADMIN" ? { marginTop: 120 } : undefined}>
+    <form onSubmit={handleSubmit} className={styles.form}>
       {/* Service section */}
       <div className={styles.formGroup}>
         <label className={styles.label}>Tên dịch vụ</label>
@@ -150,7 +148,7 @@ const Services = () => {
           name="serviceName"
           value={form.service.serviceName}
           onChange={(e) =>
-            handleInput("service", "serviceName", e.target.value)
+            handleInput('service', 'serviceName', e.target.value)
           }
           placeholder="Nhập tên dịch vụ"
           className={styles.input}
@@ -164,7 +162,7 @@ const Services = () => {
           name="serviceType"
           value={form.service.serviceType}
           onChange={(e) =>
-            handleInput("service", "serviceType", e.target.value)
+            handleInput('service', 'serviceType', e.target.value)
           }
           className={styles.select}
           required
@@ -181,7 +179,9 @@ const Services = () => {
           type="text"
           name="description"
           value={form.service.description}
-          onChange={(e) => handleInput("service", "description", e.target.value)}
+          onChange={(e) =>
+            handleInput('service', 'description', e.target.value)
+          }
           placeholder="Nhập mô tả"
           className={styles.input}
           required
@@ -194,7 +194,7 @@ const Services = () => {
         <input
           name="time"
           value={form.price.time}
-          onChange={(e) => handleInput("price", "time", e.target.value)}
+          onChange={(e) => handleInput('price', 'time', e.target.value)}
           placeholder="Nhập thời gian"
           className={styles.input}
           required
@@ -206,7 +206,7 @@ const Services = () => {
         <input
           name="price"
           value={form.price.price}
-          onChange={(e) => handleInput("price", "price", e.target.value)}
+          onChange={(e) => handleInput('price', 'price', e.target.value)}
           placeholder="Nhập giá"
           className={styles.input}
           required
@@ -235,7 +235,7 @@ const Services = () => {
         <input
           type="text"
           readOnly
-          value={file ? file.name : ""}
+          value={file ? file.name : ''}
           placeholder="Chưa chọn file"
           className={styles.urlInput}
         />
@@ -245,10 +245,7 @@ const Services = () => {
         <img src={preview} alt="preview" className={styles.previewImage} />
       )}
 
-      <button
-        type="submit"
-        className={styles.submitButton}
-      >
+      <button type="submit" className={styles.submitButton}>
         Gửi đăng ký
       </button>
     </form>
