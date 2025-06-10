@@ -50,7 +50,6 @@ public class AuthenticationUserService {
             throw new AppException(ErrorCodeUser.UNAUTHENTICATED);
         }
 
-
         // Generate JWT
         String token = generateToken(user);
 

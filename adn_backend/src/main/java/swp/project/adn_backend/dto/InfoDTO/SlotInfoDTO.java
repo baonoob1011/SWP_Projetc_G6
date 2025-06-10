@@ -1,6 +1,7 @@
 package swp.project.adn_backend.dto.InfoDTO;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import swp.project.adn_backend.enums.SlotStatus;
 
 import java.sql.Time;
 import java.time.LocalDate;
@@ -10,19 +11,34 @@ public class SlotInfoDTO {
     LocalDate slotDate;
     Time startTime;
     Time endTime;
-    String location;
+    String room;
+    SlotStatus slotStatus;
 
 
-    public SlotInfoDTO(long slotId, LocalDate slotDate, Time startTime, Time endTime, String location) {
+    public SlotInfoDTO(long slotId, LocalDate slotDate, Time startTime, Time endTime, String room, SlotStatus slotStatus) {
         this.slotId = slotId;
         this.slotDate = slotDate;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.location = location;
-
+        this.room = room;
+        this.slotStatus = slotStatus;
     }
 
+    public SlotStatus getSlotStatus() {
+        return slotStatus;
+    }
 
+    public void setSlotStatus(SlotStatus slotStatus) {
+        this.slotStatus = slotStatus;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
 
     public long getSlotId() {
         return slotId;
@@ -56,11 +72,4 @@ public class SlotInfoDTO {
         this.endTime = endTime;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 }

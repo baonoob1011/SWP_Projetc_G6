@@ -21,7 +21,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppointmentResponse {
     LocalDate appointmentDate;
-    String location;
     AppointmentStatus appointmentStatus;
     String note;
 
@@ -46,13 +45,7 @@ public class AppointmentResponse {
         this.appointmentDate = appointmentDate;
     }
 
-    public String getLocation() {
-        return location;
-    }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public AppointmentStatus getAppointmentStatus() {
         return appointmentStatus;

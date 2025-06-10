@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import swp.project.adn_backend.enums.SlotStatus;
 
 import java.sql.Time;
 import java.time.LocalDate;
@@ -27,6 +28,9 @@ public class Slot {
     @Column(name = "end_time")
     Time endTime;
     String room;
+
+    @Enumerated(EnumType.STRING)
+    SlotStatus slotStatus;
 
 //    @OneToOne(cascade = {
 //            CascadeType.PERSIST, CascadeType.MERGE,
@@ -84,7 +88,13 @@ public class Slot {
         this.staff = staff;
     }
 
+    public SlotStatus getSlotStatus() {
+        return slotStatus;
+    }
 
+    public void setSlotStatus(SlotStatus slotStatus) {
+        this.slotStatus = slotStatus;
+    }
 
     public void setStartTime(Time startTime) {
         this.startTime = startTime;

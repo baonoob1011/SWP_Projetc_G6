@@ -9,14 +9,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
-import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 import swp.project.adn_backend.dto.request.slot.*;
 //import swp.project.adn_backend.dto.response.SlotReponse;
-import swp.project.adn_backend.dto.response.serviceResponse.GetAllServiceResponse;
+import swp.project.adn_backend.dto.response.slot.GetFullSlotResponse;
+import swp.project.adn_backend.dto.response.slot.SlotResponse;
+import swp.project.adn_backend.dto.response.slot.StaffSlotResponse;
 import swp.project.adn_backend.entity.Slot;
 import swp.project.adn_backend.entity.Staff;
-import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.enums.SlotStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.SlotMapper;
 import swp.project.adn_backend.repository.SlotRepository;
@@ -54,11 +55,17 @@ public class SlotService {
         Staff staff = staffRepository.findById(staffId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_EXISTED));
         Slot slot = slotMapper.toSlot(slotRequest);
+        slot.setSlotStatus(SlotStatus.AVAILABLE);
         slot.setStaff(staff);
 //        slot.setUsers(userCreated);
         return slotRepository.save(slot);
     }
 
+    public List<SlotResponse> getALlSlotForUser(){
+        List<Slot> slotList= slotRepository.findAllFutureSlots();
+        List<SlotResponse> slotResponses=slotMapper.toSlotResponses(slotList);
+        return slotResponses;
+    }
 
     public List<GetFullSlotResponse> getAllSlot() {
         List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();
@@ -88,4 +95,18 @@ public class SlotService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
         slotRepository.delete(slot);
     }
+    public List<SlotInfoDTO> getSlotByStaffId(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long staffId = jwt.getClaim("id");
+
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
+                "s.slotId, s.slotDate, s.startTime, s.endTime, s.room, s.slotStatus) " +
+                "FROM Slot s WHERE s.staff.staffId = :staffId AND s.slotDate > CURRENT_DATE";
+
+        TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
+        query.setParameter("staffId", staffId);
+
+        return query.getResultList();
+    }
+
 }

@@ -1,0 +1,76 @@
+package swp.project.adn_backend.entity;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
+@Entity
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Location {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "location_id")
+    long locationId;
+    @Column(name = "address_line", columnDefinition = "nvarchar(255)")
+    String addressLine;
+    @Column( columnDefinition = "nvarchar(255)")
+    String district;
+    @Column(columnDefinition = "nvarchar(255)")
+    String city;
+
+    @OneToOne(mappedBy = "location", cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    Appointment appointment;
+
+    public Location(long locationId, String addressLine, String district, String city, Appointment appointment) {
+        this.locationId = locationId;
+        this.addressLine = addressLine;
+        this.district = district;
+        this.city = city;
+        this.appointment = appointment;
+    }
+
+    public Location() {
+    }
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
+
+    public long getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(long locationId) {
+        this.locationId = locationId;
+    }
+
+    public String getAddressLine() {
+        return addressLine;
+    }
+
+    public void setAddressLine(String addressLine) {
+        this.addressLine = addressLine;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+}

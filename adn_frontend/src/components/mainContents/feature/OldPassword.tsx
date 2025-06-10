@@ -32,8 +32,8 @@ const OldPassWord = ({ role }: OldPassWordProps) => {
 
     const apiMap = {
       USER: 'http://localhost:8080/api/user/update-user',
-      STAFF: 'http://localhost:8080/api/staff/update-staff',
-      MANAGER: 'http://localhost:8080/api/manager/update-manager',
+      STAFF: 'http://localhost:8080/api/staff/update-profile',
+      MANAGER: 'http://localhost:8080/api/manager/update-profile',
     };
 
     try {

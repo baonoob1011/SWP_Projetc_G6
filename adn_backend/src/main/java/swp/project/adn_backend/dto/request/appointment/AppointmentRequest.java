@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppointmentRequest {
     LocalDate appointmentDate;
-    String location;
     AppointmentStatus appointmentStatus;
     String note;
 
@@ -22,13 +21,6 @@ public class AppointmentRequest {
         this.appointmentDate = appointmentDate;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public AppointmentStatus getAppointmentStatus() {
         return appointmentStatus;

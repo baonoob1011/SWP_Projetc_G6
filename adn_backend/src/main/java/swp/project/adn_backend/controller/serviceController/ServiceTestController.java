@@ -10,10 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
 import swp.project.adn_backend.dto.response.serviceResponse.FullCivilServiceResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.FullServiceTestResponse;
-import swp.project.adn_backend.dto.response.serviceResponse.ServiceResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.FullAdministrationServiceResponse;
-import swp.project.adn_backend.entity.ServiceTest;
-import swp.project.adn_backend.service.ServiceTestService;
+import swp.project.adn_backend.service.registerServiceTestService.ServiceTestService;
 
 import java.util.List;
 

@@ -11,9 +11,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "Patient")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Patient {
@@ -41,7 +38,7 @@ public class Patient {
     @Column(name = "create_at")
     LocalDate createAt;
 
-    @Lob
+//    @Lob
     @Column(name = "birth_certificate")
     String birthCertificate;
 

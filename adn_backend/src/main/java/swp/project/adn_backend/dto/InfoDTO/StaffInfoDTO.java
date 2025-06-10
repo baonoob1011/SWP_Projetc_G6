@@ -17,14 +17,11 @@ public class StaffInfoDTO {
     private String address;
     private LocalDate dateOfBirth;
 
-    public StaffInfoDTO(long staffId, String fullName, String phone, String email, boolean enabled, LocalDate createAt, String role, String idCard, String gender, String address, LocalDate dateOfBirth) {
+    public StaffInfoDTO(long staffId, String fullName, String phone, String email, String idCard, String gender, String address, LocalDate dateOfBirth) {
         this.staffId = staffId;
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
-        this.enabled = enabled;
-        this.createAt = createAt;
-        this.role = role;
         this.idCard = idCard;
         this.gender = gender;
         this.address = address;

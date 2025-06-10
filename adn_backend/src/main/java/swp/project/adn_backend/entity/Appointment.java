@@ -25,18 +25,16 @@ public class Appointment {
     @Column(name = "appointment_date")
     LocalDate appointmentDate;
 
-    @Column(columnDefinition = "nvarchar(255)")
-    String location;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "appointment_status")
     AppointmentStatus appointmentStatus;
     @Column(columnDefinition = "nvarchar(255)")
     String note;
 
-    @OneToOne(cascade = {
+    @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH})
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
     @JoinColumn(name = "user_id")
     Users users;
 
@@ -44,29 +42,43 @@ public class Appointment {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH,
     })
-    @JoinColumn(name = "staff_id", nullable = false)
+    @JoinColumn(name = "staff_id")
     Staff staff;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH,
     })
-    @JoinColumn(name = "slot_id", nullable = false)
+    @JoinColumn(name = "slot_id")
     Slot slot;
 
-    @OneToOne(cascade = {
+    @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH})
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
     @JoinColumn(name = "service_id")
     ServiceTest services;
 
-//    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = {
+    //    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = {
 //            CascadeType.PERSIST, CascadeType.MERGE,
 //            CascadeType.DETACH, CascadeType.REFRESH
 //    })
 //    List<Patient> patients;
+    @OneToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "location_id")
+    Location location;
 
     public Appointment() {
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public Users getUsers() {
@@ -102,13 +114,6 @@ public class Appointment {
         this.appointmentDate = appointmentDate;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public AppointmentStatus getAppointmentStatus() {
         return appointmentStatus;

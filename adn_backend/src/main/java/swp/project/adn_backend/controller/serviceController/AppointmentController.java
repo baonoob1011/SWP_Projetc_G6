@@ -3,10 +3,7 @@ package swp.project.adn_backend.controller.serviceController;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.GlobalRequest.BookAppointmentRequest;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
@@ -18,15 +15,16 @@ public class AppointmentController {
     @Autowired
     AppointmentService appointmentService;
 
-    @PostMapping("/book-appointment")
+    @PostMapping("/book-appointment/{serviceId}")
     public AppointmentResponse bookAppointment(@RequestBody BookAppointmentRequest request,
-                                               Authentication authentication) {
+                                               Authentication authentication,
+                                               @PathVariable long serviceId) {
         return appointmentService.bookAppointment(
                 request.getAppointmentRequest(),
                 authentication,
-                request.getServiceRequest(),
-                request.getStaffRequest(),
-                request.getSlotRequest()
+                request.getSlotRequest(),
+                request.getLocationRequest(),
+                serviceId
         );
     }
 
