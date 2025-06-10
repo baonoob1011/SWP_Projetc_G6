@@ -1,12 +1,15 @@
 package swp.project.adn_backend.service.registerServiceTestService;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
 import swp.project.adn_backend.dto.request.Location.LocationRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.dto.request.serviceRequest.ServiceRequest;
@@ -40,6 +43,7 @@ public class AppointmentService {
     SlotRepository slotRepository;
     LocationRepository locationRepository;
 
+
     @Autowired
     public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository) {
         this.appointmentRepository = appointmentRepository;
@@ -55,8 +59,6 @@ public class AppointmentService {
 
     public AppointmentResponse bookAppointment(AppointmentRequest appointmentRequest,
                                                Authentication authentication,
-//                                               ServiceRequest serviceRequest,
-                                               StaffRequest staffRequest,
                                                SlotRequest slotRequest,
                                                LocationRequest locationRequest,
                                                long serviceId) {
@@ -72,11 +74,8 @@ public class AppointmentService {
         Slot slot = slotRepository.findById(slotRequest.getSlotId())
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
 
-        Staff staffCollectSample = staffRepository.findById(staffRequest.getStaffId())
-                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-
         Location location = locationRepository.findById(locationRequest.getLocationId())
-                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCodeUser.LOCATION_NOT_EXISTS));
 
         Appointment appointment = appointmentMapper.toAppointment(appointmentRequest);
         if (appointment == null) {
@@ -116,18 +115,17 @@ public class AppointmentService {
         return appointmentMapper.toAppointmentResponse(saved);
     }
 
-//    public List<Appointment> getAppointmentByStaffId(Authentication authentication) {
-//        Jwt jwt = (Jwt) authentication.getPrincipal();
-//        Long staffId = jwt.getClaim("id");
-//        Staff staff = staffRepository.findById(staffId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-//        List<Appointment> appointmentList = appointmentRepository.findByStaff_StaffId(staffId);
-//        List<AllAppointmentResponse> responses = new ArrayList<>();
-//        for (Appointment appointment : appointmentList){
-//
-//        }
-//
-//    }
+    public List<AppointmentInfoDTO> getAppointmentByStaffId(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long staffId = jwt.getClaim("id");
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO(" +
+                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note) " +
+                "FROM Appointment s WHERE s.staff.staffId = :staffId AND s.appointmentDate > CURRENT_DATE";
+
+        TypedQuery<AppointmentInfoDTO> query = entityManager.createQuery(jpql, AppointmentInfoDTO.class);
+        query.setParameter("staffId", staffId);
+        return query.getResultList();
+    }
 
     public List<AllAppointmentResponse> getAppointmentForUser(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();

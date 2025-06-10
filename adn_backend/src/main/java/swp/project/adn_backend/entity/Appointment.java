@@ -35,26 +35,27 @@ public class Appointment {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH,
     })
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     Users users;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH,
     })
-    @JoinColumn(name = "staff_id", nullable = false)
+    @JoinColumn(name = "staff_id")
     Staff staff;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH,
     })
-    @JoinColumn(name = "slot_id", nullable = false)
+    @JoinColumn(name = "slot_id")
     Slot slot;
 
-    @OneToOne(cascade = {
+    @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH})
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
     @JoinColumn(name = "service_id")
     ServiceTest services;
 

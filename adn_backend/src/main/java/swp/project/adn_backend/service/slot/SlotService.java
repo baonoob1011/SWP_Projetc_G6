@@ -98,7 +98,6 @@ public class SlotService {
     public List<SlotInfoDTO> getSlotByStaffId(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long staffId = jwt.getClaim("id");
-        System.out.println(staffId);
 
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
                 "s.slotId, s.slotDate, s.startTime, s.endTime, s.room, s.slotStatus) " +
