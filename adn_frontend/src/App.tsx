@@ -189,7 +189,7 @@ function App() {
             <Route
               path="/service/civil"
               element={
-                <ProtectedRoute allowedRoles={['MANAGER']}>
+                <ProtectedRoute>
                   <CivilServiceList />
                 </ProtectedRoute>
               }
@@ -200,7 +200,7 @@ function App() {
             <Route
               path="/service/administrative"
               element={
-                <ProtectedRoute allowedRoles={['MANAGER']}>
+                <ProtectedRoute>
                   <AdministrativeServiceList />
                 </ProtectedRoute>
               }
