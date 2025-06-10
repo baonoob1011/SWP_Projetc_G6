@@ -1,5 +1,6 @@
 package swp.project.adn_backend.controller.Location;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class LocationController {
     private LocationService locationService;
 
     @PostMapping("/create-location")
-    public ResponseEntity<Location> creteLocation(@RequestBody LocationRequest locationRequest) {
+    public ResponseEntity<Location> creteLocation(@RequestBody @Valid LocationRequest locationRequest) {
         return ResponseEntity.ok(locationService.createLocation(locationRequest));
     }
 }

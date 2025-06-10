@@ -1,14 +1,18 @@
 package swp.project.adn_backend.dto.request.Location;
 
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LocationRequest {
     long locationId;
+    @NotBlank(message = "Address line must not be blank")
     String addressLine;
+    @NotBlank(message = "Address line must not be blank")
     String district;
+    @NotBlank(message = "Address line must not be blank")
     String city;
 
     public LocationRequest(long locationId, String addressLine, String district, String city) {
