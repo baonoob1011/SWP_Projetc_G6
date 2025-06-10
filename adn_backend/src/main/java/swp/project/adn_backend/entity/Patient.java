@@ -38,7 +38,7 @@ public class Patient {
     @Column(name = "create_at")
     LocalDate createAt;
 
-    @Lob
+//    @Lob
     @Column(name = "birth_certificate")
     String birthCertificate;
 

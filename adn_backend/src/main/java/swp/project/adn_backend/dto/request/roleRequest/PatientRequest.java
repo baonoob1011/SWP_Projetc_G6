@@ -105,6 +105,7 @@ public class PatientRequest {
 
     public void setRelationship(@NotBlank(message = "Relationship is required") String relationship) {
         this.relationship = relationship;
+
     }
 
 
