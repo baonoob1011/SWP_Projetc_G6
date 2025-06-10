@@ -63,7 +63,7 @@ function GetUserByStaff() {
   }
 
   return (
-    <TableContainer component={Paper} sx={{ flexGrow: 1, marginTop: 20 }}>
+    <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
       <TextField
         label="Tìm theo SĐT"
         variant="outlined"
@@ -91,9 +91,6 @@ function GetUserByStaff() {
               <strong>SĐT</strong>
             </TableCell>
             <TableCell>
-              <strong>Vai trò</strong>
-            </TableCell>
-            <TableCell>
               <strong>Ngày đăng ký</strong>
             </TableCell>
             <TableCell>
@@ -108,7 +105,6 @@ function GetUserByStaff() {
                 <TableCell>{user.fullName}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone}</TableCell>
-                <TableCell>{user.role}</TableCell>
                 <TableCell>{user.createAt}</TableCell>
                 <TableCell>
                   {user.enabled ? 'Đã kích hoạt' : 'Chưa kích hoạt'}

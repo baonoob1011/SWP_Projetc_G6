@@ -8,7 +8,7 @@ type Schedule = {
   slotDate: string;
   startTime: string;
   endTime: string;
-  location: string;
+  room: string;
 };
 
 const SignUpStaffSchedule = () => {
@@ -18,7 +18,7 @@ const SignUpStaffSchedule = () => {
     slotDate: '',
     startTime: '',
     endTime: '',
-    location: '',
+    room: '',
   });
   const [auth, setAuth] = useState(true);
   useEffect(() => {
@@ -55,6 +55,7 @@ const SignUpStaffSchedule = () => {
       slotDate: isSchedule.slotDate,
       startTime: isSchedule.startTime + ':00',
       endTime: isSchedule.endTime + ':00',
+      room: isSchedule.room,
     };
 
     try {
@@ -122,9 +123,9 @@ const SignUpStaffSchedule = () => {
           <input
             type="text"
             className="form-control"
-            id="location"
-            name="location"
-            value={isSchedule.location}
+            id="room"
+            name="room"
+            value={isSchedule.room}
             onChange={handleInput}
             required
           />

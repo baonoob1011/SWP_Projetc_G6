@@ -6,7 +6,6 @@ import {
   //   Settings,
   LogOut,
   Bell,
-  Home,
   // Users,
   // BarChart3,
   // FileText,
@@ -16,9 +15,9 @@ import {
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
-import { LocationCity, RoomService } from '@mui/icons-material';
+import { ArrowBack, RoomService } from '@mui/icons-material';
 
-const AdminSidebar = () => {
+const ManagerPage = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeItem, setActiveItem] = useState('dashboard');
   const [notifications] = useState(0);
@@ -31,25 +30,19 @@ const AdminSidebar = () => {
   }, []);
 
   const menuItems = [
-    { id: 'dashboard', icon: Home, label: 'Home', path: '' },
-    { id: 'data', icon: List, label: 'Danh sách', path: 'admin/data' },
-    {
-      id: 'location',
-      icon: LocationCity,
-      label: 'Tạo địa chỉ mới',
-      path: 'location',
-    },
+    { id: 'dashboard', icon: ArrowBack, label: 'Home', path: '' },
+    { id: 'data', icon: List, label: 'Danh sách', path: 'm-page/m-data' },
     {
       id: 'services',
       icon: RoomService,
-      label: 'Tạo Dịch vụ',
-      path: 'services',
+      label: 'Lịch làm',
+      path: 'm-page/m-services',
     },
     {
-      id: 'servicesInfo',
+      id: 'create-services',
       icon: ShoppingBag,
-      label: 'Tất cả dịch vụ',
-      path: 'a-getAllService',
+      label: 'Tạo dịch vụ',
+      path: 'm-page/m-create-services',
     },
   ];
 
@@ -93,7 +86,7 @@ const AdminSidebar = () => {
             <div className="h-6 w-6 bg-blue-600 rounded flex items-center justify-center">
               <Shield className="h-4 w-4 text-white" />
             </div>
-            <span className="font-semibold text-gray-900">Admin Panel</span>
+            <span className="font-semibold text-gray-900">Manager Panel</span>
           </div>
         </div>
 
@@ -138,7 +131,9 @@ const AdminSidebar = () => {
             <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <Shield className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">Admin Panel</span>
+            <span className="text-xl font-bold text-gray-900">
+              Manager Panel
+            </span>
           </div>
 
           {/* Close Button - Mobile only */}
@@ -225,4 +220,4 @@ const AdminSidebar = () => {
   );
 };
 
-export default AdminSidebar;
+export default ManagerPage;
