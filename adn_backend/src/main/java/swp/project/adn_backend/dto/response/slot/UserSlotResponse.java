@@ -1,4 +1,4 @@
-package swp.project.adn_backend.dto.request.slot;
+package swp.project.adn_backend.dto.response.slot;
 
 public class UserSlotResponse {
     private Long userId;

@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
 import swp.project.adn_backend.entity.Users;
@@ -24,6 +25,7 @@ import swp.project.adn_backend.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -36,6 +38,7 @@ public class StaffService {
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     EntityManager entityManager;
+
 
     @Autowired
     public StaffService(UserRepository userRepository, StaffRepository staffRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, EntityManager entityManager) {
@@ -50,7 +53,8 @@ public class StaffService {
     // update staff
 
     @Transactional
-    public Users updateStaff(Authentication authentication, UpdateStaffAndManagerRequest updateStaffAndManagerRequest) {
+    public Users updateStaff(Authentication authentication,
+                             UpdateStaffAndManagerRequest updateStaffAndManagerRequest) {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
@@ -61,14 +65,16 @@ public class StaffService {
         validateUpdateStaff(updateStaffAndManagerRequest, existingUser);
 
 
-        // Validate và cập nhật password
-        if (updateStaffAndManagerRequest.getPassword() != null) {
-            if (updateStaffAndManagerRequest.getOldPassword() == null ||
-                    !passwordEncoder.matches(updateStaffAndManagerRequest.getOldPassword(), existingUser.getPassword())) {
+        if (updateStaffAndManagerRequest.getOldPassword() != null) {
+            if (!passwordEncoder.matches(updateStaffAndManagerRequest.getOldPassword(), existingUser.getPassword())) {
                 throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
             }
+        }
 
-            if (!passwordEncoder.matches(updateStaffAndManagerRequest.getPassword(), existingUser.getPassword())) {
+        // Validate và cập nhật password
+        if (updateStaffAndManagerRequest.getPassword() != null && updateStaffAndManagerRequest.getConfirmPassword() != null) {
+            if (!passwordEncoder.matches(updateStaffAndManagerRequest.getPassword(), existingUser.getPassword())
+                    && updateStaffAndManagerRequest.getConfirmPassword().equals(updateStaffAndManagerRequest.getPassword())) {
                 existingUser.setPassword(passwordEncoder.encode(updateStaffAndManagerRequest.getPassword()));
             } else {
                 throw new AppException(ErrorCodeUser.PASSWORD_EXISTED);
@@ -122,6 +128,19 @@ public class StaffService {
         return query.getSingleResult();
     }
 
+    public List<SlotInfoDTO> getSlotByStaffId(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long staffId = jwt.getClaim("id");
+        System.out.println(staffId);
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
+                "s.slotId, s.slotDate, s.startTime, s.endTime, s.location) " +
+                "FROM Slot s WHERE s.staff.staffId = :staffId";
+
+
+        TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
+        query.setParameter("staffId", staffId);
+        return query.getResultList();
+    }
 
     private void validateUpdateStaff(UpdateStaffAndManagerRequest updateStaffAndManagerRequest,Users existingStaff) {
         Map<String, String> errors = new HashMap<>();

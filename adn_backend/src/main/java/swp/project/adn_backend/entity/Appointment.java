@@ -24,6 +24,7 @@ public class Appointment {
 
     @Column(name = "appointment_date")
     LocalDate appointmentDate;
+
     @Column(columnDefinition = "nvarchar(255)")
     String location;
 
@@ -33,10 +34,11 @@ public class Appointment {
     @Column(columnDefinition = "nvarchar(255)")
     String note;
 
-    @OneToOne(cascade = {
+    @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "user_id")
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    @JoinColumn(name = "user_id", nullable = false)
     Users users;
 
     @ManyToOne(cascade = {

@@ -11,9 +11,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "Patient")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Patient {

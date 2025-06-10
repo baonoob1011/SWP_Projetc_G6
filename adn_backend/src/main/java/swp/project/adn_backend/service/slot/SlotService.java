@@ -1,17 +1,18 @@
 package swp.project.adn_backend.service.slot;
 
+import jakarta.persistence.EntityManager;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.request.slot.*;
 //import swp.project.adn_backend.dto.response.SlotReponse;
-import swp.project.adn_backend.dto.response.serviceResponse.GetAllServiceResponse;
+import swp.project.adn_backend.dto.response.slot.GetFullSlotResponse;
+import swp.project.adn_backend.dto.response.slot.SlotResponse;
+import swp.project.adn_backend.dto.response.slot.StaffSlotResponse;
 import swp.project.adn_backend.entity.Slot;
 import swp.project.adn_backend.entity.Staff;
-import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.SlotMapper;
@@ -29,13 +30,15 @@ public class SlotService {
     SlotRepository slotRepository;
     UserRepository userRepository;
     StaffRepository staffRepository;
+    EntityManager entityManager;
 
     @Autowired
-    public SlotService(SlotMapper slotMapper, SlotRepository slotRepository, UserRepository userRepository, StaffRepository staffRepository) {
+    public SlotService(SlotMapper slotMapper, SlotRepository slotRepository, UserRepository userRepository, StaffRepository staffRepository, EntityManager entityManager) {
         this.slotMapper = slotMapper;
         this.slotRepository = slotRepository;
         this.userRepository = userRepository;
         this.staffRepository = staffRepository;
+        this.entityManager = entityManager;
     }
 
     public Slot createSlot(SlotRequest slotRequest,
@@ -53,6 +56,7 @@ public class SlotService {
         return slotRepository.save(slot);
     }
 
+
     public List<GetFullSlotResponse> getAllSlot() {
         List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();
         List<Slot> slotList = slotRepository.findAll();
@@ -65,17 +69,10 @@ public class SlotService {
             staffSlotResponse.setStaffId(slot.getStaff().getStaffId());
             staffSlotResponse.setFullName(slot.getStaff().getFullName());
 
-            //lay user
-            UserSlotResponse userSlotResponse = new UserSlotResponse();
-            userSlotResponse.setUserId(slot.getUsers().getUserId());
-            userSlotResponse.setEmail(slot.getUsers().getEmail());
-            userSlotResponse.setPhone(slot.getUsers().getPhone());
-            userSlotResponse.setAddress(slot.getUsers().getAddress());
 
             GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
             getFullSlotResponse.setSlotResponse(slotResponse);
             getFullSlotResponse.setStaffSlotResponse(staffSlotResponse);
-            getFullSlotResponse.setUserSlotResponse(userSlotResponse);
 
             //lay full response
             fullSlotResponses.add(getFullSlotResponse);
