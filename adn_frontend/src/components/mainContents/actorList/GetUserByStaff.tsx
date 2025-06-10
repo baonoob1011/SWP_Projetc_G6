@@ -10,6 +10,7 @@ import {
   TextField,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { showErrorSnackbar } from './utils/notifications';
 
 type User = {
   fullName: string;
@@ -24,8 +25,9 @@ function GetUserByStaff() {
   const [account, setAccount] = useState<User[]>([]);
   const [isManager, setIsManager] = useState(true);
   const [search, setSearch] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
-  // ✅ Gọi API lấy dữ liệu người dùng theo số điện thoại
+  // Gọi API lấy dữ liệu người dùng theo số điện thoại
   const fetchData = async () => {
     const token = localStorage.getItem('token');
     if (!search) {
@@ -43,14 +45,25 @@ function GetUserByStaff() {
         }
       );
 
-      if (!res.ok) throw new Error('Không thể lấy dữ liệu');
+      if (!res.ok) {
+        throw new Error('Không tìm thấy người dùng với số điện thoại này');
+      }
 
       const data = await res.json();
+      if (!data) {
+        throw new Error('Không tìm thấy dữ liệu người dùng');
+      }
+
       setAccount([data]); // ép object thành array
+      setError(null);
     } catch (error) {
-      console.error('Lỗi fetch:', error);
-      setAccount([]); // clear kết quả cũ
-      alert('Lỗi khi tải dữ liệu người dùng.');
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Lỗi khi tải dữ liệu người dùng';
+      setAccount([]);
+      setError(message);
+      showErrorSnackbar(message);
     }
   };
 
@@ -63,7 +76,7 @@ function GetUserByStaff() {
   }
 
   return (
-    <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
+    <TableContainer component={Paper} sx={{ flexGrow: 1, mt: 3 }}>
       <TextField
         label="Tìm theo SĐT"
         variant="outlined"
@@ -75,9 +88,11 @@ function GetUserByStaff() {
         }}
         sx={{ margin: '10px 5px' }}
       />
+
       <Typography variant="h6" sx={{ m: 2 }}>
         Danh sách người dùng
       </Typography>
+
       <Table>
         <TableHead>
           <TableRow>
@@ -89,6 +104,9 @@ function GetUserByStaff() {
             </TableCell>
             <TableCell>
               <strong>SĐT</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Vai trò</strong>
             </TableCell>
             <TableCell>
               <strong>Ngày đăng ký</strong>
@@ -105,6 +123,7 @@ function GetUserByStaff() {
                 <TableCell>{user.fullName}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone}</TableCell>
+                <TableCell>{user.role}</TableCell>
                 <TableCell>{user.createAt}</TableCell>
                 <TableCell>
                   {user.enabled ? 'Đã kích hoạt' : 'Chưa kích hoạt'}
@@ -114,7 +133,7 @@ function GetUserByStaff() {
           ) : (
             <TableRow>
               <TableCell colSpan={6} align="center">
-                Không tìm thấy người dùng
+                {error ? error : 'Không tìm thấy người dùng'}
               </TableCell>
             </TableRow>
           )}

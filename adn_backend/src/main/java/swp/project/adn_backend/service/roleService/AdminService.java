@@ -39,8 +39,8 @@ public class AdminService {
     @Transactional(readOnly = true)
     public List<ManagerInfoDTO> getAllManager() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.ManagerInfoDTO(" +
-                "s.managerId, s.fullName, s.phone, s.email, s.enabled, s.createAt, " +
-                "s.role, s.idCard, s.gender, s.address, s.dateOfBirth) " +
+                "s.managerId, s.fullName, s.phone, s.email, " +
+                "s.idCard, s.gender, s.address, s.dateOfBirth) " +
                 "FROM Manager s";
 
         TypedQuery<ManagerInfoDTO> query = entityManager.createQuery(jpql, ManagerInfoDTO.class);

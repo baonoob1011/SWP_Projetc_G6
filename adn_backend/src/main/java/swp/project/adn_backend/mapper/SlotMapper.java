@@ -2,7 +2,7 @@ package swp.project.adn_backend.mapper;
 
 import org.mapstruct.Mapper;
 import swp.project.adn_backend.dto.request.slot.SlotRequest;
-import swp.project.adn_backend.dto.request.slot.SlotResponse;
+import swp.project.adn_backend.dto.response.slot.SlotResponse;
 //import swp.project.adn_backend.dto.response.SlotReponse;
 import swp.project.adn_backend.entity.Slot;
 

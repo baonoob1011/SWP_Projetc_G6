@@ -12,6 +12,7 @@ import swp.project.adn_backend.dto.request.serviceRequest.ServiceRequest;
 import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.request.slot.SlotRequest;
+import swp.project.adn_backend.dto.response.appointment.*;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.AppointmentStatus;
@@ -20,6 +21,9 @@ import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.AppointmentMapper;
 import swp.project.adn_backend.mapper.SlotMapper;
 import swp.project.adn_backend.repository.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -87,14 +91,59 @@ public class AppointmentService {
 
         // Associate user <-> appointment bidirectionally
         appointment.setUsers(userBookAppointment);
-        userBookAppointment.setAppointments(appointment);
+        List<Appointment> appointmentList = new ArrayList<>();
+        appointmentList.add(appointment);
+        userBookAppointment.setAppointments(appointmentList);
 
         //nguoi dang ki slot do
-        slot.setUsers(userBookAppointment);
+//        slot.setUsers(userBookAppointment);
         // Save appointment
         Appointment saved = appointmentRepository.save(appointment);
 
         return appointmentMapper.toAppointmentResponse(saved);
     }
 
+    public List<AllAppointmentResponse> getAppointmentForUser(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users userRegister = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+        List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
+        List<AllAppointmentResponse> responses = new ArrayList<>();
+        for (Appointment appointment : appointmentList) {
+            ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
+
+            List<UserAppointmentResponse> userAppointmentResponseList = new ArrayList<>();
+            UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(appointment.getUsers());
+            userAppointmentResponseList.add(userAppointmentResponse);
+
+            List<StaffAppointmentResponse> staffAppointmentResponseList = new ArrayList<>();
+            StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(appointment.getStaff());
+            staffAppointmentResponseList.add(staffAppointmentResponse);
+
+            List<SlotAppointmentResponse> slotAppointmentResponseArrayList = new ArrayList<>();
+            SlotAppointmentResponse slotAppointmentResponse = appointmentMapper.toSlotAppointmentResponse(appointment.getSlot());
+            slotAppointmentResponseArrayList.add(slotAppointmentResponse);
+
+            List<ServiceAppointmentResponse> serviceAppointmentResponseList = new ArrayList<>();
+            ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
+            serviceAppointmentResponseList.add(serviceAppointmentResponse);
+
+            List<PatientAppointmentResponse> patientAppointmentResponseList = new ArrayList<>();
+            List<PatientAppointmentResponse> patientAppointmentResponse = appointmentMapper.toPatientAppointmentService(userRegister.getPatients());
+//            patientAppointmentResponseList.add(patientAppointmentResponse);
+
+            AllAppointmentResponse allAppointmentResponse=new AllAppointmentResponse();
+            allAppointmentResponse.setStaffAppointmentResponse(staffAppointmentResponseList);
+            allAppointmentResponse.setShowAppointmentResponse(showAppointmentResponse);
+            allAppointmentResponse.setPatientAppointmentResponse(patientAppointmentResponse);
+            allAppointmentResponse.setUserAppointmentResponse(userAppointmentResponseList);
+            allAppointmentResponse.setSlotAppointmentResponse(slotAppointmentResponseArrayList);
+            allAppointmentResponse.setServiceAppointmentResponses(serviceAppointmentResponseList);
+
+            responses.add(allAppointmentResponse);
+        }
+        return responses;
+    }
 }

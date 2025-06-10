@@ -1,25 +1,28 @@
-package swp.project.adn_backend.dto.request.slot;
+package swp.project.adn_backend.dto.InfoDTO;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.sql.Time;
 import java.time.LocalDate;
 
-public class SlotResponse {
+public class SlotInfoDTO {
     long slotId;
     LocalDate slotDate;
     Time startTime;
     Time endTime;
+    String location;
 
-    public SlotResponse(long slotId, LocalDate slotDate, Time startTime, Time endTime) {
+
+    public SlotInfoDTO(long slotId, LocalDate slotDate, Time startTime, Time endTime, String location) {
         this.slotId = slotId;
         this.slotDate = slotDate;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.location = location;
+
     }
 
-    public SlotResponse() {
-    }
+
 
     public long getSlotId() {
         return slotId;
@@ -51,5 +54,13 @@ public class SlotResponse {
 
     public void setEndTime(Time endTime) {
         this.endTime = endTime;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }
