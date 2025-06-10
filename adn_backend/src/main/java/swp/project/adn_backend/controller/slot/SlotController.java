@@ -32,7 +32,7 @@ public class SlotController {
     public ResponseEntity<List<GetFullSlotResponse>> getAllSlot() {
         return ResponseEntity.ok(slotService.getAllSlot());
     }
-
+    
     @DeleteMapping("/delete-slot/{slotId}")
     public ResponseEntity<String> deleteSlot(@PathVariable("slotId") long slotId) {
         slotService.deleteSlot(slotId);

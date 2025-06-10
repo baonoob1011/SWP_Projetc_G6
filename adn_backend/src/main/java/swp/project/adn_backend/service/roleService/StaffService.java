@@ -133,10 +133,8 @@ public class StaffService {
         Long staffId = jwt.getClaim("id");
         System.out.println(staffId);
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
-                "s.slotId, s.slotDate, s.startTime, s.endTime, s.location) " +
+                "s.slotId, s.slotDate, s.startTime, s.endTime, s.room) " +
                 "FROM Slot s WHERE s.staff.staffId = :staffId";
-
-
         TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
         query.setParameter("staffId", staffId);
         return query.getResultList();
