@@ -14,6 +14,7 @@ import swp.project.adn_backend.dto.response.slot.StaffSlotResponse;
 import swp.project.adn_backend.entity.Slot;
 import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.enums.SlotStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.SlotMapper;
 import swp.project.adn_backend.repository.SlotRepository;
@@ -51,11 +52,17 @@ public class SlotService {
         Staff staff = staffRepository.findById(staffId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_EXISTED));
         Slot slot = slotMapper.toSlot(slotRequest);
+//        slot.setSlotStatus(SlotStatus.BOOKED);
         slot.setStaff(staff);
 //        slot.setUsers(userCreated);
         return slotRepository.save(slot);
     }
 
+    public List<SlotResponse> getALlSlotForUser(){
+        List<Slot> slotList= slotRepository.findAllFutureSlots();
+        List<SlotResponse> slotResponses=slotMapper.toSlotResponses(slotList);
+        return slotResponses;
+    }
 
     public List<GetFullSlotResponse> getAllSlot() {
         List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();

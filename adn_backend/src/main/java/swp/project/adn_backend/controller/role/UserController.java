@@ -9,9 +9,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateUserRequest;
 import swp.project.adn_backend.dto.response.appointment.AllAppointmentResponse;
+import swp.project.adn_backend.dto.response.slot.SlotResponse;
+import swp.project.adn_backend.entity.Slot;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.service.registerServiceTestService.AppointmentService;
 import swp.project.adn_backend.service.roleService.UserService;
+import swp.project.adn_backend.service.slot.SlotService;
 
 import java.util.List;
 
@@ -23,11 +26,13 @@ public class UserController {
 
     UserService userService;
     AppointmentService appointmentService;
+    SlotService slotService;
 
     @Autowired
-    public UserController(UserService userService, AppointmentService appointmentService) {
+    public UserController(UserService userService, AppointmentService appointmentService, SlotService slotService) {
         this.userService = userService;
         this.appointmentService = appointmentService;
+        this.slotService = slotService;
     }
 
     @PutMapping("/update-user")
@@ -38,4 +43,9 @@ public class UserController {
     public ResponseEntity<List<AllAppointmentResponse>> getAppointment(Authentication authentication){
         return ResponseEntity.ok(appointmentService.getAppointmentForUser(authentication));
     }
+    @GetMapping("/get-all-slot")
+    public ResponseEntity<List<SlotResponse>> getAllSlot(){
+        return ResponseEntity.ok(slotService.getALlSlotForUser());
+    }
+
 }
