@@ -128,17 +128,6 @@ public class StaffService {
         return query.getSingleResult();
     }
 
-    public List<SlotInfoDTO> getSlotByStaffId(Authentication authentication) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        Long staffId = jwt.getClaim("id");
-        System.out.println(staffId);
-        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
-                "s.slotId, s.slotDate, s.startTime, s.endTime, s.room) " +
-                "FROM Slot s WHERE s.staff.staffId = :staffId";
-        TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
-        query.setParameter("staffId", staffId);
-        return query.getResultList();
-    }
 
     private void validateUpdateStaff(UpdateStaffAndManagerRequest updateStaffAndManagerRequest,Users existingStaff) {
         Map<String, String> errors = new HashMap<>();

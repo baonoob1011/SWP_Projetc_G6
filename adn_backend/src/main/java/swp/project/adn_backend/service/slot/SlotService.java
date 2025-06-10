@@ -1,11 +1,14 @@
 package swp.project.adn_backend.service.slot;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
 import swp.project.adn_backend.dto.request.slot.*;
 //import swp.project.adn_backend.dto.response.SlotReponse;
 import swp.project.adn_backend.dto.response.slot.GetFullSlotResponse;
@@ -92,4 +95,19 @@ public class SlotService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
         slotRepository.delete(slot);
     }
+    public List<SlotInfoDTO> getSlotByStaffId(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long staffId = jwt.getClaim("id");
+        System.out.println(staffId);
+
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
+                "s.slotId, s.slotDate, s.startTime, s.endTime, s.room, s.slotStatus) " +
+                "FROM Slot s WHERE s.staff.staffId = :staffId AND s.slotDate > CURRENT_DATE";
+
+        TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
+        query.setParameter("staffId", staffId);
+
+        return query.getResultList();
+    }
+
 }

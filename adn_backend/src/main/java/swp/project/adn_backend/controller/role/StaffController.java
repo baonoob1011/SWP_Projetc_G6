@@ -10,14 +10,22 @@ import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.service.roleService.StaffService;
+import swp.project.adn_backend.service.slot.SlotService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/staff")
 public class StaffController {
-    @Autowired
+
     private StaffService staffService;
+    private SlotService slotService;
+
+    @Autowired
+    public StaffController(StaffService staffService, SlotService slotService) {
+        this.staffService = staffService;
+        this.slotService = slotService;
+    }
 
     //get
     @GetMapping("/get-user-phone")
@@ -27,7 +35,7 @@ public class StaffController {
 
     @GetMapping("/get-staff-slot")
     public ResponseEntity<List<SlotInfoDTO>> getSlotById(Authentication authentication) {
-        return ResponseEntity.ok(staffService.getSlotByStaffId(authentication));
+        return ResponseEntity.ok(slotService.getSlotByStaffId(authentication));
     }
 
 

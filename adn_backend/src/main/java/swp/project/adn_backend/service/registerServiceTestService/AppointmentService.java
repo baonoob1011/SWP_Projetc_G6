@@ -18,6 +18,7 @@ import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.AppointmentStatus;
 import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.enums.SlotStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.AppointmentMapper;
 import swp.project.adn_backend.mapper.SlotMapper;
@@ -54,17 +55,18 @@ public class AppointmentService {
 
     public AppointmentResponse bookAppointment(AppointmentRequest appointmentRequest,
                                                Authentication authentication,
-                                               ServiceRequest serviceRequest,
+//                                               ServiceRequest serviceRequest,
                                                StaffRequest staffRequest,
                                                SlotRequest slotRequest,
-                                               LocationRequest locationRequest) {
+                                               LocationRequest locationRequest,
+                                               long serviceId) {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
         Users userBookAppointment = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
-        ServiceTest serviceTest = serviceTestRepository.findById(serviceRequest.getServiceId())
+        ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTED));
 
         Slot slot = slotRepository.findById(slotRequest.getSlotId())
@@ -107,6 +109,9 @@ public class AppointmentService {
 //        slot.setUsers(userBookAppointment);
         // Save appointment
         Appointment saved = appointmentRepository.save(appointment);
+
+        //chuyển sang đã đặt
+        slot.setSlotStatus(SlotStatus.BOOKED);
 
         return appointmentMapper.toAppointmentResponse(saved);
     }
