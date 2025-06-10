@@ -42,10 +42,10 @@ public class AppointmentService {
     SlotMapper slotMapper;
     SlotRepository slotRepository;
     LocationRepository locationRepository;
+    EmailService emailService;
 
 
-    @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentMapper = appointmentMapper;
         this.userRepository = userRepository;
@@ -55,6 +55,7 @@ public class AppointmentService {
         this.slotMapper = slotMapper;
         this.slotRepository = slotRepository;
         this.locationRepository = locationRepository;
+        this.emailService = emailService;
     }
 
     public AppointmentResponse bookAppointment(AppointmentRequest appointmentRequest,
@@ -65,6 +66,7 @@ public class AppointmentService {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
+
         Users userBookAppointment = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
@@ -81,39 +83,48 @@ public class AppointmentService {
         if (appointment == null) {
             throw new RuntimeException("Mapper returned null appointment!");
         }
+
         appointment.setSlot(slot);
         appointment.setAppointmentDate(slot.getSlotDate());
         appointment.setAppointmentStatus(AppointmentStatus.PENDING);
         appointment.setStaff(slot.getStaff());
         appointment.setServices(serviceTest);
         appointment.setLocation(location);
-
-//        //người đăng kí dịch vụ
-//        List<Users> users = new ArrayList<>();
-//        users.add(userBookAppointment);
-//        serviceTest.setUsers(users);
-
-//        //những dịch vụ mà người này đăng kí
-//        List<ServiceTest> serviceTests = new ArrayList<>();
-//        serviceTests.add(serviceTest);
-//        userBookAppointment.setServices(serviceTests);
-
-        // Associate user <-> appointment bidirectionally
         appointment.setUsers(userBookAppointment);
-        List<Appointment> appointmentList = new ArrayList<>();
-        appointmentList.add(appointment);
-        userBookAppointment.setAppointments(appointmentList);
 
-        //nguoi dang ki slot do
-//        slot.setUsers(userBookAppointment);
-        // Save appointment
+        userBookAppointment.setAppointments(List.of(appointment));
+
         Appointment saved = appointmentRepository.save(appointment);
 
-        //chuyển sang đã đặt
+        // Update slot status to BOOKED
         slot.setSlotStatus(SlotStatus.BOOKED);
+        slotRepository.save(slot);
+
+        // Build email content
+        ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(saved);
+
+        UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(userBookAppointment);
+        StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(slot.getStaff());
+        SlotAppointmentResponse slotAppointmentResponse = appointmentMapper.toSlotAppointmentResponse(slot);
+        ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(serviceTest);
+        List<PatientAppointmentResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentService(userBookAppointment.getPatients());
+        LocationAppointmentResponse locationAppointmentResponse = appointmentMapper.toLocationAppointmentResponse(location);
+
+        AllAppointmentResponse emailResponse = new AllAppointmentResponse();
+        emailResponse.setShowAppointmentResponse(showAppointmentResponse);
+        emailResponse.setUserAppointmentResponse(List.of(userAppointmentResponse));
+        emailResponse.setStaffAppointmentResponse(List.of(staffAppointmentResponse));
+        emailResponse.setSlotAppointmentResponse(List.of(slotAppointmentResponse));
+        emailResponse.setServiceAppointmentResponses(List.of(serviceAppointmentResponse));
+        emailResponse.setPatientAppointmentResponse(patientAppointmentResponses);
+        emailResponse.setLocationAppointmentResponses(List.of(locationAppointmentResponse));
+
+        // Send email
+        emailService.sendAppointmentDetailsEmail(userBookAppointment.getEmail(), emailResponse);
 
         return appointmentMapper.toAppointmentResponse(saved);
     }
+
 
     public List<AppointmentInfoDTO> getAppointmentByStaffId(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
