@@ -72,6 +72,14 @@ public class Appointment {
     public Appointment() {
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
     public Users getUsers() {
         return users;
     }

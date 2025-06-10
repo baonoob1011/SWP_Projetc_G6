@@ -6,14 +6,24 @@ import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LocationRequest {
+    long locationId;
     String addressLine;
     String district;
     String city;
 
-    public LocationRequest(String addressLine, String district, String city) {
+    public LocationRequest(long locationId, String addressLine, String district, String city) {
+        this.locationId = locationId;
         this.addressLine = addressLine;
         this.district = district;
         this.city = city;
+    }
+
+    public long getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(long locationId) {
+        this.locationId = locationId;
     }
 
     public String getAddressLine() {

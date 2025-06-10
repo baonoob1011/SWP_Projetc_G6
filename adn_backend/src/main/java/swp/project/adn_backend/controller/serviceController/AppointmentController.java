@@ -26,7 +26,8 @@ public class AppointmentController {
                 authentication,
                 request.getServiceRequest(),
                 request.getStaffRequest(),
-                request.getSlotRequest()
+                request.getSlotRequest(),
+                request.getLocationRequest()
         );
     }
 

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.request.Location.LocationRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.dto.request.serviceRequest.ServiceRequest;
 import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
@@ -36,9 +37,10 @@ public class AppointmentService {
     StaffRepository staffRepository;
     SlotMapper slotMapper;
     SlotRepository slotRepository;
+    LocationRepository locationRepository;
 
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentMapper = appointmentMapper;
         this.userRepository = userRepository;
@@ -47,13 +49,15 @@ public class AppointmentService {
         this.staffRepository = staffRepository;
         this.slotMapper = slotMapper;
         this.slotRepository = slotRepository;
+        this.locationRepository = locationRepository;
     }
 
     public AppointmentResponse bookAppointment(AppointmentRequest appointmentRequest,
                                                Authentication authentication,
                                                ServiceRequest serviceRequest,
                                                StaffRequest staffRequest,
-                                               SlotRequest slotRequest) {
+                                               SlotRequest slotRequest,
+                                               LocationRequest locationRequest) {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
@@ -69,6 +73,9 @@ public class AppointmentService {
         Staff staffCollectSample = staffRepository.findById(staffRequest.getStaffId())
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
 
+        Location location = locationRepository.findById(locationRequest.getLocationId())
+                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+
         Appointment appointment = appointmentMapper.toAppointment(appointmentRequest);
         if (appointment == null) {
             throw new RuntimeException("Mapper returned null appointment!");
@@ -78,6 +85,7 @@ public class AppointmentService {
         appointment.setAppointmentStatus(AppointmentStatus.PENDING);
         appointment.setStaff(slot.getStaff());
         appointment.setServices(serviceTest);
+        appointment.setLocation(location);
 
 //        //người đăng kí dịch vụ
 //        List<Users> users = new ArrayList<>();

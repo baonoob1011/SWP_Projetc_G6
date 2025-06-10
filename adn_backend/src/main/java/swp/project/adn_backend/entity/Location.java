@@ -13,7 +13,9 @@ public class Location {
     long locationId;
     @Column(name = "address_line", columnDefinition = "nvarchar(255)")
     String addressLine;
+    @Column( columnDefinition = "nvarchar(255)")
     String district;
+    @Column(columnDefinition = "nvarchar(255)")
     String city;
 
     @OneToOne(cascade = {

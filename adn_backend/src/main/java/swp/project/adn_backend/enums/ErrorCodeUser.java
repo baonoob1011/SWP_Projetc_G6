@@ -11,6 +11,7 @@ public enum ErrorCodeUser {
     USER_EXISTED(1001, "Username already exists", HttpStatus.BAD_REQUEST),
     STAFF_EXISTED(1001, "Staff does not exist", HttpStatus.BAD_REQUEST),
     SLOT_NOT_EXISTS(1001, "Slot does not exist", HttpStatus.BAD_REQUEST),
+    LOCATION_NOT_EXISTS(1001, "location does not exist", HttpStatus.BAD_REQUEST),
     PRICE_LIST_NOT_FOUND(1001, "Price list not found", HttpStatus.BAD_REQUEST),
     MANAGER_NOT_FOUND(1001, "Manager not found", HttpStatus.BAD_REQUEST),
     INVALID_DATE_OF_BIRTH(1001, "Date of birth must be provided in the request", HttpStatus.BAD_REQUEST),
