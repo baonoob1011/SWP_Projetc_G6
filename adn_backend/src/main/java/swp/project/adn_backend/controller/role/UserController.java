@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import swp.project.adn_backend.dto.request.Location.LocationResponse;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateUserRequest;
 import swp.project.adn_backend.dto.response.appointment.AllAppointmentResponse;
 import swp.project.adn_backend.dto.response.slot.SlotResponse;
+import swp.project.adn_backend.entity.Location;
 import swp.project.adn_backend.entity.Slot;
 import swp.project.adn_backend.entity.Users;
+import swp.project.adn_backend.service.Location.LocationService;
 import swp.project.adn_backend.service.registerServiceTestService.AppointmentService;
 import swp.project.adn_backend.service.roleService.UserService;
 import swp.project.adn_backend.service.slot.SlotService;
@@ -27,12 +30,14 @@ public class UserController {
     UserService userService;
     AppointmentService appointmentService;
     SlotService slotService;
+    LocationService locationService;
 
     @Autowired
-    public UserController(UserService userService, AppointmentService appointmentService, SlotService slotService) {
+    public UserController(UserService userService, AppointmentService appointmentService, SlotService slotService, LocationService locationService) {
         this.userService = userService;
         this.appointmentService = appointmentService;
         this.slotService = slotService;
+        this.locationService = locationService;
     }
 
     @PutMapping("/update-user")
@@ -48,4 +53,8 @@ public class UserController {
         return ResponseEntity.ok(slotService.getALlSlotForUser());
     }
 
+    @GetMapping("/get-all-location")
+    public ResponseEntity<List<LocationResponse>>getAllLocation(){
+        return ResponseEntity.ok(locationService.getAllLocation());
+    }
 }
