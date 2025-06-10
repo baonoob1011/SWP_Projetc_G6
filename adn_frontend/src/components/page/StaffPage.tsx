@@ -6,19 +6,17 @@ import {
   //   Settings,
   LogOut,
   Bell,
-  Home,
   // Users,
   // BarChart3,
   // FileText,
   Shield,
   List,
-  ShoppingBag,
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
-import { LocationCity, RoomService } from '@mui/icons-material';
+import { ArrowBack, Schedule } from '@mui/icons-material';
 
-const AdminSidebar = () => {
+const StaffPage = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeItem, setActiveItem] = useState('dashboard');
   const [notifications] = useState(0);
@@ -31,25 +29,13 @@ const AdminSidebar = () => {
   }, []);
 
   const menuItems = [
-    { id: 'dashboard', icon: Home, label: 'Home', path: '' },
-    { id: 'data', icon: List, label: 'Danh sách', path: 'admin/data' },
+    { id: 'dashboard', icon: ArrowBack, label: 'Home', path: '' },
+    { id: 'data', icon: List, label: 'Danh sách', path: 's-page/s-userData' },
     {
-      id: 'location',
-      icon: LocationCity,
-      label: 'Tạo địa chỉ mới',
-      path: 'location',
-    },
-    {
-      id: 'services',
-      icon: RoomService,
-      label: 'Tạo Dịch vụ',
-      path: 'services',
-    },
-    {
-      id: 'servicesInfo',
-      icon: ShoppingBag,
-      label: 'Tất cả dịch vụ',
-      path: 'a-getAllService',
+      id: 'schedule',
+      icon: Schedule,
+      label: 'Lịch làm',
+      path: 's-page/s-slot',
     },
   ];
 
@@ -93,7 +79,7 @@ const AdminSidebar = () => {
             <div className="h-6 w-6 bg-blue-600 rounded flex items-center justify-center">
               <Shield className="h-4 w-4 text-white" />
             </div>
-            <span className="font-semibold text-gray-900">Admin Panel</span>
+            <span className="font-semibold text-gray-900">Staff Panel</span>
           </div>
         </div>
 
@@ -138,7 +124,7 @@ const AdminSidebar = () => {
             <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <Shield className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">Admin Panel</span>
+            <span className="text-xl font-bold text-gray-900">Staff Panel</span>
           </div>
 
           {/* Close Button - Mobile only */}
@@ -225,4 +211,4 @@ const AdminSidebar = () => {
   );
 };
 
-export default AdminSidebar;
+export default StaffPage;
