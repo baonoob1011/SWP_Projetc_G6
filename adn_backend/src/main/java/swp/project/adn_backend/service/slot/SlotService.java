@@ -52,7 +52,7 @@ public class SlotService {
         Staff staff = staffRepository.findById(staffId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_EXISTED));
         Slot slot = slotMapper.toSlot(slotRequest);
-//        slot.setSlotStatus(SlotStatus.BOOKED);
+        slot.setSlotStatus(SlotStatus.AVAILABLE);
         slot.setStaff(staff);
 //        slot.setUsers(userCreated);
         return slotRepository.save(slot);
