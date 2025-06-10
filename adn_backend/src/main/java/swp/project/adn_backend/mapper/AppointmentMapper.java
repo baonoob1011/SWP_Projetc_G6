@@ -19,4 +19,5 @@ public interface AppointmentMapper {
     SlotAppointmentResponse toSlotAppointmentResponse(Slot slot);
     StaffAppointmentResponse toStaffAppointmentResponse(Staff staff);
     UserAppointmentResponse toUserAppointmentResponse(Users users);
+    LocationAppointmentResponse toLocationAppointmentResponse(Location location);
 }

@@ -3,23 +3,33 @@ package swp.project.adn_backend.dto.response.appointment;
 import java.util.List;
 
 public class AllAppointmentResponse {
-   private List<PatientAppointmentResponse> patientAppointmentResponse;
-   private List<StaffAppointmentResponse> staffAppointmentResponse;
-   private List<UserAppointmentResponse> userAppointmentResponse;
-   private ShowAppointmentResponse showAppointmentResponse;
-   private List<SlotAppointmentResponse> slotAppointmentResponse;
-   private List<ServiceAppointmentResponse> serviceAppointmentResponses;
+    private List<PatientAppointmentResponse> patientAppointmentResponse;
+    private List<StaffAppointmentResponse> staffAppointmentResponse;
+    private List<UserAppointmentResponse> userAppointmentResponse;
+    private ShowAppointmentResponse showAppointmentResponse;
+    private List<SlotAppointmentResponse> slotAppointmentResponse;
+    private List<ServiceAppointmentResponse> serviceAppointmentResponses;
+    private List<LocationAppointmentResponse> locationAppointmentResponses;
 
     public AllAppointmentResponse() {
     }
 
-    public AllAppointmentResponse(List<PatientAppointmentResponse> patientAppointmentResponse, List<StaffAppointmentResponse> staffAppointmentResponse, List<UserAppointmentResponse> userAppointmentResponse, ShowAppointmentResponse showAppointmentResponse, List<SlotAppointmentResponse> slotAppointmentResponse, List<ServiceAppointmentResponse> serviceAppointmentResponses) {
+    public AllAppointmentResponse(List<PatientAppointmentResponse> patientAppointmentResponse, List<StaffAppointmentResponse> staffAppointmentResponse, List<UserAppointmentResponse> userAppointmentResponse, ShowAppointmentResponse showAppointmentResponse, List<SlotAppointmentResponse> slotAppointmentResponse, List<ServiceAppointmentResponse> serviceAppointmentResponses, List<LocationAppointmentResponse> locationAppointmentResponses) {
         this.patientAppointmentResponse = patientAppointmentResponse;
         this.staffAppointmentResponse = staffAppointmentResponse;
         this.userAppointmentResponse = userAppointmentResponse;
         this.showAppointmentResponse = showAppointmentResponse;
         this.slotAppointmentResponse = slotAppointmentResponse;
         this.serviceAppointmentResponses = serviceAppointmentResponses;
+        this.locationAppointmentResponses = locationAppointmentResponses;
+    }
+
+    public List<LocationAppointmentResponse> getLocationAppointmentResponses() {
+        return locationAppointmentResponses;
+    }
+
+    public void setLocationAppointmentResponses(List<LocationAppointmentResponse> locationAppointmentResponses) {
+        this.locationAppointmentResponses = locationAppointmentResponses;
     }
 
     public List<ServiceAppointmentResponse> getServiceAppointmentResponses() {

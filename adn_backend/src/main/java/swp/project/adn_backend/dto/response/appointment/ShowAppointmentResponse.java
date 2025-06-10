@@ -10,14 +10,12 @@ import java.time.LocalDate;
 public class ShowAppointmentResponse {
     long appointmentId;
     LocalDate appointmentDate;
-    String location;
     AppointmentStatus appointmentStatus;
     String note;
 
-    public ShowAppointmentResponse(long appointmentId, LocalDate appointmentDate, String location, AppointmentStatus appointmentStatus, String note) {
+    public ShowAppointmentResponse(long appointmentId, LocalDate appointmentDate, AppointmentStatus appointmentStatus, String note) {
         this.appointmentId = appointmentId;
         this.appointmentDate = appointmentDate;
-        this.location = location;
         this.appointmentStatus = appointmentStatus;
         this.note = note;
     }
@@ -38,13 +36,7 @@ public class ShowAppointmentResponse {
         this.appointmentDate = appointmentDate;
     }
 
-    public String getLocation() {
-        return location;
-    }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public AppointmentStatus getAppointmentStatus() {
         return appointmentStatus;

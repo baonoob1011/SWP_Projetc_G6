@@ -138,9 +138,12 @@ public class AppointmentService {
             ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
             serviceAppointmentResponseList.add(serviceAppointmentResponse);
 
-            List<PatientAppointmentResponse> patientAppointmentResponseList = new ArrayList<>();
             List<PatientAppointmentResponse> patientAppointmentResponse = appointmentMapper.toPatientAppointmentService(userRegister.getPatients());
-//            patientAppointmentResponseList.add(patientAppointmentResponse);
+
+            List<LocationAppointmentResponse>locationAppointmentResponseList =new ArrayList<>();
+            LocationAppointmentResponse locationAppointmentResponse=appointmentMapper.toLocationAppointmentResponse(appointment.getLocation());
+            locationAppointmentResponseList.add(locationAppointmentResponse);
+
 
             AllAppointmentResponse allAppointmentResponse=new AllAppointmentResponse();
             allAppointmentResponse.setStaffAppointmentResponse(staffAppointmentResponseList);
@@ -149,6 +152,7 @@ public class AppointmentService {
             allAppointmentResponse.setUserAppointmentResponse(userAppointmentResponseList);
             allAppointmentResponse.setSlotAppointmentResponse(slotAppointmentResponseArrayList);
             allAppointmentResponse.setServiceAppointmentResponses(serviceAppointmentResponseList);
+            allAppointmentResponse.setLocationAppointmentResponses(locationAppointmentResponseList);
 
             responses.add(allAppointmentResponse);
         }
