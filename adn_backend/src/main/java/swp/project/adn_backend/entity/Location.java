@@ -18,7 +18,7 @@ public class Location {
     @Column(columnDefinition = "nvarchar(255)")
     String city;
 
-    @OneToOne(cascade = {
+    @OneToOne(mappedBy = "location",cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     Appointment appointment;
