@@ -18,11 +18,9 @@ public class PatientRequest {
     @NotBlank(message = "Full name is required")
     private String fullName;
 
-    @NotBlank(message = "Email is required")
     @Email(message = "Email format is invalid")
     private String email;
 
-    @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "^\\+?\\d{9,15}$", message = "Phone number format is invalid")
     private String phone;
 

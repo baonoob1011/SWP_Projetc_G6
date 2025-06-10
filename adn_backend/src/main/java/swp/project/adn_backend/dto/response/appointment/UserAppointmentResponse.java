@@ -8,16 +8,26 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserAppointmentResponse {
+    long userId;
     String address;
     String fullName;
     String phone;
     String email;
 
-    public UserAppointmentResponse(String address, String fullName, String phone, String email) {
+    public UserAppointmentResponse(long userId, String address, String fullName, String phone, String email) {
+        this.userId = userId;
         this.address = address;
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getAddress() {

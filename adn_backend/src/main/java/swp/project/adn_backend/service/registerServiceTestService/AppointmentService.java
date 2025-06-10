@@ -111,6 +111,19 @@ public class AppointmentService {
         return appointmentMapper.toAppointmentResponse(saved);
     }
 
+//    public List<Appointment> getAppointmentByStaffId(Authentication authentication) {
+//        Jwt jwt = (Jwt) authentication.getPrincipal();
+//        Long staffId = jwt.getClaim("id");
+//        Staff staff = staffRepository.findById(staffId)
+//                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+//        List<Appointment> appointmentList = appointmentRepository.findByStaff_StaffId(staffId);
+//        List<AllAppointmentResponse> responses = new ArrayList<>();
+//        for (Appointment appointment : appointmentList){
+//
+//        }
+//
+//    }
+
     public List<AllAppointmentResponse> getAppointmentForUser(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
@@ -140,12 +153,12 @@ public class AppointmentService {
 
             List<PatientAppointmentResponse> patientAppointmentResponse = appointmentMapper.toPatientAppointmentService(userRegister.getPatients());
 
-            List<LocationAppointmentResponse>locationAppointmentResponseList =new ArrayList<>();
-            LocationAppointmentResponse locationAppointmentResponse=appointmentMapper.toLocationAppointmentResponse(appointment.getLocation());
+            List<LocationAppointmentResponse> locationAppointmentResponseList = new ArrayList<>();
+            LocationAppointmentResponse locationAppointmentResponse = appointmentMapper.toLocationAppointmentResponse(appointment.getLocation());
             locationAppointmentResponseList.add(locationAppointmentResponse);
 
 
-            AllAppointmentResponse allAppointmentResponse=new AllAppointmentResponse();
+            AllAppointmentResponse allAppointmentResponse = new AllAppointmentResponse();
             allAppointmentResponse.setStaffAppointmentResponse(staffAppointmentResponseList);
             allAppointmentResponse.setShowAppointmentResponse(showAppointmentResponse);
             allAppointmentResponse.setPatientAppointmentResponse(patientAppointmentResponse);

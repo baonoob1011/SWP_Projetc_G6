@@ -10,4 +10,5 @@ import java.util.List;
 @RepositoryRestResource(path = "appointment")
 public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
     List<Appointment> findByUsers_UserId(Long userId); // nếu user là object
+    List<Appointment> findByStaff_StaffId(Long staffId); // nếu user là object
 }
