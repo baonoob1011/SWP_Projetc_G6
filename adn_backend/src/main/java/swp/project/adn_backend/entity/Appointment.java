@@ -64,9 +64,10 @@ public class Appointment {
 //            CascadeType.DETACH, CascadeType.REFRESH
 //    })
 //    List<Patient> patients;
-    @OneToOne(cascade = {
+    @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH})
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
     @JoinColumn(name = "location_id")
     Location location;
 
