@@ -10,4 +10,6 @@ import java.util.Optional;
 @RepositoryRestResource(path = "kit")
 public interface KitRepository extends JpaRepository<Kit,Long> {
     Optional<Kit> findByKitCode(String kitCode);
+    boolean existsByKitCode(String kitCode);
+
 }
