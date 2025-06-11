@@ -9,17 +9,15 @@ import java.time.LocalDate;
 public class SlotResponse {
     long slotId;
     LocalDate slotDate;
-    Time startTime;
-    Time endTime;
-    String room;
+    Time  startTime;
+    Time  endTime;
     SlotStatus slotStatus;
 
-    public SlotResponse(long slotId, LocalDate slotDate, Time startTime, Time endTime, String room, SlotStatus slotStatus) {
+    public SlotResponse(long slotId, LocalDate slotDate, Time startTime, Time endTime, SlotStatus slotStatus) {
         this.slotId = slotId;
         this.slotDate = slotDate;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.room = room;
         this.slotStatus = slotStatus;
     }
 
@@ -63,11 +61,5 @@ public class SlotResponse {
         this.endTime = endTime;
     }
 
-    public String getRoom() {
-        return room;
-    }
 
-    public void setRoom(String room) {
-        this.room = room;
-    }
 }

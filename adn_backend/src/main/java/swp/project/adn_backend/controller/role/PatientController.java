@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.entity.Patient;
-import swp.project.adn_backend.service.registerServiceTestService.PatientService;
+import swp.project.adn_backend.service.roleService.PatientService;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
 
-    @PostMapping("/register-info")
-    public ResponseEntity<List<Patient>> registerInfoPatient(@RequestBody @Valid List<PatientRequest> patientRequest,
-                                                             Authentication authentication) {
-        return ResponseEntity.ok(patientService.registerServiceTest(patientRequest, authentication));
-    }
+//    @PostMapping("/register-info")
+//    public ResponseEntity<List<Patient>> registerInfoPatient(@RequestBody @Valid List<PatientRequest> patientRequest,
+//                                                             Authentication authentication) {
+//        return ResponseEntity.ok(patientService.registerServiceTest(patientRequest, authentication));
+//    }
 }

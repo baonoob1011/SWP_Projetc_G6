@@ -23,9 +23,9 @@ public class SlotController {
 
     @PostMapping("/create-slot/{staffId}")
     public ResponseEntity<Slot> staffId(@RequestBody @Valid SlotRequest slotRequest,
-                                        Authentication authentication,
+                                        @RequestParam long roomId,
                                         @PathVariable("staffId") long staffId) {
-        return ResponseEntity.ok(slotService.createSlot(slotRequest, authentication, staffId));
+        return ResponseEntity.ok(slotService.createSlot(slotRequest,roomId , staffId));
     }
 
     @GetMapping("/get-all-slot")

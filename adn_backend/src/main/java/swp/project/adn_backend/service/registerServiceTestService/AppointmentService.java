@@ -21,11 +21,13 @@ import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.AppointmentStatus;
 import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.enums.ServiceType;
 import swp.project.adn_backend.enums.SlotStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.AppointmentMapper;
 import swp.project.adn_backend.mapper.SlotMapper;
 import swp.project.adn_backend.repository.*;
+import swp.project.adn_backend.service.roleService.PatientService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +45,10 @@ public class AppointmentService {
     SlotRepository slotRepository;
     LocationRepository locationRepository;
     EmailService emailService;
+    PatientService patientService;
 
-
-    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService) {
+    @Autowired
+    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService, PatientService patientService) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentMapper = appointmentMapper;
         this.userRepository = userRepository;
@@ -56,12 +59,14 @@ public class AppointmentService {
         this.slotRepository = slotRepository;
         this.locationRepository = locationRepository;
         this.emailService = emailService;
+        this.patientService = patientService;
     }
 
     public AppointmentResponse bookAppointment(AppointmentRequest appointmentRequest,
                                                Authentication authentication,
-                                               SlotRequest slotRequest,
-                                               LocationRequest locationRequest,
+                                               List<PatientRequest> patientRequestList,
+                                               long slotId,
+                                               long locationId,
                                                long serviceId) {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -71,18 +76,19 @@ public class AppointmentService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
 
-        Slot slot = slotRepository.findById(slotRequest.getSlotId())
+        Slot slot = slotRepository.findById(slotId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
 
-        Location location = locationRepository.findById(locationRequest.getLocationId())
+        Location location = locationRepository.findById(locationId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.LOCATION_NOT_EXISTS));
 
         Appointment appointment = appointmentMapper.toAppointment(appointmentRequest);
         if (appointment == null) {
             throw new RuntimeException("Mapper returned null appointment!");
         }
+        patientService.registerServiceTest(patientRequestList,userBookAppointment,serviceTest);
 
         appointment.setSlot(slot);
         appointment.setAppointmentDate(slot.getSlotDate());

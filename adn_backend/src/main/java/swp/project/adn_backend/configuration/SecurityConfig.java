@@ -64,7 +64,8 @@ public class SecurityConfig {
             "/api/blog/**",
             "/api/slot/**",
             "/api/price/**",
-            "/api/location/**"
+            "/api/location/**",
+            "/api/room/**"
     };
 
     private final String[] ADMIN_ENDPOINTS = {
