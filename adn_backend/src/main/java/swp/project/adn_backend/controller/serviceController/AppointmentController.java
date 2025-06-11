@@ -18,12 +18,14 @@ public class AppointmentController {
     @PostMapping("/book-appointment/{serviceId}")
     public AppointmentResponse bookAppointment(@RequestBody BookAppointmentRequest request,
                                                Authentication authentication,
-                                               @PathVariable long serviceId) {
+                                               @PathVariable long serviceId,
+                                               @RequestParam("slotId")long slotId,
+                                               @RequestParam("locationId")long locationId) {
         return appointmentService.bookAppointment(
                 request.getAppointmentRequest(),
                 authentication,
-                request.getSlotRequest(),
-                request.getLocationRequest(),
+                slotId,
+                locationId,
                 serviceId
         );
     }

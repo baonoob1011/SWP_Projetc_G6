@@ -60,8 +60,8 @@ public class AppointmentService {
 
     public AppointmentResponse bookAppointment(AppointmentRequest appointmentRequest,
                                                Authentication authentication,
-                                               SlotRequest slotRequest,
-                                               LocationRequest locationRequest,
+                                               long slotId,
+                                               long locationId,
                                                long serviceId) {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -73,10 +73,10 @@ public class AppointmentService {
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTED));
 
-        Slot slot = slotRepository.findById(slotRequest.getSlotId())
+        Slot slot = slotRepository.findById(slotId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
 
-        Location location = locationRepository.findById(locationRequest.getLocationId())
+        Location location = locationRepository.findById(locationId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.LOCATION_NOT_EXISTS));
 
         Appointment appointment = appointmentMapper.toAppointment(appointmentRequest);
