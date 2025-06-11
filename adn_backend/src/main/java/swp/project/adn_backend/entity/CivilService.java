@@ -36,11 +36,6 @@ public class CivilService {
     @JoinColumn(name = "service_id", nullable = false)
     ServiceTest service;
 
-    @OneToMany(mappedBy = "civilService", fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    List<Kit> kits;
 
     public CivilService() {
     }
@@ -69,11 +64,4 @@ public class CivilService {
         this.service = service;
     }
 
-    public List<Kit> getKits() {
-        return kits;
-    }
-
-    public void setKits(List<Kit> kits) {
-        this.kits = kits;
-    }
 }

@@ -87,8 +87,14 @@ public class ServiceTest {
     })
     List<Discount> discounts;
 
+    @OneToMany(mappedBy = "serviceTest", fetch = FetchType.EAGER, cascade = {
+            CascadeType.ALL
+    })
+    List<Kit> kits;
+
     @OneToMany(mappedBy = "serviceTest", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Patient> patients;
+
     public ServiceTest() {
     }
 
@@ -108,7 +114,14 @@ public class ServiceTest {
         this.discounts = discounts;
     }
 
-    //    public Manager getManager() {
+    public List<Kit> getKits() {
+        return kits;
+    }
+
+    public void setKits(List<Kit> kits) {
+        this.kits = kits;
+    }
+//    public Manager getManager() {
 //        return manager;
 //    }
 //

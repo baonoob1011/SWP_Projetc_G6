@@ -21,7 +21,7 @@ public class AppointmentController {
                                                @PathVariable long serviceId,
                                                @RequestParam("slotId")long slotId,
                                                @RequestParam("locationId")long locationId) {
-        return appointmentService.bookAppointment(
+        return appointmentService.bookAppointmentAtCenter(
                 request.getAppointmentRequest(),
                 authentication,
                 request.getPatientRequestList(),

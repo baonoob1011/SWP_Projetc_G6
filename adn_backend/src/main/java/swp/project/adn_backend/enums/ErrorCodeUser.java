@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatusCode;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum ErrorCodeUser {
     USER_EXISTED(1001, "Tên đăng nhập đã tồn tại", HttpStatus.BAD_REQUEST),
+    KIT_EXISTED(1039, "Kit đã tồn tại", HttpStatus.BAD_REQUEST),
     STAFF_NOT_EXISTED(1002, "Nhân viên không tồn tại", HttpStatus.BAD_REQUEST),
     ROOM_TIME_INVALID(1003, "Phòng không hoạt động trong khoảng thời gian đã chọn", HttpStatus.BAD_REQUEST),
     TIME_EXISTED(1004, "Khung giờ bị trùng với một slot đã tồn tại trong cùng phòng", HttpStatus.BAD_REQUEST),
@@ -49,6 +50,7 @@ public enum ErrorCodeUser {
     // Service validation
     SERVICE_NAME_IS_EXISTED(1037, "Tên dịch vụ đã tồn tại", HttpStatus.BAD_REQUEST),
 //    SERVICE_NOT_EXISTS(1038, "Dịch vụ không tồn tại", HttpStatus.BAD_REQUEST),
+ROOM_TIME_OVERLAP(1038, "Room's open and close time overlaps with another room", HttpStatus.BAD_REQUEST),
 
 
 

@@ -62,7 +62,7 @@ public class AppointmentService {
         this.patientService = patientService;
     }
 
-    public AppointmentResponse bookAppointment(AppointmentRequest appointmentRequest,
+    public AppointmentResponse bookAppointmentAtCenter(AppointmentRequest appointmentRequest,
                                                Authentication authentication,
                                                List<PatientRequest> patientRequestList,
                                                long slotId,
@@ -89,6 +89,75 @@ public class AppointmentService {
             throw new RuntimeException("Mapper returned null appointment!");
         }
         patientService.registerServiceTest(patientRequestList,userBookAppointment,serviceTest);
+
+        appointment.setSlot(slot);
+        appointment.setAppointmentDate(slot.getSlotDate());
+        appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
+        appointment.setStaff(slot.getStaff());
+        appointment.setServices(serviceTest);
+        appointment.setLocation(location);
+        appointment.setUsers(userBookAppointment);
+
+        userBookAppointment.setAppointments(List.of(appointment));
+
+        Appointment saved = appointmentRepository.save(appointment);
+
+        // Update slot status to BOOKED
+        slot.setSlotStatus(SlotStatus.BOOKED);
+        slotRepository.save(slot);
+
+        // Build email content
+        ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(saved);
+
+        UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(userBookAppointment);
+        StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(slot.getStaff());
+        SlotAppointmentResponse slotAppointmentResponse = appointmentMapper.toSlotAppointmentResponse(slot);
+        ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(serviceTest);
+        List<PatientAppointmentResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentService(userBookAppointment.getPatients());
+        LocationAppointmentResponse locationAppointmentResponse = appointmentMapper.toLocationAppointmentResponse(location);
+
+        AllAppointmentResponse emailResponse = new AllAppointmentResponse();
+        emailResponse.setShowAppointmentResponse(showAppointmentResponse);
+        emailResponse.setUserAppointmentResponse(List.of(userAppointmentResponse));
+        emailResponse.setStaffAppointmentResponse(List.of(staffAppointmentResponse));
+        emailResponse.setSlotAppointmentResponse(List.of(slotAppointmentResponse));
+        emailResponse.setServiceAppointmentResponses(List.of(serviceAppointmentResponse));
+        emailResponse.setPatientAppointmentResponse(patientAppointmentResponses);
+        emailResponse.setLocationAppointmentResponses(List.of(locationAppointmentResponse));
+
+        // Send email
+        emailService.sendAppointmentDetailsEmail(userBookAppointment.getEmail(), emailResponse);
+
+        return appointmentMapper.toAppointmentResponse(saved);
+    }
+
+    public AppointmentResponse bookAppointmentAtHome(AppointmentRequest appointmentRequest,
+                                                       Authentication authentication,
+                                                       List<PatientRequest> patientRequestList,
+                                                       long slotId,
+                                                       long locationId,
+                                                       long serviceId) {
+
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+
+        Users userBookAppointment = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+        ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
+
+        Slot slot = slotRepository.findById(slotId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
+
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.LOCATION_NOT_EXISTS));
+
+        Appointment appointment = appointmentMapper.toAppointment(appointmentRequest);
+        if (appointment == null) {
+            throw new RuntimeException("Mapper returned null appointment!");
+        }
+        patientService.registerServiceTest(patientRequestList, userBookAppointment, serviceTest);
 
         appointment.setSlot(slot);
         appointment.setAppointmentDate(slot.getSlotDate());
