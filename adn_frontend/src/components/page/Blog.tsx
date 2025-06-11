@@ -1,12 +1,13 @@
 import React from 'react';
-import { Calendar, Clock, User, ArrowRight, Search, Menu, Linkedin, MapPin, Phone, Mail } from 'lucide-react';
-import { Facebook, Instagram, Twitter } from '@mui/icons-material';
-import { NavLink } from 'react-router-dom';
+import { Calendar, Clock, User, ArrowRight, Search, Menu, Linkedin, MapPin, Phone, Mail, Instagram } from 'lucide-react';
 import Blog1 from "../../image/Blog1.png";
 import Blog2 from "../../image/Blog2.png";
 import Blog3 from "../../image/Blog3.png";
 import Blog4 from "../../image/Blog4.png";
+import Blog5 from "../../image/Blog5.png";
 import Blog6 from "../../image/Blog6.png";
+import { NavLink } from 'react-router-dom';
+import { Facebook, Twitter } from '@mui/icons-material';
 const DNATestingBlog = () => {
   const articles = [
     {
@@ -31,7 +32,7 @@ const DNATestingBlog = () => {
       id: 3,
       title: "Những Điều Cần Biết Khi Nhận Kết Quả Xét Nghiệm ADN Hành Chính",
       date: "01/05/2025",
-      image: "https://images.unsplash.com/photo-1628595351029-c2bf17511435?w=500&h=300&fit=crop",
+      image:Blog5,
       category: "Hành Chính",
       excerpt: "Cẩm nang đọc hiểu kết quả xét nghiệm ADN cho các thủ tục hành chính, giá trị pháp lý và cách sử dụng trong hồ sơ...",
       readTime: "6 phút đọc"
@@ -69,34 +70,27 @@ const DNATestingBlog = () => {
   const regularArticles = articles.slice(1);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-8">
-              <h1 className="text-2xl font-bold text-blue-600">DNA Legal</h1>
-              <nav className="hidden md:flex space-x-8">
-                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Trang Chủ</a>
-                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Tin Tức</a>
-                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Hướng Dẫn</a>
-                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Liên Hệ</a>
-              </nav>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Search className="h-5 w-5 text-gray-500 cursor-pointer hover:text-blue-600" />
-              <Menu className="h-5 w-5 text-gray-500 cursor-pointer hover:text-blue-600 md:hidden" />
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%)' }}>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section 
+        className="text-white pt-20 pb-16 relative overflow-hidden"
+        style={{ 
+          background: 'linear-gradient(135deg, #87ceeb 0%, #6eb5e0 50%, #5aa1d3 100%)',
+          boxShadow: '0 10px 30px rgba(135, 206, 235, 0.3)' 
+        }}
+      >
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-white/20"></div>
+          <div className="absolute top-40 right-20 w-20 h-20 rounded-full bg-white/15"></div>
+          <div className="absolute bottom-20 left-1/3 w-24 h-24 rounded-full bg-white/10"></div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
-            <h2 className="text-4xl font-bold mb-4">Tin Tức</h2>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+            <h2 className="text-5xl font-bold uppercase mb-6 mt-5 tracking-wide">
+              TIN TỨC
+            </h2>
+            <div className="w-24 h-1 bg-white mx-auto mb-6 rounded-full"></div>
+            <p className="text-xl max-w-3xl mx-auto leading-relaxed opacity-95">
               Cập nhật thông tin về xét nghiệm ADN huyết thống, thủ tục dân sự, hành chính và các quy định pháp lý mới nhất
             </p>
           </div>
@@ -104,42 +98,59 @@ const DNATestingBlog = () => {
       </section>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Featured Article */}
-        <section className="mb-16">
-          <h3 className="text-2xl font-bold text-gray-900 mb-8">Bài Viết Nổi Bật</h3>
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <section className="mb-20">
+          <div className="flex items-center mb-10">
+            <h3 className="text-3xl font-bold text-gray-800">Bài Viết Nổi Bật</h3>
+            <div className="ml-4 flex-1 h-px bg-gradient-to-r from-sky-300 to-transparent"></div>
+          </div>
+          
+          <div 
+            className="bg-white rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.02]"
+            style={{ 
+              boxShadow: '0 20px 60px rgba(135, 206, 235, 0.15)',
+              border: '1px solid rgba(135, 206, 235, 0.2)'
+            }}
+          >
             <div className="md:flex">
-              <div className="md:w-1/2">
+              <div className="md:w-1/2 relative overflow-hidden">
                 <img 
                   src={featuredArticle.image} 
                   alt={featuredArticle.title}
-                  className="w-full h-64 md:h-full object-cover"
+                  className="w-full h-64 md:h-full object-cover transition-transform duration-700 hover:scale-110"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
               </div>
-              <div className="md:w-1/2 p-8">
-                <div className="flex items-center space-x-4 mb-4">
-                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+              <div className="md:w-1/2 p-10">
+                <div className="flex items-center space-x-4 mb-6">
+                  <span 
+                    className="px-4 py-2 rounded-full text-sm font-semibold text-white"
+                    style={{ background: 'linear-gradient(135deg, #87ceeb, #5aa1d3)' }}
+                  >
                     {featuredArticle.category}
                   </span>
                   <div className="flex items-center text-gray-500 text-sm">
-                    <Calendar className="h-4 w-4 mr-1" />
+                    <Calendar className="h-4 w-4 mr-2" />
                     {featuredArticle.date}
                   </div>
                   <div className="flex items-center text-gray-500 text-sm">
-                    <Clock className="h-4 w-4 mr-1" />
+                    <Clock className="h-4 w-4 mr-2" />
                     {featuredArticle.readTime}
                   </div>
                 </div>
-                <h4 className="text-2xl font-bold text-gray-900 mb-4 leading-tight">
+                <h4 className="text-2xl font-bold text-gray-900 mb-6 leading-tight">
                   {featuredArticle.title}
                 </h4>
-                <p className="text-gray-600 mb-6 leading-relaxed">
+                <p className="text-gray-600 mb-8 leading-relaxed text-lg">
                   {featuredArticle.excerpt}
                 </p>
-                <button className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 transition-colors">
+                <button 
+                  className="inline-flex items-center px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105 text-white"
+                  style={{ background: 'linear-gradient(135deg, #87ceeb, #5aa1d3)' }}
+                >
                   Đọc Tiếp
-                  <ArrowRight className="h-4 w-4 ml-2" />
+                  <ArrowRight className="h-5 w-5 ml-2" />
                 </button>
               </div>
             </div>
@@ -147,151 +158,212 @@ const DNATestingBlog = () => {
         </section>
 
         {/* Latest News Section */}
-        <section className="mb-16">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-2xl font-bold text-gray-900">Tin Tức Mới Nhất</h3>
+        <section className="mb-20">
+          <div className="flex items-center justify-between mb-10">
+            <div className="flex items-center">
+              <h3 className="text-3xl font-bold text-gray-800">Tin Tức Mới Nhất</h3>
+              <div className="ml-4 flex-1 h-px bg-gradient-to-r from-sky-300 to-transparent"></div>
+            </div>
             <div className="flex items-center space-x-4">
-              <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-medium animate-pulse">
+              <span className="bg-red-50 text-red-600 px-4 py-2 rounded-full text-sm font-medium animate-pulse border border-red-100">
                 🔴 Đang cập nhật
               </span>
-              <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+              <button className="text-sky-600 hover:text-sky-700 font-semibold text-sm transition-colors">
                 Xem tất cả →
               </button>
             </div>
           </div>
           
           {/* Breaking News Banner */}
-          <div className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-6 rounded-xl mb-8 shadow-lg">
-            <div className="flex items-center space-x-3 mb-3">
-              <span className="bg-white text-red-500 px-3 py-1 rounded-full text-sm font-bold">NÓNG</span>
-              <span className="text-sm opacity-90">08/06/2025 - 14:30</span>
+          <div 
+            className="text-white p-8 rounded-2xl mb-10 relative overflow-hidden"
+            style={{ 
+              background: 'linear-gradient(135deg, #4a90e2 0%, #357abd 100%)',
+              boxShadow: '0 15px 50px rgba(74, 144, 226, 0.3)' 
+            }}
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+            
+            <div className="relative">
+              <div className="flex items-center space-x-3 mb-4">
+                <span className="bg-white text-red-500 px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                  NÓNG
+                </span>
+                <span className="text-sm opacity-90">08/06/2025 - 14:30</span>
+              </div>
+              <h4 className="text-2xl font-bold mb-3">
+                Bộ Y Tế Công Bố Danh Sách 15 Cơ Sở Xét Nghiệm ADN Mới Được Cấp Phép
+              </h4>
+              <p className="opacity-90 mb-6 text-lg">
+                Từ tháng 7/2025, 15 bệnh viện và phòng khám tư nhân được bổ sung vào danh sách thực hiện xét nghiệm ADN có giá trị pháp lý...
+              </p>
+              <button className="bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-300 hover:shadow-lg">
+                Đọc chi tiết
+              </button>
             </div>
-            <h4 className="text-xl font-bold mb-2">
-              Bộ Y Tế Công Bố Danh Sách 15 Cơ Sở Xét Nghiệm ADN Mới Được Cấp Phép
-            </h4>
-            <p className="text-red-100 mb-4">
-              Từ tháng 7/2025, 15 bệnh viện và phòng khám tư nhân được bổ sung vào danh sách thực hiện xét nghiệm ADN có giá trị pháp lý...
-            </p>
-            <button className="bg-white text-red-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-50 transition-colors">
-              Đọc chi tiết
-            </button>
           </div>
 
-        {/* Quick News Items */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-  <div className="relative bg-white p-6 rounded-xl border-l-4 border-blue-500 shadow-sm">
-    <button className="absolute top-4 right-4 text-blue-400 hover:text-gray-600 text-sm">
-      Xem thêm →
-    </button>
-    <div className="flex items-center space-x-2 mb-3">
-      <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs font-medium">
-        MỆnh lệnh tòa án
-      </span>
-      <span className="text-gray-500 text-sm">2 giờ trước</span>
-    </div>
-    <h5 className="font-bold text-gray-900 mb-2">
-      TAND TP.HCM Yêu Cầu Xét Nghiệm ADN Trong Vụ Tranh Chấp Thừa Kế 500 Tỷ
-    </h5>
-    <p className="text-gray-600 text-sm">
-      Tòa án quyết định yêu cầu 7 người con trong gia đình thực hiện xét nghiệm ADN để xác định...
-    </p>
-  </div>
+          {/* Quick News Items */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+            <div 
+              className="relative bg-white p-8 rounded-2xl transition-all duration-300 hover:scale-105"
+              style={{ 
+                borderLeft: '5px solid #87ceeb',
+                boxShadow: '0 10px 30px rgba(135, 206, 235, 0.1)',
+                border: '1px solid rgba(135, 206, 235, 0.15)'
+              }}
+            >
+              <button className="absolute top-6 right-6 text-sky-500 hover:text-sky-600 text-sm font-medium transition-colors">
+                Xem thêm →
+              </button>
+              <div className="flex items-center space-x-3 mb-4">
+                <span className="bg-blue-50 text-blue-600 px-3 py-2 rounded-lg text-xs font-semibold border border-blue-100">
+                  MỆNH LỆNH TÒA ÁN
+                </span>
+                <span className="text-gray-500 text-sm">2 giờ trước</span>
+              </div>
+              <h5 className="font-bold text-gray-900 mb-3 text-lg">
+                TAND TP.HCM Yêu Cầu Xét Nghiệm ADN Trong Vụ Tranh Chấp Thừa Kế 500 Tỷ
+              </h5>
+              <p className="text-gray-600">
+                Tòa án quyết định yêu cầu 7 người con trong gia đình thực hiện xét nghiệm ADN để xác định...
+              </p>
+            </div>
 
-  <div className="relative bg-white p-6 rounded-xl border-l-4 border-green-500 shadow-sm">
-    <button className="absolute top-4 right-4 text-blue-400 hover:text-gray-600 text-sm">
-      Xem thêm →
-    </button>
-    <div className="flex items-center space-x-2 mb-3">
-      <span className="bg-green-100 text-green-600 px-2 py-1 rounded text-xs font-medium">
-        CHÍNH SÁCH MỚI
-      </span>
-      <span className="text-gray-500 text-sm">5 giờ trước</span>
-    </div>
-    <h5 className="font-bold text-gray-900 mb-2">
-      Giảm 30% Chi Phí Xét Nghiệm ADN Cho Hộ Nghèo, Cận Nghèo
-    </h5>
-    <p className="text-gray-600 text-sm">
-      Bảo hiểm xã hội Việt Nam thông báo chính sách hỗ trợ chi phí xét nghiệm ADN...
-    </p>
-  </div>
+            <div 
+              className="relative bg-white p-8 rounded-2xl transition-all duration-300 hover:scale-105"
+              style={{ 
+                borderLeft: '5px solid #4ade80',
+                boxShadow: '0 10px 30px rgba(74, 222, 128, 0.1)',
+                border: '1px solid rgba(74, 222, 128, 0.15)'
+              }}
+            >
+              <button className="absolute top-6 right-6 text-sky-500 hover:text-sky-600 text-sm font-medium transition-colors">
+                Xem thêm →
+              </button>
+              <div className="flex items-center space-x-3 mb-4">
+                <span className="bg-green-50 text-green-600 px-3 py-2 rounded-lg text-xs font-semibold border border-green-100">
+                  CHÍNH SÁCH MỚI
+                </span>
+                <span className="text-gray-500 text-sm">5 giờ trước</span>
+              </div>
+              <h5 className="font-bold text-gray-900 mb-3 text-lg">
+                Giảm 30% Chi Phí Xét Nghiệm ADN Cho Hộ Nghèo, Cận Nghèo
+              </h5>
+              <p className="text-gray-600">
+                Bảo hiểm xã hội Việt Nam thông báo chính sách hỗ trợ chi phí xét nghiệm ADN...
+              </p>
+            </div>
 
-  <div className="relative bg-white p-6 rounded-xl border-l-4 border-yellow-500 shadow-sm">
-    <button className="absolute top-4 right-4 text-blue-400 hover:text-gray-600 text-sm">
-      Xem thêm →
-    </button>
-    <div className="flex items-center space-x-2 mb-3">
-      <span className="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs font-medium">
-        CẢNH BÁO
-      </span>
-      <span className="text-gray-500 text-sm">1 ngày trước</span>
-    </div>
-    <h5 className="font-bold text-gray-900 mb-2">
-      Phát Hiện Cơ Sở Làm Giả Kết Quả Xét Nghiệm ADN Tại Hà Nội
-    </h5>
-    <p className="text-gray-600 text-sm">
-      Cơ quan chức năng đã đóng cửa một phòng khám tư nhân vì làm giả kết quả xét nghiệm...
-    </p>
-  </div>
+            <div 
+              className="relative bg-white p-8 rounded-2xl transition-all duration-300 hover:scale-105"
+              style={{ 
+                borderLeft: '5px solid #fbbf24',
+                boxShadow: '0 10px 30px rgba(251, 191, 36, 0.1)',
+                border: '1px solid rgba(251, 191, 36, 0.15)'
+              }}
+            >
+              <button className="absolute top-6 right-6 text-sky-500 hover:text-sky-600 text-sm font-medium transition-colors">
+                Xem thêm →
+              </button>
+              <div className="flex items-center space-x-3 mb-4">
+                <span className="bg-yellow-50 text-yellow-600 px-3 py-2 rounded-lg text-xs font-semibold border border-yellow-100">
+                  CẢNH BÁO
+                </span>
+                <span className="text-gray-500 text-sm">1 ngày trước</span>
+              </div>
+              <h5 className="font-bold text-gray-900 mb-3 text-lg">
+                Phát Hiện Cơ Sở Làm Giả Kết Quả Xét Nghiệm ADN Tại Hà Nội
+              </h5>
+              <p className="text-gray-600">
+                Cơ quan chức năng đã đóng cửa một phòng khám tư nhân vì làm giả kết quả xét nghiệm...
+              </p>
+            </div>
 
-  <div className="relative bg-white p-6 rounded-xl border-l-4 border-purple-500 shadow-sm">
-    <button className="absolute top-4 right-4 text-blue-400 hover:text-blue-600 text-sm">
-      Xem thêm →
-    </button>
-    <div className="flex items-center space-x-2 mb-3">
-      <span className="bg-purple-100 text-purple-600 px-2 py-1 rounded text-xs font-medium">
-        CÔNG NGHỆ
-      </span>
-      <span className="text-gray-500 text-sm">2 ngày trước</span>
-    </div>
-    <h5 className="font-bold text-gray-900 mb-2">
-      Ra Mắt Hệ Thống Xét Nghiệm ADN Tự Động Đầu Tiên Tại Việt Nam
-    </h5>
-    <p className="text-gray-600 text-sm">
-      Bệnh viện Chợ Rẫy đưa vào hoạt động hệ thống xét nghiệm ADN tự động, rút ngắn thời gian...
-    </p>
-  </div>
-</div>
-
+            <div 
+              className="relative bg-white p-8 rounded-2xl transition-all duration-300 hover:scale-105"
+              style={{ 
+                borderLeft: '5px solid #a855f7',
+                boxShadow: '0 10px 30px rgba(168, 85, 247, 0.1)',
+                border: '1px solid rgba(168, 85, 247, 0.15)'
+              }}
+            >
+              <button className="absolute top-6 right-6 text-sky-500 hover:text-sky-600 text-sm font-medium transition-colors">
+                Xem thêm →
+              </button>
+              <div className="flex items-center space-x-3 mb-4">
+                <span className="bg-purple-50 text-purple-600 px-3 py-2 rounded-lg text-xs font-semibold border border-purple-100">
+                  CÔNG NGHỆ
+                </span>
+                <span className="text-gray-500 text-sm">2 ngày trước</span>
+              </div>
+              <h5 className="font-bold text-gray-900 mb-3 text-lg">
+                Ra Mắt Hệ Thống Xét Nghiệm ADN Tự Động Đầu Tiên Tại Việt Nam
+              </h5>
+              <p className="text-gray-600">
+                Bệnh viện Chợ Rẫy đưa vào hoạt động hệ thống xét nghiệm ADN tự động, rút ngắn thời gian...
+              </p>
+            </div>
+          </div>
         </section>
 
         {/* Articles Grid */}
         <section>
-          <h3 className="text-2xl font-bold text-gray-900 mb-8">Bài Viết Chuyên Sâu</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="flex items-center mb-12">
+            <h3 className="text-3xl font-bold text-gray-800">Bài Viết Chuyên Sâu</h3>
+            <div className="ml-4 flex-1 h-px bg-gradient-to-r from-sky-300 to-transparent"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {regularArticles.map((article) => (
-              <article key={article.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                <div className="relative">
+              <article 
+                key={article.id} 
+                className="bg-white rounded-2xl overflow-hidden transition-all duration-500 hover:scale-105 hover:rotate-1 group"
+                style={{ 
+                  boxShadow: '0 15px 45px rgba(135, 206, 235, 0.1)',
+                  border: '1px solid rgba(135, 206, 235, 0.15)'
+                }}
+              >
+                <div className="relative overflow-hidden">
                   <img 
                     src={article.image} 
                     alt={article.title}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-110"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="absolute top-4 left-4">
-                    <span className="bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-1 rounded-full text-sm font-medium">
+                    <span 
+                      className="text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg"
+                      style={{ background: 'linear-gradient(135deg, #87ceeb, #5aa1d3)' }}
+                    >
                       {article.category}
                     </span>
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center space-x-4 mb-3 text-sm text-gray-500">
+                <div className="p-8">
+                  <div className="flex items-center space-x-4 mb-4 text-sm text-gray-500">
                     <div className="flex items-center">
-                      <Calendar className="h-4 w-4 mr-1" />
+                      <Calendar className="h-4 w-4 mr-2" />
                       {article.date}
                     </div>
                     <div className="flex items-center">
-                      <Clock className="h-4 w-4 mr-1" />
+                      <Clock className="h-4 w-4 mr-2" />
                       {article.readTime}
                     </div>
                   </div>
-                  <h4 className="text-lg font-bold text-gray-900 mb-3 leading-tight line-clamp-2">
+                  <h4 className="text-xl font-bold text-gray-900 mb-4 leading-tight line-clamp-2 group-hover:text-sky-700 transition-colors">
                     {article.title}
                   </h4>
-                  <p className="text-gray-600 mb-4 text-sm leading-relaxed line-clamp-3">
+                  <p className="text-gray-600 mb-6 leading-relaxed line-clamp-3">
                     {article.excerpt}
                   </p>
-                  <button className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 transition-colors text-sm">
+                  <button 
+                    className="inline-flex items-center px-5 py-2.5 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg text-white"
+                    style={{ background: 'linear-gradient(135deg, #87ceeb, #5aa1d3)' }}
+                  >
                     Đọc Thêm
-                    <ArrowRight className="h-3 w-3 ml-2" />
+                    <ArrowRight className="h-4 w-4 ml-2" />
                   </button>
                 </div>
               </article>
@@ -300,14 +372,17 @@ const DNATestingBlog = () => {
         </section>
 
         {/* Load More Button */}
-        <div className="text-center mt-12">
-          <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+        <div className="text-center mt-16">
+          <button 
+            className="px-10 py-4 rounded-2xl font-bold text-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 text-white"
+            style={{ background: 'linear-gradient(135deg, #87ceeb 0%, #5aa1d3 100%)' }}
+          >
             Xem Thêm Bài Viết
           </button>
         </div>
       </main>
 
-    {/* FOOTER - PHẦN MỚI THÊM */}
+     {/* FOOTER - PHẦN MỚI THÊM */}
       <footer
         className="bg-gradient-to-br text-white"
         style={{ backgroundColor: "#529ADE" }}

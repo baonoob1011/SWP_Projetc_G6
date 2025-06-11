@@ -190,7 +190,7 @@ export default function Home() {
               className="bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <input
-              type="text"
+              type="text"     
               placeholder="Dịch vụ quan tâm"
               className="bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
