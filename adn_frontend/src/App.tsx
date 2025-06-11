@@ -43,6 +43,7 @@ import Services from './components/mainContents/services/CreateServices';
 import SignUp from './components/page/SignUp';
 import Forget from './components/page/Forget';
 import Login from './components/page/Login';
+import CreateRoom from './components/mainContents/feature/CreateRoom';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -137,6 +138,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <CreateLocation />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/room"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <CreateRoom />
                   </ProtectedRoute>
                 }
               />
