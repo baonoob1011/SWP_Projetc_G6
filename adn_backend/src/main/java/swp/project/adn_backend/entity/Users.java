@@ -73,16 +73,6 @@ public class Users {
     @Column(name = "role")
     private Set<String> roles;
 
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
-
-    public Users() {
-    }
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Blog> blogs;
@@ -90,8 +80,8 @@ public class Users {
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Patient> patients;
 
-    @OneToOne(mappedBy = "users", cascade = CascadeType.ALL)
-    Appointment appointments;
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<Appointment> appointments;
 
 //    @ManyToMany(fetch = FetchType.LAZY, cascade = {
 //            CascadeType.PERSIST, CascadeType.MERGE,
@@ -110,18 +100,26 @@ public class Users {
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Staff> staff;
 
-    @OneToOne(mappedBy = "users", cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    Slot slots;
+//    @OneToOne(mappedBy = "users", cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    Slot slots;
 
-    public Slot getSlots() {
-        return slots;
+//    public Slot getSlots() {
+//        return slots;
+//    }
+//
+//    public void setSlots(Slot slots) {
+//        this.slots = slots;
+//    }
+
+    public Set<String> getRoles() {
+        return roles;
     }
 
-    public void setSlots(Slot slots) {
-        this.slots = slots;
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
     public List<Blog> getBlogs() {
@@ -252,14 +250,13 @@ public class Users {
         this.patients = patients;
     }
 
-    public Appointment getAppointments() {
+    public List<Appointment> getAppointments() {
         return appointments;
     }
 
-    public void setAppointments(Appointment appointments) {
+    public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
     }
-
 
     public List<Feedback> getFeedbacks() {
         return feedbacks;

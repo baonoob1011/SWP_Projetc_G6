@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import CustomSnackBar from '../userinfor/Snackbar';
-import Swal from 'sweetalert2';
+import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
 
 type Schedule = {
   staffId: string;
@@ -19,17 +18,14 @@ const StaffSchedule = () => {
     endTime: '',
   });
   const [auth, setAuth] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     setAuth(
       localStorage.getItem('role') === 'ADMIN' ||
         localStorage.getItem('role') === 'MANAGER'
     );
   }, []);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success' as 'success' | 'error',
-  });
 
   useEffect(() => {
     setIsSchedule((prev) => ({
@@ -69,32 +65,20 @@ const StaffSchedule = () => {
       );
 
       if (!res.ok) {
-        setSnackbar({
-          open: true,
-          message: 'Không thể đăng ký',
-          severity: 'error',
-        });
-      } else {
-        Swal.fire({
-          icon: 'success',
-          title: 'Xếp lịch thành công',
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        setIsSchedule((prev) => ({
-          ...prev,
-          slotDate: '',
-          startTime: '',
-          endTime: '',
-        }));
+        setError('Không thể đăng ký');
+        return;
       }
+
+      showSuccessAlert('Thành công', 'Xếp lịch thành công');
+      setIsSchedule((prev) => ({
+        ...prev,
+        slotDate: '',
+        startTime: '',
+        endTime: '',
+      }));
     } catch (error) {
       console.log(error);
-      setSnackbar({
-        open: true,
-        message: 'Lỗi hệ thống',
-        severity: 'error',
-      });
+      setError('Lỗi hệ thống');
     }
   };
 
@@ -108,6 +92,7 @@ const StaffSchedule = () => {
 
   return (
     <>
+      {error && showErrorSnackbar(error)}
       <form
         onSubmit={handleSubmit}
         className="p-4 border rounded bg-light"
@@ -162,13 +147,6 @@ const StaffSchedule = () => {
           Đăng ký
         </button>
       </form>
-
-      <CustomSnackBar
-        open={snackbar.open}
-        message={snackbar.message}
-        severity={snackbar.severity}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-      />
     </>
   );
 };

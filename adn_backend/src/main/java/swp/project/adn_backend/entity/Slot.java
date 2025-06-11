@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import swp.project.adn_backend.enums.SlotStatus;
 
 import java.sql.Time;
 import java.time.LocalDate;
@@ -23,16 +24,19 @@ public class Slot {
     @Column(name = "slot_date")
     LocalDate slotDate;
     @Column(name = "start_time")
-    Time startTime;
+    Time  startTime;
     @Column(name = "end_time")
-    Time endTime;
+    Time  endTime;
 
-    @OneToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    @JoinColumn(name = "user_id")
-    Users users;
+    @Enumerated(EnumType.STRING)
+    SlotStatus slotStatus;
+
+//    @OneToOne(cascade = {
+//            CascadeType.PERSIST, CascadeType.MERGE,
+//            CascadeType.DETACH, CascadeType.REFRESH
+//    })
+//    @JoinColumn(name = "user_id")
+//    Users users;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -40,6 +44,14 @@ public class Slot {
     })
     @JoinColumn(name = "staff_id")
     Staff staff;
+
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    @JoinColumn(name = "room_id")
+    Room room;
+
 
     @OneToMany(mappedBy = "slot", fetch = FetchType.LAZY, cascade = {
             CascadeType.ALL
@@ -54,17 +66,23 @@ public class Slot {
         this.appointment = appointment;
     }
 
-    public Time getStartTime() {
-        return startTime;
+
+    public Room getRoom() {
+        return room;
     }
 
-    public Users getUsers() {
-        return users;
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
-    public void setUsers(Users users) {
-        this.users = users;
-    }
+    //
+//    public Users getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(Users users) {
+//        this.users = users;
+//    }
 
     public Staff getStaff() {
         return staff;
@@ -74,7 +92,17 @@ public class Slot {
         this.staff = staff;
     }
 
+    public SlotStatus getSlotStatus() {
+        return slotStatus;
+    }
 
+    public void setSlotStatus(SlotStatus slotStatus) {
+        this.slotStatus = slotStatus;
+    }
+
+    public Time getStartTime() {
+        return startTime;
+    }
 
     public void setStartTime(Time startTime) {
         this.startTime = startTime;

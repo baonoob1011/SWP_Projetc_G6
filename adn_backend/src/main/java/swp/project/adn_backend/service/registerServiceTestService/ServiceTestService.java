@@ -1,4 +1,4 @@
-package swp.project.adn_backend.service;
+package swp.project.adn_backend.service.registerServiceTestService;
 
 
 import jakarta.persistence.EntityManager;
@@ -6,11 +6,9 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import swp.project.adn_backend.dto.request.serviceRequest.CivilServiceRequest;
 import swp.project.adn_backend.dto.request.serviceRequest.PriceListRequest;
 import swp.project.adn_backend.dto.request.serviceRequest.ServiceRequest;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateServiceTestRequest;
@@ -22,7 +20,6 @@ import swp.project.adn_backend.enums.ServiceType;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.*;
 import swp.project.adn_backend.repository.*;
-import swp.project.adn_backend.dto.request.serviceRequest.AdministrativeServiceRequest;
 
 import java.io.IOException;
 import java.time.LocalDate;

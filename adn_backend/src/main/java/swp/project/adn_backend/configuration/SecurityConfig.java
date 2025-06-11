@@ -47,7 +47,7 @@ public class SecurityConfig {
     };
 
     private final String[] USER_ENDPOINTS = {
-            "/api/appointment/book-appointment",
+            "/api/appointment/book-appointment/**",
             "/api/patient/register-info",
             "/api/user/**"
     };
@@ -63,7 +63,9 @@ public class SecurityConfig {
             "/api/services/**",
             "/api/blog/**",
             "/api/slot/**",
-            "/api/price/**"
+            "/api/price/**",
+            "/api/location/**",
+            "/api/room/**"
     };
 
     private final String[] ADMIN_ENDPOINTS = {

@@ -1,4 +1,7 @@
+import { Button } from '@mui/material';
+import { Plus } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 type PriceItem = {
   time: string;
@@ -11,6 +14,7 @@ type ServiceResponse = {
 
 type ServiceItem = {
   serviceRequest: {
+    serviceId: number;
     serviceName: string;
     description: string;
     serviceType: string;
@@ -79,87 +83,6 @@ const AdministrativeServiceList = () => {
   if (error) return <p style={{ color: 'red' }}>Lỗi: {error}</p>;
 
   return (
-    // <section>
-    //   <div style={{ padding: '20px' }}>
-    //     <h2 style={{ marginBottom: '20px' }}>Danh sách dịch vụ dân sự</h2>
-    //     {services.length === 0 ? (
-    //       <p>Không có dịch vụ nào.</p>
-    //     ) : (
-    //       services.map((service, index) => (
-    //         <div
-    //           key={index}
-    //           style={{
-    //             border: '1px solid #ccc',
-    //             borderRadius: '10px',
-    //             padding: '20px',
-    //             marginBottom: '20px',
-    //             backgroundColor: '#f9f9f9',
-    //             boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-    //             display: 'flex',
-    //             gap: '20px',
-    //             alignItems: 'flex-start',
-    //             flexWrap: 'wrap',
-    //           }}
-    //         >
-    //           {/* Cột ảnh */}
-    //           {service.serviceRequest.image && (
-    //             <img
-    //               src={`data:image/*;base64,${service.serviceRequest.image}`}
-    //               alt={service.serviceRequest.serviceName}
-    //               style={{
-    //                 width: '250px',
-    //                 height: 'auto',
-    //                 borderRadius: '8px',
-    //                 objectFit: 'cover',
-    //               }}
-    //             />
-    //           )}
-
-    //           {/* Nội dung mô tả */}
-    //           <div style={{ flex: '1', minWidth: '250px' }}>
-    //             <h3>{service.serviceRequest.serviceName}</h3>
-    //             <p>
-    //               <strong>Loại:</strong>{' '}
-    //               {translateServiceType(service.serviceRequest.serviceType)}
-    //             </p>
-    //             <p>
-    //               <strong>Mô tả:</strong> {service.serviceRequest.description}
-    //             </p>
-
-    //             <div style={{ marginTop: '15px' }}>
-    //               <strong>Bảng giá:</strong>
-    //               {service.priceListRequest?.map((item, idx) => (
-    //                 <div key={idx} style={{ marginTop: 10 }}>
-    //                   <div>
-    //                     <strong>Thời gian:</strong> {item.time}
-    //                   </div>
-    //                   <div style={{ marginTop: 5 }}>
-    //                     <strong>Giá tiền:</strong> {item.price.toLocaleString()}{' '}
-    //                     VNĐ
-    //                   </div>
-    //                 </div>
-    //               ))}
-    //             </div>
-
-    //             <div style={{ marginTop: '15px' }}>
-    //               <strong>Phương pháp lấy mẫu:</strong>
-    //               {service.serviceResponses?.[0]?.sampleCollectionMethods
-    //                 .length ? (
-    //                 service.serviceResponses[0].sampleCollectionMethods.map(
-    //                   (method, idx) => (
-    //                     <p key={idx}>{translateSampleMethod(method)}</p>
-    //                   )
-    //                 )
-    //               ) : (
-    //                 <p>Không có dữ liệu</p>
-    //               )}
-    //             </div>
-    //           </div>
-    //         </div>
-    //       ))
-    //     )}
-    //   </div>
-    // </section>
     <section>
       <div style={{ padding: '20px' }}>
         <h2 style={{ marginBottom: '20px' }}>Danh sách dịch vụ dân sự</h2>
@@ -243,6 +166,16 @@ const AdministrativeServiceList = () => {
                     <p>Không có dữ liệu</p>
                   )}
                 </div>
+                <Button
+                  variant="contained"
+                  component={NavLink}
+                  to={`order/${service.serviceRequest.serviceId}`}
+                  color="error"
+                  size="small"
+                  sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}
+                >
+                  <Plus size={10} />
+                </Button>
               </div>
             ))}
           </div>

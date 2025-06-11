@@ -18,7 +18,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Manager {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "manager_id")
     long managerId;
 

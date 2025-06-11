@@ -50,8 +50,6 @@ public class GlobalException {
     }
 
 
-
-
     @ExceptionHandler(value = NoResourceFoundException.class)
     ResponseEntity<APIResponse> handlingNoResourceFoundException(NoResourceFoundException e) {
         APIResponse apiResponse = new APIResponse<>();

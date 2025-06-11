@@ -1,4 +1,4 @@
-package swp.project.adn_backend.service.registerServiceTestService;
+package swp.project.adn_backend.service.roleService;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.entity.Patient;
+import swp.project.adn_backend.entity.ServiceTest;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.Roles;
@@ -18,7 +19,6 @@ import swp.project.adn_backend.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -37,21 +37,18 @@ public class PatientService {
     }
 
     public List<Patient> registerServiceTest(List<PatientRequest> patientRequest
-            , Authentication authentication) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        Long userId = jwt.getClaim("id");
-        Users userCreated = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+            , Users userBookAppointment, ServiceTest serviceTest) {
         List<Patient> patientList = new ArrayList<>();
         for (PatientRequest request : patientRequest) {
             Patient patient = patientMapper.toPatientRequest(request);
             patient.setCreateAt(LocalDate.now());
             patient.setRole(Roles.PATIENT.name());
-            patient.setUsers(userCreated);
+            patient.setUsers(userBookAppointment);
+            patient.setServiceTest(serviceTest);
             patientList.add(patient);
         }
 
-        userCreated.setPatients(patientList);
+        userBookAppointment.setPatients(patientList);
         patientRepository.saveAll(patientList);
 
         // Trả về danh sách bệnh nhân đã được lưu

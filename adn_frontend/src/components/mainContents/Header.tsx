@@ -266,48 +266,12 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   >
                     <MenuItem
                       component={NavLink}
-                      to="/signup-Staff"
+                      to="/m-page"
                       onClick={handleCloseMenu}
                       className={styles.menuItem}
                       sx={{ px: 2, py: 1 }}
                     >
-                      Đăng ký nhân viên
-                    </MenuItem>
-                    <MenuItem
-                      component={NavLink}
-                      to="/m-userData"
-                      onClick={handleCloseMenu}
-                      className={styles.menuItem}
-                      sx={{ px: 2, py: 1 }}
-                    >
-                      Danh sách người dùng
-                    </MenuItem>
-                    <MenuItem
-                      component={NavLink}
-                      to="/m-staffData"
-                      onClick={handleCloseMenu}
-                      className={styles.menuItem}
-                      sx={{ px: 2, py: 1 }}
-                    >
-                      Danh sách nhân viên
-                    </MenuItem>
-                    <MenuItem
-                      component={NavLink}
-                      to="/create-services"
-                      onClick={handleCloseMenu}
-                      className={styles.menuItem}
-                      sx={{ px: 2, py: 1 }}
-                    >
-                      Tạo dịch vụ
-                    </MenuItem>
-                    <MenuItem
-                      component={NavLink}
-                      to="/m-getAllService"
-                      onClick={handleCloseMenu}
-                      className={styles.menuItem}
-                      sx={{ px: 2, py: 1 }}
-                    >
-                      Xem dịch vụ
+                      Trang làm việc
                     </MenuItem>
                     <MenuItem
                       component={NavLink}
@@ -351,21 +315,12 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   >
                     <MenuItem
                       component={NavLink}
-                      to="/s-m-profile"
+                      to="/s-page"
                       onClick={handleCloseMenu}
                       className={styles.menuItem}
                       sx={{ px: 2, py: 1 }}
                     >
-                      Xem thông tin
-                    </MenuItem>
-                    <MenuItem
-                      component={NavLink}
-                      to="/s-userData"
-                      onClick={handleCloseMenu}
-                      className={styles.menuItem}
-                      sx={{ px: 2, py: 1 }}
-                    >
-                      Xem danh sách người dùng
+                      Trang làm việc
                     </MenuItem>
                     <MenuItem
                       onClick={() => {

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import swp.project.adn_backend.dto.request.slot.GetFullSlotResponse;
+import swp.project.adn_backend.dto.response.slot.GetFullSlotResponse;
 import swp.project.adn_backend.dto.request.slot.SlotRequest;
 import swp.project.adn_backend.entity.Slot;
 import swp.project.adn_backend.service.slot.SlotService;
@@ -23,16 +23,16 @@ public class SlotController {
 
     @PostMapping("/create-slot/{staffId}")
     public ResponseEntity<Slot> staffId(@RequestBody @Valid SlotRequest slotRequest,
-                                        Authentication authentication,
+                                        @RequestParam long roomId,
                                         @PathVariable("staffId") long staffId) {
-        return ResponseEntity.ok(slotService.createSlot(slotRequest, authentication, staffId));
+        return ResponseEntity.ok(slotService.createSlot(slotRequest,roomId , staffId));
     }
 
     @GetMapping("/get-all-slot")
     public ResponseEntity<List<GetFullSlotResponse>> getAllSlot() {
         return ResponseEntity.ok(slotService.getAllSlot());
     }
-
+    
     @DeleteMapping("/delete-slot/{slotId}")
     public ResponseEntity<String> deleteSlot(@PathVariable("slotId") long slotId) {
         slotService.deleteSlot(slotId);

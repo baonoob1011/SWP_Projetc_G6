@@ -3,6 +3,7 @@ package swp.project.adn_backend.dto.response.serviceResponse;
 import swp.project.adn_backend.enums.ServiceType;
 
 public class ServiceTestResponse {
+    private long serviceId;
     private String serviceName;
     private String description;
     private ServiceType serviceType;
@@ -11,11 +12,20 @@ public class ServiceTestResponse {
     public ServiceTestResponse() {
     }
 
-    public ServiceTestResponse(String serviceName, String description, ServiceType serviceType, String image) {
+    public ServiceTestResponse(long serviceId, String serviceName, String description, ServiceType serviceType, String image) {
+        this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.description = description;
         this.serviceType = serviceType;
         this.image = image;
+    }
+
+    public long getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(long serviceId) {
+        this.serviceId = serviceId;
     }
 
     public String getServiceName() {

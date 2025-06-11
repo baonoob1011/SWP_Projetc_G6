@@ -24,10 +24,10 @@ public class ServiceTest {
     @Column(name = "service_id")
     long serviceId;
 
-    @Column(name = "service_name",columnDefinition = "nvarchar(255)")
+    @Column(name = "service_name", columnDefinition = "nvarchar(255)")
     String serviceName;
 
-    @Column(name = "registed_date",columnDefinition = "nvarchar(255)")
+    @Column(name = "registed_date", columnDefinition = "nvarchar(255)")
     LocalDate registerDate;
 
     @Column(columnDefinition = "nvarchar(255)")
@@ -57,11 +57,10 @@ public class ServiceTest {
 //    @JoinColumn(name = "manager_id", nullable = false)
 //    Manager manager;
 
-    @OneToOne(mappedBy = "services",cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
+    @OneToMany(mappedBy = "services", fetch = FetchType.EAGER, cascade = {
+            CascadeType.ALL
     })
-   Appointment appointments;
+    List<Appointment> appointments;
 
     @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
             CascadeType.ALL
@@ -88,25 +87,42 @@ public class ServiceTest {
     })
     List<Discount> discounts;
 
+    @OneToMany(mappedBy = "serviceTest", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<Patient> patients;
     public ServiceTest() {
     }
 
-    public ServiceTest(String serviceName, LocalDate registerDate, String description, ServiceType serviceType, boolean isActive, String image) {
+    public ServiceTest(long serviceId, String serviceName, LocalDate registerDate, String description, ServiceType serviceType, boolean isActive, String image, List<Appointment> appointments, List<CivilService> civilServices, List<AdministrativeService> administrativeService, List<Feedback> feedbacks, List<PriceList> priceLists, List<Discount> discounts) {
+        this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.registerDate = registerDate;
         this.description = description;
         this.serviceType = serviceType;
         this.isActive = isActive;
         this.image = image;
+        this.appointments = appointments;
+        this.civilServices = civilServices;
+        this.administrativeService = administrativeService;
+        this.feedbacks = feedbacks;
+        this.priceLists = priceLists;
+        this.discounts = discounts;
     }
 
-//    public Manager getManager() {
+    //    public Manager getManager() {
 //        return manager;
 //    }
 //
 //    public void setManager(Manager manager) {
 //        this.manager = manager;
 //    }
+
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<Patient> patients) {
+        this.patients = patients;
+    }
 
     public long getServiceId() {
         return serviceId;
@@ -172,11 +188,12 @@ public class ServiceTest {
 //        this.users = users;
 //    }
 
-    public Appointment getAppointments() {
+
+    public List<Appointment> getAppointments() {
         return appointments;
     }
 
-    public void setAppointments(Appointment appointments) {
+    public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
     }
 

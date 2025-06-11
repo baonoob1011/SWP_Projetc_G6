@@ -84,8 +84,8 @@ public class ManagerService {
     @Transactional(readOnly = true)
     public List<StaffInfoDTO> getAllStaff() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO(" +
-                "s.staffId, s.fullName, s.phone, s.email, s.enabled, s.createAt, " +
-                "s.role, s.idCard, s.gender, s.address, s.dateOfBirth) " +
+                "s.staffId, s.fullName, s.phone, s.email, " +
+                "s.idCard, s.gender, s.address, s.dateOfBirth) " +
                 "FROM Staff s";
 
         TypedQuery<StaffInfoDTO> query = entityManager.createQuery(jpql, StaffInfoDTO.class);
@@ -124,14 +124,18 @@ public class ManagerService {
         validateUpdateManager(updateStaffAndManagerRequest, existingUser);
 
 
+
         // Validate và cập nhật password
-        if (updateStaffAndManagerRequest.getPassword() != null) {
-            if (updateStaffAndManagerRequest.getOldPassword() == null ||
-                    !passwordEncoder.matches(updateStaffAndManagerRequest.getOldPassword(), existingUser.getPassword())) {
+        if (updateStaffAndManagerRequest.getOldPassword() != null) {
+            if (!passwordEncoder.matches(updateStaffAndManagerRequest.getOldPassword(), existingUser.getPassword())) {
                 throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
             }
+        }
 
-            if (!passwordEncoder.matches(updateStaffAndManagerRequest.getPassword(), existingUser.getPassword())) {
+        // Validate và cập nhật password
+        if (updateStaffAndManagerRequest.getPassword() != null && updateStaffAndManagerRequest.getConfirmPassword() != null) {
+            if (!passwordEncoder.matches(updateStaffAndManagerRequest.getPassword(), existingUser.getPassword())
+                    && updateStaffAndManagerRequest.getConfirmPassword().equals(updateStaffAndManagerRequest.getPassword())) {
                 existingUser.setPassword(passwordEncoder.encode(updateStaffAndManagerRequest.getPassword()));
             } else {
                 throw new AppException(ErrorCodeUser.PASSWORD_EXISTED);

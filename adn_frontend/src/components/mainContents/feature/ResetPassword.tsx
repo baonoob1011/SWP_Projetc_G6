@@ -2,7 +2,7 @@ import { Button, Paper, TextField, Box } from '@mui/material';
 import { useState } from 'react';
 import CustomSnackBar from '../userinfor/Snackbar';
 import Swal from 'sweetalert2';
-import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 type ChangPass = {
   password: string;
@@ -23,6 +23,7 @@ const NewPassWord = ({ role }: NewPassWordProps) => {
     message: '',
     severity: 'success' as 'success' | 'error',
   });
+  const navigate = useNavigate();
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -57,7 +58,7 @@ const NewPassWord = ({ role }: NewPassWordProps) => {
 
     const apiMap = {
       USER: 'http://localhost:8080/api/user/update-user',
-      STAFF: 'http://localhost:8080/api/staff/update-staff',
+      STAFF: 'http://localhost:8080/api/staff/update-profile',
       MANAGER: 'http://localhost:8080/api/manager/update-manager',
     };
 
@@ -77,7 +78,7 @@ const NewPassWord = ({ role }: NewPassWordProps) => {
       if (!res.ok) {
         setSnackbar({
           open: true,
-          message: 'Mật khẩu cũ không đúng',
+          message: 'Mật khẩu không khớp',
           severity: 'error',
         });
       } else {
@@ -87,10 +88,7 @@ const NewPassWord = ({ role }: NewPassWordProps) => {
           showConfirmButton: false,
           timer: 1500,
         });
-        setNewPassWord({
-          password: '',
-          confirmPassword: '',
-        });
+        navigate('/u-profile');
       }
     } catch (error) {
       console.log(error);
@@ -134,14 +132,7 @@ const NewPassWord = ({ role }: NewPassWordProps) => {
           sx={{ mb: 2 }}
         />
 
-        <Button
-          component={NavLink}
-          to="/u-profile"
-          variant="contained"
-          color="primary"
-          type="submit"
-          fullWidth
-        >
+        <Button variant="contained" color="primary" type="submit" fullWidth>
           Xác nhận
         </Button>
       </Paper>

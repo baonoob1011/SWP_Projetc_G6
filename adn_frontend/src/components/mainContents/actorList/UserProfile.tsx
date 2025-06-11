@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
+
 import { User, Mail, Phone, Save, Key, Edit3, Dna, TestTube, Microscope, Activity, Shield, FileText, CheckCircle } from 'lucide-react';
+
+import { Paper, Typography, Box, Button, TextField } from '@mui/material';
+import { jwtDecode } from 'jwt-decode';
+import { NavLink } from 'react-router-dom';
+import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
+
 
 type UserProfile = {
   fullName: string;
@@ -19,7 +26,11 @@ const UserProfile: React.FC = () => {
     phone: '',
   });
   const [editableField, setEditableField] = useState<string | null>(null);
+
   const [showNotification, setShowNotification] = useState(false);
+
+  const [error, setError] = useState<string | null>(null);
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -46,9 +57,16 @@ const UserProfile: React.FC = () => {
       const decoded = decodeJWT(token);
       if (decoded) {
         setUser(decoded);
+
         setUpdateUser(decoded);
       } else {
         navigate('/login');
+
+        setUpdateUser(decoded); // show thông tin sẵn cho editUser
+      } catch (error) {
+        console.error('Lỗi giải mã token:', error);
+        setError('Không thể đọc thông tin người dùng');
+
       }
     } catch (err) {
       console.error('Invalid token', err);
@@ -63,6 +81,7 @@ const UserProfile: React.FC = () => {
 
   const handleSave = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
     
     setUser(updateUser);
     setEditableField(null);
@@ -78,6 +97,31 @@ const UserProfile: React.FC = () => {
   const handleFieldCancel = () => {
     setEditableField(null);
     if (user) setUpdateUser(user);
+
+    try {
+      const res = await fetch('http://localhost:8080/api/user/update-user', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(updateUser),
+      });
+
+      if (!res.ok) {
+        setError('Cập nhật thất bại!');
+        return;
+      }
+
+      const updated = await res.json();
+      showSuccessAlert('Thành công', 'Cập nhật thông tin thành công!');
+      setUser(updated);
+      setUpdateUser(updated);
+      setEditableField(null);
+    } catch (error) {
+      console.log(error);
+      setError('Lỗi kết nối với hệ thống');
+    }
   };
 
   if (!user) {
@@ -104,6 +148,7 @@ const UserProfile: React.FC = () => {
   }
 
   return (
+
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-blue-50 to-teal-100 relative overflow-hidden">
       {/* Success Notification Overlay */}
       {showNotification && (
@@ -344,6 +389,104 @@ const UserProfile: React.FC = () => {
 
     
     </div>
+
+    <>
+      {error && showErrorSnackbar(error)}
+      <Box
+        component="form"
+        onSubmit={handleSave}
+        sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}
+      >
+        <Paper
+          sx={{
+            p: 4,
+            width: 400,
+            borderRadius: 3,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+            backgroundColor: '#f9f9f9',
+          }}
+        >
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{
+              mb: 3,
+              fontWeight: 'bold',
+              color: '#333',
+              borderBottom: '2px solid #1976d2',
+              pb: 1,
+            }}
+          >
+            Thông tin cá nhân
+          </Typography>
+
+          {/** Input mỗi field chỉ editable khi field đó đang được chọn */}
+          <TextField
+            label="Họ và tên"
+            name="fullName"
+            value={updateUser.fullName}
+            onChange={handleInput}
+            fullWidth
+            margin="normal"
+            InputProps={{
+              readOnly: editableField !== 'fullName',
+            }}
+            onClick={() => setEditableField('fullName')}
+            onBlur={() => setEditableField(null)}
+          />
+
+          <TextField
+            label="Email"
+            name="email"
+            value={updateUser.email}
+            onChange={handleInput}
+            fullWidth
+            margin="normal"
+            type="email"
+            InputProps={{
+              readOnly: editableField !== 'email',
+            }}
+            onClick={() => setEditableField('email')}
+            onBlur={() => setEditableField(null)}
+          />
+
+          <TextField
+            label="Số điện thoại"
+            name="phone"
+            value={updateUser.phone}
+            onChange={handleInput}
+            fullWidth
+            margin="normal"
+            InputProps={{
+              readOnly: editableField !== 'phone',
+            }}
+            onClick={() => setEditableField('phone')}
+            onBlur={() => setEditableField(null)}
+          />
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 3 }}
+          >
+            Lưu thay đổi
+          </Button>
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            component={NavLink}
+            to="/change-pass"
+            sx={{ mt: 3 }}
+          >
+            Đổi mật khẩu
+          </Button>
+        </Paper>
+      </Box>
+    </>
+
   );
 };
 

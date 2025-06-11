@@ -11,9 +11,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "Patient")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Patient {
@@ -41,7 +38,7 @@ public class Patient {
     @Column(name = "create_at")
     LocalDate createAt;
 
-    @Lob
+//    @Lob
     @Column(name = "birth_certificate")
     String birthCertificate;
 
@@ -58,12 +55,25 @@ public class Patient {
     @JoinColumn(name = "user_id")
     Users users;
 
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    @JoinColumn(name = "service_id")
+    ServiceTest serviceTest;
+
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = {
             CascadeType.ALL
     })
     List<Sample> samples;
 
+    public ServiceTest getServiceTest() {
+        return serviceTest;
+    }
 
+    public void setServiceTest(ServiceTest serviceTest) {
+        this.serviceTest = serviceTest;
+    }
 
     public long getPatientId() {
         return patientId;
