@@ -56,25 +56,9 @@ const GetSlot = () => {
     return true;
   };
 
-  // Tạo headers với token
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('No token found');
-    }
-
-    return {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    };
-  };
-
   // Fetch all locations when component mounts
   const fetchLocations = async () => {
     try {
-      const headers = getAuthHeaders();
-      console.log('Fetching locations with headers:', headers);
-
       const res = await fetch(
         'http://localhost:8080/api/user/get-all-location',
         {
@@ -114,9 +98,6 @@ const GetSlot = () => {
 
     setIsLoadingSlots(true);
     try {
-      const headers = getAuthHeaders();
-      console.log('Fetching slots with headers:', headers);
-
       const res = await fetch(
         `http://localhost:8080/api/user/get-all-slot?locationId=${locationId}`,
         {
@@ -188,8 +169,6 @@ const GetSlot = () => {
 
     setIsSubmitting(true);
     try {
-      const headers = getAuthHeaders();
-
       // Tạo request body theo format BE yêu cầu
       const requestBody = {
         appointmentRequest: {},
@@ -203,9 +182,6 @@ const GetSlot = () => {
           locationId: parseInt(selectedLocation),
         },
       };
-
-      console.log('Submit request body:', requestBody);
-      console.log('Submit headers:', headers);
 
       const res = await fetch(
         `http://localhost:8080/api/appointment/book-appointment/${serviceId}`,

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Paper, Typography, Box, Button, TextField } from '@mui/material';
+import { Typography, Box, Button } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 import { NavLink } from 'react-router-dom';
-import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
+import { showSuccessAlert } from './utils/notifications';
 import {
   Activity,
   CheckCircle,
