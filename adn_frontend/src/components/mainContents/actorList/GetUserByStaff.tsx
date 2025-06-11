@@ -111,9 +111,6 @@ function GetUserByStaff() {
             <TableCell>
               <strong>Ngày đăng ký</strong>
             </TableCell>
-            <TableCell>
-              <strong>Trạng thái</strong>
-            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -125,9 +122,6 @@ function GetUserByStaff() {
                 <TableCell>{user.phone}</TableCell>
                 <TableCell>{user.role}</TableCell>
                 <TableCell>{user.createAt}</TableCell>
-                <TableCell>
-                  {user.enabled ? 'Đã kích hoạt' : 'Chưa kích hoạt'}
-                </TableCell>
               </TableRow>
             ))
           ) : (

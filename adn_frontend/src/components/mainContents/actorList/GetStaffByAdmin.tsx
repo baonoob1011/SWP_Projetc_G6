@@ -80,8 +80,8 @@ function GetStaffByAdmin() {
         title: 'custom-swal-title',
         htmlContainer: 'custom-swal-html',
         confirmButton: 'custom-swal-confirm',
-        cancelButton: 'custom-swal-cancel'
-      }
+        cancelButton: 'custom-swal-cancel',
+      },
     });
 
     if (!result.isConfirmed) {
@@ -156,15 +156,6 @@ function GetStaffByAdmin() {
                 Địa chỉ
               </TableCell>
               <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Vai trò
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Ngày đăng ký
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Trạng thái
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
                 Thao tác
               </TableCell>
             </TableRow>
@@ -196,15 +187,6 @@ function GetStaffByAdmin() {
                 </TableCell>
                 <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
                   {user.address}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
-                  {user.role}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
-                  {user.createAt}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
-                  {user.enabled ? 'Đã kích hoạt' : 'Chưa kích hoạt'}
                 </TableCell>
                 <TableCell sx={{ border: '1px solid #ccc', gap: 10 }}>
                   <Button
