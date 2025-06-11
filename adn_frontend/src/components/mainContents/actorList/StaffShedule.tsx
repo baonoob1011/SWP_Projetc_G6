@@ -1,13 +1,4 @@
-import {
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Table,
-} from '@mui/material';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 
 type SlotInfo = {
   slotId: number;
@@ -21,24 +12,30 @@ type SlotInfo = {
 const StaffSlot = () => {
   const [auth, setAuth] = useState(true);
   const [slot, setSlot] = useState<SlotInfo[]>([]);
+  const [errorOpen, setErrorOpen] = useState(false);
 
   const fetchData = async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Không có token');
+
       const res = await fetch(
         'http://localhost:8080/api/staff/get-staff-slot',
         {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      if (!res.ok) throw new Error('Fetch error');
+
+      if (!res.ok) throw new Error('Lỗi khi lấy dữ liệu');
       const data = await res.json();
       setSlot(data);
     } catch (error) {
       console.error(error);
-      toast.error('Không thể lấy dữ liệu');
+      setErrorOpen(true);
+      setTimeout(() => setErrorOpen(false), 4000); // Ẩn sau 4s
     }
   };
 
@@ -50,55 +47,46 @@ const StaffSlot = () => {
     if (auth) fetchData();
   }, [auth]);
 
-  if (!auth) {
-    return null;
-  }
+  if (!auth) return null;
 
   return (
-    <TableContainer>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-              Number
-            </TableCell>
-            <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-              Room
-            </TableCell>
-            <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-              Start Time
-            </TableCell>
-            <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-              End Time
-            </TableCell>
-            <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-              Slot Date
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {slot.map((s, index) => (
-            <TableRow key={s.slotId}>
-              <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-                {index + 1}
-              </TableCell>
-              <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-                {s.room}
-              </TableCell>
-              <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-                {s.startTime}
-              </TableCell>
-              <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-                {s.endTime}
-              </TableCell>
-              <TableCell sx={{ fontSize: '20px', border: '1px solid #ccc' }}>
-                {s.slotDate}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div className="container mt-4">
+      <h3 className="mb-4 fw-bold">Danh sách ca làm việc</h3>
+
+      {errorOpen && (
+        <div
+          className="alert alert-danger alert-dismissible fade show"
+          role="alert"
+        >
+          Không thể tải dữ liệu ca làm việc
+        </div>
+      )}
+
+      <div className="table-responsive">
+        <table className="table table-bordered table-striped text-center align-middle">
+          <thead className="table-primary">
+            <tr>
+              <th>STT</th>
+              <th>Phòng</th>
+              <th>Thời gian bắt đầu</th>
+              <th>Thời gian kết thúc</th>
+              <th>Ngày</th>
+            </tr>
+          </thead>
+          <tbody>
+            {slot.map((s, index) => (
+              <tr key={s.slotId}>
+                <td>{index + 1}</td>
+                <td>{s.room}</td>
+                <td>{s.startTime}</td>
+                <td>{s.endTime}</td>
+                <td>{s.slotDate}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 };
 

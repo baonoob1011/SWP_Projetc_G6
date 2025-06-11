@@ -31,18 +31,18 @@ const ManagerPage = () => {
 
   const menuItems = [
     { id: 'dashboard', icon: ArrowBack, label: 'Home', path: '' },
-    { id: 'data', icon: List, label: 'Danh sách', path: 'm-page/m-data' },
+    { id: 'data', icon: List, label: 'Danh sách', path: 'manager/data' },
     {
       id: 'services',
       icon: RoomService,
       label: 'Lịch làm',
-      path: 'm-page/m-services',
+      path: 'manager/services',
     },
     {
       id: 'create-services',
       icon: ShoppingBag,
       label: 'Tạo dịch vụ',
-      path: 'm-page/m-create-services',
+      path: 'manager/create-services',
     },
   ];
 
