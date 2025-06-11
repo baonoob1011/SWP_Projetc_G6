@@ -8,8 +8,8 @@ import {
   TableRow,
   Button,
   TextField,
-} from '@mui/material';
-import { useEffect, useState } from 'react';
+} from "@mui/material";
+import { useEffect, useState } from "react";
 import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
 import Swal from 'sweetalert2';
 import './styles/swal-custom.css';
@@ -26,35 +26,35 @@ type User = {
 function GetUserByAdmin() {
   const [account, setAccount] = useState<User[]>([]);
   const [isAdmin, setIsAdmin] = useState(true);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   // ✅ Gọi API lấy dữ liệu
   const fetchData = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     try {
-      const res = await fetch('http://localhost:8080/api/admin/get-all-user', {
+      const res = await fetch("http://localhost:8080/api/admin/get-all-user", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (!res.ok) {
-        setError('Không thể lấy dữ liệu');
+        setError("Không thể lấy dữ liệu");
         return;
       }
 
       const data = await res.json();
 
       if (!Array.isArray(data)) {
-        setError('Dữ liệu không hợp lệ');
+        setError("Dữ liệu không hợp lệ");
         return;
       }
 
       setAccount(data);
     } catch (error) {
-      console.error('Lỗi fetch:', error);
-      setError('Lỗi khi tải dữ liệu người dùng.');
+      console.error("Lỗi fetch:", error);
+      setError("Lỗi khi tải dữ liệu người dùng.");
     }
   };
 
@@ -76,21 +76,21 @@ function GetUserByAdmin() {
         title: 'custom-swal-title',
         htmlContainer: 'custom-swal-html',
         confirmButton: 'custom-swal-confirm',
-        cancelButton: 'custom-swal-cancel',
-      },
+        cancelButton: 'custom-swal-cancel'
+      }
     });
 
     if (!result.isConfirmed) {
       return;
     }
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     try {
       const res = await fetch(
         `http://localhost:8080/api/admin/delete-user?phone=${phone}`,
         {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -98,22 +98,22 @@ function GetUserByAdmin() {
       );
 
       if (!res.ok) {
-        setError('Xóa thất bại');
+        setError("Xóa thất bại");
         return;
       }
 
-      showSuccessAlert('Thành công', 'Xóa người dùng thành công');
+      showSuccessAlert("Thành công", "Xóa người dùng thành công");
       fetchData();
     } catch (error) {
-      console.error('Lỗi xóa:', error);
-      setError('Không thể xóa người dùng');
+      console.error("Lỗi xóa:", error);
+      setError("Không thể xóa người dùng");
     }
   };
 
   // ✅ Khởi động
   useEffect(() => {
-    const role = localStorage.getItem('role');
-    setIsAdmin(role === 'ADMIN');
+    const role = localStorage.getItem("role");
+    setIsAdmin(role === "ADMIN");
     fetchData();
   }, []);
 
@@ -134,30 +134,39 @@ function GetUserByAdmin() {
           size="small"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          sx={{ margin: '10px 5px' }}
+          sx={{ margin: "10px 5px" }}
         />
         <Table
           sx={{
-            fontSize: '13px',
-            borderCollapse: 'collapse',
-            width: '100%',
+            fontSize: "13px",
+            borderCollapse: "collapse",
+            width: "100%",
           }}
         >
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontSize: '13px', border: '1px solid #ccc' }}>
+              <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
                 <strong>ID</strong>
               </TableCell>
-              <TableCell sx={{ fontSize: '13px', border: '1px solid #ccc' }}>
+              <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
                 <strong>Họ tên</strong>
               </TableCell>
-              <TableCell sx={{ fontSize: '13px', border: '1px solid #ccc' }}>
+              <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
                 <strong>Email</strong>
               </TableCell>
-              <TableCell sx={{ fontSize: '13px', border: '1px solid #ccc' }}>
+              <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
                 <strong>SĐT</strong>
               </TableCell>
-              <TableCell sx={{ fontSize: '13px', border: '1px solid #ccc' }}>
+              <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
+                <strong>Vai trò</strong>
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
+                <strong>Ngày đăng ký</strong>
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
+                <strong>Trạng thái</strong>
+              </TableCell>
+              <TableCell sx={{ fontSize: "13px", border: "1px solid #ccc" }}>
                 <strong>Thao tác</strong>
               </TableCell>
             </TableRow>
@@ -166,19 +175,28 @@ function GetUserByAdmin() {
           <TableBody>
             {searchByPhone.map((user, index) => (
               <TableRow key={index}>
-                <TableCell sx={{ fontSize: '12px', border: '1px solid #ccc' }}>
+                <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
                   {index + 1}
                 </TableCell>
-                <TableCell sx={{ fontSize: '12px', border: '1px solid #ccc' }}>
+                <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
                   {user.fullName}
                 </TableCell>
-                <TableCell sx={{ fontSize: '12px', border: '1px solid #ccc' }}>
+                <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
                   {user.email}
                 </TableCell>
-                <TableCell sx={{ fontSize: '12px', border: '1px solid #ccc' }}>
+                <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
                   {user.phone}
                 </TableCell>
-                <TableCell sx={{ border: '1px solid #ccc' }}>
+                <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
+                  {user.roles}
+                </TableCell>
+                <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
+                  {user.createAt}
+                </TableCell>
+                <TableCell sx={{ fontSize: "12px", border: "1px solid #ccc" }}>
+                  {user.enabled ? "Đã kích hoạt" : "Chưa kích hoạt"}
+                </TableCell>
+                <TableCell sx={{ border: "1px solid #ccc" }}>
                   <Button
                     variant="contained"
                     color="error"
