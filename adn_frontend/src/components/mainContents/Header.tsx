@@ -122,7 +122,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               alignItems: 'center', // canh giữa theo chiều ngang
               ml: 0,
               width: 200,
-
             }}
           >
             <NavLink
@@ -232,8 +231,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                 0922.394.333
               </Typography>
             </Box>
-
-
           </>
           <Box
             sx={{
@@ -266,7 +263,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   >
                     <MenuItem
                       component={NavLink}
-                      to="/m-page"
+                      to="/manager"
                       onClick={handleCloseMenu}
                       className={styles.menuItem}
                       sx={{ px: 2, py: 1 }}
@@ -321,6 +318,15 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       sx={{ px: 2, py: 1 }}
                     >
                       Trang làm việc
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/s-m-profile"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Xem thông tin
                     </MenuItem>
                     <MenuItem
                       onClick={() => {
