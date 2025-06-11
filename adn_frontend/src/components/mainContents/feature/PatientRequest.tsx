@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import GetSlot from './GetSlot';
 
 type Patient = {
   fullName: string;
@@ -92,7 +91,6 @@ const PatientRequest = () => {
 
   return (
     <div className="container mt-130">
-      <GetSlot />
       <form onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-md-6">

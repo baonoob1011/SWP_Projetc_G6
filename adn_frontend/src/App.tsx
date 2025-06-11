@@ -44,6 +44,7 @@ import ManagerPage from './components/page/ManagerPage';
 import CreateLocation from './components/mainContents/feature/CreateLocation';
 // import GetSlot from './components/mainContents/feature/GetSlot';
 import PatientRequest from './components/mainContents/feature/PatientRequest';
+import GetSlot from './components/mainContents/feature/GetSlot';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -326,6 +327,14 @@ function App() {
             />
             <Route
               path="/order/:serviceId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <GetSlot />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/order"
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <PatientRequest />
