@@ -24,6 +24,7 @@ public class AppointmentController {
         return appointmentService.bookAppointment(
                 request.getAppointmentRequest(),
                 authentication,
+                request.getPatientRequestList(),
                 slotId,
                 locationId,
                 serviceId

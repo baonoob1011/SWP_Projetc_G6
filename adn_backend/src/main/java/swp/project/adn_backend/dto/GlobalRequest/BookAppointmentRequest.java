@@ -2,10 +2,13 @@ package swp.project.adn_backend.dto.GlobalRequest;
 
 
 import swp.project.adn_backend.dto.request.Location.LocationRequest;
+import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.dto.request.serviceRequest.ServiceRequest;
 import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.request.slot.SlotRequest;
+
+import java.util.List;
 
 public class BookAppointmentRequest {
     private AppointmentRequest appointmentRequest;
@@ -13,10 +16,18 @@ public class BookAppointmentRequest {
     private StaffRequest staffRequest;
     private SlotRequest slotRequest;
     private LocationRequest locationRequest;
-
+    private List<PatientRequest> patientRequestList;
 
     public LocationRequest getLocationRequest() {
         return locationRequest;
+    }
+
+    public List<PatientRequest> getPatientRequestList() {
+        return patientRequestList;
+    }
+
+    public void setPatientRequestList(List<PatientRequest> patientRequestList) {
+        this.patientRequestList = patientRequestList;
     }
 
     public void setLocationRequest(LocationRequest locationRequest) {

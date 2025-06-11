@@ -24,10 +24,9 @@ public class Slot {
     @Column(name = "slot_date")
     LocalDate slotDate;
     @Column(name = "start_time")
-    Time startTime;
+    Time  startTime;
     @Column(name = "end_time")
-    Time endTime;
-    String room;
+    Time  endTime;
 
     @Enumerated(EnumType.STRING)
     SlotStatus slotStatus;
@@ -46,6 +45,14 @@ public class Slot {
     @JoinColumn(name = "staff_id")
     Staff staff;
 
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    @JoinColumn(name = "room_id")
+    Room room;
+
+
     @OneToMany(mappedBy = "slot", fetch = FetchType.LAZY, cascade = {
             CascadeType.ALL
     })
@@ -59,15 +66,12 @@ public class Slot {
         this.appointment = appointment;
     }
 
-    public Time getStartTime() {
-        return startTime;
-    }
 
-    public String getRoom() {
+    public Room getRoom() {
         return room;
     }
 
-    public void setRoom(String room) {
+    public void setRoom(Room room) {
         this.room = room;
     }
 
@@ -94,6 +98,10 @@ public class Slot {
 
     public void setSlotStatus(SlotStatus slotStatus) {
         this.slotStatus = slotStatus;
+    }
+
+    public Time getStartTime() {
+        return startTime;
     }
 
     public void setStartTime(Time startTime) {

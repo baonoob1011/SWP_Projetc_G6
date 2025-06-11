@@ -55,12 +55,25 @@ public class Patient {
     @JoinColumn(name = "user_id")
     Users users;
 
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    @JoinColumn(name = "service_id")
+    ServiceTest serviceTest;
+
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = {
             CascadeType.ALL
     })
     List<Sample> samples;
 
+    public ServiceTest getServiceTest() {
+        return serviceTest;
+    }
 
+    public void setServiceTest(ServiceTest serviceTest) {
+        this.serviceTest = serviceTest;
+    }
 
     public long getPatientId() {
         return patientId;
