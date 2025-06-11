@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import './ServiceList.css';
 
 type PriceItem = {
   time: string;
@@ -35,7 +36,6 @@ const ServiceList = () => {
   const [updatedName, setUpdatedName] = useState('');
   const [updatedDescription, setUpdatedDescription] = useState('');
   const [updatedPrice, setUpdatedPrice] = useState<number>(0);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const token = localStorage.getItem('token');
 
@@ -81,31 +81,24 @@ const ServiceList = () => {
     setEditingServiceId(service.serviceRequest.serviceId);
     setUpdatedName(service.serviceRequest.serviceName);
     setUpdatedDescription(service.serviceRequest.description);
-
-    const latestPrice = service.priceListRequest.length
-      ? service.priceListRequest[service.priceListRequest.length - 1].price
-      : 0;
+    const latestPrice = service.priceListRequest.at(-1)?.price || 0;
     setUpdatedPrice(latestPrice);
-    setSelectedFile(null);
   };
 
   const handleDelete = async (serviceId: number) => {
     if (!window.confirm('Bạn có chắc chắn muốn xoá dịch vụ này?')) return;
-
     try {
       const res = await fetch(
         `http://localhost:8080/api/services/delete-service/${serviceId}`,
         {
           method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
       if (!res.ok) throw new Error('Xoá không thành công');
       alert('Xoá thành công');
-      fetchServices(); // Tải lại danh sách dịch vụ sau khi xoá
+      fetchServices();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       alert(err.message || 'Lỗi xoá dịch vụ');
@@ -124,21 +117,19 @@ const ServiceList = () => {
       const formData = new FormData();
       const today = new Date().toISOString().split('T')[0];
 
-      const newPriceItem = { time: today, price: updatedPrice };
       const requestPayload = {
         updateServiceTestRequest: {
           serviceName: updatedName,
           description: updatedDescription,
           registerDate: currentService.serviceRequest.registerDate,
         },
-        priceListRequest: newPriceItem,
+        priceListRequest: { time: today, price: updatedPrice },
       };
 
       formData.append(
         'request',
         new Blob([JSON.stringify(requestPayload)], { type: 'application/json' })
       );
-      if (selectedFile) formData.append('file', selectedFile);
 
       const res = await fetch(
         `http://localhost:8080/api/services/update-service/${serviceId}`,
@@ -160,176 +151,174 @@ const ServiceList = () => {
   };
 
   if (!auth) return null;
-  if (loading)
-    return (
-      <div className="text-center mt-4">Đang tải danh sách dịch vụ...</div>
-    );
+  if (loading) return <div className="text-center mt-4">Đang tải...</div>;
   if (error)
     return <div className="text-danger text-center mt-4">Lỗi: {error}</div>;
 
   return (
-    <div className="container py-4">
-      <h2 className="mb-4">Danh sách dịch vụ</h2>
+    <div
+      className="container py-4 service-list-container"
+      style={{
+        background: 'linear-gradient(to right, #e3f2fd, #ffffff)',
+        borderRadius: '12px',
+        padding: '25px',
+        boxShadow: '0 0 15px rgba(33, 150, 243, 0.1)',
+      }}
+    >
+      <h2
+        className="mb-4 text-primary text-center"
+        style={{ fontWeight: 700, fontFamily: 'Poppins, sans-serif' }}
+      >
+        Quản lý Dịch vụ
+      </h2>
+
       {services.length === 0 ? (
-        <div className="text-muted">Không có dịch vụ nào.</div>
+        <div className="text-muted text-center">Không có dịch vụ nào.</div>
       ) : (
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-          {services.map((service) => {
-            const { serviceRequest, priceListRequest } = service;
-            const isEditing = editingServiceId === serviceRequest.serviceId;
+        <div className="table-responsive">
+          <table className="table table-bordered table-hover text-center align-middle table-medical">
+            <thead className="table-primary text-start">
+              <tr style={{ fontWeight: '600' }}>
+                <th>Số thứ tự</th>
+                <th>Tên dịch vụ</th>
+                <th>Loại</th>
+                <th>Mô tả</th>
+                <th>Ngày đăng ký</th>
+                <th>Giá hiện tại</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody className="text-start">
+              {services.map((s, index) => {
+                const latestPrice = s.priceListRequest.at(-1);
+                const isEditing =
+                  editingServiceId === s.serviceRequest.serviceId;
 
-            return (
-              <div className="col" key={serviceRequest.serviceId}>
-                <div className="card h-100 shadow-sm">
-                  {serviceRequest.image && !isEditing && (
-                    <img
-                      src={`data:image/*;base64,${serviceRequest.image}`}
-                      alt="service"
-                      className="card-img-top img-fluid"
-                    />
-                  )}
+                return (
+                  <tr key={s.serviceRequest.serviceId}>
+                    <td>{index + 1}</td>
 
-                  <div className="card-body">
-                    {isEditing ? (
-                      <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          handleUpdate(serviceRequest.serviceId);
-                        }}
-                      >
-                        <div className="mb-3">
-                          <label className="form-label">Tên dịch vụ</label>
-                          <input
-                            className="form-control"
-                            value={updatedName}
-                            onChange={(e) => setUpdatedName(e.target.value)}
-                            required
-                          />
-                        </div>
+                    {/* Tên dịch vụ */}
+                    <td style={{ minWidth: '160px' }}>
+                      {isEditing ? (
+                        <input
+                          className="form-control form-control-sm"
+                          style={{ borderColor: '#0d6efd' }}
+                          value={updatedName}
+                          onChange={(e) => setUpdatedName(e.target.value)}
+                        />
+                      ) : (
+                        <span style={{ fontWeight: 500, color: '#0d47a1' }}>
+                          {s.serviceRequest.serviceName}
+                        </span>
+                      )}
+                    </td>
 
-                        <div className="mb-3">
-                          <label className="form-label">Mô tả</label>
-                          <textarea
-                            className="form-control"
-                            value={updatedDescription}
-                            onChange={(e) =>
-                              setUpdatedDescription(e.target.value)
+                    {/* Loại */}
+                    <td style={{ minWidth: '100px' }}>
+                      <span className="badge text-dark">
+                        {s.serviceRequest.serviceType}
+                      </span>
+                    </td>
+
+                    {/* Mô tả */}
+                    <td style={{ minWidth: '220px' }}>
+                      {isEditing ? (
+                        <textarea
+                          className="form-control form-control-sm"
+                          style={{ borderColor: '#0d6efd' }}
+                          rows={2}
+                          value={updatedDescription}
+                          onChange={(e) =>
+                            setUpdatedDescription(e.target.value)
+                          }
+                        />
+                      ) : (
+                        <span>{s.serviceRequest.description}</span>
+                      )}
+                    </td>
+
+                    {/* Ngày đăng ký */}
+                    <td style={{ minWidth: '120px', color: '#555' }}>
+                      {new Date(
+                        s.serviceRequest.registerDate
+                      ).toLocaleDateString('vi-VN')}
+                    </td>
+
+                    {/* Giá hiện tại */}
+                    <td style={{ minWidth: '160px' }}>
+                      {isEditing ? (
+                        <input
+                          type="number"
+                          min={0}
+                          className="form-control form-control-sm"
+                          style={{ borderColor: '#0d6efd' }}
+                          value={updatedPrice}
+                          onChange={(e) =>
+                            setUpdatedPrice(Number(e.target.value))
+                          }
+                        />
+                      ) : latestPrice ? (
+                        <>
+                          <div style={{ fontWeight: 600, color: '#2e7d32' }}>
+                            {latestPrice.price.toLocaleString()} VNĐ
+                          </div>
+                          <small className="text-muted">
+                            (
+                            {new Date(latestPrice.time).toLocaleDateString(
+                              'vi-VN'
+                            )}
+                            )
+                          </small>
+                        </>
+                      ) : (
+                        <span className="text-muted">Chưa có</span>
+                      )}
+                    </td>
+
+                    {/* Hành động */}
+                    <td style={{ minWidth: '160px' }}>
+                      {isEditing ? (
+                        <>
+                          <button
+                            className="btn btn-sm btn-outline-success me-1"
+                            onClick={() =>
+                              handleUpdate(s.serviceRequest.serviceId)
                             }
-                          />
-                        </div>
-
-                        <div className="mb-3">
-                          <label className="form-label">
-                            Ảnh mới (tuỳ chọn)
-                          </label>
-                          <input
-                            type="file"
-                            className="form-control"
-                            accept="image/*"
-                            onChange={(e) =>
-                              setSelectedFile(e.target.files?.[0] || null)
-                            }
-                          />
-                        </div>
-
-                        <div className="mb-3">
-                          <label className="form-label">
-                            Thời gian cập nhật giá
-                          </label>
-                          <input
-                            className="form-control"
-                            value={new Date().toLocaleDateString('vi-VN')}
-                            disabled
-                          />
-                        </div>
-
-                        <div className="mb-3">
-                          <label className="form-label">Giá mới (VNĐ)</label>
-                          <input
-                            type="number"
-                            min={0}
-                            className="form-control"
-                            value={updatedPrice}
-                            onChange={(e) =>
-                              setUpdatedPrice(Number(e.target.value))
-                            }
-                            required
-                          />
-                        </div>
-
-                        <div className="d-flex justify-content-between">
-                          <button type="submit" className="btn btn-primary">
-                            Lưu
+                          >
+                            💾 Lưu
                           </button>
                           <button
-                            type="button"
-                            className="btn btn-secondary"
+                            className="btn btn-sm btn-outline-danger"
                             onClick={() => setEditingServiceId(null)}
                           >
-                            Hủy
+                            ❌ Huỷ
                           </button>
-                        </div>
-                      </form>
-                    ) : (
-                      <>
-                        <h5 className="card-title">
-                          {serviceRequest.serviceName}
-                        </h5>
-                        <p className="card-text">
-                          <strong>Loại:</strong> {serviceRequest.serviceType}
-                        </p>
-                        <p className="card-text">
-                          <strong>Ngày đăng ký:</strong>{' '}
-                          {serviceRequest.registerDate}
-                        </p>
-                        <p className="card-text">
-                          <strong>Mô tả:</strong> {serviceRequest.description}
-                        </p>
-
-                        <div className="card-text">
-                          <strong>Giá hiện tại:</strong>
-                          <br />
-                          {priceListRequest.length > 0 ? (
-                            <>
-                              <small className="text-muted">
-                                Cập nhật lần cuối:{' '}
-                                {new Date(
-                                  priceListRequest[
-                                    priceListRequest.length - 1
-                                  ].time
-                                ).toLocaleDateString('vi-VN')}
-                              </small>
-                              <div>
-                                {priceListRequest[
-                                  priceListRequest.length - 1
-                                ].price.toLocaleString()}{' '}
-                                VNĐ
-                              </div>
-                            </>
-                          ) : (
-                            <span className="text-muted">Chưa có bảng giá</span>
-                          )}
-                        </div>
-
-                        <button
-                          className="btn btn-outline-primary mt-3"
-                          onClick={() => startEdit(service)}
-                        >
-                          Chỉnh sửa
-                        </button>
-                        <button
-                          className="btn btn-danger ms-2"
-                          onClick={() => handleDelete(serviceRequest.serviceId)}
-                        >
-                          Xoá
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            className="btn btn-sm btn-outline-primary me-1"
+                            onClick={() => startEdit(s)}
+                          >
+                            ✏️ Sửa
+                          </button>
+                          <button
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() =>
+                              handleDelete(s.serviceRequest.serviceId)
+                            }
+                          >
+                            🗑️ Xoá
+                          </button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

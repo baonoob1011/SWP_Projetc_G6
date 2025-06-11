@@ -1,7 +1,6 @@
-import { Button } from '@mui/material';
-import { Plus } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { Plus } from 'lucide-react';
 
 type PriceItem = {
   time: string;
@@ -18,7 +17,7 @@ type ServiceItem = {
     serviceName: string;
     description: string;
     serviceType: string;
-    image?: string; // base64 image
+    image?: string;
   };
   priceListRequest: PriceItem[];
   serviceResponses: ServiceResponse[];
@@ -57,19 +56,15 @@ const CivilServiceList = () => {
     const fetchServices = async () => {
       try {
         const response = await fetch(
-          'http://localhost:8080/api/services/get-all-civil-service',
-          { method: 'GET' }
+          'http://localhost:8080/api/services/get-all-civil-service'
         );
         if (!response.ok) {
-          alert('Không thể lấy dữ liệu dịch vụ');
-          setLoading(false);
-          return;
+          throw new Error('Không thể lấy dữ liệu dịch vụ');
         }
         const data = await response.json();
         setServices(Array.isArray(data) ? data : []);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
-        console.error(err);
         setError(err.message || 'Đã xảy ra lỗi');
       } finally {
         setLoading(false);
@@ -79,109 +74,96 @@ const CivilServiceList = () => {
     fetchServices();
   }, []);
 
-  if (loading) return <p>Đang tải danh sách dịch vụ...</p>;
-  if (error) return <p style={{ color: 'red' }}>Lỗi: {error}</p>;
+  if (loading)
+    return (
+      <div className="text-center mt-4">Đang tải danh sách dịch vụ...</div>
+    );
+
+  if (error)
+    return (
+      <div className="alert alert-danger text-center mt-4" role="alert">
+        Lỗi: {error}
+      </div>
+    );
 
   return (
-    <section>
-      <div style={{ padding: '20px' }}>
-        <h2 style={{ marginBottom: '20px' }}>Danh sách dịch vụ dân sự</h2>
-        {services.length === 0 ? (
-          <p>Không có dịch vụ nào.</p>
-        ) : (
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '20px',
-            }}
-          >
-            {services.map((service, index) => (
-              <div
-                key={index}
-                style={{
-                  width: '300px',
-                  border: '1px solid #ccc',
-                  borderRadius: '10px',
-                  padding: '15px',
-                  backgroundColor: '#f9f9f9',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-              >
-                {/* Ảnh dịch vụ */}
+    <div className="container my-4">
+      <h2 className="mb-4 text-primary">Danh sách dịch vụ dân sự</h2>
+      {services.length === 0 ? (
+        <p className="text-muted">Không có dịch vụ nào.</p>
+      ) : (
+        <div className="row g-4">
+          {services.map((service, index) => (
+            <div className="col-md-4" key={index}>
+              <div className="card shadow-sm h-100">
                 {service.serviceRequest.image && (
                   <img
                     src={`data:image/*;base64,${service.serviceRequest.image}`}
+                    className="card-img-top"
                     alt={service.serviceRequest.serviceName}
-                    style={{
-                      width: '100%',
-                      height: '180px',
-                      objectFit: 'cover',
-                      borderRadius: '8px',
-                      marginBottom: '10px',
-                    }}
+                    style={{ height: '200px', objectFit: 'cover' }}
                   />
                 )}
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title text-center text-success">
+                    {service.serviceRequest.serviceName}
+                  </h5>
+                  <p className="card-text">
+                    <strong>Loại:</strong>{' '}
+                    {translateServiceType(service.serviceRequest.serviceType)}
+                  </p>
+                  <p className="card-text">
+                    <strong>Mô tả:</strong>{' '}
+                    {service.serviceRequest.description || 'Không có mô tả'}
+                  </p>
 
-                {/* Thông tin */}
-                <h3 style={{ textAlign: 'center' }}>
-                  {service.serviceRequest.serviceName}
-                </h3>
-                <p>
-                  <strong>Loại:</strong>{' '}
-                  {translateServiceType(service.serviceRequest.serviceType)}
-                </p>
-                <p>
-                  <strong>Mô tả:</strong> {service.serviceRequest.description}
-                </p>
-
-                <div style={{ marginTop: '10px', width: '100%' }}>
-                  <strong>Bảng giá:</strong>
-                  {service.priceListRequest?.map((item, idx) => (
-                    <div key={idx} style={{ marginTop: 6 }}>
-                      <div>
-                        <strong>Thời gian:</strong> {item.time}
+                  <div className="mb-2">
+                    <strong>Bảng giá:</strong>
+                    {service.priceListRequest.map((item, idx) => (
+                      <div key={idx}>
+                        <small className="d-block">
+                          <strong>Thời gian:</strong> {item.time}
+                        </small>
+                        <small className="d-block mb-1">
+                          <strong>Giá:</strong> {item.price.toLocaleString()}{' '}
+                          VNĐ
+                        </small>
                       </div>
-                      <div>
-                        <strong>Giá tiền:</strong> {item.price.toLocaleString()}{' '}
-                        VNĐ
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
 
-                <div style={{ marginTop: '10px', width: '100%' }}>
-                  <strong>Phương pháp lấy mẫu:</strong>
-                  {service.serviceResponses?.[0]?.sampleCollectionMethods
-                    .length ? (
-                    service.serviceResponses[0].sampleCollectionMethods.map(
-                      (method, idx) => (
-                        <p key={idx}>{translateSampleMethod(method)}</p>
+                  <div className="mb-2">
+                    <strong>Phương pháp lấy mẫu:</strong>
+                    {service.serviceResponses?.[0]?.sampleCollectionMethods
+                      .length ? (
+                      service.serviceResponses[0].sampleCollectionMethods.map(
+                        (method, idx) => (
+                          <div key={idx}>
+                            <small>{translateSampleMethod(method)}</small>
+                          </div>
+                        )
                       )
-                    )
-                  ) : (
-                    <p>Không có dữ liệu</p>
-                  )}
+                    ) : (
+                      <p className="text-muted mb-1">Không có dữ liệu</p>
+                    )}
+                  </div>
+
+                  <div className="mt-auto text-center">
+                    <NavLink
+                      to={`/order/${service.serviceRequest.serviceId}`}
+                      className="btn btn-outline-danger btn-sm"
+                    >
+                      <Plus size={14} className="me-1" />
+                      Đặt dịch vụ
+                    </NavLink>
+                  </div>
                 </div>
-                <Button
-                  variant="contained"
-                  component={NavLink}
-                  to={`/order/${service.serviceRequest.serviceId}`}
-                  color="error"
-                  size="small"
-                  sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}
-                >
-                  <Plus size={10} />
-                </Button>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 

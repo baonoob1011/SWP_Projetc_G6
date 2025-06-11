@@ -1,47 +1,48 @@
-
+import { useState } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { Box } from '@mui/material';
+import { ToastContainer } from 'react-toastify';
 
 import Map from './components/page/Map';
-import AdminSidebar from './components/page/AdminPage';
-import DataList from './components/mainContents/actorList/AllDataList';
-import BookAppointmentForm from './components/mainContents/services/SignUpServices';
-import BranchAndMap from './components/page/BranchAndMap';
-import { Header } from './components/mainContents/Header';
-import OldPassWord from './components/mainContents/feature/OldPassword';
-import NewProfile from './components/mainContents/actorList/StaffAndManagerProfile';
-import NewUserProfile from './components/mainContents/actorList/UserProfile';
-import CivilServiceList from './components/mainContents/services/GetCivilService';
-import AdministrativeServiceList from './components/mainContents/services/GetAdmintrativeService';
-import ServiceList from './components/mainContents/services/GetService';
-import StaffSchedule from './components/mainContents/actorList/StaffSchedule';
-import GetUserByStaff from './components/mainContents/actorList/GetUserByStaff';
-
 import Blog from './components/page/Blog';
-import ProtectedRoute from './components/mainContents/feature/ProtectedRoute';
+import AdminSidebar from './components/page/AdminPage';
+import StaffPage from './components/page/StaffPage';
+import ManagerPage from './components/page/ManagerPage';
+import BranchAndMap from './components/page/BranchAndMap';
 
-import GetUserByStaff from './components/mainContents/actorList/GetUserByStaff';
+import Home from './components/page/Home';
+
+import { Header } from './components/mainContents/Header';
+import ProtectedRoute from './components/mainContents/feature/ProtectedRoute';
+import OldPassWord from './components/mainContents/feature/OldPassword';
+import CreateLocation from './components/mainContents/feature/CreateLocation';
+import PatientRequest from './components/mainContents/feature/PatientRequest';
+import GetSlot from './components/mainContents/feature/GetSlot';
 
 import DataList, {
   DataList2,
 } from './components/mainContents/actorList/AllDataList';
-import CivilServiceList from './components/mainContents/services/GetCivilService';
-import AdministrativeServiceList from './components/mainContents/services/GetAdmintrativeService';
-import ServiceList from './components/mainContents/services/GetService';
+import GetUserByStaff from './components/mainContents/actorList/GetUserByStaff';
+import GetManagerByAdmin from './components/mainContents/actorList/GetManagerByAdmin';
+import GetStaffByAdmin from './components/mainContents/actorList/GetStaffByAdmin';
+import GetUserByAdmin from './components/mainContents/actorList/GetUserByAdmin';
+import GetStaffByManager from './components/mainContents/actorList/GetStaffByManager';
+import GetUserByManager from './components/mainContents/actorList/GetUserByManager';
+
+import NewProfile from './components/mainContents/actorList/StaffAndManagerProfile';
+import NewUserProfile from './components/mainContents/actorList/UserProfile';
 import StaffSlot from './components/mainContents/actorList/StaffShedule';
 import SignUpStaffSchedule from './components/mainContents/actorList/SignUpStaffSchedule';
 
-import OldPassWord from './components/mainContents/feature/OldPassword';
-import NewProfile from './components/mainContents/actorList/StaffAndManagerProfile';
-import NewUserProfile from './components/mainContents/actorList/UserProfile';
-
-import ProtectedRoute from './components/mainContents/feature/ProtectedRoute';
-import AdminSidebar from './components/page/AdminPage';
-import StaffPage from './components/page/StaffPage';
-import { Header } from './components/mainContents/Header';
-import ManagerPage from './components/page/ManagerPage';
-import CreateLocation from './components/mainContents/feature/CreateLocation';
-// import GetSlot from './components/mainContents/feature/GetSlot';
-import PatientRequest from './components/mainContents/feature/PatientRequest';
-
+import CivilServiceList from './components/mainContents/services/GetCivilService';
+import AdministrativeServiceList from './components/mainContents/services/GetAdmintrativeService';
+import ServiceList from './components/mainContents/services/GetService';
+import SignUpManager from './components/mainContents/feature/SignUpForManager';
+import SignUpStaff from './components/mainContents/feature/SignUpForStaff';
+import Services from './components/mainContents/services/CreateServices';
+import SignUp from './components/page/SignUp';
+import Forget from './components/page/Forget';
+import Login from './components/page/Login';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -61,12 +62,12 @@ function App() {
   ].includes(location.pathname);
 
   const isManagerLayoutRoute = [
-    '/m-page/m-data',
-    '/m-page/m-services',
-    '/m-page/m-create-services',
-    '/m-page/m-staff',
-    '/m-page/m-user',
-    '/m-page',
+    '/manager/data',
+    '/manager/services',
+    '/manager/create-services',
+    '/manager/staff',
+    '/manager/user',
+    '/manager',
   ].includes(location.pathname);
 
   return (
@@ -164,6 +165,7 @@ function App() {
                 }
               />
             </Routes>
+            <ToastContainer />
           </Box>
         </Box>
       ) : isStaffLayoutRoute ? (
@@ -216,6 +218,7 @@ function App() {
                 }
               />
             </Routes>
+            <ToastContainer />
           </Box>
         </Box>
       ) : isManagerLayoutRoute ? (
@@ -251,16 +254,27 @@ function App() {
             }}
           >
             <Routes>
+              <Route path="/manager" element={<DataList2 />}>
+                <Route path="data" />
+                <Route
+                  path="staff"
+                  element={
+                    <ProtectedRoute allowedRoles={['MANAGER']}>
+                      <GetStaffByManager />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="user"
+                  element={
+                    <ProtectedRoute allowedRoles={['MANAGER']}>
+                      <GetUserByManager />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
               <Route
-                path="/m-page/m-data"
-                element={
-                  <ProtectedRoute allowedRoles={['MANAGER']}>
-                    <DataList2 />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/m-page/m-services"
+                path="manager/services"
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
                     <ServiceList />
@@ -268,30 +282,15 @@ function App() {
                 }
               />
               <Route
-                path="/m-page/m-create-services"
+                path="manager/create-services"
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
                     <Services />
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/m-page/m-user"
-                element={
-                  <ProtectedRoute allowedRoles={['MANAGER']}>
-                    <GetUserByManager />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="m-page/m-staff"
-                element={
-                  <ProtectedRoute allowedRoles={['MANAGER']}>
-                    <GetStaffByManager />
-                  </ProtectedRoute>
-                }
-              />
             </Routes>
+            <ToastContainer />
           </Box>
         </Box>
       ) : (
@@ -318,14 +317,20 @@ function App() {
               path="/change-pass"
               element={
                 <ProtectedRoute allowedRoles={['USER', 'MANAGER', 'STAFF']}>
-
                   <OldPassWord role={role as 'USER' | 'STAFF' | 'MANAGER'} />
-
                 </ProtectedRoute>
               }
             />
             <Route
               path="/order/:serviceId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <GetSlot />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/order"
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <PatientRequest />
@@ -388,7 +393,6 @@ function App() {
               element={<AdministrativeServiceList />}
             />
             <Route path="/m-getAllService" element={<ServiceList />} />
-
           </Routes>
 
           <ToastContainer />

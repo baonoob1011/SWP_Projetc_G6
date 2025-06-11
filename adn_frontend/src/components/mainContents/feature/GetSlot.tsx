@@ -233,7 +233,9 @@ const GetSlot = () => {
         console.error('Submit error response:', errorText);
         throw new Error(`HTTP ${res.status}: ${errorText}`);
       }
-
+      setTimeout(() => {
+        navigate('/order');
+      }, 1500);
       toast.success('Đã đăng ký slot thành công');
       setSelectedSlot('');
 
