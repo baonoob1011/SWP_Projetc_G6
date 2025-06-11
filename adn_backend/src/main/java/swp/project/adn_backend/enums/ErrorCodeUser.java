@@ -46,6 +46,8 @@ public enum ErrorCodeUser {
     UNAUTHENTICATED(1034, "Chưa xác thực người dùng", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1035, "Bạn không có quyền truy cập", HttpStatus.FORBIDDEN),
     PHONE_NOT_EXISTS(1036, "Số điện thoại không tồn tại", HttpStatus.BAD_REQUEST),
+    KIT_NOT_EXISTS(1036, "Kit không tồn tại", HttpStatus.BAD_REQUEST),
+    APPOINTMENT_NOT_EXISTS(1036, "Appointment không tồn tại", HttpStatus.BAD_REQUEST),
 
     // Service validation
     SERVICE_NAME_IS_EXISTED(1037, "Tên dịch vụ đã tồn tại", HttpStatus.BAD_REQUEST),

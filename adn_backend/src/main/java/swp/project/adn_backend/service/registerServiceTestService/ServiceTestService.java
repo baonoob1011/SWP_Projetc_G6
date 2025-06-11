@@ -43,9 +43,10 @@ public class ServiceTestService {
     EntityManager entityManager;
     UserMapper userMapper;
     ManagerRepository managerRepository;
+    KitRepository kitRepository;
 
     @Autowired
-    public ServiceTestService(UserRepository userRepository, ServiceTestMapper serviceTestMapper, ServiceTestRepository serviceTestRepository, PriceListMapper priceListMapper, FeedbackMapper feedbackMapper, AdministrativeMapper administrativeMapper, CivilServiceMapper civilServiceMapper, AdministrativeServiceRepository administrativeServiceRepository, CivilServiceRepository civilServiceRepository, PriceListRepository priceListRepository, EntityManager entityManager, UserMapper userMapper, ManagerRepository managerRepository) {
+    public ServiceTestService(UserRepository userRepository, ServiceTestMapper serviceTestMapper, ServiceTestRepository serviceTestRepository, PriceListMapper priceListMapper, FeedbackMapper feedbackMapper, AdministrativeMapper administrativeMapper, CivilServiceMapper civilServiceMapper, AdministrativeServiceRepository administrativeServiceRepository, CivilServiceRepository civilServiceRepository, PriceListRepository priceListRepository, EntityManager entityManager, UserMapper userMapper, ManagerRepository managerRepository, KitRepository kitRepository) {
         this.userRepository = userRepository;
         this.serviceTestMapper = serviceTestMapper;
         this.serviceTestRepository = serviceTestRepository;
@@ -59,21 +60,26 @@ public class ServiceTestService {
         this.entityManager = entityManager;
         this.userMapper = userMapper;
         this.managerRepository = managerRepository;
+        this.kitRepository = kitRepository;
     }
 
     public ServiceTest createService(ServiceRequest serviceRequest,
-                                     Authentication authentication,
                                      PriceListRequest priceListRequest,
-                                     ,
+                                     long kitId,
                                      MultipartFile file) {
 
 
         if (serviceTestRepository.existsByServiceName(serviceRequest.getServiceName())) {
             throw new AppException(ErrorCodeUser.SERVICE_NAME_IS_EXISTED);
         }
+        //find kid
+        Kit kit = kitRepository.findById(kitId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.KIT_NOT_EXISTS));
+
         // Map ServiceTest
         ServiceTest serviceTest = serviceTestMapper.toServiceTest(serviceRequest);
         serviceTest.setRegisterDate(LocalDate.now());
+        serviceTest.setKit(kit);
         serviceTest.setActive(true);
 
         // Upload image if present

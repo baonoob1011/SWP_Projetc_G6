@@ -260,4 +260,9 @@ public class AppointmentService {
         }
         return responses;
     }
+    public void cancelledAppointment(long appointmentId){
+        Appointment appointment=appointmentRepository.findById(appointmentId)
+                .orElseThrow(()->new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
+    }
 }

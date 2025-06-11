@@ -39,20 +39,19 @@ public class Kit {
     LocalDate returnDate;
 
     DeliveryStatus kitStatus;
+    @Column(columnDefinition = "nvarchar(255)")
     String contents;
 
-    @ManyToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+    @OneToMany(mappedBy = "kit", fetch = FetchType.EAGER, cascade = {
+            CascadeType.ALL
     })
-    @JoinColumn(name = "service_id")
-    ServiceTest serviceTest;
+    List<ServiceTest> serviceTest;
 
-    public ServiceTest getServiceTest() {
+    public List<ServiceTest> getServiceTest() {
         return serviceTest;
     }
 
-    public void setServiceTest(ServiceTest serviceTest) {
+    public void setServiceTest(List<ServiceTest> serviceTest) {
         this.serviceTest = serviceTest;
     }
 

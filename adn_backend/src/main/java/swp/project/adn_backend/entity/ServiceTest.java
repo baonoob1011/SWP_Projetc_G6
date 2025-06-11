@@ -58,39 +58,47 @@ public class ServiceTest {
 //    Manager manager;
 
     @OneToMany(mappedBy = "services", fetch = FetchType.EAGER, cascade = {
-            CascadeType.ALL
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
     })
     List<Appointment> appointments;
 
     @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
-            CascadeType.ALL
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
     })
     List<CivilService> civilServices;
 
     @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
-            CascadeType.ALL
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
     })
     List<AdministrativeService> administrativeService;
 
     @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
-            CascadeType.ALL
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
     })
     List<Feedback> feedbacks;
 
     @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
-            CascadeType.ALL
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
     })
     List<PriceList> priceLists;
 
     @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
-            CascadeType.ALL
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
     })
     List<Discount> discounts;
 
-    @OneToMany(mappedBy = "serviceTest", fetch = FetchType.EAGER, cascade = {
-            CascadeType.ALL
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
     })
-    List<Kit> kits;
+    @JoinColumn(name = "kid_id")
+    Kit kit;
 
     @OneToMany(mappedBy = "serviceTest", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Patient> patients;
@@ -114,14 +122,15 @@ public class ServiceTest {
         this.discounts = discounts;
     }
 
-    public List<Kit> getKits() {
-        return kits;
+    public Kit getKit() {
+        return kit;
     }
 
-    public void setKits(List<Kit> kits) {
-        this.kits = kits;
+    public void setKit(Kit kit) {
+        this.kit = kit;
     }
-//    public Manager getManager() {
+
+    //    public Manager getManager() {
 //        return manager;
 //    }
 //

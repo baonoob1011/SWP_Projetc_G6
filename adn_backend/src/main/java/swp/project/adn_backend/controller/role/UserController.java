@@ -52,9 +52,4 @@ public class UserController {
     public ResponseEntity<List<SlotResponse>> getAllSlot(){
         return ResponseEntity.ok(slotService.getALlSlotForUser());
     }
-
-    @GetMapping("/get-all-location")
-    public ResponseEntity<List<LocationResponse>>getAllLocation(){
-        return ResponseEntity.ok(locationService.getAllLocation());
-    }
 }

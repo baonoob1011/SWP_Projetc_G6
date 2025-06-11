@@ -7,15 +7,20 @@ import swp.project.adn_backend.dto.request.Kit.KitRequest;
 import swp.project.adn_backend.entity.Kit;
 import swp.project.adn_backend.service.Kit.KitService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/kit")
 public class KitController {
     @Autowired
     private KitService kitService;
 
-    @PostMapping("/create-kit/{serviceId}")
-    public ResponseEntity<Kit> createKit(@RequestBody KitRequest kitRequest,
-                                         @PathVariable("serviceId")long serviceId) {
-        return ResponseEntity.ok(kitService.createKit(kitRequest,serviceId));
+    @PostMapping("/create-kit")
+    public ResponseEntity<Kit> createKit(@RequestBody KitRequest kitRequest) {
+        return ResponseEntity.ok(kitService.createKit(kitRequest));
+    }
+    @GetMapping("/get-all-kit")
+    public ResponseEntity<List<Kit>>getALlKit(){
+        return ResponseEntity.ok(kitService.getAllKit());
     }
 }

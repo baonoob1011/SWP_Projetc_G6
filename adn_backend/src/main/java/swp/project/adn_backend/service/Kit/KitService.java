@@ -26,18 +26,17 @@ public class KitService {
         this.serviceTestRepository = serviceTestRepository;
     }
 
-    public Kit createKit(KitRequest kitRequest,
-                         long serviceId) {
+    public Kit createKit(KitRequest kitRequest) {
 
         Kit kit = kitMapper.toKit(kitRequest);
         if (kitRepository.existsByKitCode(kitRequest.getKitCode())) {
             throw new AppException(ErrorCodeUser.KIT_EXISTED);
         }
-        //find service by Id
-        ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
-        kit.setServiceTest(serviceTest);
         return kitRepository.save(kit);
+    }
+
+    public List<Kit> getAllKit() {
+        return kitRepository.findAll();
     }
 
 }
