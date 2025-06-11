@@ -31,6 +31,9 @@ public class Location {
         this.appointment = appointment;
     }
 
+    public Location() {
+    }
+
     public List<Appointment> getAppointment() {
         return appointment;
     }
