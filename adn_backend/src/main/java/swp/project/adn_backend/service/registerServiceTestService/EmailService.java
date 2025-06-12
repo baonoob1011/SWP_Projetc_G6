@@ -39,125 +39,115 @@ public class EmailService {
     private String buildEmailAtCenterBody(AllAppointmentAtCenterResponse response) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("<html><body style='font-family:Arial,sans-serif; color:#333;'>");
-        sb.append("<h2 style='color:green;'>✅ Appointment Confirmation (At Center)</h2>");
+        sb.append("✅ Appointment Confirmation (At Center)\n\n");
 
         // Appointment info
-        sb.append("<p><strong>📌 Appointment Date:</strong> ")
-                .append(response.getShowAppointmentResponse().getAppointmentDate()).append("<br>");
-        sb.append("<strong>📌 Status:</strong> ")
-                .append(response.getShowAppointmentResponse().getAppointmentStatus()).append("</p>");
+        sb.append("📌 Appointment Date: ")
+                .append(response.getShowAppointmentResponse().getAppointmentDate()).append("\n");
+        sb.append("📌 Status: ")
+                .append(response.getShowAppointmentResponse().getAppointmentStatus()).append("\n\n");
 
-        // Service
-        sb.append("<h3>🧪 Services</h3>");
+        // Services
+        sb.append("🧪 Services:\n");
         response.getServiceAppointmentResponses().forEach(service -> {
-            sb.append("<p><strong>").append(service.getServiceName()).append("</strong><br>")
-                    .append("Type: ").append(service.getServiceType()).append("<br>")
-                    .append("Description: ").append(service.getDescription()).append("</p>");
+            sb.append("- ").append(service.getServiceName()).append("\n")
+                    .append("  Type: ").append(service.getServiceType()).append("\n")
+                    .append("  Description: ").append(service.getDescription()).append("\n\n");
         });
 
-        // Slot
-        sb.append("<h3>🕒 Time Slots</h3>");
+        // Slots
+        sb.append("🕒 Time Slots:\n");
         response.getSlotAppointmentResponse().forEach(slot -> {
-            sb.append("<p>")
-                    .append(slot.getStartTime()).append(" - ").append(slot.getEndTime()).append("<br>")
-                    .append("Date: ").append(slot.getSlotDate()).append("</p>");
+            sb.append("- ").append(slot.getStartTime()).append(" - ").append(slot.getEndTime()).append("\n")
+                    .append("  Date: ").append(slot.getSlotDate()).append("\n");
         });
+        sb.append("\n");
+
         // Room
         if (response.getRoomAppointmentResponse() != null) {
-            sb.append("<h3>🏠 Room</h3>");
-            sb.append("<p>")
-                    .append("Room Name: ").append(response.getRoomAppointmentResponse().getRoomName()).append("<br>")
-                    .append("</p>");
+            sb.append("🏠 Room:\n");
+            sb.append("- Room Name: ").append(response.getRoomAppointmentResponse().getRoomName()).append("\n\n");
         }
 
         // Location
-        sb.append("<h3>📍 Location</h3>");
+        sb.append("📍 Location:\n");
         response.getLocationAppointmentResponses().forEach(loc -> {
-            sb.append("<p>")
-                    .append(loc.getAddressLine()).append(", ")
+            sb.append("- ").append(loc.getAddressLine()).append(", ")
                     .append(loc.getDistrict()).append(", ")
-                    .append(loc.getCity()).append("</p>");
+                    .append(loc.getCity()).append("\n");
         });
+        sb.append("\n");
 
         // Patients
-        sb.append("<h3>👤 Patients</h3><ul>");
+        sb.append("👤 Patients:\n");
         response.getPatientAppointmentResponse().forEach(p -> {
-            sb.append("<li>").append(p.getFullName()).append(" (").append(p.getRelationship())
-                    .append("), DOB: ").append(p.getDateOfBirth())
-                    .append(", Gender: ").append(p.getGender()).append("</li>");
+            sb.append("- ").append(p.getFullName()).append(" (").append(p.getRelationship()).append("), DOB: ")
+                    .append(p.getDateOfBirth()).append(", Gender: ").append(p.getGender()).append("\n");
         });
-        sb.append("</ul>");
+        sb.append("\n");
 
         // Staff
-        sb.append("<h3>👨‍⚕️ Staff in Charge</h3><ul>");
+        sb.append("👨‍⚕️ Staff in Charge:\n");
         response.getStaffAppointmentResponse().forEach(s -> {
-            sb.append("<li>").append(s.getFullName())
+            sb.append("- ").append(s.getFullName())
                     .append(", Phone: ").append(s.getPhone())
-                    .append(", Email: ").append(s.getEmail()).append("</li>");
+                    .append(", Email: ").append(s.getEmail()).append("\n");
         });
-        sb.append("</ul>");
+        sb.append("\n");
 
         // User
-        sb.append("<h3>📱 Booked By</h3><ul>");
+        sb.append("📱 Booked By:\n");
         response.getUserAppointmentResponse().forEach(u -> {
-            sb.append("<li>").append(u.getFullName())
+            sb.append("- ").append(u.getFullName())
                     .append(", Phone: ").append(u.getPhone())
-                    .append(", Email: ").append(u.getEmail()).append("</li>");
+                    .append(", Email: ").append(u.getEmail()).append("\n");
         });
-        sb.append("</ul>");
-
-        sb.append("</body></html>");
 
         return sb.toString();
     }
 
+
     private String buildEmailAtHomeBody(AllAppointmentAtHomeResponse response) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("<html><body style='font-family:Arial,sans-serif; color:#333;'>");
-        sb.append("<h2 style='color:green;'>✅ Appointment Confirmation (At Home)</h2>");
+        sb.append("✅ Appointment Confirmation (At Home)\n\n");
 
         // Appointment info
-        sb.append("<p><strong>📌 Appointment Date:</strong> ")
-                .append(response.getShowAppointmentResponse().getAppointmentDate()).append("<br>");
-        sb.append("<strong>📌 Status:</strong> ")
-                .append(response.getShowAppointmentResponse().getAppointmentStatus()).append("</p>");
+        sb.append("📌 Appointment Date: ")
+                .append(response.getShowAppointmentResponse().getAppointmentDate()).append("\n");
+        sb.append("📌 Status: ")
+                .append(response.getShowAppointmentResponse().getAppointmentStatus()).append("\n\n");
 
-        // Service
-        sb.append("<h3>🧪 Services</h3>");
+        // Services
+        sb.append("🧪 Services:\n");
         response.getServiceAppointmentResponses().forEach(service -> {
-            sb.append("<p><strong>").append(service.getServiceName()).append("</strong><br>")
-                    .append("Type: ").append(service.getServiceType()).append("<br>")
-                    .append("Description: ").append(service.getDescription()).append("</p>");
+            sb.append("- ").append(service.getServiceName()).append("\n")
+                    .append("  Type: ").append(service.getServiceType()).append("\n")
+                    .append("  Description: ").append(service.getDescription()).append("\n\n");
         });
 
-        // Kit info
+        // Kit
         if (response.getKitAppointmentResponse() != null) {
-            sb.append("<h3>📦 Testing Kit</h3><p>")
-                    .append("Kit Name: ").append(response.getKitAppointmentResponse().getKitName()).append("<br>")
-                    .append("Kit Code: ").append(response.getKitAppointmentResponse().getKitCode()).append("</p>");
+            sb.append("📦 Testing Kit:\n");
+            sb.append("- Kit Name: ").append(response.getKitAppointmentResponse().getKitName()).append("\n")
+                    .append("- Kit Code: ").append(response.getKitAppointmentResponse().getKitCode()).append("\n\n");
         }
 
         // Patients
-        sb.append("<h3>👤 Patients</h3><ul>");
+        sb.append("👤 Patients:\n");
         response.getPatientAppointmentResponse().forEach(p -> {
-            sb.append("<li>").append(p.getFullName()).append(" (").append(p.getRelationship())
-                    .append("), DOB: ").append(p.getDateOfBirth())
-                    .append(", Gender: ").append(p.getGender()).append("</li>");
+            sb.append("- ").append(p.getFullName()).append(" (").append(p.getRelationship()).append("), DOB: ")
+                    .append(p.getDateOfBirth()).append(", Gender: ").append(p.getGender()).append("\n");
         });
-        sb.append("</ul>");
+        sb.append("\n");
 
         // User
-        sb.append("<h3>📱 Booked By</h3><ul>");
+        sb.append("📱 Booked By:\n");
         response.getUserAppointmentResponse().forEach(u -> {
-            sb.append("<li>").append(u.getFullName())
+            sb.append("- ").append(u.getFullName())
                     .append(", Phone: ").append(u.getPhone())
-                    .append(", Email: ").append(u.getEmail()).append("</li>");
+                    .append(", Email: ").append(u.getEmail()).append("\n");
         });
-        sb.append("</ul>");
-
-        sb.append("</body></html>");
 
         return sb.toString();
     }

@@ -20,11 +20,11 @@ public class AppointmentController {
     AppointmentService appointmentService;
 
     @PostMapping("/book-appointment/{serviceId}")
-    public AppointmentResponse bookAppointment(@RequestBody BookAppointmentRequest request,
-                                               Authentication authentication,
-                                               @PathVariable long serviceId,
-                                               @RequestParam("slotId") long slotId,
-                                               @RequestParam("locationId") long locationId) {
+    public AppointmentResponse bookAppointmentAtCenter(@RequestBody BookAppointmentRequest request,
+                                                       Authentication authentication,
+                                                       @PathVariable long serviceId,
+                                                       @RequestParam("slotId") long slotId,
+                                                       @RequestParam("locationId") long locationId) {
         return appointmentService.bookAppointmentAtCenter(
                 request.getAppointmentRequest(),
                 authentication,
@@ -32,6 +32,23 @@ public class AppointmentController {
                 slotId,
                 locationId,
                 serviceId
+        );
+    }
+
+    @PostMapping("/book-appointment/{serviceId}")
+    public AppointmentResponse bookAppointmentAtHome(@RequestBody BookAppointmentRequest request,
+                                                     Authentication authentication,
+                                                     @PathVariable long serviceId,
+                                                     @RequestParam("slotId") long slotId,
+                                                     @RequestParam("locationId") long locationId,
+                                                     @RequestParam("priceId") long priceId) {
+        return appointmentService.bookAppointmentAtHome(
+                request.getAppointmentRequest(),
+                authentication,
+                request.getPatientRequestList(),
+                request.getPaymentRequest(),
+                serviceId,
+                priceId
         );
     }
 

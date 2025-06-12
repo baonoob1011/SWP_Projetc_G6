@@ -1,12 +1,9 @@
 package swp.project.adn_backend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.apache.catalina.User;
+
 import swp.project.adn_backend.enums.PaymentMethod;
 import swp.project.adn_backend.enums.PaymentStatus;
 
@@ -19,17 +16,37 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long paymentId;
     double amount;
-    PaymentMethod method;
-    PaymentStatus paymentStatus;
+    @Enumerated(EnumType.STRING)
+    PaymentMethod paymentMethod;
+    @Enumerated(EnumType.STRING)
+    PaymentStatus getPaymentStatus;
     LocalDate transitionDate;
 
-   
-    public Payment(long paymentId, double amount, PaymentMethod method, PaymentStatus paymentStatus, LocalDate transitionDate) {
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    @JoinColumn(name = "user_id")
+    Users users;
+
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    @JoinColumn(name = "appointment_id")
+    Appointment appointment;
+
+    public Payment() {
+    }
+
+    public Payment(long paymentId, double amount, PaymentMethod paymentMethod, PaymentStatus getPaymentStatus, LocalDate transitionDate, Users users, Appointment appointment) {
         this.paymentId = paymentId;
         this.amount = amount;
-        this.method = method;
-        this.paymentStatus = paymentStatus;
+        this.paymentMethod = paymentMethod;
+        this.getPaymentStatus = getPaymentStatus;
         this.transitionDate = transitionDate;
+        this.users = users;
+        this.appointment = appointment;
     }
 
     public long getPaymentId() {
@@ -48,20 +65,36 @@ public class Payment {
         this.amount = amount;
     }
 
-    public PaymentMethod getMethod() {
-        return method;
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
     }
 
-    public void setMethod(PaymentMethod method) {
-        this.method = method;
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
     }
 
     public PaymentStatus getPaymentStatus() {
-        return paymentStatus;
+        return getPaymentStatus;
     }
 
-    public void setPaymentStatus(PaymentStatus paymentStatus) {
-        this.paymentStatus = paymentStatus;
+    public void setPaymentStatus(PaymentStatus getPaymentStatus) {
+        this.getPaymentStatus = getPaymentStatus;
     }
 
     public LocalDate getTransitionDate() {

@@ -53,6 +53,9 @@ public class SecurityConfig {
             "/api/slot/get-all-slot/**",
             "/api/patient/register-info",
             "/api/kit/view-kit-status",
+            "/api/location/get-all-location",
+            "/api/slot/get-all-slot",
+            "/api/payment/get-all-payment",
             "/api/user/**"
     };
 
@@ -68,8 +71,8 @@ public class SecurityConfig {
             "/api/blog/**",
             "/api/slot/**",
             "/api/price/**",
-            "/api/location/**",
             "/api/room/**",
+            "/api/payment/**",
             "/api/kit/**"
     };
 

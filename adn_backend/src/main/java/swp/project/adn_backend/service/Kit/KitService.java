@@ -42,7 +42,7 @@ public class KitService {
 
     public List<KitInfoDTO> getAllKit() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.KitInfoDTO(" +
-                "s.kitCode, s.kitName, s.targetPersonCount, s.price, contents) " +
+                "s.kitId, s.kitCode, s.kitName, s.targetPersonCount, s.price, contents) " +
                 "FROM Kit s";
 
         TypedQuery<KitInfoDTO> query = entityManager.createQuery(jpql, KitInfoDTO.class);
@@ -51,7 +51,7 @@ public class KitService {
 
     public List<KitInfoDTO> viewKitStatus() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.KitInfoDTO(" +
-                "s.kitCode, s.kitName, s.kitStatus, s.delivery_date, return_date) " +
+                "s.kitId, s.kitCode, s.kitName, s.kitStatus, s.delivery_date, return_date) " +
                 "FROM Kit s";
 
         TypedQuery<KitInfoDTO> query = entityManager.createQuery(jpql, KitInfoDTO.class);

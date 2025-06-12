@@ -48,22 +48,20 @@ public enum ErrorCodeUser {
     PHONE_NOT_EXISTS(1036, "Số điện thoại không tồn tại", HttpStatus.BAD_REQUEST),
     KIT_NOT_EXISTS(1036, "Kit không tồn tại", HttpStatus.BAD_REQUEST),
     PRICE_NOT_EXISTS(1040, "price không tồn tại", HttpStatus.BAD_REQUEST),
-    APPOINTMENT_NOT_EXISTS(1036, "Appointment không tồn tại", HttpStatus.BAD_REQUEST),
 
     // Service validation
     SERVICE_NAME_IS_EXISTED(1037, "Tên dịch vụ đã tồn tại", HttpStatus.BAD_REQUEST),
-//    SERVICE_NOT_EXISTS(1038, "Dịch vụ không tồn tại", HttpStatus.BAD_REQUEST),
-ROOM_TIME_OVERLAP(1038, "Room's open and close time overlaps with another room", HttpStatus.BAD_REQUEST),
-
+    //    SERVICE_NOT_EXISTS(1038, "Dịch vụ không tồn tại", HttpStatus.BAD_REQUEST),
+    ROOM_TIME_OVERLAP(1038, "Room's open and close time overlaps with another room", HttpStatus.BAD_REQUEST),
+    APPOINTMENT_NOT_EXISTS(1036, "Appointment không tồn tại", HttpStatus.BAD_REQUEST),
+    PAYMENT_NOT_EXISTS(1036, "payment không tồn tại", HttpStatus.BAD_REQUEST),
 
 
     //
 
     // Trường hợp đặc biệt
     INVALID_REQUEST(1021, "Invalid request"),
-    INTERNAL_ERROR(1022, "Internal server error. Please try again later.")
-
-    ;
+    INTERNAL_ERROR(1022, "Internal server error. Please try again later.");
     int code;
     String message;
     HttpStatusCode httpStatusCode;
@@ -102,8 +100,6 @@ ROOM_TIME_OVERLAP(1038, "Room's open and close time overlaps with another room",
     public void setMessage(String message) {
         this.message = message;
     }
-
-
 
 
 }

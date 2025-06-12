@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class KitInfoDTO {
+    long kitId;
     String kitCode;
     String kitName;
     String targetPersonCount;
@@ -17,7 +18,9 @@ public class KitInfoDTO {
     DeliveryStatus kitStatus;
     LocalDate delivery_date;
     LocalDate return_date;
-    public KitInfoDTO(String kitCode, String kitName, String targetPersonCount, double price, String contents) {
+
+    public KitInfoDTO(long kitId, String kitCode, String kitName, String targetPersonCount, double price, String contents) {
+        this.kitId = kitId;
         this.kitCode = kitCode;
         this.kitName = kitName;
         this.targetPersonCount = targetPersonCount;
@@ -25,7 +28,8 @@ public class KitInfoDTO {
         this.contents = contents;
     }
 
-    public KitInfoDTO(String kitCode, String kitName,  DeliveryStatus kitStatus, LocalDate delivery_date, LocalDate return_date) {
+    public KitInfoDTO(long kitId, String kitCode, String kitName, DeliveryStatus kitStatus, LocalDate delivery_date, LocalDate return_date) {
+        this.kitId = kitId;
         this.kitCode = kitCode;
         this.kitName = kitName;
         this.kitStatus = kitStatus;

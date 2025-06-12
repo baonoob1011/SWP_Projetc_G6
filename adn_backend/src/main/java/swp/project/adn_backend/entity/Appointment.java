@@ -71,7 +71,17 @@ public class Appointment {
     @JoinColumn(name = "location_id")
     Location location;
 
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<Payment> payments;
     public Appointment() {
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
     }
 
     public Location getLocation() {

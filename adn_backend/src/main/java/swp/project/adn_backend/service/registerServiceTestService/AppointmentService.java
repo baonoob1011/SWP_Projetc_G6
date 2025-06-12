@@ -9,15 +9,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO;
+import swp.project.adn_backend.dto.request.payment.PaymentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.*;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.*;
-import swp.project.adn_backend.enums.AppointmentStatus;
-import swp.project.adn_backend.enums.DeliveryStatus;
-import swp.project.adn_backend.enums.ErrorCodeUser;
-import swp.project.adn_backend.enums.SlotStatus;
+import swp.project.adn_backend.enums.*;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.AppointmentMapper;
 import swp.project.adn_backend.mapper.SlotMapper;
@@ -43,9 +41,10 @@ public class AppointmentService {
     EmailService emailService;
     PatientService patientService;
     PriceListRepository priceListRepository;
+    PaymentRepository paymentRepository;
 
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService, PatientService patientService, PriceListRepository priceListRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService, PatientService patientService, PriceListRepository priceListRepository, PaymentRepository paymentRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentMapper = appointmentMapper;
         this.userRepository = userRepository;
@@ -58,6 +57,7 @@ public class AppointmentService {
         this.emailService = emailService;
         this.patientService = patientService;
         this.priceListRepository = priceListRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     public AppointmentResponse bookAppointmentAtCenter(AppointmentRequest appointmentRequest,
@@ -135,6 +135,7 @@ public class AppointmentService {
     public AppointmentResponse bookAppointmentAtHome(AppointmentRequest appointmentRequest,
                                                      Authentication authentication,
                                                      List<PatientRequest> patientRequestList,
+                                                     PaymentRequest paymentRequest,
                                                      long serviceId,
                                                      long priceId) {
 
@@ -166,11 +167,17 @@ public class AppointmentService {
         //user set appointment
         userBookAppointment.setAppointments(List.of(appointment));
         //set status send kit
-        serviceTest.getKit().setKitStatus(DeliveryStatus.PENDING);
+        serviceTest.getKit().setKitStatus(DeliveryStatus.IN_PROGRESS);
         serviceTest.getKit().setDeliveryDate(LocalDate.now());
-
         //tinh price
         double totalPrice=(priceList.getPrice())+(serviceTest.getKit().getPrice());
+        //set payment
+        Payment payment=new Payment();
+        payment.setAmount(totalPrice);
+        payment.setAppointment(appointment);
+        payment.setUsers(userBookAppointment);
+        payment.setPaymentMethod(paymentRequest.getPaymentMethod());
+        paymentRepository.save(payment);
 
         Appointment saved = appointmentRepository.save(appointment);
 
