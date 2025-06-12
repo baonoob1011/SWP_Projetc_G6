@@ -129,7 +129,7 @@ const Services = () => {
       setFile(selected);
       setPreview(URL.createObjectURL(selected));
     } else {
-      alert('Vui lòng chọn ảnh hợp lệ');
+      toast.warning('Vui lòng chọn ảnh hợp lệ');
     }
   };
 

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import './ServiceList.css';
 import { Button } from '@mui/material';
 import { NavLink } from 'react-router-dom';
+import CustomSnackBar from '../userinfor/Snackbar';
+import Swal from 'sweetalert2';
 
 type PriceItem = {
   time: string;
@@ -38,6 +40,12 @@ const ServiceList = () => {
   const [updatedName, setUpdatedName] = useState('');
   const [updatedDescription, setUpdatedDescription] = useState('');
   const [updatedPrice, setUpdatedPrice] = useState<number>(0);
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'error' as 'success' | 'error',
+  });
 
   const token = localStorage.getItem('token');
 
@@ -88,7 +96,14 @@ const ServiceList = () => {
   };
 
   const handleDelete = async (serviceId: number) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xoá dịch vụ này?')) return;
+    const result = await Swal.fire({
+      title: 'Bạn có chắc chắn muốn xoá dịch vụ này?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Xoá',
+      cancelButtonText: 'Huỷ',
+    });
+    if (!result.isConfirmed) return;
     try {
       const res = await fetch(
         `http://localhost:8080/api/services/delete-service/${serviceId}`,
@@ -97,28 +112,48 @@ const ServiceList = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       if (!res.ok) throw new Error('Xoá không thành công');
-      alert('Xoá thành công');
+      await Swal.fire({
+        title: 'Xoá thành công',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+      });
       fetchServices();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      alert(err.message || 'Lỗi xoá dịch vụ');
+    } catch (err: unknown) {
+      let message = 'Lỗi xoá dịch vụ';
+      if (err instanceof Error) message = err.message;
+      setSnackbar({
+        open: true,
+        message,
+        severity: 'error',
+      });
     }
   };
 
   const handleUpdate = async (serviceId: number) => {
-    if (!updatedName.trim()) return alert('Tên dịch vụ không được để trống');
-
+    if (!updatedName.trim()) {
+      setSnackbar({
+        open: true,
+        message: 'Tên dịch vụ không được để trống',
+        severity: 'error',
+      });
+      return;
+    }
     const currentService = services.find(
       (s) => s.serviceRequest.serviceId === serviceId
     );
-    if (!currentService) return alert('Không tìm thấy dịch vụ');
-
+    if (!currentService) {
+      setSnackbar({
+        open: true,
+        message: 'Không tìm thấy dịch vụ',
+        severity: 'error',
+      });
+      return;
+    }
     try {
       const formData = new FormData();
       const today = new Date().toISOString().split('T')[0];
-
       const requestPayload = {
         updateServiceTestRequest: {
           serviceName: updatedName,
@@ -127,7 +162,6 @@ const ServiceList = () => {
         },
         priceListRequest: { time: today, price: updatedPrice },
       };
-
       formData.append(
         'request',
         new Blob([JSON.stringify(requestPayload)], { type: 'application/json' })
@@ -141,14 +175,23 @@ const ServiceList = () => {
           body: formData,
         }
       );
-
       if (!res.ok) throw new Error('Cập nhật không thành công');
-      alert('Cập nhật thành công');
+      await Swal.fire({
+        title: 'Cập nhật thành công',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+      });
       setEditingServiceId(null);
       fetchServices();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      alert(err.message || 'Lỗi cập nhật');
+    } catch (err: unknown) {
+      let message = 'Lỗi cập nhật';
+      if (err instanceof Error) message = err.message;
+      setSnackbar({
+        open: true,
+        message,
+        severity: 'error',
+      });
     }
   };
 
@@ -330,6 +373,12 @@ const ServiceList = () => {
           </table>
         </div>
       )}
+      <CustomSnackBar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </div>
   );
 };

@@ -61,7 +61,7 @@ const AdministrativeServiceList = () => {
           { method: 'GET' }
         );
         if (!response.ok) {
-          alert('Không thể lấy dữ liệu dịch vụ');
+          setError('Không thể lấy dữ liệu dịch vụ');
           setLoading(false);
           return;
         }
