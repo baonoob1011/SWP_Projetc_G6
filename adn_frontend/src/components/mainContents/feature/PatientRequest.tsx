@@ -21,7 +21,6 @@ const fieldLabels: { name: keyof Patient; label: string; type?: string }[] = [
   { name: 'identityNumber', label: 'CMND/CCCD' },
   { name: 'relationship', label: 'Mối quan hệ' },
   { name: 'birthCertificate', label: 'Giấy khai sinh (nếu có)' },
-  // ❌ Đã bỏ gender khỏi đây để xử lý riêng bằng radio
 ];
 
 const PatientRequest = () => {

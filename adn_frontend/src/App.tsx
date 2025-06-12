@@ -44,6 +44,7 @@ import SignUp from './components/page/SignUp';
 import Forget from './components/page/Forget';
 import Login from './components/page/Login';
 import CreateRoom from './components/mainContents/feature/CreateRoom';
+import CreateKit from './components/mainContents/feature/CreateKit';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -68,6 +69,7 @@ function App() {
     '/manager/create-services',
     '/manager/staff',
     '/manager/user',
+    '/manager/createKit',
     '/manager',
   ].includes(location.pathname);
 
@@ -287,6 +289,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
                     <ServiceList />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="manager/createKit"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateKit />
                   </ProtectedRoute>
                 }
               />
