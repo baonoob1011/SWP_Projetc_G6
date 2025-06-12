@@ -12,6 +12,7 @@ import {
   Shield,
   List,
   ShoppingBag,
+  BaggageClaim,
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
@@ -43,6 +44,12 @@ const ManagerPage = () => {
       icon: ShoppingBag,
       label: 'Tạo dịch vụ',
       path: 'manager/create-services',
+    },
+    {
+      id: 'createKit',
+      icon: BaggageClaim,
+      label: 'Tạo kit',
+      path: 'manager/createKit',
     },
   ];
 
