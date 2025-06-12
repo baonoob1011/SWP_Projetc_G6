@@ -45,6 +45,7 @@ import Forget from './components/page/Forget';
 import Login from './components/page/Login';
 import CreateRoom from './components/mainContents/feature/CreateRoom';
 import CreateKit from './components/mainContents/feature/CreateKit';
+import NewPrice from './components/mainContents/feature/NewPrice';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -172,6 +173,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <SignUpStaffSchedule />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/newPrice/:serviceId"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <NewPrice />
                   </ProtectedRoute>
                 }
               />
