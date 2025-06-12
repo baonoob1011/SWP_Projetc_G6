@@ -24,14 +24,16 @@ public class AppointmentController {
                                                        Authentication authentication,
                                                        @PathVariable long serviceId,
                                                        @RequestParam("slotId") long slotId,
-                                                       @RequestParam("locationId") long locationId) {
+                                                       @RequestParam("locationId") long locationId,
+                                                       @RequestParam("priceId") long priceId) {
         return appointmentService.bookAppointmentAtCenter(
                 request.getAppointmentRequest(),
                 authentication,
                 request.getPatientRequestList(),
                 slotId,
                 locationId,
-                serviceId
+                serviceId,
+                priceId
         );
     }
 

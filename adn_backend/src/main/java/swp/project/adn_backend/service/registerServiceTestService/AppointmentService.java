@@ -65,7 +65,8 @@ public class AppointmentService {
                                                        List<PatientRequest> patientRequestList,
                                                        long slotId,
                                                        long locationId,
-                                                       long serviceId) {
+                                                       long serviceId,
+                                                       long priceId) {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
@@ -79,8 +80,9 @@ public class AppointmentService {
 
         Slot slot = slotRepository.findById(slotId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
-//        PriceList priceList = priceListRepository.findById(priceId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
+
+        PriceList priceList = priceListRepository.findById(priceId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.PRICE_NOT_EXISTS));
 
         if(slot.getSlotStatus().equals(SlotStatus.BOOKED)){
             throw new RuntimeException("Slot is Booked, try book other slot");
@@ -113,7 +115,7 @@ public class AppointmentService {
 
         // Build email content
         ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(saved);
-
+        List<PriceAppointmentResponse> priceAppointmentResponse=appointmentMapper.toPriceAppointmentResponse(serviceTest.getPriceLists());
         UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(userBookAppointment);
         StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(slot.getStaff());
         SlotAppointmentResponse slotAppointmentResponse = appointmentMapper.toSlotAppointmentResponse(slot);
@@ -132,6 +134,7 @@ public class AppointmentService {
         emailResponse.setServiceAppointmentResponses(List.of(serviceAppointmentResponse));
         emailResponse.setPatientAppointmentResponse(patientAppointmentResponses);
         emailResponse.setLocationAppointmentResponses(List.of(locationAppointmentResponse));
+        emailResponse.setPriceAppointmentResponse(priceAppointmentResponse);
 
         emailService.sendAppointmentAtCenterDetailsEmail(userBookAppointment.getEmail(), emailResponse);
 
