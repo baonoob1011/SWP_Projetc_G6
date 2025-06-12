@@ -46,10 +46,12 @@ public class RoomService {
 
     public List<RoomInfoDTO> getAllRoom() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.RoomInfoDTO(" +
-                "s.roomId, s.roomName, s.roomStatus, s.openTime, closeTime) " +
-                "FROM Room s";
+                "s.roomId, s.roomName, s.roomStatus, s.openTime, s.closeTime) " +
+                "FROM Room s WHERE s.roomStatus = :roomStatus";
 
         TypedQuery<RoomInfoDTO> query = entityManager.createQuery(jpql, RoomInfoDTO.class);
+        query.setParameter("roomStatus", RoomStatus.AVAILABLE);
         return query.getResultList();
     }
+
 }

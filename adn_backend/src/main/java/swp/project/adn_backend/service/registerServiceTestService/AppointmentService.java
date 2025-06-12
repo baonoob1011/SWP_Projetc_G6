@@ -71,7 +71,6 @@ public class AppointmentService {
         Long userId = jwt.getClaim("id");
 
 
-
         Users userBookAppointment = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
@@ -132,7 +131,6 @@ public class AppointmentService {
         emailResponse.setPatientAppointmentResponse(patientAppointmentResponses);
         emailResponse.setLocationAppointmentResponses(List.of(locationAppointmentResponse));
 
-        // Send email
         emailService.sendAppointmentAtCenterDetailsEmail(userBookAppointment.getEmail(), emailResponse);
 
         return appointmentMapper.toAppointmentResponse(saved);
@@ -157,7 +155,6 @@ public class AppointmentService {
         PriceList priceList=priceListRepository.findById(priceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PRICE_NOT_EXISTS));
 
-
         if(userBookAppointment.getAddress()==null){
             throw new RuntimeException("update your address first");
         }
@@ -171,7 +168,6 @@ public class AppointmentService {
         appointment.setServices(serviceTest);
         appointment.setUsers(userBookAppointment);
         //user set appointment
-        userBookAppointment.setAppointments(List.of(appointment));
         //set status send kit
         serviceTest.getKit().setKitStatus(DeliveryStatus.IN_PROGRESS);
         serviceTest.getKit().setDeliveryDate(LocalDate.now());

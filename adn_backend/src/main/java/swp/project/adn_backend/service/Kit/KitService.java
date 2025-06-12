@@ -25,10 +25,11 @@ public class KitService {
     private EntityManager entityManager;
 
     @Autowired
-    public KitService(KitRepository kitRepository, KitMapper kitMapper, ServiceTestRepository serviceTestRepository) {
+    public KitService(KitRepository kitRepository, KitMapper kitMapper, ServiceTestRepository serviceTestRepository, EntityManager entityManager) {
         this.kitRepository = kitRepository;
         this.kitMapper = kitMapper;
         this.serviceTestRepository = serviceTestRepository;
+        this.entityManager = entityManager;
     }
 
     public Kit createKit(KitRequest kitRequest) {

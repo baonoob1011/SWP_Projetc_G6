@@ -28,12 +28,44 @@ public class KitInfoDTO {
         this.contents = contents;
     }
 
-    public KitInfoDTO(long kitId, String kitCode, String kitName, DeliveryStatus kitStatus, LocalDate delivery_date, LocalDate return_date) {
+//    public KitInfoDTO(long kitId, String kitCode, String kitName, DeliveryStatus kitStatus, LocalDate delivery_date, LocalDate return_date) {
+//        this.kitId = kitId;
+//        this.kitCode = kitCode;
+//        this.kitName = kitName;
+//        this.kitStatus = kitStatus;
+//        this.delivery_date = delivery_date;
+//        this.return_date = return_date;
+//    }
+
+    public long getKitId() {
+        return kitId;
+    }
+
+    public void setKitId(long kitId) {
         this.kitId = kitId;
-        this.kitCode = kitCode;
-        this.kitName = kitName;
+    }
+
+    public DeliveryStatus getKitStatus() {
+        return kitStatus;
+    }
+
+    public void setKitStatus(DeliveryStatus kitStatus) {
         this.kitStatus = kitStatus;
+    }
+
+    public LocalDate getDelivery_date() {
+        return delivery_date;
+    }
+
+    public void setDelivery_date(LocalDate delivery_date) {
         this.delivery_date = delivery_date;
+    }
+
+    public LocalDate getReturn_date() {
+        return return_date;
+    }
+
+    public void setReturn_date(LocalDate return_date) {
         this.return_date = return_date;
     }
 

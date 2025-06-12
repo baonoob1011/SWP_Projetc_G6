@@ -21,8 +21,9 @@ public class AddPriceListController {
         addPriceListService.addMorePriceList(addPriceListRequest, serviceId);
         return ResponseEntity.ok("add price successful");
     }
-    @GetMapping("/get-all-price")
-    public ResponseEntity<List<PriceInfoDTO>>getAllPrice(){
-        return ResponseEntity.ok(addPriceListService.getAllPrice());
+
+    @GetMapping("/get-all-price/{serviceId}")
+    public ResponseEntity<List<PriceInfoDTO>> getAllPrice(@PathVariable("serviceId") long serviceId) {
+        return ResponseEntity.ok(addPriceListService.getAllPrice(serviceId));
     }
 }

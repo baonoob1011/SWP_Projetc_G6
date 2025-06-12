@@ -55,6 +55,7 @@ public enum ErrorCodeUser {
     ROOM_TIME_OVERLAP(1038, "Room's open and close time overlaps with another room", HttpStatus.BAD_REQUEST),
     APPOINTMENT_NOT_EXISTS(1036, "Appointment không tồn tại", HttpStatus.BAD_REQUEST),
     PAYMENT_NOT_EXISTS(1036, "payment không tồn tại", HttpStatus.BAD_REQUEST),
+    EMAIL_NOT_EXISTS(10341, "emial không tồn tại", HttpStatus.BAD_REQUEST),
 
 
     //

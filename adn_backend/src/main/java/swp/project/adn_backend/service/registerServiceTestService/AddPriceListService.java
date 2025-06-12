@@ -49,11 +49,15 @@ public class AddPriceListService {
         serviceTestRepository.save(serviceTest);
     }
 
-    public List<PriceInfoDTO> getAllPrice() {
+    public List<PriceInfoDTO> getAllPrice(long serviceId) {
+        ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
+
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.PriceInfoDTO(" +
                 "s.priceId, s.price, s.time) " +
-                "FROM PriceList s";
+                "FROM PriceList s Where s.service.serviceId=:serviceId";
         TypedQuery<PriceInfoDTO> query = entityManager.createQuery(jpql, PriceInfoDTO.class);
+        query.setParameter("serviceId", serviceId);
         return query.getResultList();
 
     }

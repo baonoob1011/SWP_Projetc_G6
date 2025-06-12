@@ -43,7 +43,8 @@ public class SecurityConfig {
             "/api/otp/**",
             "/api/register/user-account",
             "/api/services/get-all-administrative-service",
-            "/api/services/get-all-civil-service"
+            "/api/services/get-all-civil-service",
+            "/api/price//get-all-price/**",
     };
 
     private final String[] USER_ENDPOINTS = {
@@ -54,9 +55,10 @@ public class SecurityConfig {
             "/api/patient/register-info",
             "/api/kit/view-kit-status",
             "/api/location/get-all-location",
-            "/api/slot/get-all-slot",
             "/api/payment/get-all-payment",
-            "/api/user/**"
+            "/api/user/**",
+            "/api/payment/**",
+            "/api/appointment/book-appointment-at_home/**"
     };
 
     private final String[] STAFF_ENDPOINTS = {

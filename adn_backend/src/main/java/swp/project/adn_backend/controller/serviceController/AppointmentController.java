@@ -39,8 +39,6 @@ public class AppointmentController {
     public AppointmentResponse bookAppointmentAtHome(@RequestBody BookAppointmentRequest request,
                                                      Authentication authentication,
                                                      @PathVariable long serviceId,
-                                                     @RequestParam("slotId") long slotId,
-                                                     @RequestParam("locationId") long locationId,
                                                      @RequestParam("priceId") long priceId) {
         return appointmentService.bookAppointmentAtHome(
                 request.getAppointmentRequest(),
