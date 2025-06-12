@@ -46,6 +46,7 @@ import Login from './components/page/Login';
 import CreateRoom from './components/mainContents/feature/CreateRoom';
 import CreateKit from './components/mainContents/feature/CreateKit';
 import NewPrice from './components/mainContents/feature/NewPrice';
+import GetAppointment from './components/mainContents/feature/GetBooking';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -362,6 +363,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <PatientRequest />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/checkBooking"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <GetAppointment />
                 </ProtectedRoute>
               }
             />
