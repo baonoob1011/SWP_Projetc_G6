@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import './ServiceList.css';
+import { Button } from '@mui/material';
+import { NavLink } from 'react-router-dom';
 
 type PriceItem = {
   time: string;
@@ -311,6 +313,13 @@ const ServiceList = () => {
                           >
                             🗑️ Xoá
                           </button>
+                          <Button
+                            component={NavLink}
+                            to={`/newPrice/${s.serviceRequest.serviceId}`}
+                            className="btn btn-sm btn-outline-secondary"
+                          >
+                            ➕ thêm giá
+                          </Button>
                         </>
                       )}
                     </td>
