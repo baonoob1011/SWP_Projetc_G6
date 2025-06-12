@@ -74,11 +74,7 @@ const Services = () => {
       setFile(selected);
       setPreview(URL.createObjectURL(selected));
     } else {
-      setSnackbar({
-        open: true,
-        message: "Vui lòng chọn ảnh hợp lệ",
-        severity: "error"
-      });
+      toast.warning('Vui lòng chọn ảnh hợp lệ');
     }
   };
 

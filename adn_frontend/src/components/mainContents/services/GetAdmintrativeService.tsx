@@ -67,11 +67,7 @@ const AdministrativeServiceList = () => {
           { method: 'GET' }
         );
         if (!response.ok) {
-          setSnackbar({
-            open: true,
-            message: "Không thể lấy dữ liệu dịch vụ",
-            severity: "error"
-          });
+          setError('Không thể lấy dữ liệu dịch vụ');
           setLoading(false);
           return;
         }

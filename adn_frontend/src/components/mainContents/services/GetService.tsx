@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
-import CustomSnackBar from "../userinfor/Snackbar";
-import Swal from "sweetalert2";
+import './ServiceList.css';
+import { Button } from '@mui/material';
+import { NavLink } from 'react-router-dom';
+import CustomSnackBar from '../userinfor/Snackbar';
+import Swal from 'sweetalert2';
 
 type PriceItem = {
   time: string;
@@ -47,6 +50,12 @@ const ServiceList = () => {
     open: false,
     message: "",
     severity: "error" as "error" | "success"
+  });
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'error' as 'success' | 'error',
   });
 
   const token = localStorage.getItem('token');
@@ -103,17 +112,13 @@ const ServiceList = () => {
 
   const handleDelete = async (serviceId: number) => {
     const result = await Swal.fire({
-      title: 'Xác nhận xóa',
-      text: 'Bạn có chắc chắn muốn xoá dịch vụ này?',
+      title: 'Bạn có chắc chắn muốn xoá dịch vụ này?',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Xóa',
-      cancelButtonText: 'Hủy',
-      reverseButtons: true
+      confirmButtonText: 'Xoá',
+      cancelButtonText: 'Huỷ',
     });
-
     if (!result.isConfirmed) return;
-
     try {
       const res = await fetch(
         `http://localhost:8080/api/services/delete-service/${serviceId}`,
@@ -124,73 +129,48 @@ const ServiceList = () => {
           },
         }
       );
-
       if (!res.ok) throw new Error('Xoá không thành công');
-      
-      Swal.fire({
-        title: 'Thành công!',
-        text: 'Xóa dịch vụ thành công',
+      await Swal.fire({
+        title: 'Xoá thành công',
         icon: 'success',
-        confirmButtonText: 'OK'
+        timer: 1500,
+        showConfirmButton: false,
       });
-      
       fetchServices();
-    } catch (err) {
-      const error = err as ApiError;
+    } catch (err: unknown) {
+      let message = 'Lỗi xoá dịch vụ';
+      if (err instanceof Error) message = err.message;
       setSnackbar({
         open: true,
-        message: error.message || 'Lỗi xoá dịch vụ',
-        severity: "error"
+        message,
+        severity: 'error',
       });
     }
   };
 
   const handleUpdate = async (serviceId: number) => {
-    // Validation
     if (!updatedName.trim()) {
       setSnackbar({
         open: true,
-        message: "Vui lòng nhập tên dịch vụ",
-        severity: "error"
+        message: 'Tên dịch vụ không được để trống',
+        severity: 'error',
       });
       return;
     }
-
-    if (!updatedDescription.trim()) {
-      setSnackbar({
-        open: true,
-        message: "Vui lòng nhập mô tả dịch vụ",
-        severity: "error"
-      });
-      return;
-    }
-
-    if (updatedPrice <= 0) {
-      setSnackbar({
-        open: true,
-        message: "Giá phải là số dương",
-        severity: "error"
-      });
-      return;
-    }
-
     const currentService = services.find(
       (s) => s.serviceRequest.serviceId === serviceId
     );
     if (!currentService) {
       setSnackbar({
         open: true,
-        message: "Không tìm thấy dịch vụ",
-        severity: "error"
+        message: 'Không tìm thấy dịch vụ',
+        severity: 'error',
       });
       return;
     }
-
     try {
       const formData = new FormData();
       const today = new Date().toISOString().split('T')[0];
-
-      const newPriceItem = { time: today, price: updatedPrice };
       const requestPayload = {
         updateServiceTestRequest: {
           serviceName: updatedName,
@@ -199,12 +179,11 @@ const ServiceList = () => {
         },
         priceListRequest: newPriceItem,
       };
-
       formData.append(
         'request',
         new Blob([JSON.stringify(requestPayload)], { type: 'application/json' })
       );
-      if (selectedFile) formData.append('file', selectedFile);
+
 
       const res = await fetch(
         `http://localhost:8080/api/services/update-service/${serviceId}`,
@@ -214,24 +193,22 @@ const ServiceList = () => {
           body: formData,
         }
       );
-
       if (!res.ok) throw new Error('Cập nhật không thành công');
-      
-      Swal.fire({
-        title: 'Thành công!',
-        text: 'Cập nhật dịch vụ thành công',
+      await Swal.fire({
+        title: 'Cập nhật thành công',
         icon: 'success',
-        confirmButtonText: 'OK'
+        timer: 1500,
+        showConfirmButton: false,
       });
-      
       setEditingServiceId(null);
       fetchServices();
-    } catch (err) {
-      const error = err as ApiError;
+    } catch (err: unknown) {
+      let message = 'Lỗi cập nhật';
+      if (err instanceof Error) message = err.message;
       setSnackbar({
         open: true,
-        message: error.message || 'Lỗi cập nhật dịch vụ',
-        severity: "error"
+        message,
+        severity: 'error',
       });
     }
   };
@@ -403,21 +380,23 @@ const ServiceList = () => {
                           </button>
                         </>
                       )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
       <CustomSnackBar
         open={snackbar.open}
         message={snackbar.message}
         severity={snackbar.severity}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
       />
-    </>
+
+    </div>
   );
 };
 

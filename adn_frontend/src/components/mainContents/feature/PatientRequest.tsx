@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import GetSlot from './GetSlot';
+import CustomSnackBar from '../userinfor/Snackbar';
+import Swal from 'sweetalert2';
 
 type Patient = {
   fullName: string;
@@ -50,6 +51,12 @@ const PatientRequest = () => {
     birthCertificate: '',
   });
 
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error',
+  });
+
   const handleInputPatientOne = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPatientOne((prev) => ({
@@ -81,9 +88,16 @@ const PatientRequest = () => {
         }
       );
       if (!res.ok) {
-        alert('Không thể đăng ký');
+        setSnackbar({
+          open: true,
+          message: 'Không thể đăng ký',
+          severity: 'error',
+        });
       } else {
-        alert('Đăng ký thành công');
+        Swal.fire({
+          icon: 'success',
+          title: 'Đăng ký thành công',
+        });
       }
     } catch (error) {
       console.log(error);
@@ -134,6 +148,12 @@ const PatientRequest = () => {
           </button>
         </div>
       </form>
+      <CustomSnackBar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </div>
   );
 };
