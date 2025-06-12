@@ -158,6 +158,7 @@ public class ServiceTestService {
             if (s.getPriceLists() != null && !s.getPriceLists().isEmpty()) {
                 for (PriceList p : s.getPriceLists()) {
                     PriceListResponse res = new PriceListResponse();
+                    res.setPriceId(p.getPriceId());
                     res.setTime(p.getTime());
                     res.setPrice(p.getPrice());
                     priceReqs.add(res);

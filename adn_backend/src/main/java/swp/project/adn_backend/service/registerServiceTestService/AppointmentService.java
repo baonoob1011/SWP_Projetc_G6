@@ -79,6 +79,8 @@ public class AppointmentService {
 
         Slot slot = slotRepository.findById(slotId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
+//        PriceList priceList = priceListRepository.findById(priceId)
+//                .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
 
         if(slot.getSlotStatus().equals(SlotStatus.BOOKED)){
             throw new RuntimeException("Slot is Booked, try book other slot");
