@@ -73,16 +73,6 @@ public class Users {
     @Column(name = "role")
     private Set<String> roles;
 
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
-
-    public Users() {
-    }
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Blog> blogs;
@@ -110,6 +100,9 @@ public class Users {
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Staff> staff;
 
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<Payment> payments;
+
 //    @OneToOne(mappedBy = "users", cascade = {
 //            CascadeType.PERSIST, CascadeType.MERGE,
 //            CascadeType.DETACH, CascadeType.REFRESH
@@ -123,6 +116,14 @@ public class Users {
 //    public void setSlots(Slot slots) {
 //        this.slots = slots;
 //    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
 
     public List<Blog> getBlogs() {
         return blogs;

@@ -45,6 +45,7 @@ const NewPrice = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+<<<<<<< fix-forget-sendOTP-newPass
     if (!price.effectiveDate || !price.price || !price.time) {
       setSnackbar({
         open: true,
@@ -54,6 +55,8 @@ const NewPrice = () => {
       return;
     }
 
+=======
+>>>>>>> main
     try {
       const res = await fetch(
         `http://localhost:8080/api/price/add-more-price/${serviceId}`,

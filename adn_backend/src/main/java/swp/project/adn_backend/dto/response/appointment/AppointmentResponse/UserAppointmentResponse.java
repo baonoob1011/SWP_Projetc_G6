@@ -1,11 +1,8 @@
-package swp.project.adn_backend.dto.response.appointment;
+package swp.project.adn_backend.dto.response.appointment.AppointmentResponse;
 
-import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserAppointmentResponse {
     long userId;

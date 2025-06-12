@@ -121,7 +121,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               flexDirection: 'column', // đổi thành cột dọc
               alignItems: 'center', // canh giữa theo chiều ngang
               ml: 0,
-              width: 200, // giữ chiều rộng logo + slogan
+              width: 200,
             }}
           >
             <NavLink
@@ -140,7 +140,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   height: 200,
                   display: 'block',
                   margin: '0 auto',
-                  marginLeft: 80, // căn giữa logo nếu cần
+                  marginRight: 80, // căn giữa logo nếu cần
                 }}
               />
             </NavLink>
@@ -222,11 +222,12 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               sx={{
                 display: { xs: 'none', md: 'flex' },
                 alignItems: 'center',
-                ml: 2, // margin-left khoảng 48px
+                ml: 2,
               }}
+              className={styles.phoneNumber}
             >
-              <Phone sx={{ color: '#DC143C', mr: 1 }} />
-              <Typography sx={{ fontSize: 20, color: '#DC143C' }}>
+              <Phone sx={{ color: 'inherit', mr: 1 }} />
+              <Typography sx={{ fontSize: 20, color: 'inherit' }}>
                 0922.394.333
               </Typography>
             </Box>
@@ -262,7 +263,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   >
                     <MenuItem
                       component={NavLink}
-                      to="/m-page"
+                      to="/manager"
                       onClick={handleCloseMenu}
                       className={styles.menuItem}
                       sx={{ px: 2, py: 1 }}
@@ -317,6 +318,15 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       sx={{ px: 2, py: 1 }}
                     >
                       Trang làm việc
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/s-m-profile"
+                      onClick={handleCloseMenu}
+                      className={styles.menuItem}
+                      sx={{ px: 2, py: 1 }}
+                    >
+                      Xem thông tin
                     </MenuItem>
                     <MenuItem
                       onClick={() => {

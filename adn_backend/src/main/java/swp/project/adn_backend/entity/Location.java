@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Location {
@@ -18,12 +20,10 @@ public class Location {
     @Column(columnDefinition = "nvarchar(255)")
     String city;
 
-    @OneToOne(mappedBy = "location", cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH})
-    Appointment appointment;
+    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<Appointment> appointment;
 
-    public Location(long locationId, String addressLine, String district, String city, Appointment appointment) {
+    public Location(long locationId, String addressLine, String district, String city, List<Appointment> appointment) {
         this.locationId = locationId;
         this.addressLine = addressLine;
         this.district = district;
@@ -34,11 +34,11 @@ public class Location {
     public Location() {
     }
 
-    public Appointment getAppointment() {
+    public List<Appointment> getAppointment() {
         return appointment;
     }
 
-    public void setAppointment(Appointment appointment) {
+    public void setAppointment(List<Appointment> appointment) {
         this.appointment = appointment;
     }
 

@@ -64,13 +64,24 @@ public class Appointment {
 //            CascadeType.DETACH, CascadeType.REFRESH
 //    })
 //    List<Patient> patients;
-    @OneToOne(cascade = {
+    @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH})
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
     @JoinColumn(name = "location_id")
     Location location;
 
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<Payment> payments;
     public Appointment() {
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
     }
 
     public Location getLocation() {

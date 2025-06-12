@@ -1,7 +1,13 @@
-import { useState, useRef, useEffect } from "react";
-import styles from "./Services.module.css";
-import CustomSnackBar from "../userinfor/Snackbar";
-import Swal from "sweetalert2";
+import {
+  FormControl,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  type SelectChangeEvent,
+} from '@mui/material';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 type FormService = {
   serviceName: string;
@@ -18,6 +24,15 @@ type TypeService = {
   someCivilField: string;
 };
 
+type Kit = {
+  kitId: string;
+  kitCode: string;
+  kitName: string;
+  targetPersonCount: string;
+  price: string;
+  contents: string;
+};
+
 const Services = () => {
   const [form, setForm] = useState<{
     service: FormService;
@@ -25,37 +40,77 @@ const Services = () => {
     type: TypeService;
   }>({
     service: {
-      serviceName: "",
-      description: "",
-      serviceType: "",
+      serviceName: '',
+      description: '',
+      serviceType: '',
     },
     price: {
-      time: "",
-      price: "",
+      time: '',
+      price: '',
     },
     type: {
-      someCivilField: "",
+      someCivilField: '',
     },
   });
-
+  const navigate = useNavigate();
+  const [kit, setKit] = useState<Kit[]>([]);
+  const [selectedKit, setSelectedKit] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string>("");
+  const [preview, setPreview] = useState<string>('');
   const fileRef = useRef<HTMLInputElement>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "error" as "error" | "success"
-  });
 
   useEffect(() => {
-    setIsAdmin(localStorage.getItem("role") === "ADMIN" || localStorage.getItem("role") === "MANAGER");
+    setIsAdmin(
+      localStorage.getItem('role') === 'ADMIN' ||
+        localStorage.getItem('role') === 'MANAGER'
+    );
   }, []);
 
-  const role = localStorage.getItem("role")
+  const fetchKit = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/api/kit/get-all-kit', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
 
+      if (res.status === 401) {
+        toast.error('Phiên đăng nhập đã hết hạn');
+        localStorage.clear();
+        navigate('/login');
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      setKit(data);
+    } catch (error) {
+      console.error('Fetch locations error:', error);
+      toast.error('Không thể lấy kit');
+    }
+  };
+  useEffect(() => {
+    if (isAdmin) {
+      fetchKit();
+    }
+  }, [isAdmin]);
+  const handleKitChange = (e: SelectChangeEvent<string>) => {
+    const kitId = e.target.value;
+    setSelectedKit(kitId);
+    setForm({
+      service: { serviceName: '', description: '', serviceType: '' },
+      price: { time: '', price: '' },
+      type: { someCivilField: '' },
+    });
+  };
   const handleInput = (
-    section: "service" | "price" | "type",
+    section: 'service' | 'price' | 'type',
     field: string,
     value: string
   ) => {
@@ -70,74 +125,30 @@ const Services = () => {
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
-    if (selected?.type.startsWith("image/")) {
+    if (selected?.type.startsWith('image/')) {
       setFile(selected);
       setPreview(URL.createObjectURL(selected));
     } else {
+<<<<<<< fix-forget-sendOTP-newPass
       toast.warning('Vui lòng chọn ảnh hợp lệ');
+=======
+      alert('Vui lòng chọn ảnh hợp lệ');
+>>>>>>> main
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation
-    if (!form.service.serviceName.trim()) {
-      setSnackbar({
-        open: true,
-        message: "Vui lòng nhập tên dịch vụ",
-        severity: "error"
-      });
-      return;
-    }
-
-    if (!form.service.description.trim()) {
-      setSnackbar({
-        open: true,
-        message: "Vui lòng nhập mô tả dịch vụ",
-        severity: "error"
-      });
-      return;
-    }
-
-    if (!form.service.serviceType) {
-      setSnackbar({
-        open: true,
-        message: "Vui lòng chọn loại dịch vụ",
-        severity: "error"
-      });
-      return;
-    }
-
-    if (!form.price.time.trim()) {
-      setSnackbar({
-        open: true,
-        message: "Vui lòng nhập thời gian",
-        severity: "error"
-      });
-      return;
-    }
-
-    if (!file) {
-      setSnackbar({
-        open: true,
-        message: "Vui lòng chọn ảnh",
-        severity: "error"
-      });
-      return;
-    }
+    if (!file) return toast.warning('Chưa chọn ảnh');
 
     const parsedPrice = Number(form.price.price);
-    if (isNaN(parsedPrice) || parsedPrice <= 0) {
-      setSnackbar({
-        open: true,
-        message: "Giá phải là số dương",
-        severity: "error"
-      });
-      return;
+    if (isNaN(parsedPrice)) {
+      return toast.warning('Giá phải là số');
     }
-
+    const kitId = selectedKit;
     const request = {
+      kitId,
       serviceRequest: {
         serviceName: form.service.serviceName,
         description: form.service.description,
@@ -148,94 +159,121 @@ const Services = () => {
         price: parsedPrice,
       },
       administrativeServiceRequest:
-        form.service.serviceType === "ADMINISTRATIVE" ? form.type : {},
+        form.service.serviceType === 'ADMINISTRATIVE' ? form.type : {},
       civilServiceRequest:
-        form.service.serviceType === "CIVIL" ? form.type : {},
+        form.service.serviceType === 'CIVIL' ? form.type : {},
     };
 
     const formData = new FormData();
     formData.append(
-      "request",
-      new Blob([JSON.stringify(request)], { type: "application/json" })
+      'request',
+      new Blob([JSON.stringify(request)], { type: 'application/json' })
     );
-    formData.append("file", file);
+    formData.append('file', file);
 
     try {
       const res = await fetch(
-        "http://localhost:8080/api/services/create-service",
+        `http://localhost:8080/api/services/create-service/${selectedKit}`,
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
           },
           body: formData,
         }
       );
 
       if (res.ok) {
-        Swal.fire({
-          title: "Thành công!",
-          text: "Tạo dịch vụ thành công",
-          icon: "success",
-          confirmButtonText: "OK"
-        });
-        
+        toast.success('Tạo dịch vụ thành công');
         setForm({
-          service: { serviceName: "", description: "", serviceType: "" },
-          price: { time: "", price: "" },
-          type: { someCivilField: "" },
+          service: { serviceName: '', description: '', serviceType: '' },
+          price: { time: '', price: '' },
+          type: { someCivilField: '' },
         });
         setFile(null);
-        setPreview("");
-        if (fileRef.current) fileRef.current.value = "";
+        setPreview('');
+        if (fileRef.current) fileRef.current.value = '';
       } else {
-        const error = await res.text();
-        setSnackbar({
-          open: true,
-          message: "Lỗi: " + error,
-          severity: "error"
-        });
+        const error = 'Tên dịch vụ đã tồn tại';
+        toast.warning(error);
       }
     } catch (err) {
       console.error(err);
-      setSnackbar({
-        open: true,
-        message: "Đã xảy ra lỗi khi gửi dữ liệu",
-        severity: "error"
-      });
+      toast.warning('Đã xảy ra lỗi khi gửi dữ liệu.');
     }
   };
 
   if (!isAdmin) return null;
 
   return (
-    <>
-      <form onSubmit={handleSubmit} className={styles.form} style={role !== "ADMIN" ? { marginTop: 120 } : undefined}>
-        {/* Service section */}
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Tên dịch vụ</label>
+    <div
+      className="container mt-5"
+      style={{
+        background: 'linear-gradient(to bottom right, #e3f2fd, #ffffff)',
+        borderRadius: '15px',
+        padding: '30px',
+        boxShadow: '0 0 20px rgba(33, 150, 243, 0.2)',
+        maxWidth: '600px',
+      }}
+    >
+      <form onSubmit={handleSubmit}>
+        <h3
+          className="text-center mb-4"
+          style={{
+            color: '#0d6efd',
+            fontWeight: 700,
+            fontFamily: 'Poppins, sans-serif',
+          }}
+        >
+          Tạo Dịch Vụ ADN
+        </h3>
+
+        {/* Tên dịch vụ */}
+        <div className="mb-3">
+          <FormControl fullWidth>
+            <Select
+              labelId="roomId"
+              value={selectedKit}
+              onChange={handleKitChange}
+              input={<OutlinedInput />}
+              displayEmpty
+            >
+              <MenuItem value="">
+                <em>----Chọn kit----</em>
+              </MenuItem>
+              {kit.map((kit) => (
+                <MenuItem key={kit.kitId} value={kit.kitId}>
+                  {kit.kitCode}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Tên dịch vụ</label>
           <input
-            name="serviceName"
+            className="form-control"
             value={form.service.serviceName}
             onChange={(e) =>
-              handleInput("service", "serviceName", e.target.value)
+              handleInput('service', 'serviceName', e.target.value)
             }
             placeholder="Nhập tên dịch vụ"
-            className={styles.input}
             required
+            style={{ borderColor: '#2196f3' }}
           />
         </div>
 
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Loại dịch vụ</label>
+        {/* Loại dịch vụ */}
+        <div className="mb-3">
+          <label className="form-label">Loại dịch vụ</label>
           <select
-            name="serviceType"
+            className="form-select"
             value={form.service.serviceType}
             onChange={(e) =>
-              handleInput("service", "serviceType", e.target.value)
+              handleInput('service', 'serviceType', e.target.value)
             }
-            className={styles.select}
             required
+            style={{ borderColor: '#2196f3' }}
           >
             <option value="">-- Chọn loại dịch vụ --</option>
             <option value="ADMINISTRATIVE">Hành Chính</option>
@@ -243,90 +281,99 @@ const Services = () => {
           </select>
         </div>
 
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Mô tả</label>
+        {/* Mô tả */}
+        <div className="mb-3">
+          <label className="form-label">Mô tả</label>
           <input
             type="text"
-            name="description"
+            className="form-control"
             value={form.service.description}
-            onChange={(e) => handleInput("service", "description", e.target.value)}
+            onChange={(e) =>
+              handleInput('service', 'description', e.target.value)
+            }
             placeholder="Nhập mô tả"
-            className={styles.input}
             required
+            style={{ borderColor: '#2196f3' }}
           />
         </div>
 
-        {/* Price section */}
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Thời gian</label>
+        {/* Thời gian */}
+        <div className="mb-3">
+          <label className="form-label">Thời gian</label>
           <input
-            name="time"
+            className="form-control"
             value={form.price.time}
-            onChange={(e) => handleInput("price", "time", e.target.value)}
+            onChange={(e) => handleInput('price', 'time', e.target.value)}
             placeholder="Nhập thời gian"
-            className={styles.input}
             required
+            style={{ borderColor: '#2196f3' }}
           />
         </div>
 
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Giá</label>
+        {/* Giá */}
+        <div className="mb-3">
+          <label className="form-label">Giá</label>
           <input
-            name="price"
+            className="form-control"
             value={form.price.price}
-            onChange={(e) => handleInput("price", "price", e.target.value)}
+            onChange={(e) => handleInput('price', 'price', e.target.value)}
             placeholder="Nhập giá"
-            className={styles.input}
             required
+            style={{ borderColor: '#2196f3' }}
           />
         </div>
 
-        {/* File upload */}
-        <div className={styles.formGroup}>
-          <label className={styles.label}>Hình ảnh</label>
-          <button
-            type="button"
-            onClick={() => fileRef.current?.click()}
-            className={styles.fileButton}
-          >
-            Chọn ảnh
-          </button>
-
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            className={styles.fileInput}
-            onChange={handleFile}
-          />
-
-          <input
-            type="text"
-            readOnly
-            value={file ? file.name : ""}
-            placeholder="Chưa chọn file"
-            className={styles.urlInput}
-          />
+        {/* Hình ảnh */}
+        <div className="mb-3">
+          <label className="form-label">Hình ảnh</label>
+          <div className="input-group">
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileRef}
+              onChange={handleFile}
+              className="form-control"
+              style={{ borderColor: '#2196f3' }}
+            />
+          </div>
+          {file && (
+            <div className="form-text" style={{ color: '#1976d2' }}>
+              Đã chọn: {file.name}
+            </div>
+          )}
         </div>
 
+        {/* Preview ảnh */}
         {preview && (
-          <img src={preview} alt="preview" className={styles.previewImage} />
+          <div className="mb-3 text-center">
+            <img
+              src={preview}
+              alt="preview"
+              className="img-thumbnail"
+              style={{
+                maxWidth: '200px',
+                border: '2px solid #0d6efd',
+                borderRadius: '10px',
+              }}
+            />
+          </div>
         )}
 
+        {/* Submit */}
         <button
           type="submit"
-          className={styles.submitButton}
+          className="btn btn-primary w-100"
+          style={{
+            backgroundColor: '#0d6efd',
+            borderColor: '#0d6efd',
+            fontWeight: 600,
+            fontSize: '16px',
+          }}
         >
           Gửi đăng ký
         </button>
       </form>
-      <CustomSnackBar
-        open={snackbar.open}
-        message={snackbar.message}
-        severity={snackbar.severity}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-      />
-    </>
+    </div>
   );
 };
 

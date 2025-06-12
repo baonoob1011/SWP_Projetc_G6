@@ -60,10 +60,10 @@ export const DataList2 = () => {
   return (
     <TableContainer component={Paper} sx={{ p: 2 }}>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 2 }}>
-        <Button component={NavLink} to="/m-page/m-user" sx={linkStyle}>
+        <Button component={NavLink} to="/manager/user" sx={linkStyle}>
           Danh sách người dùng
         </Button>
-        <Button component={NavLink} to="/m-page/m-staff" sx={linkStyle}>
+        <Button component={NavLink} to="/manager/staff" sx={linkStyle}>
           Danh sách nhân viên
         </Button>
       </Box>

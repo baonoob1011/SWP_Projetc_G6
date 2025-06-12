@@ -1,0 +1,57 @@
+package swp.project.adn_backend.service.payment;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.InfoDTO.KitInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.PaymentInfoDTO;
+import swp.project.adn_backend.dto.request.payment.PaymentRequest;
+import swp.project.adn_backend.entity.Payment;
+import swp.project.adn_backend.entity.Users;
+import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.exception.AppException;
+import swp.project.adn_backend.mapper.PaymentMapper;
+import swp.project.adn_backend.repository.PaymentRepository;
+import swp.project.adn_backend.repository.UserRepository;
+
+import java.util.List;
+
+@Service
+public class PaymentService {
+    private PaymentRepository paymentRepository;
+    private PaymentMapper paymentMapper;
+    private EntityManager entityManager;
+    private UserRepository userRepository;
+
+    @Autowired
+    public PaymentService(PaymentRepository paymentRepository, PaymentMapper paymentMapper, EntityManager entityManager, UserRepository userRepository) {
+        this.paymentRepository = paymentRepository;
+        this.paymentMapper = paymentMapper;
+        this.entityManager = entityManager;
+        this.userRepository = userRepository;
+    }
+
+    public Payment createPayment(PaymentRequest paymentRequest) {
+        Payment payment = paymentMapper.toPayment(paymentRequest);
+        return paymentRepository.save(payment);
+    }
+
+    public List<PaymentInfoDTO> getAllPayment(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users userPayment = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.PaymentInfoDTO(" +
+                "s.paymentId, s.amount, s.paymentMethod, s.getPaymentStatus) " +
+                "FROM Payment s Where s.Users.userId=:userId";
+
+        TypedQuery<PaymentInfoDTO> query = entityManager.createQuery(jpql, PaymentInfoDTO.class);
+        query.setParameter("userId", userId);  // Đặt giá trị userId vào câu truy vấn
+
+        return query.getResultList();
+    }
+}
