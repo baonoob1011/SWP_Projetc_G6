@@ -1,4 +1,4 @@
-package swp.project.adn_backend.dto.response.appointment;
+package swp.project.adn_backend.dto.response.appointment.AppointmentResponse;
 
 public class LocationAppointmentResponse {
     private long locationId;

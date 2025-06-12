@@ -3,6 +3,7 @@ package swp.project.adn_backend.controller.Kit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import swp.project.adn_backend.dto.InfoDTO.KitInfoDTO;
 import swp.project.adn_backend.dto.request.Kit.KitRequest;
 import swp.project.adn_backend.entity.Kit;
 import swp.project.adn_backend.service.Kit.KitService;
@@ -19,8 +20,14 @@ public class KitController {
     public ResponseEntity<Kit> createKit(@RequestBody KitRequest kitRequest) {
         return ResponseEntity.ok(kitService.createKit(kitRequest));
     }
+
     @GetMapping("/get-all-kit")
-    public ResponseEntity<List<Kit>>getALlKit(){
+    public ResponseEntity<List<KitInfoDTO>> getALlKit() {
         return ResponseEntity.ok(kitService.getAllKit());
+    }
+
+    @GetMapping("/view-kit-status")
+    public ResponseEntity<List<KitInfoDTO>> viewKitStatus() {
+        return ResponseEntity.ok(kitService.viewKitStatus());
     }
 }

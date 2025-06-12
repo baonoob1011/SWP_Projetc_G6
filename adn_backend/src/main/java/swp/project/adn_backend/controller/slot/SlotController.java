@@ -38,4 +38,5 @@ public class SlotController {
         slotService.deleteSlot(slotId);
         return ResponseEntity.ok("Delete Successful");
     }
+
 }

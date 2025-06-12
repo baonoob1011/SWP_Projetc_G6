@@ -1,21 +1,19 @@
-package swp.project.adn_backend.dto.response.appointment;
+package swp.project.adn_backend.dto.response.appointment.ViewAppointment;
 
-import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
 import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SlotAppointmentResponse {
+public class VIewSlotAppointmentResponse {
     long slotId;
     LocalDate slotDate;
     Time  startTime;
     Time  endTime;
 
-    public SlotAppointmentResponse(long slotId, LocalDate slotDate, Time startTime, Time endTime) {
+    public VIewSlotAppointmentResponse(long slotId, LocalDate slotDate, Time startTime, Time endTime) {
         this.slotId = slotId;
         this.slotDate = slotDate;
         this.startTime = startTime;

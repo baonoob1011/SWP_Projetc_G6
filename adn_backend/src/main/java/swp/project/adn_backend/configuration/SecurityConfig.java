@@ -48,7 +48,11 @@ public class SecurityConfig {
 
     private final String[] USER_ENDPOINTS = {
             "/api/appointment/book-appointment/**",
+            "/api/appointment/cancel-appointment/**",
+            "/api/appointment/get-appointment/**",
+            "/api/slot/get-all-slot/**",
             "/api/patient/register-info",
+            "/api/kit/view-kit-status",
             "/api/user/**"
     };
 
