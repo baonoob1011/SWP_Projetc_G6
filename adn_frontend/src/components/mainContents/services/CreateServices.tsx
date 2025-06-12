@@ -129,11 +129,7 @@ const Services = () => {
       setFile(selected);
       setPreview(URL.createObjectURL(selected));
     } else {
-<<<<<<< fix-forget-sendOTP-newPass
       toast.warning('Vui lòng chọn ảnh hợp lệ');
-=======
-      alert('Vui lòng chọn ảnh hợp lệ');
->>>>>>> main
     }
   };
 

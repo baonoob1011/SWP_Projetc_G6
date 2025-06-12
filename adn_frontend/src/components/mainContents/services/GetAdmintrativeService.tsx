@@ -61,11 +61,7 @@ const AdministrativeServiceList = () => {
           { method: 'GET' }
         );
         if (!response.ok) {
-<<<<<<< fix-forget-sendOTP-newPass
           setError('Không thể lấy dữ liệu dịch vụ');
-=======
-          alert('Không thể lấy dữ liệu dịch vụ');
->>>>>>> main
           setLoading(false);
           return;
         }

@@ -1,9 +1,6 @@
 import { useState } from 'react';
-<<<<<<< fix-forget-sendOTP-newPass
 import CustomSnackBar from '../userinfor/Snackbar';
 import Swal from 'sweetalert2';
-=======
->>>>>>> main
 
 type Patient = {
   fullName: string;
