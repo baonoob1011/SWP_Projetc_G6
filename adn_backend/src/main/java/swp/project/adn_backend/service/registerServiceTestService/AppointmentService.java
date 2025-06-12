@@ -63,6 +63,7 @@ public class AppointmentService {
     public AppointmentResponse bookAppointmentAtCenter(AppointmentRequest appointmentRequest,
                                                        Authentication authentication,
                                                        List<PatientRequest> patientRequestList,
+                                                       PaymentRequest paymentRequest,
                                                        long slotId,
                                                        long locationId,
                                                        long serviceId,
@@ -84,7 +85,7 @@ public class AppointmentService {
         PriceList priceList = priceListRepository.findById(priceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PRICE_NOT_EXISTS));
 
-        if(slot.getSlotStatus().equals(SlotStatus.BOOKED)){
+        if (slot.getSlotStatus().equals(SlotStatus.BOOKED)) {
             throw new RuntimeException("Slot is Booked, try book other slot");
         }
 
@@ -98,6 +99,7 @@ public class AppointmentService {
         patientService.registerServiceTest(patientRequestList, userBookAppointment, serviceTest);
 
         appointment.setSlot(slot);
+        System.out.println("Slot room: " + slot.getRoom()); // ← kiểm tra xem có null không
         appointment.setAppointmentDate(slot.getSlotDate());
         appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
         appointment.setStaff(slot.getStaff());
@@ -105,7 +107,16 @@ public class AppointmentService {
         appointment.setLocation(location);
         appointment.setUsers(userBookAppointment);
 
-        userBookAppointment.setAppointments(List.of(appointment));
+        //tao payment
+        Payment payment = new Payment();
+        payment.setAmount(priceList.getPrice());
+        payment.setAppointment(appointment);
+        payment.setUsers(userBookAppointment);
+        payment.setPaymentMethod(paymentRequest.getPaymentMethod());
+        paymentRepository.save(payment);
+
+        //nguoi dat hen
+        userBookAppointment.setAppointments(new ArrayList<>(List.of(appointment)));
 
         Appointment saved = appointmentRepository.save(appointment);
 
@@ -115,7 +126,7 @@ public class AppointmentService {
 
         // Build email content
         ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(saved);
-        List<PriceAppointmentResponse> priceAppointmentResponse=appointmentMapper.toPriceAppointmentResponse(serviceTest.getPriceLists());
+        List<PriceAppointmentResponse> priceAppointmentResponse = appointmentMapper.toPriceAppointmentResponse(serviceTest.getPriceLists());
         UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(userBookAppointment);
         StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(slot.getStaff());
         SlotAppointmentResponse slotAppointmentResponse = appointmentMapper.toSlotAppointmentResponse(slot);
@@ -157,10 +168,10 @@ public class AppointmentService {
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
 
-        PriceList priceList=priceListRepository.findById(priceId)
+        PriceList priceList = priceListRepository.findById(priceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PRICE_NOT_EXISTS));
 
-        if(userBookAppointment.getAddress()==null){
+        if (userBookAppointment.getAddress() == null) {
             throw new RuntimeException("update your address first");
         }
         Appointment appointment = appointmentMapper.toAppointment(appointmentRequest);
@@ -177,9 +188,9 @@ public class AppointmentService {
         serviceTest.getKit().setKitStatus(DeliveryStatus.IN_PROGRESS);
         serviceTest.getKit().setDeliveryDate(LocalDate.now());
         //tinh price
-        double totalPrice=(priceList.getPrice())+(serviceTest.getKit().getPrice());
+        double totalPrice = (priceList.getPrice()) + (serviceTest.getKit().getPrice());
         //set payment
-        Payment payment=new Payment();
+        Payment payment = new Payment();
         payment.setAmount(totalPrice);
         payment.setAppointment(appointment);
         payment.setUsers(userBookAppointment);
@@ -196,7 +207,7 @@ public class AppointmentService {
         ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(serviceTest);
         List<PatientAppointmentResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentService(userBookAppointment.getPatients());
         //tinh price
-        PriceAppointmentResponse priceAppointmentResponses=new PriceAppointmentResponse();
+        PriceAppointmentResponse priceAppointmentResponses = new PriceAppointmentResponse();
         priceAppointmentResponses.setTime(priceList.getTime());
         priceAppointmentResponses.setPrice(totalPrice);
 
@@ -261,6 +272,12 @@ public class AppointmentService {
                 LocationAppointmentResponse locationAppointmentResponse = appointmentMapper.toLocationAppointmentResponse(appointment.getLocation());
                 locationAppointmentResponseList.add(locationAppointmentResponse);
 
+                List<PaymentAppointmentResponse> paymentAppointmentResponse = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
+
+
+                List<PriceAppointmentResponse> priceAppointmentResponse = appointmentMapper.toPriceAppointmentResponse(appointment.getServices().getPriceLists());
+                locationAppointmentResponseList.add(locationAppointmentResponse);
+
                 RoomAppointmentResponse roomAppointmentResponse = new RoomAppointmentResponse();
                 roomAppointmentResponse.setRoomName(appointment.getSlot().getRoom().getRoomName());
 
@@ -273,7 +290,8 @@ public class AppointmentService {
                 allAppointmentResponse.setServiceAppointmentResponses(serviceAppointmentResponseList);
                 allAppointmentResponse.setLocationAppointmentResponses(locationAppointmentResponseList);
                 allAppointmentResponse.setRoomAppointmentResponse(roomAppointmentResponse);
-
+                allAppointmentResponse.setPriceAppointmentResponse(priceAppointmentResponse);
+                allAppointmentResponse.setPaymentAppointmentResponse(paymentAppointmentResponse);
                 responses.add(allAppointmentResponse);
             }
         }

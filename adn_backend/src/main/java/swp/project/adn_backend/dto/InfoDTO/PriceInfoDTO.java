@@ -1,5 +1,7 @@
 package swp.project.adn_backend.dto.InfoDTO;
 
+import swp.project.adn_backend.entity.ServiceTest;
+
 public class PriceInfoDTO {
     private long priceId;
     private double price;
@@ -10,6 +12,8 @@ public class PriceInfoDTO {
         this.price = price;
         this.time = time;
     }
+
+
 
     public long getPriceId() {
         return priceId;

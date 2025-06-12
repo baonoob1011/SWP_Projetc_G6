@@ -22,5 +22,6 @@ public interface AppointmentMapper {
     UserAppointmentResponse toUserAppointmentResponse(Users users);
     LocationAppointmentResponse toLocationAppointmentResponse(Location location);
     RoomAppointmentResponse toRoomAppointmentResponse(Room room);
+    List<PaymentAppointmentResponse> toPaymentAppointmentResponse(List<Payment> payment);
     List<PriceAppointmentResponse> toPriceAppointmentResponse(List<PriceList> priceList);
 }
