@@ -95,10 +95,13 @@ public class SlotService {
     }
 
 
-    public List<SlotResponse> getALlSlotForUser() {
-        List<Slot> slotList = slotRepository.findAllFutureSlots();
-        List<SlotResponse> slotResponses = slotMapper.toSlotResponses(slotList);
-        return slotResponses;
+    public List<SlotInfoDTO> getALlSlotForUser() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
+                "s.slotId, s.slotDate, s.startTime, s.endTime, s.room, s.slotStatus) " +
+                "FROM Slot s WHERE s.slotDate > CURRENT_DATE";
+
+        TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
+        return query.getResultList();
     }
 
     public List<GetFullSlotResponse> getAllSlot() {

@@ -70,6 +70,8 @@ public class AppointmentService {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
 
+
+
         Users userBookAppointment = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
@@ -78,6 +80,10 @@ public class AppointmentService {
 
         Slot slot = slotRepository.findById(slotId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
+
+        if(slot.getSlotStatus().equals(SlotStatus.BOOKED)){
+            throw new RuntimeException("Slot is Booked, try book other slot");
+        }
 
         Location location = locationRepository.findById(locationId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.LOCATION_NOT_EXISTS));

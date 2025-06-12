@@ -35,7 +35,7 @@ public class AppointmentController {
         );
     }
 
-    @PostMapping("/book-appointment/{serviceId}")
+    @PostMapping("/book-appointment-at_home/{serviceId}")
     public AppointmentResponse bookAppointmentAtHome(@RequestBody BookAppointmentRequest request,
                                                      Authentication authentication,
                                                      @PathVariable long serviceId,
