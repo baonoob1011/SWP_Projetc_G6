@@ -1,4 +1,12 @@
+import {
+  FormControl,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  type SelectChangeEvent,
+} from '@mui/material';
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 type FormService = {
@@ -14,6 +22,15 @@ type PriceList = {
 
 type TypeService = {
   someCivilField: string;
+};
+
+type Kit = {
+  kitId: string;
+  kitCode: string;
+  kitName: string;
+  targetPersonCount: string;
+  price: string;
+  contents: string;
 };
 
 const Services = () => {
@@ -35,7 +52,9 @@ const Services = () => {
       someCivilField: '',
     },
   });
-
+  const navigate = useNavigate();
+  const [kit, setKit] = useState<Kit[]>([]);
+  const [selectedKit, setSelectedKit] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>('');
   const fileRef = useRef<HTMLInputElement>(null);
@@ -48,6 +67,48 @@ const Services = () => {
     );
   }, []);
 
+  const fetchKit = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/api/kit/get-all-kit', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (res.status === 401) {
+        toast.error('Phiên đăng nhập đã hết hạn');
+        localStorage.clear();
+        navigate('/login');
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      setKit(data);
+    } catch (error) {
+      console.error('Fetch locations error:', error);
+      toast.error('Không thể lấy kit');
+    }
+  };
+  useEffect(() => {
+    if (isAdmin) {
+      fetchKit();
+    }
+  }, [isAdmin]);
+  const handleKitChange = (e: SelectChangeEvent<string>) => {
+    const kitId = e.target.value;
+    setSelectedKit(kitId);
+    setForm({
+      service: { serviceName: '', description: '', serviceType: '' },
+      price: { time: '', price: '' },
+      type: { someCivilField: '' },
+    });
+  };
   const handleInput = (
     section: 'service' | 'price' | 'type',
     field: string,
@@ -81,8 +142,9 @@ const Services = () => {
     if (isNaN(parsedPrice)) {
       return toast.warning('Giá phải là số');
     }
-
+    const kitId = selectedKit;
     const request = {
+      kitId,
       serviceRequest: {
         serviceName: form.service.serviceName,
         description: form.service.description,
@@ -107,7 +169,7 @@ const Services = () => {
 
     try {
       const res = await fetch(
-        'http://localhost:8080/api/services/create-service',
+        `http://localhost:8080/api/services/create-service/${selectedKit}`,
         {
           method: 'POST',
           headers: {
@@ -163,6 +225,26 @@ const Services = () => {
         </h3>
 
         {/* Tên dịch vụ */}
+        <div className="mb-3">
+          <FormControl fullWidth>
+            <Select
+              labelId="roomId"
+              value={selectedKit}
+              onChange={handleKitChange}
+              input={<OutlinedInput />}
+              displayEmpty
+            >
+              <MenuItem value="">
+                <em>----Chọn kit----</em>
+              </MenuItem>
+              {kit.map((kit) => (
+                <MenuItem key={kit.kitId} value={kit.kitId}>
+                  {kit.kitCode}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
         <div className="mb-3">
           <label className="form-label">Tên dịch vụ</label>
           <input
