@@ -7,12 +7,14 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import CustomSnackBar from "../mainContents/userinfor/Snackbar";
 import SendOTP from "../mainContents/userinfor/SendOTP";
 import EmailIcon from "@mui/icons-material/Email";
 import styles from "./Forget.module.css";
-import bg from "../../image/bg5.png"
+import bg from "../../image/bg6.png";
 import logo from "../../image/Logo.png";
+import { motion } from "framer-motion";
 
 const Forget = () => {
   const [email, setEmail] = useState("");
@@ -48,7 +50,7 @@ const Forget = () => {
         setTimeout(() => setShow(true), 1500);
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
       setSnackbar({
         open: true,
         message: "Lỗi mạng",
@@ -68,135 +70,362 @@ const Forget = () => {
       style={{
         display: "flex",
         minHeight: "100vh",
-        alignItems: "center",
-        justifyContent: "flex-end",
-        background: "linear-gradient(to right, #74ebd5, #ACB6E5)",
         backgroundImage: `url(${bg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        padding: "0 60px",
-        boxSizing: "border-box",
         position: "relative",
+        overflow: "hidden",
       }}
     >
-      {/* Phần bên phải để trống hoặc animation nếu cần */}
+      {/* Dark Overlay - lighter to show background better */}
       <div
         style={{
           position: "absolute",
-          right: 0,
           top: 0,
-          width: "40%",
-          height: "100%",
-          opacity: 1,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0, 0, 0, 0.1)",
+          zIndex: 1,
         }}
-      ></div>
+      />
 
-      <Box>
+      {/* Navigation */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 3,
+          padding: "20px 40px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div style={{ display: "flex", gap: "30px" }}>
+          <Typography
+            variant="body1"
+            component={Link}
+            to="/"
+            sx={{
+              color: "white",
+              cursor: "pointer",
+              textDecoration: "none",
+              "&:hover": { opacity: 0.8 },
+            }}
+          >
+            Home
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: "white",
+              cursor: "pointer",
+              "&:hover": { opacity: 0.8 },
+            }}
+          >
+            About Us
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: "white",
+              cursor: "pointer",
+              "&:hover": { opacity: 0.8 },
+            }}
+          >
+            Help
+          </Typography>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <Typography
+            variant="h6"
+            sx={{
+              color: "white",
+              fontWeight: "bold",
+              letterSpacing: "1px",
+            }}
+          >
+            GENELINK
+          </Typography>
+          <div
+            style={{
+              width: "70px",
+              height: "70px",
+              backgroundColor: "white",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <img src={logo} alt="Logo" style={{ width: "70px", height: "70px" }} />
+          </div>
+        </div>
+      </div>
+
+      {/* Contact Information */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "40px",
+          left: "40px",
+          zIndex: 3,
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div
+            style={{
+              width: "40px",
+              height: "40px",
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography sx={{ color: "white", fontSize: "16px" }}>📞</Typography>
+          </div>
+          <div>
+            <Typography variant="body2" sx={{ color: "white", fontWeight: "bold" }}>
+              Phone
+            </Typography>
+            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)" }}>
+              +123-456-7890
+            </Typography>
+          </div>
+        </div>
+
+       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: '40px',
+              height: '40px',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ color: 'white', fontSize: '16px' }}>🌐</Typography>
+          </div>
+          <div>
+            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+              Website
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+              www.genelink.com
+            </Typography>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div
+            style={{
+              width: "40px",
+              height: "40px",
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography sx={{ color: "white", fontSize: "16px" }}>✉️</Typography>
+          </div>
+          <div>
+            <Typography variant="body2" sx={{ color: "white", fontWeight: "bold" }}>
+              E-Mail
+            </Typography>
+            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)" }}>
+              hello@genelink.com
+            </Typography>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div
+            style={{
+              width: "40px",
+              height: "40px",
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography sx={{ color: "white", fontSize: "16px" }}>📍</Typography>
+          </div>
+          <div>
+            <Typography variant="body2" sx={{ color: "white", fontWeight: "bold" }}>
+              Address
+            </Typography>
+            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)" }}>
+              123 Anywhere St., Any City
+            </Typography>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Area - Left side for background display */}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 2,
+          position: "relative",
+        }}
+      >
+        {/* This area shows the background image */}
+      </div>
+
+      {/* Forget Password Form */}
+      <motion.div
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 100 }}
+        transition={{ duration: 0.6, ease: "easeInOut" }}
+        style={{
+          position: "absolute",
+          right: "120px",
+          top: "30%",
+          transform: "translateY(-50%)",
+          zIndex: 2,
+        }}
+      >
         <Paper
-          elevation={20}
+          elevation={0}
           sx={{
-            width: 400,
-            borderRadius: "16px",
+            width: "400px",
+            borderRadius: "20px",
             p: 4,
-            backgroundColor: "rgba(255, 255, 255, 0.25)",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
-            boxShadow: "0 12px 32px rgba(0, 0, 0, 0.3)",
-            height: "70vh",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            position: "relative",
-            marginLeft: "auto",
-            paddingRight: "40px",
-            boxSizing: "border-box",
-            marginRight: 10,
+            backgroundColor: "rgba(255, 255, 255, 0.7)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
             border: "1px solid rgba(255, 255, 255, 0.3)",
           }}
         >
-          <img
-            src={logo}
-            alt="Logo"
-            style={{
-              position: "absolute",
-              top: -0,
-              right: 0,
-              width: "100px", // chỉnh kích thước logo phù hợp
-              height: "auto",
-            }}
-          />
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: "bold",
-              mb: 2,
-              color: "#fff",
-              textAlign: "center",
-            }}
-          >
-            Quên Mật Khẩu
-          </Typography>
-
-          <Typography
-            variant="body2"
-            sx={{
-              color: "#fff",
-              textAlign: "center",
-              mb: 3,
-            }}
-          >
-            Vui lòng nhập email để nhận mã xác thực (OTP)
-          </Typography>
-
           <Box component="form" onSubmit={handleSendEmail}>
-            <Box sx={{ mb: 2 }}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: "bold",
+                mb: 1,
+                color: "#2c3e50",
+                textAlign: "center",
+                letterSpacing: "2px",
+              }}
+            >
+              FORGET PASSWORD
+            </Typography>
+
+            <Typography
+              variant="body1"
+              sx={{
+                mb: 4,
+                color: "#7f8c8d",
+                textAlign: "center",
+              }}
+            >
+              Enter your email to receive OTP code
+            </Typography>
+
+            <Box sx={{ mb: 3, position: "relative" }}>
               <TextField
-                label="Địa chỉ Email"
+                placeholder="Email Address"
                 type="email"
                 fullWidth
-                variant="outlined"
+                name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                sx={{
-                  backgroundColor: "#fff",
-                  borderRadius: 1,
-                }}
+                variant="outlined"
                 InputProps={{
                   startAdornment: (
-                    <InputAdornment position="start">
-                      <EmailIcon sx={{ color: "#666" }} />
-                    </InputAdornment>
+                    <EmailIcon sx={{ color: "#bdc3c7", mr: 1 }} />
                   ),
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "25px",
+                    backgroundColor: "#f8f9fa",
+                    border: "none",
+                    "& fieldset": {
+                      border: "none",
+                    },
+                    "&:hover fieldset": {
+                      border: "none",
+                    },
+                    "&.Mui-focused fieldset": {
+                      border: "2px solid #667eea",
+                    },
+                  },
                 }}
               />
             </Box>
 
             <Button
               type="submit"
-              fullWidth
               variant="contained"
-              size="large"
+              fullWidth
               disabled={sending}
               sx={{
-                mt: 1,
+                py: 1.5,
+                borderRadius: "25px",
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                textTransform: "none",
+                fontSize: "16px",
+                fontWeight: "bold",
+                mb: 3,
+                "&:hover": {
+                  background: "linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)",
+                },
+                "&:disabled": {
+                  background: "linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%)",
+                },
               }}
               startIcon={sending && <div className={styles.spinner} />}
             >
               {sending ? "Đang gửi..." : "Gửi OTP"}
             </Button>
+
+            <Box sx={{ textAlign: "center" }}>
+              <Typography variant="body2" sx={{ color: "#7f8c8d" }}>
+                Remember your password?{" "}
+                <Link
+                  to="/login"
+                  style={{
+                    color: "#667eea",
+                    textDecoration: "none",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Back to Login
+                </Link>
+              </Typography>
+            </Box>
           </Box>
-
-          <CustomSnackBar
-            open={snackbar.open}
-            message={snackbar.message}
-            severity={snackbar.severity}
-            onClose={() => setSnackbar({ ...snackbar, open: false })}
-          />
         </Paper>
-      </Box>
-    </div>
+      </motion.div>
 
+      <CustomSnackBar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
+    </div>
   );
 };
 

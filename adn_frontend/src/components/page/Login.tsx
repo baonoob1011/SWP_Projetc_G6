@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { Box, Button, Paper, TextField, Typography, IconButton } from "@mui/material";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,6 +10,21 @@ import logo from "../../image/Logo.png";
 import "./Login.module.css";
 import { motion } from "framer-motion";
 import HomeIcon from '@mui/icons-material/Home';
+=======
+import { Box, Button, Paper, TextField, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { jwtDecode } from 'jwt-decode';
+import { toast } from 'react-toastify';
+import CustomSnackBar from '../mainContents/userinfor/Snackbar';
+import bg from '../../image/bg6.png';
+import logo from '../../image/Logo.png';
+import './Login.module.css';
+import { motion } from 'framer-motion';
+import PersonIcon from '@mui/icons-material/Person';
+import LockIcon from '@mui/icons-material/Lock';
+>>>>>>> Stashed changes
 
 type UserInfo = {
   username: string;
@@ -114,6 +130,7 @@ const Login = ({ setFullName }: LoginProps) => {
   return (
     <div
       style={{
+<<<<<<< Updated upstream
         display: "flex",
         minHeight: "100vh",
         alignItems: "center",
@@ -455,6 +472,343 @@ const Login = ({ setFullName }: LoginProps) => {
                 },
               }}
             />
+=======
+        display: 'flex',
+        minHeight: '100vh',
+        backgroundImage: `url(${bg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Dark Overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0,0.1)',
+          zIndex: 1,
+        }}
+      />
+
+      {/* Navigation */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 3,
+          padding: '20px 40px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <div style={{ display: 'flex', gap: '30px' }}>
+          <Typography
+            variant="body1"
+            component={Link}
+            to="/"
+            sx={{
+              color: 'white',
+              cursor: 'pointer',
+              textDecoration: 'none',
+              '&:hover': { opacity: 0.8 }
+            }}
+          >
+            Home
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: 'white',
+              cursor: 'pointer',
+              '&:hover': { opacity: 0.8 }
+            }}
+          >
+            About Us
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: 'white',
+              cursor: 'pointer',
+              '&:hover': { opacity: 0.8 }
+            }}
+          >
+            Help
+          </Typography>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Typography
+            variant="h6"
+            sx={{
+              color: 'white',
+              fontWeight: 'bold',
+              letterSpacing: '1px'
+            }}
+          >
+            GENELINK
+          </Typography>
+          <div
+            style={{
+              width: '70px',
+              height: '70px',
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <img src={logo} alt="Logo" style={{ width: '70px', height: '70px' }} />
+          </div>
+        </div>
+      </div>
+
+      {/* Contact Information */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '40px',
+          left: '40px',
+          zIndex: 3,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: '40px',
+              height: '40px',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ color: 'white', fontSize: '16px' }}>📞</Typography>
+          </div>
+          <div>
+            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+              Phone
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+              +123-456-7890
+            </Typography>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: '40px',
+              height: '40px',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ color: 'white', fontSize: '16px' }}>🌐</Typography>
+          </div>
+          <div>
+            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+              Website
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+              www.genelink.com
+            </Typography>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: '40px',
+              height: '40px',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ color: 'white', fontSize: '16px' }}>✉️</Typography>
+          </div>
+          <div>
+            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+              E-Mail
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+              hello@genelink.com
+            </Typography>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: '40px',
+              height: '40px',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ color: 'white', fontSize: '16px' }}>📍</Typography>
+          </div>
+          <div>
+            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+              Address
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+              123 Anywhere St., Any City
+            </Typography>
+          </div>
+        </div>
+      </div>
+
+      {/* Login Form */}
+      <motion.div
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 100 }}
+        transition={{ duration: 0.6, ease: 'easeInOut' }}
+        style={{
+          position: 'absolute',
+          right: '120px',
+          top: '20%',
+          transform: 'translateY(-50%)',
+          zIndex: 2,
+        }}
+      >
+        <Paper
+          elevation={0}
+          sx={{
+            width: '400px',
+            borderRadius: '20px',
+            p: 4,
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+          }}
+        >
+          <Box component="form" onSubmit={handleSubmit}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 'bold',
+                mb: 1,
+                color: '#2c3e50',
+                textAlign: 'center',
+                letterSpacing: '2px',
+              }}
+            >
+              LOGIN
+            </Typography>
+
+            <Typography
+              variant="body1"
+              sx={{
+                mb: 4,
+                color: '#7f8c8d',
+                textAlign: 'center',
+              }}
+            >
+              Sign in to your account
+            </Typography>
+
+            <Box sx={{ mb: 3, position: 'relative' }}>
+              <TextField
+                placeholder="Username"
+                fullWidth
+                name="username"
+                value={user.username}
+                onChange={handleInput}
+                variant="outlined"
+                InputProps={{
+                  startAdornment: (
+                    <PersonIcon sx={{ color: '#bdc3c7', mr: 1 }} />
+                  ),
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '25px',
+                    backgroundColor: '#f8f9fa',
+                    border: 'none',
+                    '& fieldset': {
+                      border: 'none',
+                    },
+                    '&:hover fieldset': {
+                      border: 'none',
+                    },
+                    '&.Mui-focused fieldset': {
+                      border: '2px solid #667eea',
+                    },
+                  },
+                }}
+              />
+            </Box>
+
+            <Box sx={{ mb: 3, position: 'relative' }}>
+              <TextField
+                placeholder="Password"
+                type="password"
+                fullWidth
+                name="password"
+                value={user.password}
+                onChange={handleInput}
+                variant="outlined"
+                InputProps={{
+                  startAdornment: (
+                    <LockIcon sx={{ color: '#bdc3c7', mr: 1 }} />
+                  ),
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '25px',
+                    backgroundColor: '#f8f9fa',
+                    border: 'none',
+                    '& fieldset': {
+                      border: 'none',
+                    },
+                    '&:hover fieldset': {
+                      border: 'none',
+                    },
+                    '&.Mui-focused fieldset': {
+                      border: '2px solid #667eea',
+                    },
+                  },
+                }}
+              />
+            </Box>
+
+            <Box sx={{ mb: 3, textAlign: 'right' }}>
+              <Link
+                to="/forget"
+                style={{
+                  color: '#667eea',
+                  textDecoration: 'none',
+                  fontSize: '14px',
+                }}
+              >
+                Forgot password?
+              </Link>
+            </Box>
+>>>>>>> Stashed changes
 
             {/* Premium Login Button */}
             <Button
@@ -462,6 +816,7 @@ const Login = ({ setFullName }: LoginProps) => {
               variant="contained"
               fullWidth
               sx={{
+<<<<<<< Updated upstream
                 py: 2.5,
                 borderRadius: "16px",
                 background: "linear-gradient(135deg, #4682B4 0%, #5B9BD5 25%, #6CB4EE 50%, #87CEEB 75%, #ADD8E6 100%)",
@@ -556,6 +911,35 @@ const Login = ({ setFullName }: LoginProps) => {
                   }}
                 >
                   🧪 Đăng ký ngay
+=======
+                py: 1.5,
+                borderRadius: '25px',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                textTransform: 'none',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                mb: 3,
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                },
+              }}
+            >
+              Login
+            </Button>
+
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="body2" sx={{ color: '#7f8c8d' }}>
+                Don't have an account?{' '}
+                <Link
+                  to="/signup"
+                  style={{
+                    color: '#667eea',
+                    textDecoration: 'none',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Sign up now
+>>>>>>> Stashed changes
                 </Link>
               </Typography>
             </Box>
