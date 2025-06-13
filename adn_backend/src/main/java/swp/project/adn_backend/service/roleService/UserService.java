@@ -28,6 +28,8 @@ import swp.project.adn_backend.mapper.UserMapper;
 import swp.project.adn_backend.repository.ManagerRepository;
 import swp.project.adn_backend.repository.StaffRepository;
 import swp.project.adn_backend.repository.UserRepository;
+import swp.project.adn_backend.service.authService.SendEmailService;
+import org.springframework.mail.SimpleMailMessage;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -47,9 +49,10 @@ public class UserService {
     ManagerRepository managerRepository;
     StaffMapper staffMapper;
     ManagerMapper managerMapper;
+    SendEmailService sendEmailService;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, EntityManager entityManager, StaffRepository staffRepository, ManagerRepository managerRepository, StaffMapper staffMapper, ManagerMapper managerMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, EntityManager entityManager, StaffRepository staffRepository, ManagerRepository managerRepository, StaffMapper staffMapper, ManagerMapper managerMapper, SendEmailService sendEmailService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
@@ -58,6 +61,7 @@ public class UserService {
         this.managerRepository = managerRepository;
         this.staffMapper = staffMapper;
         this.managerMapper = managerMapper;
+        this.sendEmailService = sendEmailService;
     }
 
     // Đăng ký User
@@ -74,6 +78,7 @@ public class UserService {
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
     }
+
 
     public Users registerStaffAccount(StaffRequest staffRequest, Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -99,9 +104,26 @@ public class UserService {
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);
         staffRepository.save(staff);
+
+        // Send welcome email to staff
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(users.getEmail());
+        message.setSubject("Welcome to ADN Medical Center - Staff Account Created");
+        message.setText("Dear " + users.getFullName() + ",\n\n" +
+                "Welcome to ADN Medical Center! Your staff account has been successfully created.\n\n" +
+                "Your account details:\n" +
+                "Username: " + users.getUsername() + "\n" +
+                "Password: " + staffRequest.getPassword() + "\n\n" +
+                "Email: " + users.getEmail() + "\n" +
+                "You can now log in to the system using your credentials.\n\n" +
+                "Best regards,\n" +
+                "ADN Medical Center Team");
+        sendEmailService.sendEmailCreateAccountSuccessful(users.getEmail(), message.getText());
+
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
     }
+
 
     public Users registerManagerAccount(ManagerRequest managerRequest, Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -125,6 +147,21 @@ public class UserService {
         manager.setCreateAt(LocalDate.now());
         manager.setUsers(userRegister);
         managerRepository.save(manager);
+
+        // Send welcome email to manager
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(users.getEmail());
+        message.setSubject("Welcome to ADN Medical Center - Manager Account Created");
+        message.setText("Dear " + users.getFullName() + ",\n\n" +
+                "Welcome to ADN Medical Center! Your manager account has been successfully created.\n\n" +
+                "Your account details:\n" +
+                "Username: " + users.getUsername() + "\n" +
+                "Password: " + managerRequest.getPassword() + "\n\n" +
+                "Email: " + users.getEmail() + "\n" +
+                "You can now log in to the system using your credentials.\n\n" +
+                "Best regards,\n" +
+                "ADN Medical Center Team");
+        sendEmailService.sendEmailCreateAccountSuccessful(users.getEmail(), message.getText());
 
         return userRepository.save(users);
     }
