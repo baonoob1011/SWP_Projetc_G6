@@ -61,7 +61,7 @@ const AdministrativeServiceList = () => {
           { method: 'GET' }
         );
         if (!response.ok) {
-          alert('Không thể lấy dữ liệu dịch vụ');
+          setError('Không thể lấy dữ liệu dịch vụ');
           setLoading(false);
           return;
         }
@@ -169,7 +169,7 @@ const AdministrativeServiceList = () => {
                 <Button
                   variant="contained"
                   component={NavLink}
-                  to={`order/${service.serviceRequest.serviceId}`}
+                  to={`/order/${service.serviceRequest.serviceId}`}
                   color="error"
                   size="small"
                   sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}

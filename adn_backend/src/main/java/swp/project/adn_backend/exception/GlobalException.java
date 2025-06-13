@@ -41,6 +41,14 @@ public class GlobalException {
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
+    @ExceptionHandler(value = UnsupportedOperationException.class)
+    ResponseEntity<APIResponse> handlingUnsupportedOperationException(UnsupportedOperationException e) {
+        APIResponse apiResponse = new APIResponse<>();
+        apiResponse.setCode(1001);
+        apiResponse.setMessage(e.getMessage());
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
+
     @ExceptionHandler(value = MissingPathVariableException.class)
     ResponseEntity<APIResponse> handlingMissingPathVariableException(MissingPathVariableException e) {
         APIResponse apiResponse = new APIResponse<>();

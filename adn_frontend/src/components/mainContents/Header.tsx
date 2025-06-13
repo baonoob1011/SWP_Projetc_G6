@@ -117,17 +117,9 @@ export function Header({ fullName, setFullName }: HeaderProps) {
           <Box
             sx={{
               display: 'flex',
-<<<<<<< Updated upstream
-              flexDirection: 'column', // đổi thành cột dọc
-              alignItems: 'center', // canh giữa theo chiều ngang
-              ml: 0,
-              width: 200,
-
-=======
               alignItems: 'center',
               gap: 2,
               minWidth: 280,
->>>>>>> Stashed changes
             }}
           >
             <NavLink
@@ -255,28 +247,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
             )}
           </Box>
 
-<<<<<<< Updated upstream
-          {/* Phần Đăng nhập / Đăng ký sát mép phải */}
-          <>
-            <Box
-              sx={{
-                display: { xs: 'none', md: 'flex' },
-                alignItems: 'center',
-                ml: 2,
-              }}
-              className={styles.phoneNumber}
-            >
-              <Phone sx={{ color: 'inherit', mr: 1 }} />
-              <Typography sx={{ fontSize: 20, color: 'inherit' }}>
-                0922.394.333
-              </Typography>
-            </Box>
-
-
-          </>
-=======
           {/* Right Section */}
->>>>>>> Stashed changes
           <Box
             sx={{
               display: 'flex',
@@ -344,7 +315,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   >
                     <MenuItem
                       component={NavLink}
-                      to="/m-page"
+                      to="/manager"
                       onClick={handleCloseMenu}
                       sx={{
                         px: 3,
@@ -443,8 +414,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       Trang làm việc
                     </MenuItem>
                     <MenuItem
-<<<<<<< Updated upstream
-=======
                       component={NavLink}
                       to="/s-m-profile"
                       onClick={handleCloseMenu}
@@ -460,7 +429,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       Xem thông tin
                     </MenuItem>
                     <MenuItem
->>>>>>> Stashed changes
                       onClick={() => {
                         handleCloseMenu();
                         handleLogout();

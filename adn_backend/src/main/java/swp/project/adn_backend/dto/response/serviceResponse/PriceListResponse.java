@@ -1,15 +1,25 @@
 package swp.project.adn_backend.dto.response.serviceResponse;
 
 public class PriceListResponse {
+    private long priceId;
     private String time;
     private double price;
 
-    public PriceListResponse(String time, double price) {
+    public PriceListResponse() {
+    }
+
+    public PriceListResponse(long priceId, String time, double price) {
+        this.priceId = priceId;
         this.time = time;
         this.price = price;
     }
 
-    public PriceListResponse() {
+    public long getPriceId() {
+        return priceId;
+    }
+
+    public void setPriceId(long priceId) {
+        this.priceId = priceId;
     }
 
     public String getTime() {

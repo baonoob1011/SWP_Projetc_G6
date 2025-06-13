@@ -1,5 +1,13 @@
+import {
+  FormControl,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  type SelectChangeEvent,
+} from '@mui/material';
 import { useState, useRef, useEffect } from 'react';
-import styles from './Services.module.css';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 type FormService = {
   serviceName: string;
@@ -14,6 +22,15 @@ type PriceList = {
 
 type TypeService = {
   someCivilField: string;
+};
+
+type Kit = {
+  kitId: string;
+  kitCode: string;
+  kitName: string;
+  targetPersonCount: string;
+  price: string;
+  contents: string;
 };
 
 const Services = () => {
@@ -35,7 +52,9 @@ const Services = () => {
       someCivilField: '',
     },
   });
-
+  const navigate = useNavigate();
+  const [kit, setKit] = useState<Kit[]>([]);
+  const [selectedKit, setSelectedKit] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>('');
   const fileRef = useRef<HTMLInputElement>(null);
@@ -48,6 +67,48 @@ const Services = () => {
     );
   }, []);
 
+  const fetchKit = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/api/kit/get-all-kit', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (res.status === 401) {
+        toast.error('Phiên đăng nhập đã hết hạn');
+        localStorage.clear();
+        navigate('/login');
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      setKit(data);
+    } catch (error) {
+      console.error('Fetch locations error:', error);
+      toast.error('Không thể lấy kit');
+    }
+  };
+  useEffect(() => {
+    if (isAdmin) {
+      fetchKit();
+    }
+  }, [isAdmin]);
+  const handleKitChange = (e: SelectChangeEvent<string>) => {
+    const kitId = e.target.value;
+    setSelectedKit(kitId);
+    setForm({
+      service: { serviceName: '', description: '', serviceType: '' },
+      price: { time: '', price: '' },
+      type: { someCivilField: '' },
+    });
+  };
   const handleInput = (
     section: 'service' | 'price' | 'type',
     field: string,
@@ -68,21 +129,22 @@ const Services = () => {
       setFile(selected);
       setPreview(URL.createObjectURL(selected));
     } else {
-      alert('Vui lòng chọn ảnh hợp lệ');
+      toast.warning('Vui lòng chọn ảnh hợp lệ');
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!file) return alert('Chưa chọn ảnh');
+    if (!file) return toast.warning('Chưa chọn ảnh');
 
     const parsedPrice = Number(form.price.price);
     if (isNaN(parsedPrice)) {
-      return alert('Giá phải là số');
+      return toast.warning('Giá phải là số');
     }
-
+    const kitId = selectedKit;
     const request = {
+      kitId,
       serviceRequest: {
         serviceName: form.service.serviceName,
         description: form.service.description,
@@ -107,7 +169,7 @@ const Services = () => {
 
     try {
       const res = await fetch(
-        'http://localhost:8080/api/services/create-service',
+        `http://localhost:8080/api/services/create-service/${selectedKit}`,
         {
           method: 'POST',
           headers: {
@@ -118,7 +180,7 @@ const Services = () => {
       );
 
       if (res.ok) {
-        alert('Tạo dịch vụ thành công');
+        toast.success('Tạo dịch vụ thành công');
         setForm({
           service: { serviceName: '', description: '', serviceType: '' },
           price: { time: '', price: '' },
@@ -128,127 +190,186 @@ const Services = () => {
         setPreview('');
         if (fileRef.current) fileRef.current.value = '';
       } else {
-        const error = await res.text();
-        alert('Lỗi: ' + error);
+        const error = 'Tên dịch vụ đã tồn tại';
+        toast.warning(error);
       }
     } catch (err) {
       console.error(err);
-      alert('Đã xảy ra lỗi khi gửi dữ liệu.');
+      toast.warning('Đã xảy ra lỗi khi gửi dữ liệu.');
     }
   };
 
   if (!isAdmin) return null;
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
-      {/* Service section */}
-      <div className={styles.formGroup}>
-        <label className={styles.label}>Tên dịch vụ</label>
-        <input
-          name="serviceName"
-          value={form.service.serviceName}
-          onChange={(e) =>
-            handleInput('service', 'serviceName', e.target.value)
-          }
-          placeholder="Nhập tên dịch vụ"
-          className={styles.input}
-          required
-        />
-      </div>
-
-      <div className={styles.formGroup}>
-        <label className={styles.label}>Loại dịch vụ</label>
-        <select
-          name="serviceType"
-          value={form.service.serviceType}
-          onChange={(e) =>
-            handleInput('service', 'serviceType', e.target.value)
-          }
-          className={styles.select}
-          required
+    <div
+      className="container mt-5"
+      style={{
+        background: 'linear-gradient(to bottom right, #e3f2fd, #ffffff)',
+        borderRadius: '15px',
+        padding: '30px',
+        boxShadow: '0 0 20px rgba(33, 150, 243, 0.2)',
+        maxWidth: '600px',
+      }}
+    >
+      <form onSubmit={handleSubmit}>
+        <h3
+          className="text-center mb-4"
+          style={{
+            color: '#0d6efd',
+            fontWeight: 700,
+            fontFamily: 'Poppins, sans-serif',
+          }}
         >
-          <option value="">-- Chọn loại dịch vụ --</option>
-          <option value="ADMINISTRATIVE">Hành Chính</option>
-          <option value="CIVIL">Dân sự</option>
-        </select>
-      </div>
+          Tạo Dịch Vụ ADN
+        </h3>
 
-      <div className={styles.formGroup}>
-        <label className={styles.label}>Mô tả</label>
-        <input
-          type="text"
-          name="description"
-          value={form.service.description}
-          onChange={(e) =>
-            handleInput('service', 'description', e.target.value)
-          }
-          placeholder="Nhập mô tả"
-          className={styles.input}
-          required
-        />
-      </div>
+        {/* Tên dịch vụ */}
+        <div className="mb-3">
+          <FormControl fullWidth>
+            <Select
+              labelId="roomId"
+              value={selectedKit}
+              onChange={handleKitChange}
+              input={<OutlinedInput />}
+              displayEmpty
+            >
+              <MenuItem value="">
+                <em>----Chọn kit----</em>
+              </MenuItem>
+              {kit.map((kit) => (
+                <MenuItem key={kit.kitId} value={kit.kitId}>
+                  {kit.kitCode}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Tên dịch vụ</label>
+          <input
+            className="form-control"
+            value={form.service.serviceName}
+            onChange={(e) =>
+              handleInput('service', 'serviceName', e.target.value)
+            }
+            placeholder="Nhập tên dịch vụ"
+            required
+            style={{ borderColor: '#2196f3' }}
+          />
+        </div>
 
-      {/* Price section */}
-      <div className={styles.formGroup}>
-        <label className={styles.label}>Thời gian</label>
-        <input
-          name="time"
-          value={form.price.time}
-          onChange={(e) => handleInput('price', 'time', e.target.value)}
-          placeholder="Nhập thời gian"
-          className={styles.input}
-          required
-        />
-      </div>
+        {/* Loại dịch vụ */}
+        <div className="mb-3">
+          <label className="form-label">Loại dịch vụ</label>
+          <select
+            className="form-select"
+            value={form.service.serviceType}
+            onChange={(e) =>
+              handleInput('service', 'serviceType', e.target.value)
+            }
+            required
+            style={{ borderColor: '#2196f3' }}
+          >
+            <option value="">-- Chọn loại dịch vụ --</option>
+            <option value="ADMINISTRATIVE">Hành Chính</option>
+            <option value="CIVIL">Dân sự</option>
+          </select>
+        </div>
 
-      <div className={styles.formGroup}>
-        <label className={styles.label}>Giá</label>
-        <input
-          name="price"
-          value={form.price.price}
-          onChange={(e) => handleInput('price', 'price', e.target.value)}
-          placeholder="Nhập giá"
-          className={styles.input}
-          required
-        />
-      </div>
+        {/* Mô tả */}
+        <div className="mb-3">
+          <label className="form-label">Mô tả</label>
+          <input
+            type="text"
+            className="form-control"
+            value={form.service.description}
+            onChange={(e) =>
+              handleInput('service', 'description', e.target.value)
+            }
+            placeholder="Nhập mô tả"
+            required
+            style={{ borderColor: '#2196f3' }}
+          />
+        </div>
 
-      {/* File upload */}
-      <div className={styles.formGroup}>
-        <label className={styles.label}>Hình ảnh</label>
+        {/* Thời gian */}
+        <div className="mb-3">
+          <label className="form-label">Thời gian</label>
+          <input
+            className="form-control"
+            value={form.price.time}
+            onChange={(e) => handleInput('price', 'time', e.target.value)}
+            placeholder="Nhập thời gian"
+            required
+            style={{ borderColor: '#2196f3' }}
+          />
+        </div>
+
+        {/* Giá */}
+        <div className="mb-3">
+          <label className="form-label">Giá</label>
+          <input
+            className="form-control"
+            value={form.price.price}
+            onChange={(e) => handleInput('price', 'price', e.target.value)}
+            placeholder="Nhập giá"
+            required
+            style={{ borderColor: '#2196f3' }}
+          />
+        </div>
+
+        {/* Hình ảnh */}
+        <div className="mb-3">
+          <label className="form-label">Hình ảnh</label>
+          <div className="input-group">
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileRef}
+              onChange={handleFile}
+              className="form-control"
+              style={{ borderColor: '#2196f3' }}
+            />
+          </div>
+          {file && (
+            <div className="form-text" style={{ color: '#1976d2' }}>
+              Đã chọn: {file.name}
+            </div>
+          )}
+        </div>
+
+        {/* Preview ảnh */}
+        {preview && (
+          <div className="mb-3 text-center">
+            <img
+              src={preview}
+              alt="preview"
+              className="img-thumbnail"
+              style={{
+                maxWidth: '200px',
+                border: '2px solid #0d6efd',
+                borderRadius: '10px',
+              }}
+            />
+          </div>
+        )}
+
+        {/* Submit */}
         <button
-          type="button"
-          onClick={() => fileRef.current?.click()}
-          className={styles.fileButton}
+          type="submit"
+          className="btn btn-primary w-100"
+          style={{
+            backgroundColor: '#0d6efd',
+            borderColor: '#0d6efd',
+            fontWeight: 600,
+            fontSize: '16px',
+          }}
         >
-          Chọn ảnh
+          Gửi đăng ký
         </button>
-
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          className={styles.fileInput}
-          onChange={handleFile}
-        />
-
-        <input
-          type="text"
-          readOnly
-          value={file ? file.name : ''}
-          placeholder="Chưa chọn file"
-          className={styles.urlInput}
-        />
-      </div>
-
-      {preview && (
-        <img src={preview} alt="preview" className={styles.previewImage} />
-      )}
-
-      <button type="submit" className={styles.submitButton}>
-        Gửi đăng ký
-      </button>
-    </form>
+      </form>
+    </div>
   );
 };
 

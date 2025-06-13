@@ -21,16 +21,16 @@ public class ServiceTestController {
     @Autowired
     private ServiceTestService serviceTestService;
 
-    @PostMapping(value = "/create-service", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/create-service/{kitId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createService(
             @RequestPart("request") @Valid CreateServiceRequest request,
             @RequestPart(value = "file", required = false) MultipartFile file,
-            Authentication authentication) {
+            @PathVariable("kitId")long kitId) {
 
         serviceTestService.createService(
                 request.getServiceRequest(),
-                authentication,
                 request.getPriceListRequest(),
+                kitId,
                 file
         );
         return ResponseEntity.ok("Tạo dịch vụ ADN thành công");

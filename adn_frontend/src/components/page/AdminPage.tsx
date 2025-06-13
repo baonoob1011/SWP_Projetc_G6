@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
-import { LocationCity, RoomService } from '@mui/icons-material';
+import { LocationCity, Room, RoomService } from '@mui/icons-material';
 
 const AdminSidebar = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -38,6 +38,12 @@ const AdminSidebar = () => {
       icon: LocationCity,
       label: 'Tạo địa chỉ mới',
       path: 'location',
+    },
+    {
+      id: 'room',
+      icon: Room,
+      label: 'Tạo phòng',
+      path: 'room',
     },
     {
       id: 'services',

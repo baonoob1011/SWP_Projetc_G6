@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
 import swp.project.adn_backend.dto.response.slot.GetFullSlotResponse;
 import swp.project.adn_backend.dto.request.slot.SlotRequest;
 import swp.project.adn_backend.entity.Slot;
@@ -32,10 +33,16 @@ public class SlotController {
     public ResponseEntity<List<GetFullSlotResponse>> getAllSlot() {
         return ResponseEntity.ok(slotService.getAllSlot());
     }
-    
+
+    @GetMapping("/get-all-slot-user")
+    public ResponseEntity<List<SlotInfoDTO>> getAllSlotUser() {
+        return ResponseEntity.ok(slotService.getALlSlotForUser());
+    }
+
     @DeleteMapping("/delete-slot/{slotId}")
     public ResponseEntity<String> deleteSlot(@PathVariable("slotId") long slotId) {
         slotService.deleteSlot(slotId);
         return ResponseEntity.ok("Delete Successful");
     }
+
 }

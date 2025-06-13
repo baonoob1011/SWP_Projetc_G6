@@ -11,16 +11,14 @@ public class SlotInfoDTO {
     LocalDate slotDate;
     Time startTime;
     Time endTime;
-    String room;
     SlotStatus slotStatus;
 
 
-    public SlotInfoDTO(long slotId, LocalDate slotDate, Time startTime, Time endTime, String room, SlotStatus slotStatus) {
+    public SlotInfoDTO(long slotId, LocalDate slotDate, Time startTime, Time endTime, SlotStatus slotStatus) {
         this.slotId = slotId;
         this.slotDate = slotDate;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.room = room;
         this.slotStatus = slotStatus;
     }
 
@@ -32,13 +30,6 @@ public class SlotInfoDTO {
         this.slotStatus = slotStatus;
     }
 
-    public String getRoom() {
-        return room;
-    }
-
-    public void setRoom(String room) {
-        this.room = room;
-    }
 
     public long getSlotId() {
         return slotId;

@@ -3,6 +3,7 @@ package swp.project.adn_backend.controller.slot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import swp.project.adn_backend.dto.InfoDTO.RoomInfoDTO;
 import swp.project.adn_backend.dto.request.slot.RoomRequest;
 import swp.project.adn_backend.entity.Room;
 import swp.project.adn_backend.service.slot.RoomService;
@@ -21,7 +22,7 @@ public class RoomController {
     }
 
     @GetMapping("/get-all-room")
-    public ResponseEntity<List<Room>>getAllRoom(){
+    public ResponseEntity<List<RoomInfoDTO>>getAllRoom(){
         return ResponseEntity.ok(roomService.getAllRoom());
     }
 }

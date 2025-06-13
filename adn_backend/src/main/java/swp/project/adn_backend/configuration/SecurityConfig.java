@@ -43,13 +43,22 @@ public class SecurityConfig {
             "/api/otp/**",
             "/api/register/user-account",
             "/api/services/get-all-administrative-service",
-            "/api/services/get-all-civil-service"
+            "/api/services/get-all-civil-service",
+            "/api/price//get-all-price/**",
     };
 
     private final String[] USER_ENDPOINTS = {
             "/api/appointment/book-appointment/**",
+            "/api/appointment/cancel-appointment/**",
+            "/api/appointment/get-appointment/**",
+            "/api/slot/get-all-slot-user/**",
             "/api/patient/register-info",
-            "/api/user/**"
+            "/api/kit/view-kit-status",
+            "/api/location/get-all-location",
+            "/api/payment/get-all-payment",
+            "/api/user/**",
+            "/api/payment/**",
+            "/api/appointment/book-appointment-at_home/**"
     };
 
     private final String[] STAFF_ENDPOINTS = {
@@ -64,8 +73,9 @@ public class SecurityConfig {
             "/api/blog/**",
             "/api/slot/**",
             "/api/price/**",
-            "/api/location/**",
-            "/api/room/**"
+            "/api/room/**",
+            "/api/payment/**",
+            "/api/kit/**"
     };
 
     private final String[] ADMIN_ENDPOINTS = {
@@ -96,6 +106,7 @@ public class SecurityConfig {
 
                         // Quyền ADMIN
                         .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
+                        .requestMatchers(ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
 
                         // Các request khác yêu cầu xác thực
                         .anyRequest().authenticated()

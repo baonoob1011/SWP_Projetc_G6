@@ -54,7 +54,8 @@ public class Slot {
 
 
     @OneToMany(mappedBy = "slot", fetch = FetchType.LAZY, cascade = {
-            CascadeType.ALL
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Appointment> appointment;
 
