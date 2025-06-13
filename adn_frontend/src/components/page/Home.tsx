@@ -154,8 +154,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 relative overflow-x-hidden">
-      {/* Banner + Đăng Ký Tư Vấn */}
-      <div className="relative mt-24 overflow-visible">
+      {/* Banner*/}
+      <div className="relative mt-18 overflow-visible">
         {/* Banner Image */}
         <img
           src={banner}
@@ -164,320 +164,132 @@ export default function Home() {
           loading="lazy"
         />
 
-        {/* Form đăng ký đè lên đáy banner */}
-        <section
-          className="
-      absolute bottom-0 left-1/2
-      transform -translate-x-1/2 translate-y-1/2
-      w-[90%] max-w-4xl
-      bg-blue-100 rounded-xl p-6
-      shadow-xl z-10
-    "
-        >
-          <h2 className="text-center text-2xl font-bold text-blue-700 mb-4">
-            ĐĂNG KÝ TƯ VẤN
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-            <input
-              type="text"
-              placeholder="Tên*"
-              className="bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-            <input
-              type="text"
-              placeholder="Số điện thoại*"
-              className="bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-            <input
-              type="text"     
-              placeholder="Dịch vụ quan tâm"
-              className="bg-white border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-            <button className="bg-orange-500 border border-orange-500 text-white font-semibold rounded-lg px-6 py-2 hover:bg-orange-600 transition">
-              TƯ VẤN NGAY
-            </button>
-          </div>
-        </section>
       </div>
 
       {/* About Section - kéo lên để khỏi trắng */}
       <section className="relative -mt-20 pt-20 pb-4 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
         {/* …nội dung Về GeneLink… */}
       </section>
+{/* Section giới thiệu GeneLink */}
+<section className="w-full bg-blue-50 py-16">
+  <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8
+                  flex flex-col md:flex-row items-stretch gap-8">
+    {/* Text bên trái */}
+    <div className="md:w-2/3 flex flex-col justify-center space-y-8 leading-loose tracking-wide">
+      <h2 className="text-3xl font-bold text-blue-700">
+        Về GeneLink
+      </h2>
+      <p className="text-gray-800">
+        <span className="font-semibold text-blue-600">
+          Công ty Cổ phần Dịch vụ Phân tích Di truyền (GeneLink)
+        </span> – thành viên <span className="font-semibold text-purple-600">
+          Tập đoàn Eurofins
+        </span> – là một doanh nghiệp y tế tiên phong trong lĩnh vực xét nghiệm được thành lập ngày <span className="font-medium text-blue-500">26/10/2010</span> bởi đội ngũ các nhà khoa học đầu ngành.
+      </p>
+      <p className="text-gray-800">
+        Trong hành trình nỗ lực phát triển không ngừng, <span className="font-semibold text-blue-600">GeneLink</span> vẫn luôn giữ vững và khẳng định vai trò <span className="font-semibold text-purple-600">dẫn đầu về phân tích di truyền</span> nói riêng cũng như trong ngành xét nghiệm hỗ trợ chẩn đoán lâm sàng nói chung.
+      </p>
+      <p className="text-gray-800">
+        Việc gia nhập <span className="font-semibold text-blue-600">Tập đoàn Y tế Số 1 Thế giới Eurofins</span> là một trong những bước đi chiến lược nhằm trở thành doanh nghiệp có vốn đầu tư nước ngoài và xây dựng <span className="font-semibold text-purple-600">thương hiệu uy tín đa quốc gia</span>.
+      </p>
+    </div>
+    {/* Ảnh bên phải */}
+    <div className="md:w-1/2 flex">
+      <img
+        src={geneLinkImage}
+        alt="GeneLink Laboratory"
+        className="w-full h-full object-cover rounded-2xl"
+      />
+    </div>
+  </div>
+</section>
 
-      {/* {Section giới thiệu geneLink} */}
-      <section className="relative mt-32 mb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        {/* Subtle background decorations */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-20 left-10 w-24 h-24 bg-blue-200/30 rounded-full blur-xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-20 w-32 h-32 bg-purple-200/20 rounded-full blur-2xl animate-pulse delay-1000"></div>
-        </div>
 
-        {/* Card container */}
-        <div
-          className="relative z-10 max-w-6xl mx-auto bg-gradient-to-br from-blue-50 to-white 
-                      rounded-3xl shadow-xl border border-blue-100/50 
-                      transform transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 
-                      backdrop-blur-sm p-6 sm:p-8"
-        >
-          {/* Subtle top border gradient */}
-          <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent rounded-full"></div>
 
-          <div className="flex flex-col md:flex-row items-start gap-8">
-            {/* Text bên trái */}
-            <div className="md:w-2/3">
-              <div className="relative mb-6">
-                <h2
-                  className="text-3xl md:text-4xl font-bold 
-                             bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 
-                             bg-clip-text text-transparent mb-2
-                             transform transition-all duration-300 hover:scale-105"
-                >
-                  Về GeneLink
-                </h2>
-                <div
-                  className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full 
-                              transform transition-all duration-500 hover:w-24"
-                ></div>
-              </div>
+    {/* Section hướng dẫn lấy mẫu ADN tại nhà */}
+<section className="w-full bg-white py-16">
+  <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-stretch gap-8">
+    {/* Text hướng dẫn bên trái */}
+    <div className="md:w-2/3 flex flex-col justify-center space-y-6 leading-relaxed tracking-wide">
+      <h2 className="text-3xl font-bold text-green-700">Lấy mẫu ADN tại nhà</h2>
+      <p className="text-gray-800">
+        Chúng tôi cung cấp dịch vụ lấy mẫu tận nơi tiện lợi, đảm bảo riêng tư và an toàn:
+      </p>
+      <ul className="list-disc list-inside space-y-2 text-gray-700">
+        <li className="text-green-600">
+          <strong className="text-green-800">Đặt lịch trực tuyến:</strong> Chọn khung giờ thuận tiện, nhân viên y tế sẽ liên hệ xác nhận.
+        </li>
+        <li className="text-green-600">
+          <strong className="text-green-800">Chuẩn bị dụng cụ:</strong> Bộ kit lấy mẫu bao gồm que tăm bông vô trùng, ống đựng mẫu, và hướng dẫn chi tiết.
+        </li>
+        <li className="text-green-600">
+          <strong className="text-green-800">Thao tác đơn giản:</strong> Dùng que tăm bông quét nhẹ lòng má trong 2–3 lần, cho vào ống, dán nhãn và trả lại cho nhân viên.
+        </li>
+        <li className="text-green-600">
+          <strong className="text-green-800">Vận chuyển an toàn:</strong> Mẫu được đóng gói kín, vận chuyển trong điều kiện bảo quản phù hợp để đảm bảo chất lượng.
+        </li>
+      </ul>
+      <p className="text-gray-800">
+        Thời gian lấy mẫu nhanh chóng (khoảng <span className="text-green-600 font-semibold">5–10 phút</span>), nhân viên được đào tạo chuyên nghiệp sẽ hướng dẫn chi tiết và hỗ trợ bạn trong suốt quá trình.
+      </p>
+    </div>
 
-              <div className="text-gray-700 space-y-6 leading-relaxed text-justify">
-                <p
-                  className="transform transition-all duration-300 hover:text-gray-800 
-                           p-4 rounded-xl hover:bg-blue-50/50 hover:shadow-sm
-                           border-l-2 border-transparent hover:border-blue-300"
-                >
-                  <span className="font-semibold text-blue-700">
-                    Công ty Cổ phần Dịch vụ Phân tích Di truyền (GeneLink)
-                  </span>{' '}
-                  - thành viên{' '}
-                  <span className="font-semibold text-purple-700">
-                    Tập đoàn Eurofins
-                  </span>{' '}
-                  - là một doanh nghiệp y tế tiên phong trong lĩnh vực xét
-                  nghiệm được thành lập ngày{' '}
-                  <span className="font-medium text-blue-600">26/10/2010</span>{' '}
-                  bởi đội ngũ các nhà khoa học đầu ngành.
-                </p>
-
-                <p
-                  className="transform transition-all duration-300 hover:text-gray-800 
-                           p-4 rounded-xl hover:bg-purple-50/50 hover:shadow-sm
-                           border-l-2 border-transparent hover:border-purple-300"
-                >
-                  Trong hành trình nỗ lực phát triển không ngừng,{' '}
-                  <span className="font-semibold text-blue-700">GeneLink</span>{' '}
-                  vẫn luôn giữ vững và khẳng định vai trò{' '}
-                  <span className="font-semibold text-purple-700">
-                    dẫn đầu về phân tích di truyền
-                  </span>{' '}
-                  nói riêng cũng như trong ngành xét nghiệm hỗ trợ chẩn đoán lâm
-                  sàng nói chung.
-                </p>
-
-                <p
-                  className="transform transition-all duration-300 hover:text-gray-800 
-                           p-4 rounded-xl hover:bg-blue-50/50 hover:shadow-sm
-                           border-l-2 border-transparent hover:border-blue-300"
-                >
-                  Việc gia nhập{' '}
-                  <span className="font-semibold text-blue-700">
-                    Tập đoàn Y tế Số 1 Thế giới Eurofins
-                  </span>{' '}
-                  là một trong những bước đi chiến lược nhằm trở thành doanh
-                  nghiệp có vốn đầu tư nước ngoài và xây dựng{' '}
-                  <span className="font-semibold text-purple-700">
-                    thương hiệu uy tín đa quốc gia
-                  </span>
-                  .
-                </p>
-              </div>
-            </div>
-
-            {/* Ảnh bên phải */}
-            {/* Ảnh bên phải */}
-            <div className="md:w-1/2 flex justify-center">
-              {' '}
-              {/* Tăng từ 1/3 lên 1/2 */}
-              <div className="w-full max-w-md">
-                {' '}
-                {/* Đặt max-width cho ảnh */}
-                <img
-                  src={geneLinkImage}
-                  alt="GeneLink Laboratory"
-                  className="w-full h-auto object-cover rounded-2xl shadow-lg 
-                 border border-blue-100/50 bg-white/80 backdrop-blur-sm
-                 transform transition-all duration-300 hover:shadow-xl"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom accent line */}
-          <div className="absolute bottom-0 left-1/3 right-1/3 h-0.5 bg-gradient-to-r from-transparent via-purple-400/50 to-transparent rounded-full"></div>
-        </div>
-      </section>
-
-      {/* YouTube Video Embed */}
-      <section className="flex justify-center mt-4">
+    {/* Video YouTube bên phải */}
+    <div className="md:w-1/2 flex">
+      <div className="w-full aspect-video overflow-hidden rounded-lg shadow-lg">
         <iframe
-          width="1000"
-          height="600"
-          className="rounded-lg shadow-lg"
+          className="w-full h-full"
           src="https://www.youtube.com/embed/ffpkreH-cfk"
-          title="YouTube video player"
+          title="Hướng dẫn lấy mẫu ADN tại nhà"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-      <section className="relative py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto overflow-hidden">
-        {/* Background decorative elements */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-10 left-10 w-32 h-32 bg-green-200/20 rounded-full blur-2xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-20 w-40 h-40 bg-blue-200/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/4 w-20 h-20 bg-gradient-to-r from-green-300/20 to-blue-300/20 rounded-full blur-xl"></div>
+{/* Section Gói xét nghiệm ADN Huyết thống */}
+<section className="w-full bg-gradient-to-br from-green-50 to-blue-50 py-20">
+  <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-stretch gap-10">
+    {/* Nội dung bên trái */}
+    <div className="lg:w-2/3 flex flex-col justify-center bg-white rounded-2xl shadow-lg p-10 space-y-8">
+      <h2 className="text-3xl font-bold text-green-700">
+        Gói xét nghiệm ADN Huyết thống
+      </h2>
+      <ul className="list-disc list-inside space-y-4 text-gray-700 leading-loose">
+        <li>ADN huyết thống trực hệ (Cha – Con, Mẹ – Con)</li>
+        <li>ADN phục vụ làm giấy khai sinh</li>
+        <li>ADN hỗ trợ các thủ tục pháp lý</li>
+      </ul>
+      {/* Form tư vấn */}
+      <div>
+        <div className="flex bg-white border-2 border-green-200 rounded-full overflow-hidden shadow-sm max-w-md">
+          <input
+            type="text"
+            placeholder="Nhập số điện thoại của bạn"
+            className="flex-grow px-4 py-3 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-300"
+          />
+          <button className="px-6 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-full transition">
+            Tư vấn ngay
+          </button>
         </div>
+      </div>
+    </div>
 
-        {/* Main container with frame */}
-        <div
-          className="relative z-10 bg-gradient-to-br from-white via-green-50/30 to-blue-50/30 
-                      rounded-3xl shadow-2xl border border-gray-100/50 
-                      transform transition-all duration-500 hover:shadow-3xl hover:-translate-y-1 
-                      backdrop-blur-sm p-8 sm:p-12 overflow-hidden"
-        >
-          {/* Top decorative border */}
-          <div className="absolute top-0 left-1/4 right-1/4 h-1 bg-gradient-to-r from-transparent via-green-400 to-blue-400 to-transparent rounded-full"></div>
+    {/* Hình ảnh bên phải */}
+    <div className="lg:w-1/3 flex items-center justify-center">
+      <img
+        src={doctor}
+        alt="Phòng xét nghiệm ADN"
+        className="w-full h-auto object-cover rounded-2xl shadow-lg"
+      />
+    </div>
+  </div>
+</section>
 
-          {/* Side accent lines */}
-          <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-gradient-to-b from-transparent via-green-400/50 to-transparent rounded-full"></div>
-          <div className="absolute right-0 top-1/3 bottom-1/3 w-1 bg-gradient-to-b from-transparent via-blue-400/50 to-transparent rounded-full"></div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <ul className="pl-4 space-y-4">
-              <div className="relative mb-8">
-                <h2
-                  className="text-2xl font-bold mb-6 text-left
-                             transform transition-all duration-300 hover:scale-105"
-                >
-                  <strong
-                    className="bg-gradient-to-r from-green-600 via-blue-600 to-green-700 
-                                 bg-clip-text text-transparent"
-                  >
-                    Gói xét nghiệm ADN Huyết thống
-                  </strong>
-                </h2>
-                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-green-400 to-blue-400 rounded-full"></div>
-              </div>
-              <br />
-
-              <li className="flex items-start group transform transition-all duration-300 hover:translate-x-2">
-                <div className="flex-shrink-0 mr-3 p-1 rounded-full bg-green-100 group-hover:bg-green-200 transition-colors duration-300">
-                  <ShieldCheck
-                    style={{ color: 'green' }}
-                    className="transform transition-all duration-300 group-hover:scale-110"
-                  />
-                </div>
-                <div
-                  className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-green-100/50 
-                              group-hover:bg-white/80 group-hover:shadow-md transition-all duration-300
-                              group-hover:border-green-200"
-                >
-                  <p className="text-base group-hover:text-green-800 transition-colors duration-300">
-                    <strong>ADN huyết thống trực hệ (Cha | Mẹ - Con)</strong>
-                  </p>
-                </div>
-              </li>
-
-              <li className="flex items-start group transform transition-all duration-300 hover:translate-x-2">
-                <div className="flex-shrink-0 mr-3 p-1 rounded-full bg-green-100 group-hover:bg-green-200 transition-colors duration-300">
-                  <ShieldCheck
-                    style={{ color: 'green' }}
-                    className="transform transition-all duration-300 group-hover:scale-110"
-                  />
-                </div>
-                <div
-                  className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-green-100/50 
-                              group-hover:bg-white/80 group-hover:shadow-md transition-all duration-300
-                              group-hover:border-green-200"
-                >
-                  <p className="text-base group-hover:text-green-800 transition-colors duration-300">
-                    <strong>
-                      ADN huyết thống trực hệ (Cha | Mẹ - Con) - Làm giấy khai
-                      sinh
-                    </strong>
-                  </p>
-                </div>
-              </li>
-
-              <li className="flex items-start group transform transition-all duration-300 hover:translate-x-2">
-                <div className="flex-shrink-0 mr-3 p-1 rounded-full bg-green-100 group-hover:bg-green-200 transition-colors duration-300">
-                  <ShieldCheck
-                    style={{ color: 'green' }}
-                    className="transform transition-all duration-300 group-hover:scale-110"
-                  />
-                </div>
-                <div
-                  className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-green-100/50 
-                              group-hover:bg-white/80 group-hover:shadow-md transition-all duration-300
-                              group-hover:border-green-200"
-                >
-                  <p className="text-base group-hover:text-green-800 transition-colors duration-300">
-                    <strong>
-                      ADN huyết thống trực hệ (Cha | Mẹ - Con) - để thực hiện
-                      các thủ tục pháp lý
-                    </strong>
-                  </p>
-                </div>
-              </li>
-            </ul>
-
-            <div
-              className="relative rounded-2xl shadow-2xl overflow-hidden group"
-              style={{ width: '60%', marginLeft: 150 }}
-            >
-              {/* Enhanced glow effect */}
-              <div
-                className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-blue-400/20 
-                            rounded-2xl blur-xl opacity-0 group-hover:opacity-100 
-                            transition-all duration-500 scale-110 z-0"
-              ></div>
-
-              {/* Image container */}
-              <div
-                className="relative transform transition-all duration-500 
-                            group-hover:scale-105 group-hover:-rotate-1 z-10"
-              >
-                <img
-                  src={doctor}
-                  alt="Phòng xét nghiệm ADN"
-                  className="h-full object-cover rounded-2xl border-2 border-white/50"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/30 to-transparent rounded-2xl"></div>
-
-                {/* Floating accent elements */}
-                <div
-                  className="absolute -top-2 -right-2 w-4 h-4 bg-green-400 rounded-full 
-                              opacity-60 animate-bounce"
-                ></div>
-                <div
-                  className="absolute -bottom-2 -left-2 w-3 h-3 bg-blue-400 rounded-full 
-                              opacity-60 animate-pulse"
-                ></div>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom decorative border */}
-          <div className="absolute bottom-0 left-1/3 right-1/3 h-1 bg-gradient-to-r from-transparent via-blue-400 to-green-400 to-transparent rounded-full"></div>
-
-          {/* Corner accents */}
-          <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-green-300/50 rounded-tl-lg"></div>
-          <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-blue-300/50 rounded-br-lg"></div>
-        </div>
-      </section>
       {/* Services Section */}
       <section className="bg-white py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto rounded-xl">
         <h2 className="text-3xl font-bold text-center mb-12 text-blue-700">
@@ -509,94 +321,59 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-8">
-        <section className="py-16">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold mb-12 text-center text-blue-700">
-              Vì sao chọn GeneLink
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-stretch">
-            {/* Left side: Reasons list + 4 interactive sections */}
-            <div className="lg:col-span-3 flex flex-col">
-              {/* Reasons grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 pl-4 sm:pl-6 lg:pl-8">
-                {reasons.map(({ icon, text, desc }, i) => (
-                  <div
-                    key={i}
-                    className="flex flex-col items-center text-center p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
-                  >
-                    <div className="text-2xl mb-3">{icon}</div>
-                    <h3 className="font-semibold text-sm text-gray-800 mb-2 leading-tight">
-                      {text}
-                    </h3>
-                    <p className="text-gray-600 text-xs leading-relaxed">
-                      {desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-8">
+  <section className="py-16">
+    {/* Header */}
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 className="text-3xl font-bold mb-12 text-center text-blue-700">
+        Vì sao chọn GeneLink
+      </h2>
+    </div>
 
-              {/* 4 interactive image sections */}
-              <div className="pl-4 sm:pl-6 lg:pl-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 flex-1">
-                {imageData.map((image, index) => (
-                  <div
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`relative overflow-hidden rounded-lg shadow-sm h-40 group cursor-pointer transition-all duration-300 ${
-                      selectedImage === index
-                        ? 'ring-4 ring-blue-500 ring-opacity-60 transform scale-105'
-                        : 'hover:scale-105'
-                    }`}
-                  >
-                    <img
-                      src={image.src}
-                      alt={image.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-t ${image.gradient} to-transparent`}
-                    ></div>
-                    <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
-                      <h3 className="text-sm font-semibold mb-1">
-                        {image.title}
-                      </h3>
-                      <p className="text-xs opacity-90">{image.desc}</p>
-                    </div>
-                    {selectedImage === index && (
-                      <div className="absolute top-2 right-2">
-                        <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                          <ShieldCheck className="w-4 h-4 text-white" />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+    {/* Reasons grid (full width container) */}
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+      {reasons.map(({ icon, text, desc }, i) => (
+        <div
+          key={i}
+          className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-sm"
+        >
+          <div className="text-2xl mb-3">{icon}</div>
+          <h3 className="font-semibold text-lg text-gray-800 mb-2">
+            {text}
+          </h3>
+          <p className="text-gray-600 text-sm">{desc}</p>
+        </div>
+      ))}
+    </div>
 
-            {/* Right side: Dynamic Image Display - Matches left side height */}
-            <div className="lg:col-span-2 px-4 sm:px-6 lg:px-8 flex">
-              <div className="rounded-xl overflow-hidden shadow-lg relative w-full h-full min-h-[500px] lg:min-h-0">
-                <img
-                  src={imageData[selectedImage].src}
-                  alt={imageData[selectedImage].title}
-                  className="w-full h-full object-cover transition-all duration-500 ease-in-out"
-                  loading="lazy"
-                />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                    {imageData[selectedImage].title}
-                  </h3>
-                  <p className="text-white/90 text-lg">
-                    {imageData[selectedImage].desc}
-                  </p>
-                </div>
-              </div>
-            </div>
+    {/* Interactive images grid (full width container) */}
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+      {imageData.map((image, index) => (
+        <div
+          key={index}
+          onClick={() => setSelectedImage(index)}
+          className={`relative overflow-hidden rounded-lg shadow-md h-40 cursor-pointer ${
+            selectedImage === index ? 'ring-4 ring-blue-500 ring-opacity-60 scale-105' : ''
+          }`}
+        >
+          <img
+            src={image.src}
+            alt={image.title}
+            className="w-full h-full object-cover"
+          />
+          <div
+            className={`absolute inset-0 bg-gradient-to-t ${image.gradient} to-transparent`}
+          />
+          <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
+            <h3 className="text-sm font-semibold">{image.title}</h3>
+            <p className="text-xs opacity-90">{image.desc}</p>
           </div>
-        </section>
-      </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</div>
+
       {/* News Section */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <h2 className="text-3xl font-bold mb-12 text-center text-teal-700">

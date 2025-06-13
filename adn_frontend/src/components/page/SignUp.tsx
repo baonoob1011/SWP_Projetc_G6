@@ -13,9 +13,14 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import CustomSnackBar from '../mainContents/userinfor/Snackbar';
-import bg from '../../image/bg5.png';
+import bg from '../../image/Login_banner.png';
 import logo from '../../image/Logo.png';
 import { motion } from 'framer-motion';
+import PersonIcon from '@mui/icons-material/Person';
+import LockIcon from '@mui/icons-material/Lock';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import BadgeIcon from '@mui/icons-material/Badge';
 
 type Info = {
   fullName: string;
@@ -164,189 +169,536 @@ const SignUp = () => {
       style={{
         display: 'flex',
         minHeight: '100vh',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        background: 'linear-gradient(to right, #74ebd5, #ACB6E5)',
-        position: 'relative',
         backgroundImage: `url(${bg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
+      {/* Dark Overlay */}
       <div
         style={{
           position: 'absolute',
-          right: 0,
           top: 0,
-          width: '40%',
-          height: '100%',
-          opacity: 1,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.1)',
+          zIndex: 1,
         }}
-      ></div>
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -50 }}
-        transition={{ duration: 0.6, ease: 'easeInOut' }}
+      />
+
+      {/* Navigation */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 3,
+          padding: '20px 40px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
       >
-        <Paper
-          elevation={20}
-          sx={{
-            width: 400,
-            borderRadius: '16px',
-            p: 4,
-            backgroundColor: 'rgba(255, 255, 255, 0.25)', // tăng opacity
-            backdropFilter: 'blur(16px)', // tăng blur
-            WebkitBackdropFilter: 'blur(16px)', // hỗ trợ Safari
-            boxShadow: '0 12px 32px rgba(0, 0, 0, 0.3)',
-            minHeight: '80vh',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            position: 'relative',
-            marginLeft: 'auto',
-            paddingRight: '40px',
-            boxSizing: 'border-box',
-            marginRight: 10,
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-          }}
-        >
-          <img
-            src={logo}
-            alt="Logo"
-            style={{
-              position: 'absolute',
-              top: -20,
-              right: 0,
-              width: '100px',
-              height: 'auto',
+        <div style={{ display: 'flex', gap: '100px' }}>
+          <Typography
+            variant="body1"
+            component={Link}
+            to="/"
+            sx={{
+              color: 'white',
+              cursor: 'pointer',
+              textDecoration: 'none',
+              '&:hover': { opacity: 0.8 }
             }}
-          />
+          >
+            Home
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: 'white',
+              cursor: 'pointer',
+              '&:hover': { opacity: 0.8 }
+            }}
+          >
+            About Us
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: 'white',
+              cursor: 'pointer',
+              '&:hover': { opacity: 0.8 }
+            }}
+          >
+            Help
+          </Typography>
+        </div>
 
-          <Box component="form" onSubmit={handleSubmit}>
-            <Typography
-              variant="h5"
-              sx={{
-                fontWeight: 'bold',
-                mb: 2,
-                color: '#fff',
-                textAlign: 'center',
-              }}
-            >
-              Đăng Ký
-            </Typography>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Typography
+            variant="h6"
+            sx={{
+              color: 'white',
+              fontWeight: 'bold',
+              letterSpacing: '1px'
+            }}
+          >
+            GENELINK
+          </Typography>
+          <div
+            style={{
+              width: '70px',
+              height: '70px',
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <img src={logo} alt="Logo" style={{ width: '70px', height: '70px' }} />
+          </div>
+        </div>
+      </div>
 
-            <TextField
-              fullWidth
-              margin="normal"
-              id="fullname"
-              name="fullName"
-              label="Họ và tên"
-              value={info.fullName}
-              onChange={handleInput}
-              error={!!error.fullName}
-              helperText={error.fullName}
-            />
+     
+           {/* Contact Information */}
+           <div
+             style={{
+               position: 'absolute',
+               bottom: '60px',
+               left: '60px',
+               zIndex: 3,
+               display: 'grid',
+               gridTemplateColumns: 'auto auto',
+               columnGap: '200px', // khoảng cách giữa 2 cột
+               rowGap: '60px',    // khoảng cách giữa các hàng
+             }}
+           >
+             {/** Hàng 1, Cột 1: Phone **/}
+             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+               <div
+                 style={{
+                   width: 40,
+                   height: 40,
+                   backgroundColor: 'rgba(255,255,255,0.2)',
+                   borderRadius: '50%',
+                   display: 'flex',
+                   alignItems: 'center',
+                   justifyContent: 'center',
+                 }}
+               >
+                 <Typography sx={{ color: 'white', fontSize: 16 }}>📞</Typography>
+               </div>
+               <div>
+                 <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+                   Phone
+                 </Typography>
+                 <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                   +123-456-7890
+                 </Typography>
+               </div>
+             </div>
+     
+             {/** Hàng 1, Cột 2: E-Mail **/}
+             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+               <div
+                 style={{
+                   width: 40,
+                   height: 40,
+                   backgroundColor: 'rgba(255,255,255,0.2)',
+                   borderRadius: '50%',
+                   display: 'flex',
+                   alignItems: 'center',
+                   justifyContent: 'center',
+                 }}
+               >
+                 <Typography sx={{ color: 'white', fontSize: 16 }}>✉️</Typography>
+               </div>
+               <div>
+                 <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+                   E-Mail
+                 </Typography>
+                 <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                   hello@genelink.com
+                 </Typography>
+               </div>
+             </div>
+     
+             {/** Hàng 2, Cột 1: Website **/}
+             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+               <div
+                 style={{
+                   width: 40,
+                   height: 40,
+                   backgroundColor: 'rgba(255,255,255,0.2)',
+                   borderRadius: '50%',
+                   display: 'flex',
+                   alignItems: 'center',
+                   justifyContent: 'center',
+                 }}
+               >
+                 <Typography sx={{ color: 'white', fontSize: 16 }}>🌐</Typography>
+               </div>
+               <div>
+                 <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+                   Website
+                 </Typography>
+                 <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                   www.genelink.com
+                 </Typography>
+               </div>
+             </div>
+     
+             {/** Hàng 2, Cột 2: Address **/}
+             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+               <div
+                 style={{
+                   width: 40,
+                   height: 40,
+                   backgroundColor: 'rgba(255,255,255,0.2)',
+                   borderRadius: '50%',
+                   display: 'flex',
+                   alignItems: 'center',
+                   justifyContent: 'center',
+                 }}
+               >
+                 <Typography sx={{ color: 'white', fontSize: 16 }}>📍</Typography>
+               </div>
+               <div>
+                 <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+                   Address
+                 </Typography>
+                 <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                   123 Anywhere St., Any City
+                 </Typography>
+               </div>
+             </div>
+           </div>
+     
+{/* SignUp Form */}
+<motion.div
+  initial={{ opacity: 0, x: 100 }}
+  animate={{ opacity: 1, x: 0 }}
+  exit={{ opacity: 0, x: 100 }}
+  transition={{ duration: 0.6, ease: 'easeInOut' }}
+  style={{
+    position: 'absolute',
+    right: '150px',
+    top: '10%',
+    transform: 'translateY(-50%)',
+    zIndex: 2,
+  }}
+>
+  <Paper
+    elevation={0}
+    sx={{
+      width: '450px',
+      borderRadius: '20px',
+      p: 4,
+      backgroundColor: 'rgba(255, 255, 255, 0.85)',  // nền trắng mờ giống Login
+      border: 'none',                                 // bỏ viền
+      maxHeight: '90vh',
+      overflowY: 'auto',
+    }}
+  >
+    <Box component="form" onSubmit={handleSubmit}>
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 'bold',
+          mb: 1,
+          color: '#2c3e50',
+          textAlign: 'center',
+          letterSpacing: '2px',
+        }}
+      >
+        SIGN UP
+      </Typography>
 
-            <TextField
-              fullWidth
-              margin="normal"
-              id="username"
-              name="username"
-              label="Tên đăng nhập"
-              value={info.username}
-              onChange={handleInput}
-              error={!!error.username}
-              helperText={error.username}
-            />
+      <Typography
+        variant="body1"
+        sx={{
+          mb: 3,
+          color: '#7f8c8d',
+          textAlign: 'center',
+        }}
+      >
+        Create your account
+      </Typography>
 
-            <TextField
-              fullWidth
-              margin="normal"
-              id="email"
-              name="email"
-              label="Địa chỉ email"
-              type="email"
-              value={info.email}
-              onChange={handleInput}
-              error={!!error.email}
-              helperText={error.email}
-            />
+      {/* Full Name */}
+      <Box sx={{ mb: 2, position: 'relative' }}>
+        <TextField
+          placeholder="Full Name"
+          fullWidth
+          name="fullName"
+          value={info.fullName}
+          onChange={handleInput}
+          error={!!error.fullName}
+          helperText={error.fullName}
+          variant="outlined"
+          InputProps={{
+            startAdornment: (
+              <BadgeIcon sx={{ color: '#b0b8c8', mr: 1 }} />
+            ),
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '25px',
+              height: 56,
+              backgroundColor: '#eaf4ff',     // xanh nhạt như Login
+              border: 'none',
+              '& fieldset': { border: 'none' },
+              '&:hover fieldset': { border: 'none' },
+              '&.Mui-focused fieldset': {
+                border: '2px solid #667eea',
+              },
+            },
+            '& input': { color: '#2c3e50' },
+            '& .MuiFormHelperText-root': { color: '#7f8c8d' },
+          }}
+        />
+      </Box>
 
-            <TextField
-              fullWidth
-              margin="normal"
-              id="password"
-              name="password"
-              label="Mật khẩu"
-              type="password"
-              aria-describedby="rulePass"
-              value={info.password}
-              onChange={handleInput}
-              error={!!error.password}
-              helperText={error.password}
-            />
+      {/* Username */}
+      <Box sx={{ mb: 2, position: 'relative' }}>
+        <TextField
+          placeholder="Username"
+          fullWidth
+          name="username"
+          value={info.username}
+          onChange={handleInput}
+          error={!!error.username}
+          helperText={error.username}
+          variant="outlined"
+          InputProps={{
+            startAdornment: (
+              <PersonIcon sx={{ color: '#b0b8c8', mr: 1 }} />
+            ),
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '25px',
+              height: 56,
+              backgroundColor: '#eaf4ff',
+              border: 'none',
+              '& fieldset': { border: 'none' },
+              '&:hover fieldset': { border: 'none' },
+              '&.Mui-focused fieldset': {
+                border: '2px solid #667eea',
+              },
+            },
+            '& input': { color: '#2c3e50' },
+            '& .MuiFormHelperText-root': { color: '#7f8c8d' },
+          }}
+        />
+      </Box>
 
-            <FormHelperText
-              id="rulePass"
-              sx={{ textAlign: 'left', color: '#fff' }}
-              component="div"
-            >
-              <ul style={{ margin: 0, paddingLeft: 20 }}>
-                <li>Có ít nhất 8 ký tự</li>
-                <li>Có ít nhất 1 chữ thường và hoa</li>
-                <li>Có ít nhất 1 ký tự đặc biệt</li>
-                <li>Có ít nhất 1 chữ số</li>
-              </ul>
-            </FormHelperText>
+      {/* Email */}
+      <Box sx={{ mb: 2, position: 'relative' }}>
+        <TextField
+          placeholder="Email Address"
+          fullWidth
+          name="email"
+          type="email"
+          value={info.email}
+          onChange={handleInput}
+          error={!!error.email}
+          helperText={error.email}
+          variant="outlined"
+          InputProps={{
+            startAdornment: (
+              <EmailIcon sx={{ color: '#b0b8c8', mr: 1 }} />
+            ),
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '25px',
+              height: 56,
+              backgroundColor: '#eaf4ff',
+              border: 'none',
+              '& fieldset': { border: 'none' },
+              '&:hover fieldset': { border: 'none' },
+              '&.Mui-focused fieldset': {
+                border: '2px solid #667eea',
+              },
+            },
+            '& input': { color: '#2c3e50' },
+            '& .MuiFormHelperText-root': { color: '#7f8c8d' },
+          }}
+        />
+      </Box>
 
-            <TextField
-              fullWidth
-              margin="normal"
-              id="confirmPassword"
-              name="confirmPassword"
-              label="Nhập lại mật khẩu"
-              type="password"
-              value={info.confirmPassword}
-              onChange={handleInput}
-              error={!!error.confirmPassword}
-              helperText={error.confirmPassword}
-            />
+      {/* Phone */}
+      <Box sx={{ mb: 2, position: 'relative' }}>
+        <TextField
+          placeholder="Phone Number"
+          fullWidth
+          name="phone"
+          type="tel"
+          value={info.phone}
+          onChange={handleInput}
+          error={!!error.phone}
+          helperText={error.phone}
+          variant="outlined"
+          InputProps={{
+            startAdornment: (
+              <PhoneIcon sx={{ color: '#b0b8c8', mr: 1 }} />
+            ),
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '25px',
+              height: 56,
+              backgroundColor: '#eaf4ff',
+              border: 'none',
+              '& fieldset': { border: 'none' },
+              '&:hover fieldset': { border: 'none' },
+              '&.Mui-focused fieldset': {
+                border: '2px solid #667eea',
+              },
+            },
+            '& input': { color: '#2c3e50' },
+            '& .MuiFormHelperText-root': { color: '#7f8c8d' },
+          }}
+        />
+      </Box>
 
-            <TextField
-              fullWidth
-              margin="normal"
-              id="phone"
-              name="phone"
-              label="Số điện thoại"
-              type="tel"
-              value={info.phone}
-              onChange={handleInput}
-              error={!!error.phone}
-              helperText={error.phone}
-            />
+      {/* Password */}
+      <Box sx={{ mb: 1, position: 'relative' }}>
+        <TextField
+          placeholder="Password"
+          type="password"
+          fullWidth
+          name="password"
+          value={info.password}
+          onChange={handleInput}
+          error={!!error.password}
+          helperText={error.password}
+          variant="outlined"
+          InputProps={{
+            startAdornment: (
+              <LockIcon sx={{ color: '#b0b8c8', mr: 1 }} />
+            ),
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '25px',
+              height: 56,
+              backgroundColor: '#eaf4ff',
+              border: 'none',
+              '& fieldset': { border: 'none' },
+              '&:hover fieldset': { border: 'none' },
+              '&.Mui-focused fieldset': {
+                border: '2px solid #667eea',
+              },
+            },
+            '& input': { color: '#2c3e50' },
+            '& .MuiFormHelperText-root': { color: '#7f8c8d' },
+          }}
+        />
+      </Box>
 
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ mt: 2 }}
-            >
-              Đăng Ký
-            </Button>
+      {/* Password Rules */}
+      <FormHelperText
+        sx={{
+          textAlign: 'left',
+          color: '#7f8c8d',
+          fontSize: '12px',
+          mb: 2,
+          ml: 1,
+        }}
+        component="div"
+      >
+        <ul style={{ margin: 0, paddingLeft: 16 }}>
+          <li>Có ít nhất 8 ký tự</li>
+          <li>Có ít nhất 1 chữ thường và hoa</li>
+          <li>Có ít nhất 1 ký tự đặc biệt</li>
+          <li>Có ít nhất 1 chữ số</li>
+        </ul>
+      </FormHelperText>
 
-            <Box sx={{ mt: 2, textAlign: 'center' }}>
-              <Typography variant="body2" sx={{ color: '#fff' }}>
-                Bạn đã có tài khoản?{' '}
-                <Link to="/login" style={{ color: '#fff' }}>
-                  Đăng nhập
-                </Link>
-              </Typography>
-            </Box>
-          </Box>
-        </Paper>
-      </motion.div>
+      {/* Confirm Password */}
+      <Box sx={{ mb: 3, position: 'relative' }}>
+        <TextField
+          placeholder="Confirm Password"
+          type="password"
+          fullWidth
+          name="confirmPassword"
+          value={info.confirmPassword}
+          onChange={handleInput}
+          error={!!error.confirmPassword}
+          helperText={error.confirmPassword}
+          variant="outlined"
+          InputProps={{
+            startAdornment: (
+              <LockIcon sx={{ color: '#b0b8c8', mr: 1 }} />
+            ),
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '25px',
+              height: 56,
+              backgroundColor: '#eaf4ff',
+              border: 'none',
+              '& fieldset': { border: 'none' },
+              '&:hover fieldset': { border: 'none' },
+              '&.Mui-focused fieldset': {
+                border: '2px solid #667eea',
+              },
+            },
+            '& input': { color: '#2c3e50' },
+            '& .MuiFormHelperText-root': { color: '#7f8c8d' },
+          }}
+        />
+      </Box>
+
+      <Button
+        type="submit"
+        variant="contained"
+        fullWidth
+        sx={{
+          py: 1.5,
+          borderRadius: '25px',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          textTransform: 'none',
+          fontSize: '16px',
+          fontWeight: 'bold',
+          mb: 3,
+          '&:hover': {
+            background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+          },
+        }}
+      >
+        Sign Up
+      </Button>
+
+      <Box sx={{ textAlign: 'center' }}>
+        <Typography variant="body2" sx={{ color: '#7f8c8d' }}>
+          Already have an account?{' '}
+          <Link
+            to="/login"
+            style={{
+              color: '#667eea',
+              textDecoration: 'none',
+              fontWeight: 'bold',
+            }}
+          >
+            Sign in
+          </Link>
+        </Typography>
+      </Box>
+    </Box>
+  </Paper>
+</motion.div>
+
+
       <CustomSnackBar
         open={snackbar.open}
         message={snackbar.message}
