@@ -1,64 +1,81 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 
-type AppointmentData = {
-  patientAppointmentResponse: {
-    patientId: number;
-    fullName: string;
-    dateOfBirth: string;
-    gender: string;
-    relationship: string;
-  }[];
-  staffAppointmentResponse: {
-    staffId: number;
-    fullName: string;
-    email: string;
-    phone: string;
-  }[];
-  userAppointmentResponse: {
-    userId: number;
-    address: string | null;
-    fullName: string;
-    phone: string;
-    email: string;
-  }[];
-  showAppointmentResponse: {
-    appointmentId: number;
-    appointmentDate: string;
-    appointmentStatus: string;
-    note: string | null;
-  };
-  slotAppointmentResponse: {
-    slotId: number;
-    slotDate: string;
-    startTime: string;
-    endTime: string;
-  }[];
-  serviceAppointmentResponses: {
-    serviceId: number;
-    serviceName: string;
-    registerDate: string;
-    description: string;
-    serviceType: string;
-  }[];
-  locationAppointmentResponses: {
-    locationId: number;
-    addressLine: string;
-    district: string;
-    city: string;
-  }[];
-  roomAppointmentResponse: {
-    roomName: string;
-  };
-  priceAppointmentResponse: {
-    priceId: number;
-    price: number;
-    time: string;
-  }[];
+type Patient = {
+  patientId: number;
+  fullName: string;
+  dateOfBirth: string;
+  gender: string;
+  relationship: string;
+};
+
+type Staff = {
+  staffId: number;
+  fullName: string;
+  email: string;
+  phone: string;
+};
+
+type User = {
+  userId: number;
+  address: string | null;
+  fullName: string;
+  phone: string;
+  email: string;
+};
+
+type ShowResponse = {
+  appointmentId: number;
+  appointmentDate: string;
+  appointmentStatus: string;
+  note: string | null;
+};
+
+type SlotResponse = {
+  slotId: number;
+  slotDate: string;
+  startTime: string;
+  endTime: string;
+};
+
+type ServiceResponse = {
+  serviceId: number;
+  serviceName: string;
+  registerDate: string;
+  description: string;
+  serviceType: string;
+};
+
+type LocationResponse = {
+  locationId: number;
+  addressLine: string;
+  district: string;
+  city: string;
+};
+
+type RoomResponse = {
+  roomName: string;
+};
+
+type PriceResponse = {
+  priceId: number;
+  price: number;
+  time: string;
 };
 
 const GetAppointment = () => {
-  const [appointment, setAppointment] = useState<AppointmentData | null>(null);
+  const [patientOne, setPatientOne] = useState<Patient[]>([]);
+  const [patientTwo, setPatientTwo] = useState<Patient[]>([]);
+  const [staff, setStaff] = useState<Staff[]>([]);
+  const [user, setUser] = useState<User[]>([]);
+  const [showResponse, setShowResponse] = useState<ShowResponse[]>([]);
+  const [slotResponse, setSlotResponse] = useState<SlotResponse[]>([]);
+  const [serviceResponse, setServiceResponse] = useState<ServiceResponse[]>([]);
+  const [locationResponse, setLocationResponse] = useState<LocationResponse[]>(
+    []
+  );
+  const [roomResponse, setRoomResponse] = useState<RoomResponse[]>([]);
+  const [priceResponse, setPriceResponse] = useState<PriceResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -77,7 +94,6 @@ const GetAppointment = () => {
         return res.json();
       })
       .then((data) => {
-        setAppointment(data[0]);
         setLoading(false);
       })
       .catch((err) => {
@@ -88,7 +104,6 @@ const GetAppointment = () => {
 
   if (loading) return <div>Đang tải dữ liệu...</div>;
   if (error) return <div>Lỗi: {error}</div>;
-  if (!appointment) return <div>Không có dữ liệu</div>;
 
   return (
     <div style={{ padding: '20px' }}>
