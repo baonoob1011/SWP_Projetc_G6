@@ -27,7 +27,7 @@ import {
 import { NavLink, useNavigate } from 'react-router-dom';
 
 import logo from '../../image/Logo.png';
-import styles from './Header.module.css';
+
 type HeaderProps = {
   fullName: string;
   setFullName: React.Dispatch<React.SetStateAction<string>>;
@@ -49,7 +49,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
         { label: 'Dân sự', path: '/service/civil' },
       ],
     },
-
     { label: 'Tin tức', path: '/blog' },
     { label: 'Đặt lịch', path: '/order' },
     { label: 'Địa chỉ', path: '/branch-and-map' },
@@ -97,77 +96,84 @@ export function Header({ fullName, setFullName }: HeaderProps) {
       <AppBar
         position="fixed"
         color="inherit"
-        elevation={1}
+        elevation={0}
         sx={{
-          backgroundColor: '#F1FFFF',
+          backgroundColor: '#ffffff',
+          borderBottom: '1px solid #e0e0e0',
         }}
       >
         <Toolbar
           disableGutters
           sx={{
-            px: 0, // loại bỏ hoàn toàn padding ngang
-            minHeight: 20, // bỏ chiều cao cố định 64px
-            height: 100,
+            px: { xs: 2, md: 4 },
+            minHeight: { xs: 64, md: 72 },
+            height: { xs: 64, md: 72 },
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
         >
-          {/* Logo + GENLINK sát mép trái */}
-          {/* Logo + slogan dưới logo */}
+          {/* Logo Section */}
           <Box
             sx={{
               display: 'flex',
-              flexDirection: 'column', // đổi thành cột dọc
-              alignItems: 'center', // canh giữa theo chiều ngang
-              ml: 0,
-              width: 200,
+              alignItems: 'center',
+              gap: 2,
+              minWidth: 280,
             }}
           >
             <NavLink
               to="/"
               style={{
-                display: 'block',
+                display: 'flex',
+                alignItems: 'center',
                 textDecoration: 'none',
-                width: '100%',
+                gap: 12,
               }}
             >
               <img
                 src={logo}
-                alt="Logo"
-                className={styles.logoImage}
+                alt="GenLink Logo"
                 style={{
                   height: 200,
-                  display: 'block',
-                  margin: '0 auto',
-                  marginRight: 80, // căn giữa logo nếu cần
+                  width: 'auto',
                 }}
               />
+              <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+               
+              </Box>
             </NavLink>
           </Box>
 
-          {/* Navigation giữa */}
+          {/* Navigation Menu */}
           <Box
             sx={{
-              display: { xs: 'none', md: 'flex' },
+              display: { xs: 'none', lg: 'flex' },
               flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
-              gap: 5,
-              // khoảng cách 16px giữa các nút
+              gap: 0.5,
+              mx: 4,
             }}
           >
             {navItems.map((item) =>
               item.children ? (
                 <Box key={item.label} sx={{ position: 'relative' }}>
                   <Button
-                    className={styles.navButton}
                     endIcon={<ArrowDropDown />}
                     onClick={(e) => handleOpenMenu(e, item.label)}
                     sx={{
                       textTransform: 'none',
-                      px: 1.5,
-                      fontSize: 20, // padding ngang 12px
+                      px: 2,
+                      py: 1,
+                      fontSize: 20,
+                      fontWeight: 500,
+                      color: '#333',
+                      minWidth: 'auto',
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                        color: '#1976d2',
+                      },
                     }}
                   >
                     {item.label}
@@ -178,8 +184,16 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     onClose={handleCloseMenu}
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-                    classes={{ paper: styles.menuPaper }}
-                    MenuListProps={{ sx: { py: 0 } }}
+                    PaperProps={{
+                      sx: {
+                        mt: 1,
+                        borderRadius: '8px',
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e0e0e0',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                      },
+                    }}
+                    MenuListProps={{ sx: { py: 1 } }}
                   >
                     {item.children!.map((child) => (
                       <MenuItem
@@ -187,8 +201,17 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         component={NavLink}
                         to={child.path}
                         onClick={handleCloseMenu}
-                        className={styles.menuItem}
-                        sx={{ px: 2, py: 1, fontSize: 20 }}
+                        sx={{
+                          px: 3,
+                          py: 1.5,
+                          fontSize: 20,
+                          color: '#333',
+                          fontWeight: 400,
+                          '&:hover': {
+                            backgroundColor: '#f5f5f5',
+                            color: '#1976d2',
+                          },
+                        }}
                       >
                         {child.label}
                       </MenuItem>
@@ -196,59 +219,80 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   </Menu>
                 </Box>
               ) : (
-                <>
-                  {' '}
-                  <Button
-                    key={item.label}
-                    component={NavLink}
-                    to={item.path}
-                    className={styles.navButton}
-                    sx={{
-                      textTransform: 'none',
-                      px: 1.5,
-                      fontSize: 20,
-                    }}
-                  >
-                    {item.label}
-                  </Button>
-                </>
+                <Button
+                  key={item.label}
+                  component={NavLink}
+                  to={item.path}
+                  sx={{
+                    textTransform: 'none',
+                    px: 2,
+                    py: 1,
+                    fontSize: 20,
+                    fontWeight: 500,
+                    color: '#333',
+                    minWidth: 'auto',
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                      color: '#1976d2',
+                    },
+                    '&.active': {
+                      color: '#1976d2',
+                      fontWeight: 600,
+                    },
+                  }}
+                >
+                  {item.label}
+                </Button>
               )
             )}
           </Box>
 
-          {/* Phần Đăng nhập / Đăng ký sát mép phải */}
-          <>
-            <Box
-              sx={{
-                display: { xs: 'none', md: 'flex' },
-                alignItems: 'center',
-                ml: 2,
-              }}
-              className={styles.phoneNumber}
-            >
-              <Phone sx={{ color: 'inherit', mr: 1 }} />
-              <Typography sx={{ fontSize: 20, color: 'inherit' }}>
-                0922.394.333
-              </Typography>
-            </Box>
-          </>
+          {/* Right Section */}
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: 1.5, // 12px giữa các nút
-              pr: 0,
-              ml: 2, // padding-right = 0 để bám sát mép phải
+              gap: 2,
+              minWidth: 200,
+              justifyContent: 'flex-end',
             }}
           >
+            {/* Phone Number */}
+            <Box
+              sx={{
+                display: { xs: 'none', md: 'flex' },
+                alignItems: 'center',
+                gap: 1,
+                color: '#1976d2',
+                fontSize: 20,
+                fontWeight: 600,
+              }}
+            >
+              <Phone sx={{ fontSize: '1.1rem' }} />
+              <Typography sx={{ fontSize: '0.9rem', fontWeight: 600 }}>
+                0922.394.333
+              </Typography>
+            </Box>
+
+            {/* User Menu or Auth Buttons */}
             {fullName ? (
               role === 'MANAGER' ? (
                 <>
                   <Button
-                    className={styles.userButton}
                     onClick={(e) => handleOpenMenu(e, 'MANAGER')}
                     endIcon={<ArrowDropDown />}
-                    sx={{ textTransform: 'none', px: 1.5 }}
+                    sx={{
+                      textTransform: 'none',
+                      px: 2,
+                      py: 1,
+                      fontSize: 20,
+                      fontWeight: 500,
+                      color: '#333',
+                      minWidth: 'auto',
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    }}
                   >
                     {fullName}
                   </Button>
@@ -258,15 +302,29 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     onClose={handleCloseMenu}
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                    classes={{ paper: styles.menuPaper }}
-                    MenuListProps={{ sx: { py: 0 } }}
+                    PaperProps={{
+                      sx: {
+                        mt: 1,
+                        borderRadius: '8px',
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e0e0e0',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                      },
+                    }}
+                    MenuListProps={{ sx: { py: 1 } }}
                   >
                     <MenuItem
                       component={NavLink}
                       to="/manager"
                       onClick={handleCloseMenu}
-                      className={styles.menuItem}
-                      sx={{ px: 2, py: 1 }}
+                      sx={{
+                        px: 3,
+                        py: 1.5,
+                        fontSize: 20,
+                        color: '#333',
+                        fontWeight: 400,
+                        '&:hover': { backgroundColor: '#f5f5f5' },
+                      }}
                     >
                       Trang làm việc
                     </MenuItem>
@@ -274,8 +332,14 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       component={NavLink}
                       to="/s-m-profile"
                       onClick={handleCloseMenu}
-                      className={styles.menuItem}
-                      sx={{ px: 2, py: 1 }}
+                      sx={{
+                        px: 3,
+                        py: 1.5,
+                        fontSize: 20,
+                        color: '#333',
+                        fontWeight: 400,
+                        '&:hover': { backgroundColor: '#f5f5f5' },
+                      }}
                     >
                       Xem thông tin
                     </MenuItem>
@@ -284,8 +348,14 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         handleCloseMenu();
                         handleLogout();
                       }}
-                      className={styles.menuItem}
-                      sx={{ px: 2, py: 1 }}
+                      sx={{
+                        px: 3,
+                        py: 1.5,
+                        fontSize: 20,
+                        color: '#d32f2f',
+                        fontWeight: 400,
+                        '&:hover': { backgroundColor: '#ffebee' },
+                      }}
                     >
                       Đăng xuất
                     </MenuItem>
@@ -294,10 +364,20 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               ) : role === 'STAFF' ? (
                 <>
                   <Button
-                    className={styles.userButton}
                     onClick={(e) => handleOpenMenu(e, 'STAFF')}
                     endIcon={<ArrowDropDown />}
-                    sx={{ textTransform: 'none', px: 1.5 }}
+                    sx={{
+                      textTransform: 'none',
+                      px: 2,
+                      py: 1,
+                      fontSize: 20,
+                      fontWeight: 500,
+                      color: '#333',
+                      minWidth: 'auto',
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    }}
                   >
                     {fullName}
                   </Button>
@@ -307,15 +387,29 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     onClose={handleCloseMenu}
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                    classes={{ paper: styles.menuPaper }}
-                    MenuListProps={{ sx: { py: 0 } }}
+                    PaperProps={{
+                      sx: {
+                        mt: 1,
+                        borderRadius: '8px',
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e0e0e0',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                      },
+                    }}
+                    MenuListProps={{ sx: { py: 1 } }}
                   >
                     <MenuItem
                       component={NavLink}
                       to="/s-page"
                       onClick={handleCloseMenu}
-                      className={styles.menuItem}
-                      sx={{ px: 2, py: 1 }}
+                      sx={{
+                        px: 3,
+                        py: 1.5,
+                        fontSize: 20,
+                        color: '#333',
+                        fontWeight: 400,
+                        '&:hover': { backgroundColor: '#f5f5f5' },
+                      }}
                     >
                       Trang làm việc
                     </MenuItem>
@@ -323,8 +417,14 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       component={NavLink}
                       to="/s-m-profile"
                       onClick={handleCloseMenu}
-                      className={styles.menuItem}
-                      sx={{ px: 2, py: 1 }}
+                      sx={{
+                        px: 3,
+                        py: 1.5,
+                        fontSize: 20,
+                        color: '#333',
+                        fontWeight: 400,
+                        '&:hover': { backgroundColor: '#f5f5f5' },
+                      }}
                     >
                       Xem thông tin
                     </MenuItem>
@@ -333,8 +433,14 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                         handleCloseMenu();
                         handleLogout();
                       }}
-                      className={styles.menuItem}
-                      sx={{ px: 2, py: 1 }}
+                      sx={{
+                        px: 3,
+                        py: 1.5,
+                        fontSize: 20,
+                        color: '#d32f2f',
+                        fontWeight: 400,
+                        '&:hover': { backgroundColor: '#ffebee' },
+                      }}
                     >
                       Đăng xuất
                     </MenuItem>
@@ -344,55 +450,70 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                 <>
                   <Button
                     startIcon={<AccountCircle />}
-                    className={styles.userButton}
                     onClick={(e) => handleOpenMenu(e, 'USER')}
                     endIcon={<ArrowDropDown />}
                     sx={{
-                      backgroundColor: '#F1FFFF',
                       textTransform: 'none',
-                      padding: '0 20px',
+                      px: 2,
+                      py: 1,
                       fontSize: 20,
+                      fontWeight: 500,
+                      color: '#333',
+                      minWidth: 'auto',
                       '&:hover': {
-                        backgroundColor: '#F1FFFF', // giữ nguyên khi hover
-                      },
-                      '&:active': {
-                        backgroundColor: '#F1FFFF', // giữ nguyên khi click
-                      },
-                      '&:focus': {
-                        backgroundColor: '#F1FFFF', // giữ nguyên khi focus bằng tab
+                        backgroundColor: '#f5f5f5',
                       },
                     }}
                   >
                     {fullName}
                   </Button>
-
                   <Menu
                     anchorEl={anchorEl}
                     open={menuOpen === 'USER'}
                     onClose={handleCloseMenu}
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                    classes={{ paper: styles.menuPaper }}
-                    MenuListProps={{ sx: { py: 0 } }}
+                    PaperProps={{
+                      sx: {
+                        mt: 1,
+                        borderRadius: '8px',
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e0e0e0',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                      },
+                    }}
+                    MenuListProps={{ sx: { py: 1 } }}
                   >
+                    <MenuItem
+                      component={NavLink}
+                      to="/u-profile"
+                      onClick={handleCloseMenu}
+                      sx={{
+                        px: 3,
+                        py: 1.5,
+                        fontSize: 20,
+                        color: '#333',
+                        fontWeight: 400,
+                        '&:hover': { backgroundColor: '#f5f5f5' },
+                      }}
+                    >
+                      Xem thông tin
+                    </MenuItem>
                     <MenuItem
                       onClick={() => {
                         handleCloseMenu();
                         handleLogout();
                       }}
-                      className={styles.menuItem}
-                      sx={{ px: 2, py: 1 }}
+                      sx={{
+                        px: 3,
+                        py: 1.5,
+                        fontSize: 20,
+                        color: '#d32f2f',
+                        fontWeight: 400,
+                        '&:hover': { backgroundColor: '#ffebee' },
+                      }}
                     >
                       Đăng xuất
-                    </MenuItem>
-                    <MenuItem
-                      component={NavLink}
-                      to="/u-profile"
-                      onClick={handleCloseMenu}
-                      className={styles.menuItem}
-                      sx={{ px: 2, py: 1 }}
-                    >
-                      Xem thông tin
                     </MenuItem>
                   </Menu>
                 </>
@@ -400,36 +521,58 @@ export function Header({ fullName, setFullName }: HeaderProps) {
             ) : (
               <>
                 <Button
-                  color="inherit"
                   component={NavLink}
                   to="/login"
-                  className={styles.authButton}
-                  sx={{ textTransform: 'none', px: 1.5 }}
+                  sx={{
+                    textTransform: 'none',
+                    px: 2,
+                    py: 1,
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                    color: '#1976d2',
+                    minWidth: 'auto',
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                  }}
                 >
                   Đăng nhập
                 </Button>
-                <Typography variant="body2" className={styles.divider}>
-                  |
-                </Typography>
                 <Button
-                  color="inherit"
                   component={NavLink}
                   to="/signup"
-                  className={styles.authButton}
-                  sx={{ textTransform: 'none', px: 1.5 }}
+                  sx={{
+                    textTransform: 'none',
+                    px: 3,
+                    py: 1,
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                    color: 'white',
+                    backgroundColor: '#1976d2',
+                    borderRadius: '6px',
+                    minWidth: 'auto',
+                    '&:hover': {
+                      backgroundColor: '#1565c0',
+                    },
+                  }}
                 >
                   Đăng ký
                 </Button>
               </>
             )}
 
-            {/* Nút menu mobile (chỉ hiện khi < md) */}
+            {/* Mobile Menu Button */}
             <IconButton
               edge="end"
               color="inherit"
               aria-label="menu"
-              className={styles.menuIconButton}
-              sx={{ display: { md: 'none' } }}
+              sx={{
+                display: { lg: 'none' },
+                color: '#333',
+                '&:hover': {
+                  backgroundColor: '#f5f5f5',
+                },
+              }}
               onClick={() => setDrawerOpen(true)}
             >
               <MenuIcon />
@@ -437,67 +580,132 @@ export function Header({ fullName, setFullName }: HeaderProps) {
           </Box>
         </Toolbar>
       </AppBar>
+
+      {/* Mobile Drawer */}
       <Drawer
         anchor="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        classes={{ paper: styles.drawerPaper }}
+        PaperProps={{
+          sx: {
+            width: 280,
+            backgroundColor: '#ffffff',
+          },
+        }}
       >
-        <Box sx={{ width: 260 }} role="presentation">
-          <List>
+        <Box sx={{ width: 280, pt: 2 }} role="presentation">
+          <List sx={{ px: 2 }}>
             {navItems.map((item) =>
               item.children ? (
                 <React.Fragment key={item.label}>
-                  <ListItem>
+                  <ListItem sx={{ px: 0, py: 0.5 }}>
                     <ListItemText
                       primary={
-                        <Box
-                          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontWeight: 600,
+                            color: '#1976d2',
+                            fontSize: '1rem',
+                          }}
                         >
-                          <Typography variant="body1">{item.label}</Typography>
-                        </Box>
+                          {item.label}
+                        </Typography>
                       }
                     />
                   </ListItem>
                   {item.children.map((child) => (
-                    <ListItem key={child.label} disablePadding>
+                    <ListItem key={child.label} disablePadding sx={{ mb: 0.5 }}>
                       <ListItemButton
                         component={NavLink}
                         to={child.path}
                         onClick={() => setDrawerOpen(false)}
-                        className={styles.drawerItemButton}
-                        sx={{ pl: 4 }}
+                        sx={{
+                          pl: 3,
+                          py: 1.5,
+                          borderRadius: '8px',
+                          mb: 0.5,
+                          '&:hover': {
+                            backgroundColor: '#f5f5f5',
+                          },
+                        }}
                       >
-                        <ListItemText primary={child.label} />
+                        <ListItemText
+                          primary={
+                            <Typography
+                              sx={{
+                                color: '#333',
+                                fontWeight: 400,
+                                fontSize: '0.9rem',
+                              }}
+                            >
+                              {child.label}
+                            </Typography>
+                          }
+                        />
                       </ListItemButton>
                     </ListItem>
                   ))}
                 </React.Fragment>
               ) : (
-                <ListItem key={item.label} disablePadding>
+                <ListItem key={item.label} disablePadding sx={{ mb: 0.5 }}>
                   <ListItemButton
                     component={NavLink}
                     to={item.path}
                     onClick={() => setDrawerOpen(false)}
-                    className={styles.drawerItemButton}
+                    sx={{
+                      py: 1.5,
+                      borderRadius: '8px',
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    }}
                   >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <ListItemText primary={item.label} />
-                    </Box>
+                    <ListItemText
+                      primary={
+                        <Typography
+                          sx={{
+                            color: '#333',
+                            fontWeight: 500,
+                            fontSize: '0.95rem',
+                          }}
+                        >
+                          {item.label}
+                        </Typography>
+                      }
+                    />
                   </ListItemButton>
                 </ListItem>
               )
             )}
             {fullName && (
-              <ListItem disablePadding>
+              <ListItem disablePadding sx={{ mt: 2 }}>
                 <ListItemButton
                   onClick={() => {
                     setDrawerOpen(false);
                     handleLogout();
                   }}
-                  className={styles.drawerItemButton}
+                  sx={{
+                    py: 1.5,
+                    borderRadius: '8px',
+                    '&:hover': {
+                      backgroundColor: '#ffebee',
+                    },
+                  }}
                 >
-                  <ListItemText primary="Đăng xuất" />
+                  <ListItemText
+                    primary={
+                      <Typography
+                        sx={{
+                          color: '#d32f2f',
+                          fontWeight: 500,
+                          fontSize: 20,
+                        }}
+                      >
+                        Đăng xuất
+                      </Typography>
+                    }
+                  />
                 </ListItemButton>
               </ListItem>
             )}
