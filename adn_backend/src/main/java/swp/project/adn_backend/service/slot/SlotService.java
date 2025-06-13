@@ -30,6 +30,7 @@ import swp.project.adn_backend.repository.UserRepository;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,26 +56,59 @@ public class SlotService {
     }
 
 
+    //    public Slot createSlot(SlotRequest slotRequest, long roomId, long staffId) {
+//        LocalDate slotDate = slotRequest.getSlotDate();
+//        //so sánh time trong slot
+//        Time startTime = Time.valueOf(slotRequest.getStartTime());
+//        Time endTime = Time.valueOf(slotRequest.getEndTime());
+//        //so sanh time trong room
+//        LocalTime start = startTime.toLocalTime();
+//        LocalTime end = endTime.toLocalTime();
+//
+//        Integer overlapResult = slotRepository.isSlotOverlappingNative(roomId, slotDate, startTime, endTime);
+//        boolean isOverlapping = overlapResult != null && overlapResult == 1;
+//
+//        if (isOverlapping) {
+//            throw new AppException(ErrorCodeUser.TIME_EXISTED);
+//        }
+//
+//
+//        Room room = roomRepository.findById(roomId)
+//                .orElseThrow(() -> new AppException(ErrorCodeUser.ROOM_NOT_FOUND));
+//
+//        Staff staff = staffRepository.findById(staffId)
+//                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+//
+//        if (start.isBefore(room.getOpenTime()) || end.isAfter(room.getCloseTime())) {
+//            throw new AppException(ErrorCodeUser.ROOM_TIME_INVALID);
+//        }
+//
+//        Slot slot = new Slot();
+//        slot.setSlotDate(slotDate);
+//        slot.setStartTime(startTime);
+//        slot.setEndTime(endTime);
+//        slot.setSlotStatus(SlotStatus.AVAILABLE);
+//        room.setRoomStatus(RoomStatus.BOOKED);
+//        slot.setRoom(room);
+//        slot.setStaff(staff);
+//
+//        return slotRepository.save(slot);
+//    }
     public Slot createSlot(SlotRequest slotRequest, long roomId, long staffId) {
         LocalDate slotDate = slotRequest.getSlotDate();
-        //so sánh time trong slot
         Time startTime = Time.valueOf(slotRequest.getStartTime());
         Time endTime = Time.valueOf(slotRequest.getEndTime());
-        //so sanh time trong room
+
         LocalTime start = startTime.toLocalTime();
         LocalTime end = endTime.toLocalTime();
 
         Integer overlapResult = slotRepository.isSlotOverlappingNative(roomId, slotDate, startTime, endTime);
-        boolean isOverlapping = overlapResult != null && overlapResult == 1;
-
-        if (isOverlapping) {
+        if (overlapResult != null && overlapResult == 1) {
             throw new AppException(ErrorCodeUser.TIME_EXISTED);
         }
 
-
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.ROOM_NOT_FOUND));
-
         Staff staff = staffRepository.findById(staffId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
 
@@ -87,20 +121,34 @@ public class SlotService {
         slot.setStartTime(startTime);
         slot.setEndTime(endTime);
         slot.setSlotStatus(SlotStatus.AVAILABLE);
-        room.setRoomStatus(RoomStatus.BOOKED);
         slot.setRoom(room);
         slot.setStaff(staff);
 
-        return slotRepository.save(slot);
+        Slot savedSlot = slotRepository.save(slot);
+
+        // Cập nhật room status ngay sau khi tạo
+        LocalDate today = LocalDate.now();
+        Time nowTime = Time.valueOf(LocalTime.now());
+
+        List<Slot> upcomingSlots = slotRepository.findUpcomingSlotsNative(roomId, today, nowTime);
+        if (upcomingSlots.isEmpty()) {
+            room.setRoomStatus(RoomStatus.AVAILABLE);
+        } else {
+            room.setRoomStatus(RoomStatus.BOOKED);
+        }
+
+        roomRepository.save(room);
+        return savedSlot;
     }
 
 
     public List<SlotInfoDTO> getALlSlotForUser() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
                 "s.slotId, s.slotDate, s.startTime, s.endTime, s.slotStatus) " +
-                "FROM Slot s WHERE s.slotDate > CURRENT_DATE";
+                "FROM Slot s WHERE s.slotDate > CURRENT_DATE And s.slotStatus=:slotStatus";
 
         TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
+        query.setParameter("slotStatus", SlotStatus.BOOKED);
         return query.getResultList();
     }
 

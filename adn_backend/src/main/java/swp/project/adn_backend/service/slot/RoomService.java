@@ -31,14 +31,6 @@ public class RoomService {
     }
 
     public Room createRoom(RoomRequest roomRequest) {
-        Time open = Time.valueOf(roomRequest.getOpenTime());
-        Time close = Time.valueOf(roomRequest.getCloseTime());
-
-        Integer overlap = roomRepository.isRoomTimeOverlapping(-1L, open, close); // -1 vì là phòng mới
-
-        if (overlap != null && overlap == 1) {
-            throw new AppException(ErrorCodeUser.ROOM_TIME_OVERLAP);
-        }
         Room room = roomMapper.toRoom(roomRequest);
         room.setRoomStatus(RoomStatus.AVAILABLE);
         return roomRepository.save(room);

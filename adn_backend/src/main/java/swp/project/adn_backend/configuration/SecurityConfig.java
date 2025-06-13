@@ -106,6 +106,7 @@ public class SecurityConfig {
 
                         // Quyền ADMIN
                         .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
+                        .requestMatchers(ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
 
                         // Các request khác yêu cầu xác thực
                         .anyRequest().authenticated()

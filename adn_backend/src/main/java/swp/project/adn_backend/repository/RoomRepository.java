@@ -15,20 +15,20 @@ import java.util.List;
 
 @RepositoryRestResource(path = "room")
 public interface RoomRepository extends JpaRepository<Room, Long> {
-    @Query(value = """
-    SELECT CASE
-        WHEN COUNT(*) > 0 THEN 1
-        ELSE 0
-    END
-    FROM room
-    WHERE room_id != :roomId
-      AND open_time < CAST(:closeTime AS TIME)
-      AND close_time > CAST(:openTime AS TIME)
-""", nativeQuery = true)
-    Integer isRoomTimeOverlapping(
-            @Param("roomId") Long roomId,
-            @Param("openTime") Time openTime,
-            @Param("closeTime") Time closeTime
-    );
+//    @Query(value = """
+//    SELECT CASE
+//        WHEN COUNT(*) > 0 THEN 1
+//        ELSE 0
+//    END
+//    FROM room
+//    WHERE room_id != :roomId
+//      AND open_time < CAST(:closeTime AS TIME)
+//      AND close_time > CAST(:openTime AS TIME)
+//""", nativeQuery = true)
+//    Integer isRoomTimeOverlapping(
+//            @Param("roomId") Long roomId,
+//            @Param("openTime") Time openTime,
+//            @Param("closeTime") Time closeTime
+//    );
 
 }
