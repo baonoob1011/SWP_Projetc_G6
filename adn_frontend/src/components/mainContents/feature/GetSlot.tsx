@@ -17,6 +17,7 @@ type SlotInfo = {
   slotDate: string;
   startTime: string;
   endTime: string;
+  slotStatus: string;
   roomName: string;
 };
 
@@ -25,6 +26,12 @@ type Location = {
   addressLine: string;
   district: string;
   city: string;
+};
+
+type Price = {
+  priceId: string;
+  price: string;
+  time: string;
 };
 
 type Patient = {
@@ -54,10 +61,13 @@ const GetSlot = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
   const navigate = useNavigate();
   const [auth, setAuth] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('');
   const [slots, setSlots] = useState<SlotInfo[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
+  const [price, setPrice] = useState<Price[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [selectedSlot, setSelectedSlot] = useState<string>('');
+  const [selectedPrice, setSelectedPrice] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [patientOne, setPatientOne] = useState<Patient>({
@@ -100,26 +110,9 @@ const GetSlot = () => {
     }));
   };
   // Kiểm tra token và auth
-  const checkAuth = () => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-
-    console.log('Token:', token);
-    console.log('Role:', role);
-
-    if (!token || role !== 'USER') {
-      console.log('Authentication failed - redirecting to login');
-      toast.error('Vui lòng đăng nhập để sử dụng dịch vụ');
-      navigate('/login');
-      return false;
-    }
-
-    setAuth(true);
-    return true;
-  };
-
-  // Tạo headers với token
-
+  useEffect(() => {
+    setAuth(localStorage.getItem('role') === 'USER');
+  });
   // Fetch all locations when component mounts
   const fetchLocations = async () => {
     try {
@@ -157,18 +150,19 @@ const GetSlot = () => {
   };
 
   // Fetch slots for selected location
-  const fetchSlots = async (locationId: string) => {
-    if (!locationId) return;
-
+  const fetchSlots = async () => {
     setIsLoadingSlots(true);
     try {
-      const res = await fetch(`http://localhost:8080/api/slot/get-all-slot`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
+      const res = await fetch(
+        `http://localhost:8080/api/slot/get-all-slot-user`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
 
       console.log('Slots response status:', res.status);
 
@@ -184,23 +178,53 @@ const GetSlot = () => {
       }
 
       const data = await res.json();
-      console.log('Raw slots data:', data);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mappedSlots: SlotInfo[] = data.map((item: any) => ({
-        slotId: item.slotResponse.slotId.toString(),
-        slotDate: item.slotResponse.slotDate,
-        startTime: item.slotResponse.startTime,
-        endTime: item.slotResponse.endTime,
-        roomName: item.roomSlotResponse?.roomName || 'Không có phòng',
-      }));
 
-      console.log('Mapped slots:', mappedSlots);
-      setSlots(mappedSlots);
+      setSlots(data);
     } catch (error) {
       console.error('Fetch slots error:', error);
       toast.error('Không thể lấy danh sách slot');
       setSlots([]);
+    } finally {
+      setIsLoadingSlots(false);
+    }
+  };
+
+  const fetchPrice = async () => {
+    setIsLoadingSlots(true);
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/price/get-all-price/${serviceId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+
+      console.log('Slots response status:', res.status);
+
+      if (res.status === 401) {
+        toast.error('Phiên đăng nhập đã hết hạn');
+        localStorage.clear();
+        navigate('/login');
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+
+      const data = await res.json();
+
+      setPrice(data);
+    } catch (error) {
+      console.error('Fetch slots error:', error);
+      toast.error('Không thể lấy danh sách slot');
+      setPrice([]);
     } finally {
       setIsLoadingSlots(false);
     }
@@ -212,7 +236,7 @@ const GetSlot = () => {
     setSelectedSlot(''); // Reset selected slot when location changes
 
     if (locationId) {
-      fetchSlots(locationId);
+      fetchSlots();
     } else {
       setSlots([]);
     }
@@ -221,6 +245,11 @@ const GetSlot = () => {
   const handleSlotChange = (event: SelectChangeEvent<string>) => {
     const slotId = event.target.value;
     setSelectedSlot(slotId);
+  };
+
+  const handlePriceChange = (event: SelectChangeEvent<string>) => {
+    const priceId = event.target.value;
+    setSelectedPrice(priceId);
   };
 
   const handleSubmit = async () => {
@@ -244,10 +273,11 @@ const GetSlot = () => {
       // Tạo request body theo format BE yêu cầu
       const requestBody = {
         appointmentRequest: {},
+        paymentRequest: { paymentMethod },
         patientRequestList: [patientOne, patientTwo],
       };
       const res = await fetch(
-        `http://localhost:8080/api/appointment/book-appointment/${serviceId}?slotId=${selectedSlot}&locationId=${selectedLocation}`,
+        `http://localhost:8080/api/appointment/book-appointment/${serviceId}?slotId=${selectedSlot}&locationId=${selectedLocation}&priceId=${selectedPrice}`,
         {
           method: 'POST',
           headers: {
@@ -270,31 +300,25 @@ const GetSlot = () => {
       if (!res.ok) {
         const errorText = await res.text();
         console.error('Submit error response:', errorText);
-        throw new Error(`HTTP ${res.status}: ${errorText}`);
-      }
-      toast.success('Đã đăng ký slot thành công');
-      setSelectedSlot('');
-
-      // Refresh slots data
-      if (selectedLocation) {
-        fetchSlots(selectedLocation);
+      } else {
+        navigate('/checkBooking');
+        toast.success('Đã đăng ký thành công');
+        setSelectedSlot('');
       }
     } catch (error) {
       console.error('Submit error:', error);
-      toast.error('Không thể đăng ký slot');
+      toast.error('Không thể đăng ký');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   useEffect(() => {
-    console.log('GetSlot component mounted');
-    console.log('Service ID:', serviceId);
-
-    if (checkAuth()) {
-      fetchLocations();
-    }
-  }, [serviceId, navigate]);
+    fetchLocations();
+  }, []);
+  useEffect(() => {
+    fetchPrice();
+  }, []);
 
   if (!auth) {
     return (
@@ -333,32 +357,70 @@ const GetSlot = () => {
       </Box>
 
       {/* Slot Selection */}
-      {
-        <Box sx={{ mb: 3 }}>
-          <FormControl fullWidth>
-            <InputLabel id="slot-select-label">Chọn Slot</InputLabel>
-            <Select
-              labelId="slot-select-label"
-              value={selectedSlot}
-              onChange={handleSlotChange}
-              input={<OutlinedInput label="Chọn Slot" />}
-              sx={{ fontSize: '16px' }}
-              disabled={selectedLocation === ''}
-            >
-              <MenuItem value="">
-                <em>
-                  {isLoadingSlots ? '-- Đang tải slot --' : '-- Chọn slot --'}
-                </em>
+
+      <Box sx={{ mb: 3 }}>
+        <FormControl fullWidth>
+          <InputLabel id="slot-select-label">Chọn Slot</InputLabel>
+          <Select
+            labelId="slot-select-label"
+            value={selectedSlot}
+            onChange={handleSlotChange}
+            input={<OutlinedInput label="Chọn Slot" />}
+            sx={{ fontSize: '16px' }}
+            disabled={selectedLocation === ''}
+          >
+            <MenuItem value="">
+              <em>
+                {isLoadingSlots ? '-- Đang tải slot --' : '-- Chọn slot --'}
+              </em>
+            </MenuItem>
+            {slots.map((slot) => (
+              <MenuItem key={slot.slotId} value={slot.slotId}>
+                {`${slot.slotDate} - ${slot.startTime} đến ${slot.endTime} `}
               </MenuItem>
-              {slots.map((slot) => (
-                <MenuItem key={slot.slotId} value={slot.slotId}>
-                  {`${slot.slotDate} - ${slot.startTime} đến ${slot.endTime} (Phòng: ${slot.roomName})`}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
-      }
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+      <Box sx={{ mb: 3 }}>
+        <FormControl fullWidth>
+          <InputLabel id="slot-select-label">Chọn Giá</InputLabel>
+          <Select
+            labelId="slot-select-label"
+            value={selectedPrice}
+            onChange={handlePriceChange}
+            input={<OutlinedInput label="Chọn Giá Dịch Vụ" />}
+            sx={{ fontSize: '16px' }}
+            disabled={selectedSlot === ''}
+          >
+            {price.map((price) => (
+              <MenuItem key={price.priceId} value={price.priceId}>
+                {`${price.price} - ${price.time}`}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+
+      <Box sx={{ mb: 3 }}>
+        <FormControl fullWidth>
+          <InputLabel id="slot-select-label">
+            Chọn phương thức thanh toán
+          </InputLabel>
+          <Select
+            value={paymentMethod}
+            labelId="slot-select-label"
+            input={<OutlinedInput label="Chọn phương thức thanh toán" />}
+            sx={{ fontSize: '16px' }}
+            onChange={(e) => setPaymentMethod(e.target.value)} // <- đúng vị trí
+          >
+            <MenuItem value="VN_PAY">VN_Pay</MenuItem>
+            <MenuItem value="CASH">Tiền mặt</MenuItem>
+            <MenuItem value="BANK_TRANSFER">Chuyển khoản</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
       <div className="container mt-30">
         <form onSubmit={handleSubmit}>
           <div className="row">
@@ -528,7 +590,7 @@ const GetSlot = () => {
         </form>
       </div>
       {/* Action Buttons */}
-      {selectedLocation && (
+      {
         <Box sx={{ mt: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
           <Button
             variant="contained"
@@ -563,7 +625,7 @@ const GetSlot = () => {
             Reset
           </Button>
         </Box>
-      )}
+      }
 
       {/* No slots message */}
       {selectedLocation && !isLoadingSlots && slots.length === 0 && (
