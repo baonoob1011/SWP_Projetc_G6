@@ -223,7 +223,7 @@ const GetSlot = () => {
       setPrice(data);
     } catch (error) {
       console.error('Fetch slots error:', error);
-      toast.error('Không thể lấy danh sách slot');
+      toast.error('Không thể xem giá');
       setPrice([]);
     } finally {
       setIsLoadingSlots(false);
@@ -301,7 +301,7 @@ const GetSlot = () => {
         const errorText = await res.text();
         console.error('Submit error response:', errorText);
       } else {
-        navigate('/checkBooking');
+        navigate(`/checkBooking`);
         toast.success('Đã đăng ký thành công');
         setSelectedSlot('');
       }

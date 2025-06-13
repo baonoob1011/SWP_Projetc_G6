@@ -13,6 +13,7 @@ import {
   Shield,
   List,
   ShoppingBag,
+  BaggageClaim,
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
@@ -44,6 +45,12 @@ const AdminSidebar = () => {
       icon: Room,
       label: 'Tạo phòng',
       path: 'room',
+    },
+    {
+      id: 'kit',
+      icon: BaggageClaim,
+      label: 'Tạo phòng',
+      path: 'kit',
     },
     {
       id: 'services',
