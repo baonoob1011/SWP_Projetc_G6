@@ -136,7 +136,7 @@ public class SlotService {
         } else {
             room.setRoomStatus(RoomStatus.BOOKED);
         }
-
+        System.out.println(slot.getSlotStatus());
         roomRepository.save(room);
         return savedSlot;
     }
@@ -145,10 +145,10 @@ public class SlotService {
     public List<SlotInfoDTO> getALlSlotForUser() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
                 "s.slotId, s.slotDate, s.startTime, s.endTime, s.slotStatus) " +
-                "FROM Slot s WHERE s.slotDate > CURRENT_DATE And s.slotStatus=:slotStatus";
+                "FROM Slot s Where s.slotStatus=:slotStatus AND s.slotDate >= CURRENT_DATE";
 
         TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
-        query.setParameter("slotStatus", SlotStatus.BOOKED);
+        query.setParameter("slotStatus", SlotStatus.AVAILABLE);
         return query.getResultList();
     }
 
