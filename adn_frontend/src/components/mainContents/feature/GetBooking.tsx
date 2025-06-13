@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 type Patient = {
@@ -82,7 +82,7 @@ const GetAppointment = () => {
   const [paymentResponse, setPaymentResponse] = useState<PaymentResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem('token');
 
@@ -136,12 +136,12 @@ const GetAppointment = () => {
           },
         }
       );
-      if (!res.ok) {
-        toast.error('bị lỗi');
-      } else {
+      const redirectUrl = await res.text();
+      if (res.ok) {
         toast.success('Thành công');
-        window.location.href =
-          'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=100000000&vnp_Command=pay&vnp_CreateDate=20250613224057&vnp_CurrCode=VND&vnp_ExpireDate=20250613225557&vnp_IpAddr=127.0.0.1&vnp_Locale=vn&vnp_OrderInfo=aaa&vnp_OrderType=order-type&vnp_ReturnUrl=http%3A%2F%2Flocalhost%3A5173%2F%2Fvnpay-payment&vnp_TmnCode=3ZI08BC5&vnp_TxnRef=29328099&vnp_Version=2.1.0&vnp_SecureHash=d2ba0c664640312d2c4e4a7f2a908bfcf0bc95176e57472dcf1bc7aef8f97470dd3ad2fecdc6fc9ef570ac74f78c316afa7e774dc911d4840b3bfacf531eeb9d';
+        window.location.href = redirectUrl;
+      } else {
+        toast.error('bị lỗi');
       }
     } catch (error) {
       console.log(error);
