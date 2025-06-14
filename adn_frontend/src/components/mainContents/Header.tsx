@@ -106,8 +106,8 @@ export function Header({ fullName, setFullName }: HeaderProps) {
           disableGutters
           sx={{
             px: { xs: 2, md: 4 },
-            minHeight: { xs: 64, md: 72 },
-            height: { xs: 64, md: 72 },
+            minHeight: { xs: 64, md: 100 },
+            height: { xs: 64, md: 100 },
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -118,7 +118,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: 2,
+              gap: 2.5,
               minWidth: 280,
             }}
           >
@@ -152,8 +152,8 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
-              gap: 0.5,
-              mx: 4,
+              gap: '30px',
+              mx: 2,
             }}
           >
             {navItems.map((item) =>
