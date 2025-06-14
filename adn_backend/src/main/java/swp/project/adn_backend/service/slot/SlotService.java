@@ -136,7 +136,7 @@ public class SlotService {
         } else {
             room.setRoomStatus(RoomStatus.BOOKED);
         }
-
+        System.out.println(slot.getSlotStatus());
         roomRepository.save(room);
         return savedSlot;
     }
@@ -145,10 +145,10 @@ public class SlotService {
     public List<SlotInfoDTO> getALlSlotForUser() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
                 "s.slotId, s.slotDate, s.startTime, s.endTime, s.slotStatus) " +
-                "FROM Slot s WHERE s.slotDate > CURRENT_DATE And s.slotStatus=:slotStatus";
+                "FROM Slot s Where s.slotStatus=:slotStatus AND s.slotDate >= CURRENT_DATE";
 
         TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
-        query.setParameter("slotStatus", SlotStatus.BOOKED);
+        query.setParameter("slotStatus", SlotStatus.AVAILABLE);
         return query.getResultList();
     }
 
@@ -157,30 +157,33 @@ public class SlotService {
         List<Slot> slotList = slotRepository.findAll();
         GetFullSlotResponse getAllServiceResponse = null;
         for (Slot slot : slotList) {
-            SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
+            if(slot.getRoom().getRoomStatus().equals(RoomStatus.BOOKED)){
 
-            //lay room
-            RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
-            roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
-            roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
-            roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
-            roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
-            roomSlotResponse.setRoomStatus(slot.getRoom().getRoomStatus());
+                SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
 
-            //lay staff
-            StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
-            staffSlotResponse.setStaffId(slot.getStaff().getStaffId());
-            staffSlotResponse.setFullName(slot.getStaff().getFullName());
+                //lay room
+                RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
+                roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
+                roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
+                roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
+                roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
+                roomSlotResponse.setRoomStatus(slot.getRoom().getRoomStatus());
 
-
-            GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
-            getFullSlotResponse.setSlotResponse(slotResponse);
-            getFullSlotResponse.setStaffSlotResponse(staffSlotResponse);
-            getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
+                //lay staff
+                StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
+                staffSlotResponse.setStaffId(slot.getStaff().getStaffId());
+                staffSlotResponse.setFullName(slot.getStaff().getFullName());
 
 
-            //lay full response
-            fullSlotResponses.add(getFullSlotResponse);
+                GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
+                getFullSlotResponse.setSlotResponse(slotResponse);
+                getFullSlotResponse.setStaffSlotResponse(staffSlotResponse);
+                getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
+
+
+                //lay full response
+                fullSlotResponses.add(getFullSlotResponse);
+            }
         }
         return fullSlotResponses;
     }

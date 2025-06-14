@@ -60,7 +60,7 @@ public class AppointmentService {
         this.paymentRepository = paymentRepository;
     }
 
-    public AppointmentResponse bookAppointmentAtCenter(AppointmentRequest appointmentRequest,
+    public AllAppointmentAtCenterResponse bookAppointmentAtCenter(AppointmentRequest appointmentRequest,
                                                        Authentication authentication,
                                                        List<PatientRequest> patientRequestList,
                                                        PaymentRequest paymentRequest,
@@ -149,7 +149,8 @@ public class AppointmentService {
 
         emailService.sendAppointmentAtCenterDetailsEmail(userBookAppointment.getEmail(), emailResponse);
 
-        return appointmentMapper.toAppointmentResponse(saved);
+         appointmentMapper.toAppointmentResponse(saved);
+         return emailResponse;
     }
 
     public AppointmentResponse bookAppointmentAtHome(AppointmentRequest appointmentRequest,

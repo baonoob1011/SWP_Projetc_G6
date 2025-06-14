@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.InfoDTO.KitInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.OrderInfoResponseDTO;
 import swp.project.adn_backend.dto.InfoDTO.PaymentInfoDTO;
 import swp.project.adn_backend.dto.request.payment.PaymentRequest;
 import swp.project.adn_backend.entity.Payment;
@@ -52,6 +53,14 @@ public class PaymentService {
         TypedQuery<PaymentInfoDTO> query = entityManager.createQuery(jpql, PaymentInfoDTO.class);
         query.setParameter("userId", userId);  // Đặt giá trị userId vào câu truy vấn
 
+        return query.getResultList();
+    }
+
+    public List<OrderInfoResponseDTO> getOrderPaymentInfo() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.OrderInfoResponseDTO(" +
+                "s.paymentId, s.amount, s.paymentMethod, s.getPaymentStatus, s.transitionDate) " +
+                "FROM Payment s";
+        TypedQuery<OrderInfoResponseDTO> query = entityManager.createQuery(jpql, OrderInfoResponseDTO.class);
         return query.getResultList();
     }
 }

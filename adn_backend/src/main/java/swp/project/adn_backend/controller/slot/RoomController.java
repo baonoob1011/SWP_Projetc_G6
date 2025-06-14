@@ -17,12 +17,27 @@ public class RoomController {
     private RoomService roomService;
 
     @PostMapping("/create-room")
-    public ResponseEntity<Room>createRoom(@RequestBody RoomRequest roomRequest){
+    public ResponseEntity<Room> createRoom(@RequestBody RoomRequest roomRequest) {
         return ResponseEntity.ok(roomService.createRoom(roomRequest));
     }
 
     @GetMapping("/get-all-room")
-    public ResponseEntity<List<RoomInfoDTO>>getAllRoom(){
+    public ResponseEntity<List<RoomInfoDTO>> getAllRoom() {
         return ResponseEntity.ok(roomService.getAllRoom());
     }
+
+    @DeleteMapping("/delete-room/{id}")
+    public ResponseEntity<String> deleteRoom(@PathVariable long id) {
+        roomService.deleteRoom(id);
+        return ResponseEntity.ok("delete successfully");
+    }
+
+    @PutMapping("/update-room/{id}")
+    public ResponseEntity<Room> updateRoom(
+            @PathVariable("id") Long roomId,
+            @RequestBody RoomRequest roomRequest) {
+        Room updated = roomService.updateRoom(roomId, roomRequest);
+        return ResponseEntity.ok(updated);
+    }
 }
+
