@@ -20,7 +20,7 @@ public class AppointmentController {
     AppointmentService appointmentService;
 
     @PostMapping("/book-appointment/{serviceId}")
-    public AppointmentResponse bookAppointmentAtCenter(@RequestBody BookAppointmentRequest request,
+    public AllAppointmentAtCenterResponse bookAppointmentAtCenter(@RequestBody BookAppointmentRequest request,
                                                        Authentication authentication,
                                                        @PathVariable("serviceId") long serviceId,
                                                        @RequestParam long slotId,

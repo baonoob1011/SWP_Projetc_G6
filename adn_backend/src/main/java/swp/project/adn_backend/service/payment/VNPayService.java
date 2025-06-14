@@ -13,7 +13,7 @@ import java.util.*;
 @Service
 public class VNPayService {
 
-    public String createOrder(double total, String orderInfor, String urlReturn){
+    public String createOrder(int total, String orderInfor, String urlReturn){
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
@@ -25,11 +25,11 @@ public class VNPayService {
         vnp_Params.put("vnp_Version", vnp_Version);
         vnp_Params.put("vnp_Command", vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
-//        int amountInSmallestUnit = (int) Math.round(total * 100); // Nhân với 100 để chuyển sang đơn vị nhỏ nhất
-        long amountInSmallestUnit = Math.round(total * 100); // Chuyển sang đơn vị nhỏ nhất
-        vnp_Params.put("vnp_Amount", Long.toString(amountInSmallestUnit));
+        int amountInSmallestUnit = (int) Math.round(total * 100); // Nhân với 100 để chuyển sang đơn vị nhỏ nhất
+//        long amountInSmallestUnit = Math.round(total * 100); // Chuyển sang đơn vị nhỏ nhất
+//        vnp_Params.put("vnp_Amount", Long.toString(amountInSmallestUnit));
 
-//        vnp_Params.put("vnp_Amount", Integer.toString(amountInSmallestUnit));
+        vnp_Params.put("vnp_Amount", Integer.toString(amountInSmallestUnit));
         vnp_Params.put("vnp_CurrCode", "VND");
 
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
@@ -64,26 +64,26 @@ public class VNPayService {
                 //Build hash data
                 hashData.append(fieldName);
                 hashData.append('=');
-//                try {
-//                    hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-//                    //Build query
-//                    query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
-//                    query.append('=');
-//                    query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-//                } catch (UnsupportedEncodingException e) {
-//                    e.printStackTrace();
-//                }
                 try {
-                    hashData.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8.toString()));
-                    hashData.append('=');
-                    hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString()));
-
-                    query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8.toString()));
+                    hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                    //Build query
+                    query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
                     query.append('=');
-                    query.append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString()));
+                    query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
+//                try {
+//                    hashData.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8.toString()));
+//                    hashData.append('=');
+//                    hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString()));
+//
+//                    query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8.toString()));
+//                    query.append('=');
+//                    query.append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString()));
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
 
                 if (itr.hasNext()) {
                     query.append('&');

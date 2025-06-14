@@ -154,6 +154,14 @@ function App() {
                 }
               />
               <Route
+                path="/kit"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <CreateKit />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/services"
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>

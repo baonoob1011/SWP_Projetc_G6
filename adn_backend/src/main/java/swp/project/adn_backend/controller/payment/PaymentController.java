@@ -47,7 +47,7 @@ public class PaymentController {
             @RequestParam long serviceId
     ) {
         CreatePaymentRequest createPaymentRequest= createPaymentService.createPayment(paymentId,serviceId);
-        String paymentUrl = vnPayService.createOrder( createPaymentRequest.getAmount(),
+        String paymentUrl = vnPayService.createOrder((int) createPaymentRequest.getAmount(),
                 createPaymentRequest.getOrderInfo(),
                 createPaymentRequest.getReturnUrlBase());
         return ResponseEntity.ok(paymentUrl);
@@ -72,4 +72,6 @@ public class PaymentController {
         List<PaymentInfoDTO> list = getPaymentService.getAllPayment(authentication);
         return ResponseEntity.ok(list);
     }
+//    @GetMapping("/return-order-payment")
+//    public
 }
