@@ -47,9 +47,7 @@ import CreateRoom from './components/mainContents/feature/CreateRoom';
 import CreateKit from './components/mainContents/feature/CreateKit';
 import NewPrice from './components/mainContents/feature/NewPrice';
 import GetAppointment from './components/mainContents/feature/GetBooking';
-import SendOTP from './components/mainContents/userinfor/SendOTP';
-import { Email } from '@mui/icons-material';
-import NewPass from './components/mainContents/userinfor/NewPass';
+import VNPayResult from './components/mainContents/feature/VNPAY';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -351,8 +349,6 @@ function App() {
             <Route path="/branch-and-map" element={<BranchAndMap />} />
             <Route path="/map" element={<Map />} />
             <Route path="/blog" element={<Blog />} />
-            <Route path="/otp" element={<SendOTP email='email'/>} />
-            <Route path="/newpass" element={<NewPass  email='email'/>} />
 
             {/* USER, STAFF, MANAGER DÙNG DEFAULT */}
             <Route
@@ -376,6 +372,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <PatientRequest />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="vnpay-payment/vnpay-payment"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <VNPayResult />
                 </ProtectedRoute>
               }
             />

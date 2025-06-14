@@ -395,7 +395,7 @@ const GetSlot = () => {
           >
             {price.map((price) => (
               <MenuItem key={price.priceId} value={price.priceId}>
-                {`${price.price} - ${price.time}`}
+                {`${price.price} : ${price.time}`}
               </MenuItem>
             ))}
           </Select>
