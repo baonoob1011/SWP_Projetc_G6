@@ -32,7 +32,7 @@ public class CreatePaymentService {
         CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
         createPaymentRequest.setAmount(payment.getAmount());
         createPaymentRequest.setOrderInfo(serviceTest.getServiceName());
-        createPaymentRequest.setReturnUrlBase("http://localhost:5173/");
+        createPaymentRequest.setReturnUrlBase("http://localhost:8080/api/v1/payment/vnpay-return");
 
         return createPaymentRequest;
     }

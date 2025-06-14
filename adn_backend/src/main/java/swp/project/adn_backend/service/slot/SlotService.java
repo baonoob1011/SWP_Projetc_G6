@@ -34,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -96,13 +97,8 @@ public class SlotService {
 //    }
     public Slot createSlot(SlotRequest slotRequest, long roomId, long staffId) {
         LocalDate slotDate = slotRequest.getSlotDate();
-        Time startTime = Time.valueOf(slotRequest.getStartTime());
-        Time endTime = Time.valueOf(slotRequest.getEndTime());
 
-        LocalTime start = startTime.toLocalTime();
-        LocalTime end = endTime.toLocalTime();
-
-        Integer overlapResult = slotRepository.isSlotOverlappingNative(roomId, slotDate, startTime, endTime);
+        Integer overlapResult = slotRepository.isSlotOverlappingNative(roomId, slotDate, slotRequest.getStartTime(), slotRequest.getEndTime());
         if (overlapResult != null && overlapResult == 1) {
             throw new AppException(ErrorCodeUser.TIME_EXISTED);
         }
@@ -111,79 +107,91 @@ public class SlotService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.ROOM_NOT_FOUND));
         Staff staff = staffRepository.findById(staffId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+        // ✅ Kiểm tra thời gian slot có nằm trong khoảng hoạt động của phòng không
 
-        if (start.isBefore(room.getOpenTime()) || end.isAfter(room.getCloseTime())) {
-            throw new AppException(ErrorCodeUser.ROOM_TIME_INVALID);
+        if (slotRequest.getStartTime().isBefore(room.getOpenTime()) || slotRequest.getEndTime().isAfter(room.getCloseTime())) {
+            throw new AppException(ErrorCodeUser.SLOT_OUTSIDE_ROOM_TIME);
         }
 
         Slot slot = new Slot();
         slot.setSlotDate(slotDate);
-        slot.setStartTime(startTime);
-        slot.setEndTime(endTime);
+        slot.setStartTime(slotRequest.getStartTime());
+        slot.setEndTime(slotRequest.getEndTime());
         slot.setSlotStatus(SlotStatus.AVAILABLE);
         slot.setRoom(room);
         slot.setStaff(staff);
 
         Slot savedSlot = slotRepository.save(slot);
-
-        // Cập nhật room status ngay sau khi tạo
-        LocalDate today = LocalDate.now();
-        Time nowTime = Time.valueOf(LocalTime.now());
-
-        List<Slot> upcomingSlots = slotRepository.findUpcomingSlotsNative(roomId, today, nowTime);
-        if (upcomingSlots.isEmpty()) {
-            room.setRoomStatus(RoomStatus.AVAILABLE);
-        } else {
-            room.setRoomStatus(RoomStatus.BOOKED);
-        }
-        System.out.println(slot.getSlotStatus());
+//
+//        // ✅ (Tuỳ chọn) Cập nhật trạng thái phòng nếu cần
+//        // Ví dụ: nếu có slot sắp diễn ra, thì cập nhật trạng thái phòng
+//        LocalDate today = LocalDate.now();
+//        LocalTime now = LocalTime.now();
+//        List<Slot> upcomingSlots = slotRepository.findUpcomingSlotsNative(roomId, today, Time.valueOf(now));
+//
+//        // Ví dụ: nếu có slot trong tương lai thì đặt trạng thái phòng là ACTIVE
+//        if (!upcomingSlots.isEmpty()) {
+//            room.setRoomStatus(RoomStatus.ACTIVE); // nếu bạn có enum RoomStatus
+//        }
+//
         roomRepository.save(room);
         return savedSlot;
     }
 
-
-    public List<SlotInfoDTO> getALlSlotForUser() {
+    public List<SlotInfoDTO> getAllUpcomingSlotsForUser() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
                 "s.slotId, s.slotDate, s.startTime, s.endTime, s.slotStatus) " +
-                "FROM Slot s Where s.slotStatus=:slotStatus AND s.slotDate >= CURRENT_DATE";
+                "FROM Slot s " +
+                "WHERE s.slotStatus = :slotStatus AND s.slotDate >= CURRENT_DATE";
 
         TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
         query.setParameter("slotStatus", SlotStatus.AVAILABLE);
-        return query.getResultList();
+
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+
+        return query.getResultList().stream()
+                .filter(slot -> {
+                    // Nếu slot là hôm nay, kiểm tra thời gian kết thúc phải sau hiện tại
+                    if (slot.getSlotDate().isEqual(today)) {
+                        return slot.getEndTime().isAfter(now);
+                    }
+                    return true; // Ngày trong tương lai thì giữ lại
+                })
+                .collect(Collectors.toList());
     }
+
 
     public List<GetFullSlotResponse> getAllSlot() {
         List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();
         List<Slot> slotList = slotRepository.findAll();
         GetFullSlotResponse getAllServiceResponse = null;
         for (Slot slot : slotList) {
-            if(slot.getRoom().getRoomStatus().equals(RoomStatus.BOOKED)){
 
-                SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
+            SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
 
-                //lay room
-                RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
-                roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
-                roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
-                roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
-                roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
-                roomSlotResponse.setRoomStatus(slot.getRoom().getRoomStatus());
+            //lay room
+            RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
+            roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
+            roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
+            roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
+            roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
 
-                //lay staff
-                StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
-                staffSlotResponse.setStaffId(slot.getStaff().getStaffId());
-                staffSlotResponse.setFullName(slot.getStaff().getFullName());
+            //lay staff
+            StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
+            staffSlotResponse.setStaffId(slot.getStaff().getStaffId());
+            staffSlotResponse.setFullName(slot.getStaff().getFullName());
 
 
-                GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
-                getFullSlotResponse.setSlotResponse(slotResponse);
-                getFullSlotResponse.setStaffSlotResponse(staffSlotResponse);
-                getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
+            GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
+            getFullSlotResponse.setSlotResponse(slotResponse);
+            getFullSlotResponse.setStaffSlotResponse(staffSlotResponse);
+            getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
 
 
-                //lay full response
-                fullSlotResponses.add(getFullSlotResponse);
-            }
+            //lay full response
+            fullSlotResponses.add(getFullSlotResponse);
+
         }
         return fullSlotResponses;
     }

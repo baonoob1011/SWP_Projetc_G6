@@ -11,16 +11,24 @@ import java.time.LocalTime;
 public class RoomRequest {
     private long roomId;
     private String roomName;
-    private RoomStatus roomStatus;
     private LocalTime openTime;
     private LocalTime closeTime;
+    private RoomStatus roomStatus;
 
-    public RoomRequest(long roomId, String roomName, RoomStatus roomStatus, LocalTime openTime, LocalTime closeTime) {
+    public RoomRequest(long roomId, String roomName, LocalTime openTime, LocalTime closeTime, RoomStatus roomStatus) {
         this.roomId = roomId;
         this.roomName = roomName;
-        this.roomStatus = roomStatus;
         this.openTime = openTime;
         this.closeTime = closeTime;
+        this.roomStatus = roomStatus;
+    }
+
+    public RoomStatus getRoomStatus() {
+        return roomStatus;
+    }
+
+    public void setRoomStatus(RoomStatus roomStatus) {
+        this.roomStatus = roomStatus;
     }
 
     public LocalTime getOpenTime() {
@@ -58,11 +66,4 @@ public class RoomRequest {
         this.roomName = roomName;
     }
 
-    public RoomStatus getRoomStatus() {
-        return roomStatus;
-    }
-
-    public void setRoomStatus(RoomStatus roomStatus) {
-        this.roomStatus = roomStatus;
-    }
 }

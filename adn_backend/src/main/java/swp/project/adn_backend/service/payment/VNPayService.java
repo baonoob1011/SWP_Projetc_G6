@@ -1,9 +1,12 @@
 package swp.project.adn_backend.service.payment;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.configuration.VNPayConfig;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -130,6 +133,33 @@ public class VNPayService {
             }
         } else {
             return -1;
+        }
+    }
+    public boolean validateVNPaySignature(Map<String, String> params, String secureHash) {
+        String secretKey = "YOUR_SECRET_KEY_FROM_VNPAY";
+
+        Map<String, String> sortedParams = new TreeMap<>(params);
+        sortedParams.remove("vnp_SecureHash");
+
+        StringBuilder data = new StringBuilder();
+        for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
+            data.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+        }
+        data.setLength(data.length() - 1); // Remove last '&'
+
+        String hash = hmacSHA512(secretKey, data.toString());
+        return hash.equalsIgnoreCase(secureHash);
+    }
+
+    private String hmacSHA512(String key, String data) {
+        try {
+            Mac hmac = Mac.getInstance("HmacSHA512");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
+            hmac.init(secretKeySpec);
+            byte[] bytes = hmac.doFinal(data.getBytes(StandardCharsets.UTF_8));
+            return Hex.encodeHexString(bytes);
+        } catch (Exception e) {
+            throw new RuntimeException("HMAC error", e);
         }
     }
 

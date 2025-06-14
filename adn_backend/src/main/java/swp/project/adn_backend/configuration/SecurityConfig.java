@@ -58,7 +58,9 @@ public class SecurityConfig {
             "/api/payment/get-all-payment",
             "/api/user/**",
             "/api/payment/**",
-            "/api/appointment/book-appointment-at_home/**"
+            "/api/v1/**",
+            "/api/appointment/book-appointment-at_home/**",
+            "/api/appointment/cancel-appointment/**",
     };
 
     private final String[] STAFF_ENDPOINTS = {
