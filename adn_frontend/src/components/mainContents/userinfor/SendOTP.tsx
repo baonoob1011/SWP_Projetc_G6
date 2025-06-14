@@ -10,9 +10,11 @@ import CountdownTimer from "../feature/CountDown";
 import NewPass from "./NewPass";
 import CustomSnackBar from "./Snackbar";
 import styles from "./SendOTP.module.css";
-import bg from "../../../image/bg5.png"
+import bg from "../../../image/Login_banner.png";
+import logo from "../../../image/Logo.png";
 // import logo from "../../image/Logo.png";
 import { motion } from "framer-motion";
+import { Link, useNavigate } from 'react-router-dom';
 
 const SendOTP = ({ email }: { email: string }) => {
   const [otp, setOtp] = useState("");
@@ -99,126 +101,328 @@ const SendOTP = ({ email }: { email: string }) => {
   if (verified) return <NewPass email={email} />;
 
   return (
-    <div
+   <div
       style={{
-        display: "flex",
-        minHeight: "100vh",
-        alignItems: "center",
-        justifyContent: "flex-end",
-        background: "linear-gradient(to right, #74ebd5, #ACB6E5)",
-        position: "relative",
+        display: 'flex',
+        minHeight: '100vh',
         backgroundImage: `url(${bg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        padding: "0 60px",
-        boxSizing: "border-box",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      {/* Bên phải để hình ảnh/animation nếu cần */}
+      {/* Dark Overlay */}
       <div
         style={{
-          position: "absolute",
-          right: 0,
+          position: 'absolute',
           top: 0,
-          width: "40%",
-          height: "100%",
-          opacity: 1,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0,0.1)',
+          zIndex: 1,
         }}
-      ></div>
+      />
 
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -50 }}
-        transition={{ duration: 0.6, ease: "easeInOut" }}
+      {/* Navigation */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 3,
+          padding: '20px 40px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
       >
-        <Paper
-          elevation={20}
-          sx={{
-            width: 400,
-            borderRadius: "16px",
-            p: 4,
-            backgroundColor: "rgba(255, 255, 255, 0.25)",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
-            boxShadow: "0 12px 32px rgba(0, 0, 0, 0.3)",
-            height: "70vh",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            position: "relative",
-            marginLeft: "auto",
-            paddingRight: "40px",
-            boxSizing: "border-box",
-            marginRight: 10,
-            border: "1px solid rgba(255, 255, 255, 0.3)",
-          }}
-        >
+        <div style={{ display: 'flex', gap: '100px' }}>
           <Typography
-            variant="h5"
+            variant="body1"
+            component={Link}
+            to="/"
             sx={{
-              fontWeight: "bold",
-              mb: 2,
-              color: "#fff",
-              textAlign: "center",
+              color: 'white',
+              cursor: 'pointer',
+              textDecoration: 'none',
+              '&:hover': { opacity: 0.8 }
             }}
           >
-            Xác thực OTP
+            Home
           </Typography>
-
           <Typography
-            sx={{ color: "#fff", textAlign: "center", mb: 2 }}
+            variant="body1"
+            sx={{
+              color: 'white',
+              cursor: 'pointer',
+              '&:hover': { opacity: 0.8 }
+            }}
           >
-            Mã OTP đã gửi tới: {maskEmail(email)}
+            About Us
           </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: 'white',
+              cursor: 'pointer',
+              '&:hover': { opacity: 0.8 }
+            }}
+          >
+            Help
+          </Typography>
+        </div>
 
-          <form onSubmit={handleVerifyOtp}>
-            <TextField
-              fullWidth
-              placeholder="Nhập mã OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              required
-              size="medium"
-              InputLabelProps={{ shrink: false }}
-              sx={{ backgroundColor: "#fff", borderRadius: 1, mb: 2 }}
-            />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Typography
+            variant="h6"
+            sx={{
+              color: 'white',
+              fontWeight: 'bold',
+              letterSpacing: '1px'
+            }}
+          >
+            GENELINK
+          </Typography>
+          <div
+            style={{
+              width: '70px',
+              height: '70px',
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <img src={logo} alt="Logo" style={{ width: '70px', height: '70px' }} />
+          </div>
+        </div>
+      </div>
 
-            <Box
-              mb={2}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
+      {/* Contact Information */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '60px',
+          left: '60px',
+          zIndex: 3,
+          display: 'grid',
+          gridTemplateColumns: 'auto auto',
+          columnGap: '200px', // khoảng cách giữa 2 cột
+          rowGap: '60px',    // khoảng cách giữa các hàng
+        }}
+      >
+        {/** Hàng 1, Cột 1: Phone **/}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ color: 'white', fontSize: 16 }}>📞</Typography>
+          </div>
+          <div>
+            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+              Phone
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+              +123-456-7890
+            </Typography>
+          </div>
+        </div>
+
+        {/** Hàng 1, Cột 2: E-Mail **/}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ color: 'white', fontSize: 16 }}>✉️</Typography>
+          </div>
+          <div>
+            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+              E-Mail
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+              hello@genelink.com
+            </Typography>
+          </div>
+        </div>
+
+        {/** Hàng 2, Cột 1: Website **/}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ color: 'white', fontSize: 16 }}>🌐</Typography>
+          </div>
+          <div>
+            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+              Website
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+              www.genelink.com
+            </Typography>
+          </div>
+        </div>
+
+        {/** Hàng 2, Cột 2: Address **/}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ color: 'white', fontSize: 16 }}>📍</Typography>
+          </div>
+          <div>
+            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+              Address
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+              123 Anywhere St., Any City
+            </Typography>
+          </div>
+        </div>
+      </div>
+
+      <motion.div
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              transition={{ duration: 0.6, ease: 'easeInOut' }}
+              style={{
+                position: 'absolute',
+                right: '120px',
+                top: '25%',
+                transform: 'translateY(-50%)',
+                zIndex: 2,
+              }}
             >
-              <CountdownTimer
-                duration={60000}
-                onComplete={() => { }}
-                onResend={resendOtp}
-              />
-            </Box>
+        <Paper
+  elevation={0}
+  sx={{
+    width: '400px',
+    borderRadius: '20px',
+    p: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',  // match Login form
+    border: 'none',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+  }}
+>
+  <Typography
+    variant="h5"
+    sx={{
+      fontWeight: 'bold',
+      mb: 2,
+      color: '#2c3e50',      // same as Login title
+      textAlign: 'center',
+    }}
+  >
+    Xác thực OTP
+  </Typography>
 
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              disabled={isVerifying}
-            >
-              {isVerifying ? (
-                <div className={styles.spinner} />
-              ) : (
-                "Xác nhận OTP"
-              )}
-            </Button>
-          </form>
+  <Typography
+    sx={{
+      color: '#7f8c8d',      // same as Login subtitle
+      textAlign: 'center',
+      mb: 3,
+    }}
+  >
+    Mã OTP đã gửi tới: {maskEmail(email)}
+  </Typography>
 
-          <CustomSnackBar
-            open={snackbar.open}
-            message={snackbar.message}
-            severity={snackbar.severity}
-            onClose={() => setSnackbar({ ...snackbar, open: false })}
-          />
-        </Paper>
+  <form onSubmit={handleVerifyOtp}>
+    <TextField
+      fullWidth
+      placeholder="Nhập mã OTP"
+      value={otp}
+      onChange={(e) => setOtp(e.target.value)}
+      required
+      variant="outlined"
+      sx={{
+        mb: 2,
+        '& .MuiOutlinedInput-root': {
+          height: 56,
+          borderRadius: '25px',
+          backgroundColor: '#eaf4ff',    // light blue
+          border: 'none',
+          '& fieldset': { border: 'none' },
+          '&:hover fieldset': { border: 'none' },
+          '&.Mui-focused fieldset': {
+            border: '2px solid #667eea',
+          },
+        },
+        '& input': { color: '#2c3e50' },
+      }}
+    />
+
+    <Box mb={2} display="flex" justifyContent="center" alignItems="center">
+      <CountdownTimer duration={60000} onComplete={() => {}} onResend={resendOtp} />
+    </Box>
+
+    <Button
+      type="submit"
+      fullWidth
+      disabled={isVerifying}
+      sx={{
+        py: 1.5,
+        borderRadius: '25px',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        textTransform: 'none',
+        fontSize: 16,
+        fontWeight: 'bold',
+        mb: 1,
+        '&:hover': {
+          background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+        },
+        '&:disabled': {
+          background: 'linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%)',
+        },
+      }}
+    >
+      {isVerifying ? <div className={styles.spinner} /> : 'Xác nhận OTP'}
+    </Button>
+  </form>
+
+  <CustomSnackBar
+    open={snackbar.open}
+    message={snackbar.message}
+    severity={snackbar.severity}
+    onClose={() => setSnackbar({ ...snackbar, open: false })}
+  />
+</Paper>
+
       </motion.div>
     </div>
 
