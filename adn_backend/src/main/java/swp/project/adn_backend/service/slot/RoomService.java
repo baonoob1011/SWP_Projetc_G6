@@ -45,5 +45,28 @@ public class RoomService {
         query.setParameter("roomStatus", RoomStatus.AVAILABLE);
         return query.getResultList();
     }
+    public Room updateRoom(Long roomId, RoomRequest roomRequest) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.ROOM_NOT_FOUND));
 
+        Time open = Time.valueOf(roomRequest.getOpenTime());
+        Time close = Time.valueOf(roomRequest.getCloseTime());
+        Integer overlap = roomRepository.isRoomTimeOverlapping(roomId, open, close);
+        if (overlap != null && overlap == 1) {
+            throw new AppException(ErrorCodeUser.ROOM_TIME_OVERLAP);
+        }
+
+        room.setRoomName(roomRequest.getRoomName());
+        room.setOpenTime(roomRequest.getOpenTime());
+        room.setCloseTime(roomRequest.getCloseTime());
+        room.setRoomStatus(roomRequest.getRoomStatus());
+
+        return roomRepository.save(room);
+    }
+
+    public void deleteRoom(Long roomId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.ROOM_NOT_FOUND));
+        roomRepository.delete(room);
+    }
 }

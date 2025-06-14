@@ -45,28 +45,16 @@ public class SendEmailService {
         userRepository.save(user);
     }
 
-    public void sendEmailCreateAccountSuccessful(String toEmail, String otp) {
+    public void sendEmailCreateAccountSuccessful(String toEmail, String emailContent) {
         Users user = userRepository.findByEmail(toEmail)
                 .orElseThrow(() -> new RuntimeException("Email does not exist."));
 
-        // Check if the last OTP was sent within the last 1 minute
-        if (user.getLastOtpSentTime() != null) {
-            LocalDateTime now = LocalDateTime.now();
-            if (Duration.between(user.getLastOtpSentTime(), now).toMinutes() < 1) {
-                throw new RuntimeException("Please wait 1 minute before requesting a new OTP.");
-            }
-        }
-
-        // Proceed to send OTP
+        // Proceed to send welcome email
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
-        message.setSubject("Your OTP Code");
-        message.setText("Your OTP code is: " + otp);
+        message.setSubject("Welcome to ADN Medical Center");
+        message.setText(emailContent);
         mailSender.send(message);
-
-        // Update last OTP sent time
-        user.setLastOtpSentTime(LocalDateTime.now());
-        userRepository.save(user);
     }
 
 

@@ -21,8 +21,15 @@ public class LocationController {
     public ResponseEntity<Location> creteLocation(@RequestBody @Valid LocationRequest locationRequest) {
         return ResponseEntity.ok(locationService.createLocation(locationRequest));
     }
+
     @GetMapping("/get-all-location")
-    public ResponseEntity<List<LocationResponse>>getAllLocation(){
+    public ResponseEntity<List<LocationResponse>> getAllLocation() {
         return ResponseEntity.ok(locationService.getAllLocation());
+    }
+
+    @DeleteMapping("/delete-location/{id}")
+    public ResponseEntity<String> deleteLocation(@PathVariable Long id) {
+        locationService.deleteLocation(id);
+        return ResponseEntity.ok("Xóa location với id=" + id + " thành công");
     }
 }
