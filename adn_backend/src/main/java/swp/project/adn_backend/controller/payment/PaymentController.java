@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import swp.project.adn_backend.dto.InfoDTO.InvoiceDTO;
 import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
 import swp.project.adn_backend.entity.Invoice;
 import swp.project.adn_backend.service.payment.CreatePaymentService;
@@ -51,30 +52,39 @@ public class PaymentController {
     @PostMapping("/create")
     public ResponseEntity<String> createPayment(
             @RequestParam long paymentId,
-            @RequestParam long serviceId
-    ) {
-        CreatePaymentRequest createPaymentRequest = createPaymentService.createPayment(paymentId, serviceId);
-        String paymentUrl = vnPayService.createOrder((int) createPaymentRequest.getAmount(),
-                createPaymentRequest.getOrderInfo(),
-                createPaymentRequest.getReturnUrlBase());
+            @RequestParam long serviceId) {
+
+        CreatePaymentRequest req = createPaymentService.createPayment(paymentId, serviceId);
+
+        // ép kiểu đúng: double -> long -> int
+        int amount = Math.toIntExact((long) req.getAmount());
+
+        String paymentUrl = vnPayService.createOrder(
+                amount,
+                req.getOrderInfo(),
+                req.getTxnRef(),
+                req.getReturnUrlBase()
+        );
+
         return ResponseEntity.ok(paymentUrl);
     }
 
-    @GetMapping("/api/v1/payment/vnpay-return")
-    public ResponseEntity<Invoice> handleVNPayReturn(@RequestParam Map<String, String> params) {
-        String vnpTxnRef = params.get("vnp_TxnRef");
-        String vnpResponseCode = params.get("vnp_ResponseCode");
-        String vnpTransactionStatus = params.get("vnp_TransactionStatus");
-        String vnpSecureHash = params.get("vnp_SecureHash");
 
-        boolean isValid = vnPayService.validateVNPaySignature(params, vnpSecureHash);
-        if (!isValid || !"00".equals(vnpResponseCode) || !"00".equals(vnpTransactionStatus)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // trả về 400 mà không có body
+
+
+    @GetMapping("/vnpay-return")
+    public ResponseEntity<InvoiceDTO> handleVNPayReturn(@RequestParam Map<String, String> params) {
+        String vnpTxnRef = params.get("vnp_TxnRef");
+        String responseCode = params.get("vnp_ResponseCode");
+        String transactionStatus = params.get("vnp_TransactionStatus");
+
+        if (!"00".equals(responseCode) || !"00".equals(transactionStatus)) {
+            return ResponseEntity.badRequest().body(null);
         }
 
         return invoiceService.getInvoiceByTxnRef(vnpTxnRef)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .map(invoice -> ResponseEntity.ok(new InvoiceDTO(invoice)))
+                .orElse(ResponseEntity.status(404).body(null));
     }
 
 

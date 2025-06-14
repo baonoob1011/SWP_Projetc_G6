@@ -3,56 +3,52 @@ package swp.project.adn_backend.entity;
 
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import swp.project.adn_backend.enums.TransactionStatus;
 
 import java.time.LocalDateTime;
+
 @Entity
+@Table(name = "invoices")
 public class Invoice {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String txnRef; // <-- thêm dòng này
     private Long invoiceId;
-    private String orderInfo;
-    private Long amount;
-    private String transactionNo;
-    private String responseCode;
-    private String bankCode;
-    private LocalDateTime payDate;
 
-    // Getters, Setters, Constructors
+    private String txnRef; // Mã giao dịch VNPay (gửi sang VNPay)
 
+    private String orderInfo; // Tên dịch vụ hoặc mô tả
 
-    public Invoice(Long id, String txnRef, Long invoiceId, String orderInfo, Long amount, String transactionNo, String responseCode, String bankCode, LocalDateTime payDate) {
-        this.id = id;
-        this.txnRef = txnRef;
-        this.invoiceId = invoiceId;
-        this.orderInfo = orderInfo;
-        this.amount = amount;
-        this.transactionNo = transactionNo;
-        this.responseCode = responseCode;
-        this.bankCode = bankCode;
-        this.payDate = payDate;
-    }
+    private Long amount; // Số tiền thanh toán (đơn vị VND)
 
-    public Long getId() {
-        return id;
-    }
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus transactionStatus;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private String responseCode; // Mã phản hồi (00 là thành công)
 
-    public String getTxnRef() {
-        return txnRef;
-    }
+    private String bankCode; // Mã ngân hàng
 
-    public void setTxnRef(String txnRef) {
-        this.txnRef = txnRef;
-    }
+    private LocalDateTime payDate; // Ngày giờ thanh toán
+
+    private String status; // PENDING | SUCCESS | FAILED
+
+    private LocalDateTime createdDate; // Lưu thời điểm tạo invoice
+
+    // Optional - nếu bạn có quan hệ với bảng Payment và ServiceTest
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_test_id")
+    private ServiceTest serviceTest;
+
+    // Constructors
+    public Invoice() {}
+
+    // Getters & Setters
+
 
     public Long getInvoiceId() {
         return invoiceId;
@@ -62,51 +58,52 @@ public class Invoice {
         this.invoiceId = invoiceId;
     }
 
-    public String getOrderInfo() {
-        return orderInfo;
+    public String getTxnRef() { return txnRef; }
+
+    public void setTxnRef(String txnRef) { this.txnRef = txnRef; }
+
+    public String getOrderInfo() { return orderInfo; }
+
+    public void setOrderInfo(String orderInfo) { this.orderInfo = orderInfo; }
+
+    public Long getAmount() { return amount; }
+
+    public void setAmount(Long amount) { this.amount = amount; }
+
+    public TransactionStatus getTransactionStatus() {
+        return transactionStatus;
     }
 
-    public void setOrderInfo(String orderInfo) {
-        this.orderInfo = orderInfo;
+    public void setTransactionStatus(TransactionStatus transactionStatus) {
+        this.transactionStatus = transactionStatus;
     }
 
-    public Long getAmount() {
-        return amount;
-    }
+    public String getResponseCode() { return responseCode; }
 
-    public void setAmount(Long amount) {
-        this.amount = amount;
-    }
+    public void setResponseCode(String responseCode) { this.responseCode = responseCode; }
 
-    public String getTransactionNo() {
-        return transactionNo;
-    }
+    public String getBankCode() { return bankCode; }
 
-    public void setTransactionNo(String transactionNo) {
-        this.transactionNo = transactionNo;
-    }
+    public void setBankCode(String bankCode) { this.bankCode = bankCode; }
 
-    public String getResponseCode() {
-        return responseCode;
-    }
+    public LocalDateTime getPayDate() { return payDate; }
 
-    public void setResponseCode(String responseCode) {
-        this.responseCode = responseCode;
-    }
+    public void setPayDate(LocalDateTime payDate) { this.payDate = payDate; }
 
-    public String getBankCode() {
-        return bankCode;
-    }
+    public String getStatus() { return status; }
 
-    public void setBankCode(String bankCode) {
-        this.bankCode = bankCode;
-    }
+    public void setStatus(String status) { this.status = status; }
 
-    public LocalDateTime getPayDate() {
-        return payDate;
-    }
+    public LocalDateTime getCreatedDate() { return createdDate; }
 
-    public void setPayDate(LocalDateTime payDate) {
-        this.payDate = payDate;
-    }
+    public void setCreatedDate(LocalDateTime createdDate) { this.createdDate = createdDate; }
+
+    public Payment getPayment() { return payment; }
+
+    public void setPayment(Payment payment) { this.payment = payment; }
+
+    public ServiceTest getServiceTest() { return serviceTest; }
+
+    public void setServiceTest(ServiceTest serviceTest) { this.serviceTest = serviceTest; }
 }
+

@@ -4,8 +4,17 @@ public class CreatePaymentRequest {
     private double amount;
     private String orderInfo;
     private String returnUrlBase;
+    private String txnRef; // ✅ thêm dòng này
 
     public CreatePaymentRequest() {
+    }
+
+    public String getTxnRef() {
+        return txnRef;
+    }
+
+    public void setTxnRef(String txnRef) {
+        this.txnRef = txnRef;
     }
 
     public double getAmount() {

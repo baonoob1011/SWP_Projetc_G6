@@ -15,6 +15,7 @@ import swp.project.adn_backend.dto.request.roleRequest.ManagerRequest;
 import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
 import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateUserRequest;
+import swp.project.adn_backend.dto.response.role.UpdateUserResponse;
 import swp.project.adn_backend.entity.Manager;
 import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
@@ -168,40 +169,50 @@ public class UserService {
 
     // Cập nhật User
     @Transactional
-    public Users updateUser(Authentication authentication, UpdateUserRequest updateUserRequest) {
+    public UpdateUserResponse updateUser(Authentication authentication, UpdateUserRequest updateUserRequest) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
+
         Users existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
-        if (updateUserRequest.getEmail() != null) {
-            if (!updateUserRequest.getEmail().equals(existingUser.getEmail()) &&
-                    userRepository.existsByEmail(updateUserRequest.getEmail())) {
-                throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
-            }
+        // 🔐 Email check
+        if (updateUserRequest.getEmail() != null &&
+                !updateUserRequest.getEmail().equals(existingUser.getEmail()) &&
+                userRepository.existsByEmail(updateUserRequest.getEmail())) {
+            throw new AppException(ErrorCodeUser.EMAIL_EXISTED);
         }
-        if (updateUserRequest.getPhone() != null) {
-            if (!updateUserRequest.getPhone().equals(existingUser.getPhone()) &&
-                    userRepository.existsByPhone(updateUserRequest.getPhone())) {
-                throw new AppException(ErrorCodeUser.PHONE_EXISTED);
-            }
+
+        // 🔐 Phone check
+        if (updateUserRequest.getPhone() != null &&
+                !updateUserRequest.getPhone().equals(existingUser.getPhone()) &&
+                userRepository.existsByPhone(updateUserRequest.getPhone())) {
+            throw new AppException(ErrorCodeUser.PHONE_EXISTED);
         }
+
+        // 🔐 Old password check (if user wants to change password)
         if (updateUserRequest.getOldPassword() != null) {
             if (!passwordEncoder.matches(updateUserRequest.getOldPassword(), existingUser.getPassword())) {
                 throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
             }
-        }
 
-        if (updateUserRequest.getPassword() != null && updateUserRequest.getConfirmPassword() != null) {
-            if (!passwordEncoder.matches(updateUserRequest.getPassword(), existingUser.getPassword())
-                    && updateUserRequest.getConfirmPassword().equals(updateUserRequest.getPassword())) {
+            // ✅ Change password only if both new and confirm passwords are provided
+            if (updateUserRequest.getPassword() != null && updateUserRequest.getConfirmPassword() != null) {
+                if (!updateUserRequest.getPassword().equals(updateUserRequest.getConfirmPassword())) {
+                    throw new AppException(ErrorCodeUser.CONFIRM_PASSWORD_NOT_MATCH);
+                }
+
+                if (passwordEncoder.matches(updateUserRequest.getPassword(), existingUser.getPassword())) {
+                    throw new AppException(ErrorCodeUser.PASSWORD_EXISTED);
+                }
+
                 existingUser.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
-            } else {
-                throw new AppException(ErrorCodeUser.PASSWORD_EXISTED);
             }
         }
 
+        // 🔐 Address uniqueness check
         if (updateUserRequest.getAddress() != null) {
             String oldAddress = existingUser.getAddress();
             if ((oldAddress == null || !oldAddress.equals(updateUserRequest.getAddress())) &&
@@ -210,7 +221,7 @@ public class UserService {
             }
         }
 
-
+        // ✅ Set new values
         if (updateUserRequest.getPhone() != null) {
             existingUser.setPhone(updateUserRequest.getPhone());
         }
@@ -223,8 +234,12 @@ public class UserService {
         if (updateUserRequest.getAddress() != null) {
             existingUser.setAddress(updateUserRequest.getAddress());
         }
-        return userRepository.save(existingUser);
+
+        // ✅ Save and map to response
+        userRepository.save(existingUser);
+        return userMapper.toUpdateUserResponse(existingUser);
     }
+
 
     public void updatePasswordByEmail(String email, String newPassword) {
         Users user = userRepository.findByEmail(email)
