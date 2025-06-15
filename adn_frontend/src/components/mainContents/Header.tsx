@@ -21,7 +21,6 @@ import {
   Menu as MenuIcon,
   ArrowDropDown,
   AccountCircle,
-  Phone,
 } from '@mui/icons-material';
 
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -257,22 +256,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               justifyContent: 'flex-end',
             }}
           >
-            {/* Phone Number */}
-            <Box
-              sx={{
-                display: { xs: 'none', md: 'flex' },
-                alignItems: 'center',
-                gap: 1,
-                color: '#1976d2',
-                fontSize: 20,
-                fontWeight: 600,
-              }}
-            >
-              <Phone sx={{ fontSize: '1.1rem' }} />
-              <Typography sx={{ fontSize: '0.9rem', fontWeight: 600 }}>
-                0922.394.333
-              </Typography>
-            </Box>
 
             {/* User Menu or Auth Buttons */}
             {fullName ? (

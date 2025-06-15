@@ -1,18 +1,24 @@
-import banner from '../../image/banner.jpg';
+
 import doctor from '../../image/doctor.jpg';
-import adn from '../../image/adn.jpg';
-import item from '../../image/pic1.jpg';
+import QuangAnh from '../../image/QuangAnh.png';
+import DinhBao from '../../image/DinhBao.png';
+import DanThanh from '../../image/DanThanh.png';
+import TrungThuc from '../../image/TrungThuc.png';
+
 import geneLinkImage from '../../image/Intro_image.png';
 import { Swiper, SwiperSlide, type SwiperRef } from 'swiper/react'; // <-- thêm SwiperRef
 import { Autoplay, Scrollbar } from 'swiper/modules';
 import { useRef, useState } from 'react';
 import './Home.module.css';
+import banner_video from '../../image/Banner_video.mp4';
+import { FaPhoneAlt } from 'react-icons/fa';
+import { FaFacebookMessenger } from 'react-icons/fa';
+import { SiZalo } from 'react-icons/si';
 
 import {
   ClipboardCheck,
   HomeIcon,
   Hospital,
-  ShieldCheck,
   Users2,
   Phone,
   Mail,
@@ -28,8 +34,11 @@ import { ArrowForwardRounded } from '@mui/icons-material';
 
 export default function Home() {
   // ref đúng type SwiperRef
+
   const swiperRef = useRef<SwiperRef | null>(null);
-  const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  
+
   const handlePrev = () => {
     swiperRef.current?.swiper.slidePrev();
   };
@@ -38,31 +47,69 @@ export default function Home() {
     swiperRef.current?.swiper.slideNext();
   };
   const imageData = [
-    {
-      src: item,
-      title: 'Quy trình chuyên nghiệp',
-      desc: 'Tiêu chuẩn ISO 17025',
-      gradient: 'from-blue-900/80',
-    },
-    {
-      src: adn,
-      title: 'Công nghệ tiên tiến',
-      desc: 'Thiết bị hiện đại hàng đầu',
-      gradient: 'from-green-900/80',
-    },
-    {
-      src: item,
-      title: 'Đội ngũ chuyên gia',
-      desc: 'Bác sĩ giàu kinh nghiệm',
-      gradient: 'from-purple-900/80',
-    },
-    {
-      src: adn,
-      title: 'Bảo mật tuyệt đối',
-      desc: 'Bảo vệ thông tin cá nhân',
-      gradient: 'from-orange-900/80',
-    },
-  ];
+  {
+    src: QuangAnh,
+    desc: 'PGS.TS Nguyễn Đình Quang Anh',
+    gradient: 'from-blue-900/80',
+    content: (
+      <>
+        <p className="mb-2">
+          PGS.TS Nguyễn Đình Quang Anh hiện là cố vấn khoa học cấp cao tại GeneLink, phụ trách kiểm định chất lượng và đào tạo chuyên môn cho đội ngũ phân tích. 
+        </p>
+        <p>
+          Với hơn <strong>25 năm kinh nghiệm</strong> trong lĩnh vực sinh học phân tử và xét nghiệm ADN, ông từng giữ vai trò trưởng khoa tại Viện Di truyền Quốc gia và là người đi đầu trong ứng dụng kỹ thuật PCR tại Việt Nam từ những năm 2000.
+        </p>
+      </>
+    ),
+  },
+  {
+    src: DinhBao,
+    desc: 'PGS.TS Trần Đình Bảo',
+    gradient: 'from-green-900/80',
+    content: (
+      <>
+        <p className="mb-2">
+          PGS.TS Trần Đình Bảo đang đảm nhiệm vai trò <strong>Giám đốc Chuyên môn</strong> tại GeneLink, chịu trách nhiệm giám sát quy trình phân tích mẫu và thiết lập tiêu chuẩn phòng thí nghiệm.
+        </p>
+        <p>
+          Ông đã có hơn <strong>20 năm hoạt động</strong> trong lĩnh vực di truyền học lâm sàng và từng tham gia hàng trăm ca tư vấn huyết thống, bệnh di truyền hiếm gặp tại các bệnh viện tuyến trung ương.
+        </p>
+      </>
+    ),
+  },
+  {
+    src: DanThanh,
+    desc: 'PGS.TS Nguyễn Đan Thanh',
+    gradient: 'from-purple-900/80',
+    content: (
+      <>
+        <p className="mb-2">
+          Là một trong những thành viên sáng lập GeneLink, PGS.TS Nguyễn Đan Thanh hiện giữ vai trò <strong>Trưởng bộ phận Nghiên cứu & Phát triển</strong> tại công ty.
+        </p>
+        <p>
+          Bà có hơn <strong>18 năm giảng dạy</strong> tại Đại học Y Hà Nội và nhiều công trình nghiên cứu quốc tế về phân tích ADN trong lĩnh vực ung thư và bệnh di truyền tiền sản.
+        </p>
+      </>
+    ),
+  },
+  {
+    src: TrungThuc,
+    desc: 'PGS.TS Võ Trung Thực',
+    gradient: 'from-orange-900/80',
+    content: (
+      <>
+        <p className="mb-2">
+          PGS.TS Võ Trung Thực hiện là <strong>Giám sát hệ thống xét nghiệm liên kết toàn quốc</strong> của GeneLink. Ông đảm bảo đồng bộ thiết bị, quy trình và đào tạo nhân lực tại các chi nhánh toàn quốc.
+        </p>
+        <p>
+          Với <strong>22 năm kinh nghiệm</strong> trong lĩnh vực phân tích sinh học và xét nghiệm pháp y, ông từng tham gia nhiều vụ giám định ADN phức tạp và hợp tác quốc tế trong kiểm định chất lượng.
+        </p>
+      </>
+    ),
+  },
+];
+
+  
   const services = [
     {
       title: 'Xét nghiệm hành chính',
@@ -151,21 +198,79 @@ export default function Home() {
       date: '10/05/2025',
     },
   ];
+  
 
   return (
+    
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 relative overflow-x-hidden">
-      {/* Banner*/}
-      <div className="relative mt-18 overflow-visible">
-        {/* Banner Image */}
-        <img
-          src={banner}
-          alt="Banner"
-          className="w-full h-auto object-contain"
-          loading="lazy"
-        />
+     
+     
+     {/* Thanh hỗ trợ */}
+<div className="fixed bottom-6 left-4 z-50 space-y-4 bg-white p-3 rounded-2xl shadow-lg">
+  {/* Hotline */}
+  <a
+    href="tel:19001234"
+    className="flex flex-col items-center hover:scale-105 transition-transform"
+  >
+    <div className="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center text-white text-2xl shake-auto">
+      <FaPhoneAlt />
+    </div>
+  </a>
 
+  {/* Messenger */}
+  <a
+    href="https://m.me/yourpage"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex flex-col items-center hover:scale-105 transition-transform"
+  >
+    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-pink-500 flex items-center justify-center text-white text-2xl shake-hover">
+      <FaFacebookMessenger />
+    </div>
+  </a>
+
+  {/* Zalo */}
+  <a
+    href="https://zalo.me/yourzaloid"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex flex-col items-center hover:scale-105 transition-transform"
+  >
+    <div className="w-14 h-14 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl shake-hover">
+      <SiZalo />
+    </div>
+  </a>
+</div>
+
+
+
+      <div className="relative w-full h-[600px] overflow-hidden mt-15">
+      {/* Video Background */}
+      <video
+        className="absolute top-0 left-0 w-full h-full object-cover z-0"
+        autoPlay
+        loop
+        muted
+        playsInline
+      >
+        <source src={banner_video} type="video/mp4" />
+        Trình duyệt của bạn không hỗ trợ video.
+      </video>
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gray bg-opacity-50 z-10" />
+
+      {/* Text Content */}
+      <div className="relative z-20 flex flex-col items-center justify-center h-full text-white px-6 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold mb-6 drop-shadow-lg">
+          Dịch vụ xét nghiệm ADN tại GeneLink
+        </h1>
+        <p className="text-lg md:text-xl max-w-2xl drop-shadow-md leading-relaxed">
+          GeneLink cam kết cung cấp dịch vụ xét nghiệm ADN hiện đại, chính xác và bảo mật.
+          Chúng tôi lưu trữ mẫu ADN an toàn, giúp bạn dễ dàng nâng cấp hoặc thực hiện thêm xét nghiệm mà không cần lấy mẫu lại.
+        </p>
       </div>
-
+    </div>
       {/* About Section - kéo lên để khỏi trắng */}
       <section className="relative -mt-20 pt-20 pb-4 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
         {/* …nội dung Về GeneLink… */}
@@ -345,32 +450,84 @@ export default function Home() {
         </div>
       ))}
     </div>
-
+      <h2 className="text-3xl font-bold mb-20 text-center text-blue-700">
+       Đội ngũ chuyên gia
+      </h2>
     {/* Interactive images grid (full width container) */}
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6">
-      {imageData.map((image, index) => (
-        <div
-          key={index}
-          onClick={() => setSelectedImage(index)}
-          className={`relative overflow-hidden rounded-lg shadow-md h-40 cursor-pointer ${
-            selectedImage === index ? 'ring-4 ring-blue-500 ring-opacity-60 scale-105' : ''
-          }`}
-        >
-          <img
-            src={image.src}
-            alt={image.title}
-            className="w-full h-full object-cover"
-          />
-          <div
-            className={`absolute inset-0 bg-gradient-to-t ${image.gradient} to-transparent`}
-          />
-          <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
-            <h3 className="text-sm font-semibold">{image.title}</h3>
-            <p className="text-xs opacity-90">{image.desc}</p>
-          </div>
-        </div>
-      ))}
+<div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
+  {imageData.map((image, index) => (
+    <div
+      key={index}
+      onClick={() => setSelectedImage(index)}
+      className={`relative overflow-hidden rounded-lg shadow-md h-[320px] cursor-pointer transition-transform ${
+        selectedImage === index ? 'ring-4 ring-blue-500 ring-opacity-60 scale-105' : ''
+      }`}
+    >
+      <img
+        src={image.src}
+        alt={image.desc}
+        className="w-full h-full object-cover"
+      />
+      <div className="absolute bottom-0 left-0 right-0 p-3 text-white bg-black/40 backdrop-blur-sm">
+        <p className="text-sm font-medium">{image.desc}</p>
+      </div>
     </div>
+  ))}
+</div>
+
+{/* Pannel */}
+{selectedImage !== null && (
+  <div className="fixed top-0 right-0 w-full md:w-1/2 h-full bg-white z-50 shadow-xl transition-transform duration-300 transform translate-x-0 overflow-y-auto flex flex-col justify-between">
+    {/* Header */}
+    <div className="flex justify-between items-center p-4 border-b border-gray-200">
+      <button
+        onClick={() => setSelectedImage(null)}
+        className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-white hover:bg-red-500 rounded-full text-xl font-bold transition"
+        title="Đóng"
+      >
+        &times;
+      </button>
+    </div>
+
+    {/* Nội dung chia 2 bên */}
+    <div className="p-6 flex flex-col md:flex-row gap-6 h-full">
+      <div className="p-6 flex flex-col md:flex-row gap-6 h-full">
+  {/* Bên phải: ảnh */}
+  <div className="md:w-1/2 flex justify-center">
+    <img
+      src={imageData[selectedImage].src}
+      alt={`Chi tiết - ${imageData[selectedImage].desc}`}
+      className="h-[400px] object-cover rounded-xl shadow"
+    />
+  </div>
+
+  {/* Bên trái: giới thiệu (căn theo chiều cao ảnh) */}
+  <div className="md:w-1/2 flex items-center">
+    <div className="text-gray-800 space-y-4">
+      <h3 className="text-xl font-semibold">
+        {imageData[selectedImage].desc}
+      </h3>
+      <div className="text-sm text-gray-600 leading-relaxed">
+        {imageData[selectedImage].content}
+      </div>
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    {/* Nút đóng ở dưới */}
+    <div className="p-4 flex justify-end border-t border-gray-200">
+      <button
+        onClick={() => setSelectedImage(null)}
+        className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white text-lg font-bold rounded-xl shadow-lg transition"
+      >
+        ✕ Đóng 
+      </button>
+    </div>
+  </div>
+)}
+
   </section>
 </div>
 

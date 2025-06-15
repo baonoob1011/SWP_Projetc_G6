@@ -6,16 +6,16 @@ import { showSuccessAlert } from './utils/notifications';
 import {
   Activity,
   CheckCircle,
-  Dna,
+
   Edit3,
-  FileText,
+
   Key,
   Mail,
-  Microscope,
+
   Phone,
   Save,
   Shield,
-  TestTube,
+
   User,
 } from 'lucide-react';
 
