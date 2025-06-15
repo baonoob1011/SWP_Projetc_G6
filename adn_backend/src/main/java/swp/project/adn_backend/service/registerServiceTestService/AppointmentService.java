@@ -156,12 +156,11 @@ public class AppointmentService {
     }
 
     @Transactional
-    public UpdateAppointmentStatusResponse updateAppointmentStatusAtCenter(long appointmentId,
+    public UpdateAppointmentStatusResponse ConfirmAppointmentAtCenter(long appointmentId,
                                                                            long userId,
                                                                            long slotId,
                                                                            long serviceId,
-                                                                           long locationId,
-                                                                           AppointmentRequest appointmentRequest) {
+                                                                           long locationId) {
         Users userBookAppointment = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
@@ -176,8 +175,8 @@ public class AppointmentService {
 
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
-        appointment.setAppointmentStatus(appointmentRequest.getAppointmentStatus());
-        appointment.setNote(appointmentRequest.getNote());
+        appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
+        appointment.setNote("Bạn vui lòng đến đúng giờ để tránh ảnh hưởng đến quy trình xét nghiệm. Cảm ơn bạn đã tin tưởng dịch vụ của chúng tôi.");
         appointmentRepository.save(appointment);
         UpdateAppointmentStatusResponse statusResponse = appointmentMapper.toUpdateAppointmentStatusResponse(appointment);
 
@@ -280,7 +279,7 @@ public class AppointmentService {
     }
 
     @Transactional
-    public UpdateAppointmentStatusResponse updateAppointmentStatusAtHome(long appointmentId,
+    public UpdateAppointmentStatusResponse ConfirmAppointmentAtHome(long appointmentId,
                                                                          long userId,
                                                                          long serviceId,
                                                                          long kitId) {
@@ -298,6 +297,8 @@ public class AppointmentService {
         appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
         appointment.setNote("Kit sẽ được gửi trong thời gian nhanh nhất! Cảm ơn quý khách đã tin tưởng.");
         appointmentRepository.save(appointment);
+        kit.setKitStatus(DeliveryStatus.PENDING);
+        kit.setDeliveryDate(LocalDate.now());
         UpdateAppointmentStatusResponse statusResponse = appointmentMapper.toUpdateAppointmentStatusResponse(appointment);
 
         // Build email content
@@ -362,7 +363,6 @@ public class AppointmentService {
 
                 AllAppointmentAtCenterResponse centerResponse = new AllAppointmentAtCenterResponse();
                 centerResponse.setShowAppointmentResponse(show);
-                centerResponse.setUserAppointmentResponse(users);
                 centerResponse.setStaffAppointmentResponse(staff);
                 centerResponse.setSlotAppointmentResponse(slot);
                 centerResponse.setServiceAppointmentResponses(services);
@@ -382,7 +382,6 @@ public class AppointmentService {
 
                 AllAppointmentAtHomeResponse homeResponse = new AllAppointmentAtHomeResponse();
                 homeResponse.setShowAppointmentResponse(show);
-                homeResponse.setUserAppointmentResponse(users);
                 homeResponse.setServiceAppointmentResponses(services);
                 homeResponse.setKitAppointmentResponse(kit);
 

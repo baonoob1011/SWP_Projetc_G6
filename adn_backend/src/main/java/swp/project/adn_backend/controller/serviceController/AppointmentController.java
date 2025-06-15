@@ -75,27 +75,25 @@ public class AppointmentController {
         return ResponseEntity.ok("cancel successful");
     }
 
-    @PutMapping("/update-status-appointment-at-center")
+    @PutMapping("/confirm-appointment-at-center")
     public ResponseEntity<UpdateAppointmentStatusResponse> updateAppointmentStatusAtCenter(@RequestParam long appointmentId,
                                                                                            @RequestParam long userId,
                                                                                            @RequestParam long slotId,
                                                                                            @RequestParam long serviceId,
-                                                                                           @RequestParam long locationId,
-                                                                                           @RequestBody AppointmentRequest appointmentRequest) {
-        return ResponseEntity.ok(appointmentService.updateAppointmentStatusAtCenter(appointmentId,
+                                                                                           @RequestParam long locationId) {
+        return ResponseEntity.ok(appointmentService.ConfirmAppointmentAtCenter(appointmentId,
                 userId,
                 slotId,
                 serviceId,
-                locationId,
-                appointmentRequest));
+                locationId));
     }
 
-    @PutMapping("/update-status-appointment-at-home")
+    @PutMapping("/confirm-appointment-at-home")
     public ResponseEntity<UpdateAppointmentStatusResponse> updateAppointmentStatusAtHome(@RequestParam long appointmentId,
                                                                                          @RequestParam long userId,
                                                                                          @RequestParam long serviceId,
                                                                                          @RequestParam long kitId) {
-        return ResponseEntity.ok(appointmentService.updateAppointmentStatusAtHome(appointmentId,
+        return ResponseEntity.ok(appointmentService.ConfirmAppointmentAtHome(appointmentId,
                 userId,
                 serviceId,
                 kitId));
