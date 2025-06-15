@@ -62,7 +62,8 @@ public class Sample {
     Staff staff;
 
     @OneToMany(mappedBy = "sample", fetch = FetchType.LAZY, cascade = {
-            CascadeType.ALL
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Result> results;
 

@@ -1,6 +1,5 @@
 package swp.project.adn_backend.dto.InfoDTO;
 
-import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import swp.project.adn_backend.enums.DeliveryStatus;
@@ -8,7 +7,7 @@ import swp.project.adn_backend.enums.DeliveryStatus;
 import java.time.LocalDate;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class KitInfoDTO {
+public class KitStatusInfoDTO {
     long kitId;
     String kitCode;
     String kitName;
@@ -19,26 +18,15 @@ public class KitInfoDTO {
     LocalDate deliveryDate;
     LocalDate returnDate;
 
-    public KitInfoDTO(long kitId, String kitCode, String kitName, String targetPersonCount, double price, String contents, DeliveryStatus kitStatus, LocalDate deliveryDate, LocalDate returnDate) {
+
+    public KitStatusInfoDTO(long kitId, String kitCode, String kitName, DeliveryStatus kitStatus, LocalDate returnDate, LocalDate deliveryDate) {
         this.kitId = kitId;
         this.kitCode = kitCode;
         this.kitName = kitName;
-        this.targetPersonCount = targetPersonCount;
-        this.price = price;
-        this.contents = contents;
         this.kitStatus = kitStatus;
-        this.deliveryDate = deliveryDate;
         this.returnDate = returnDate;
+        this.deliveryDate = deliveryDate;
     }
-
-    //    public KitInfoDTO(long kitId, String kitCode, String kitName, DeliveryStatus kitStatus, LocalDate delivery_date, LocalDate return_date) {
-//        this.kitId = kitId;
-//        this.kitCode = kitCode;
-//        this.kitName = kitName;
-//        this.kitStatus = kitStatus;
-//        this.delivery_date = delivery_date;
-//        this.return_date = return_date;
-//    }
 
     public long getKitId() {
         return kitId;
@@ -56,21 +44,6 @@ public class KitInfoDTO {
         this.kitStatus = kitStatus;
     }
 
-    public LocalDate getDeliveryDate() {
-        return deliveryDate;
-    }
-
-    public void setDeliveryDate(LocalDate deliveryDate) {
-        this.deliveryDate = deliveryDate;
-    }
-
-    public LocalDate getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(LocalDate returnDate) {
-        this.returnDate = returnDate;
-    }
 
     public String getKitCode() {
         return kitCode;

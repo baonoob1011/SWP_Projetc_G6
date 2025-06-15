@@ -1,8 +1,6 @@
 package swp.project.adn_backend.entity;
 
 
-
-
 import jakarta.persistence.*;
 import swp.project.adn_backend.enums.TransactionStatus;
 
@@ -45,7 +43,8 @@ public class Invoice {
     private ServiceTest serviceTest;
 
     // Constructors
-    public Invoice() {}
+    public Invoice() {
+    }
 
     // Getters & Setters
 
@@ -58,17 +57,29 @@ public class Invoice {
         this.invoiceId = invoiceId;
     }
 
-    public String getTxnRef() { return txnRef; }
+    public String getTxnRef() {
+        return txnRef;
+    }
 
-    public void setTxnRef(String txnRef) { this.txnRef = txnRef; }
+    public void setTxnRef(String txnRef) {
+        this.txnRef = txnRef;
+    }
 
-    public String getOrderInfo() { return orderInfo; }
+    public String getOrderInfo() {
+        return orderInfo;
+    }
 
-    public void setOrderInfo(String orderInfo) { this.orderInfo = orderInfo; }
+    public void setOrderInfo(String orderInfo) {
+        this.orderInfo = orderInfo;
+    }
 
-    public Long getAmount() { return amount; }
+    public Long getAmount() {
+        return amount;
+    }
 
-    public void setAmount(Long amount) { this.amount = amount; }
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
 
     public TransactionStatus getTransactionStatus() {
         return transactionStatus;
@@ -78,32 +89,60 @@ public class Invoice {
         this.transactionStatus = transactionStatus;
     }
 
-    public String getResponseCode() { return responseCode; }
+    public String getResponseCode() {
+        return responseCode;
+    }
 
-    public void setResponseCode(String responseCode) { this.responseCode = responseCode; }
+    public void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
+    }
 
-    public String getBankCode() { return bankCode; }
+    public String getBankCode() {
+        return bankCode;
+    }
 
-    public void setBankCode(String bankCode) { this.bankCode = bankCode; }
+    public void setBankCode(String bankCode) {
+        this.bankCode = bankCode;
+    }
 
-    public LocalDateTime getPayDate() { return payDate; }
+    public LocalDateTime getPayDate() {
+        return payDate;
+    }
 
-    public void setPayDate(LocalDateTime payDate) { this.payDate = payDate; }
+    public void setPayDate(LocalDateTime payDate) {
+        this.payDate = payDate;
+    }
 
-    public String getStatus() { return status; }
+    public String getStatus() {
+        return status;
+    }
 
-    public void setStatus(String status) { this.status = status; }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-    public LocalDateTime getCreatedDate() { return createdDate; }
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
 
-    public void setCreatedDate(LocalDateTime createdDate) { this.createdDate = createdDate; }
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
 
-    public Payment getPayment() { return payment; }
+    public Payment getPayment() {
+        return payment;
+    }
 
-    public void setPayment(Payment payment) { this.payment = payment; }
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
 
-    public ServiceTest getServiceTest() { return serviceTest; }
+    public ServiceTest getServiceTest() {
+        return serviceTest;
+    }
 
-    public void setServiceTest(ServiceTest serviceTest) { this.serviceTest = serviceTest; }
+    public void setServiceTest(ServiceTest serviceTest) {
+        this.serviceTest = serviceTest;
+    }
 }
 
