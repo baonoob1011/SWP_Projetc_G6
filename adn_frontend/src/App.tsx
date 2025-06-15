@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, matchPath } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 
@@ -48,6 +48,7 @@ import CreateKit from './components/mainContents/feature/CreateKit';
 import NewPrice from './components/mainContents/feature/NewPrice';
 import GetAppointment from './components/mainContents/feature/GetBooking';
 import VNPayResult from './components/mainContents/feature/VNPAY';
+import AppointmentSchedule from './components/mainContents/feature/staff/AppoimentSchedule';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -62,7 +63,7 @@ function App() {
   const isStaffLayoutRoute = [
     '/s-page/s-userData',
     '/s-page/s-slot',
-    '/s-page/create-services',
+    '/s-page/checkBooking',
     '/s-page',
   ].includes(location.pathname);
 
@@ -73,8 +74,9 @@ function App() {
     '/manager/staff',
     '/manager/user',
     '/manager/createKit',
+    'slot/:staffId',
     '/manager',
-  ].includes(location.pathname);
+  ].some((path) => matchPath(path, location.pathname));
 
   return (
     <>
@@ -247,6 +249,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/s-page/checkBooking"
+                element={
+                  <ProtectedRoute allowedRoles={['STAFF']}>
+                    <AppointmentSchedule />
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
             <ToastContainer />
           </Box>
@@ -324,6 +334,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
                     <Services />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="slot/:staffId"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <SignUpStaffSchedule />
                   </ProtectedRoute>
                 }
               />

@@ -53,9 +53,19 @@ const CreateKit = () => {
       });
 
       if (!res.ok) {
+        let errorMessage = 'Không thể đăng ký'; // mặc định
+
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await res.json();
+          errorMessage = errorData.message || JSON.stringify(errorData);
+        } else {
+          errorMessage = await res.text();
+        }
+
         setSnackbar({
           open: true,
-          message: 'Điền đầy đủ thông tin',
+          message: errorMessage,
           severity: 'error',
         });
       } else {
