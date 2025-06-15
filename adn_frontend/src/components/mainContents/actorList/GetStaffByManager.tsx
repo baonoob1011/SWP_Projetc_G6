@@ -9,17 +9,18 @@ import {
   TableRow,
   TextField,
 } from '@mui/material';
-import { Trash2 } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
 import Swal from 'sweetalert2';
+import { NavLink } from 'react-router-dom';
 
 type Staff = {
   idCard: string;
   dateOfBirth: string;
   address: string;
   gender: string;
-  userId: string;
+  staffId: string;
   fullName: string;
   email: string;
   enabled: boolean;
@@ -192,6 +193,16 @@ function GetStaffByManager() {
                     onClick={() => handleDelete(user.phone, user.fullName)}
                   >
                     <Trash2 size={16} />
+                  </Button>
+                  <Button
+                    variant="contained"
+                    component={NavLink}
+                    to={`/slot/${user.staffId}`}
+                    color="error"
+                    size="small"
+                    sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}
+                  >
+                    <Plus size={10} />
                   </Button>
                 </TableCell>
               </TableRow>
