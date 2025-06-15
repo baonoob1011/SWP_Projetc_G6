@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import { NavLink } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import OldPassWord from '../feature/OldPassword';
+import BookingHistory from '../feature/BookingHistory';
 
 type OldProfile = {
   fullName: string;
@@ -19,6 +21,9 @@ const NewProfile = () => {
   });
   const [editableField, setEditableField] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<
+    'profile' | 'changePassword' | 'history'
+  >('profile');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -55,72 +60,125 @@ const NewProfile = () => {
       });
 
       if (!res.ok) {
-        setError('Cập nhật thất bại!');
+        const errorText = await res.text();
+        toast.error('❌ Cập nhật thất bại: ' + errorText);
         return;
       }
 
       const updated = await res.json();
-      alert('Cập nhật thông tin thành công!');
+      toast.success('✅ Cập nhật thông tin thành công!');
       setProfile(updated);
       setUpdateProfile(updated);
     } catch (error) {
       console.error(error);
-      setError('Lỗi kết nối với hệ thống');
+      toast.error('❌ Lỗi kết nối với hệ thống');
     }
   };
 
-  if (!profile)
-    return <p className="text-center mt-5">Không có thông tin người dùng.</p>;
-
   return (
-    <div className="container mt-5">
-      <h3 className="text-center mb-4">Hồ sơ người dùng</h3>
+    <div className="container-fluid mt-4">
+      <div className="row" style={{ marginTop: 120 }}>
+        {/* Sidebar */}
+        <div className="col-md-3" style={{ marginTop: 57 }}>
+          <div className="list-group">
+            <button
+              className={`list-group-item list-group-item-action ${
+                activeTab === 'profile' ? 'active' : ''
+              }`}
+              onClick={() => setActiveTab('profile')}
+            >
+              Hồ sơ cá nhân
+            </button>
 
-      {error && (
-        <div className="alert alert-danger text-center" role="alert">
-          {error}
+            <button
+              className={`list-group-item list-group-item-action ${
+                activeTab === 'changePassword' ? 'active' : ''
+              }`}
+              onClick={() => setActiveTab('changePassword')}
+            >
+              Đổi mật khẩu
+            </button>
+            <button
+              className={`list-group-item list-group-item-action ${
+                activeTab === 'history' ? 'active' : ''
+              }`}
+              onClick={() => setActiveTab('history')}
+            >
+              Lịch sử
+            </button>
+          </div>
         </div>
-      )}
 
-      <form onSubmit={handleSave}>
-        <table className="table table-bordered bg-white">
-          <tbody>
-            {[
-              { field: 'fullName', label: 'Họ và tên' },
-              { field: 'email', label: 'Email' },
-              { field: 'phone', label: 'Số điện thoại' },
-              { field: 'address', label: 'Địa chỉ' },
-            ].map(({ field, label }) => (
-              <tr key={field}>
-                <th style={{ width: '30%' }}>{label}</th>
-                <td>
-                  <input
-                    type="text"
-                    name={field}
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    value={(updateProfile as any)[field]}
-                    onChange={handleInput}
-                    className="form-control"
-                    readOnly={editableField !== field}
-                    onClick={() => setEditableField(field)}
-                    onBlur={() => setEditableField(null)}
-                    placeholder={`Nhập ${label.toLowerCase()}`}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {/* Main content */}
+        <div className="col-md-9">
+          {error && (
+            <div className="alert alert-danger text-center" role="alert">
+              {error}
+            </div>
+          )}
 
-        <div className="d-flex justify-content-between mt-4">
-          <button type="submit" className="btn btn-primary w-50 me-2">
-            Cập nhật
-          </button>
-          <NavLink to="/change-pass" className="btn btn-outline-secondary w-50">
-            Đổi mật khẩu
-          </NavLink>
+          {activeTab === 'profile' && profile && (
+            <>
+              <h3 className="mb-4">Hồ sơ người dùng</h3>
+              <form onSubmit={handleSave}>
+                <table className="table table-bordered bg-white">
+                  <tbody>
+                    {[
+                      { field: 'fullName', label: 'Họ và tên' },
+                      { field: 'email', label: 'Email' },
+                      { field: 'phone', label: 'Số điện thoại' },
+                      { field: 'address', label: 'Địa chỉ' },
+                    ].map(({ field, label }) => (
+                      <tr key={field}>
+                        <th style={{ width: '30%' }}>{label}</th>
+                        <td>
+                          <input
+                            type="text"
+                            name={field}
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            value={(updateProfile as any)[field]}
+                            onChange={handleInput}
+                            className="form-control"
+                            readOnly={editableField !== field}
+                            onClick={() => setEditableField(field)}
+                            onBlur={() => setEditableField(null)}
+                            placeholder={`Nhập ${label.toLowerCase()}`}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                <button type="submit" className="btn btn-primary mt-3">
+                  Cập nhật
+                </button>
+              </form>
+            </>
+          )}
+
+          {activeTab === 'changePassword' && (
+            <>
+              <h3 className="mb-4">Đổi mật khẩu</h3>
+              <OldPassWord
+                role={
+                  (localStorage.getItem('role') as
+                    | 'USER'
+                    | 'STAFF'
+                    | 'MANAGER') || 'USER'
+                }
+              />
+            </>
+          )}
+
+          {activeTab === 'history' && (
+            <>
+              <h3 className="mb-4">Lịch sử đặt lịch</h3>
+              <BookingHistory />
+            </>
+          )}
         </div>
-      </form>
+      </div>
     </div>
   );
 };

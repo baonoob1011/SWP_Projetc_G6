@@ -47,9 +47,18 @@ const OldPassWord = ({ role }: OldPassWordProps) => {
       });
 
       if (!res.ok) {
+        let errorMessage = 'Không thể đăng ký'; // mặc định
+
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await res.json();
+          errorMessage = errorData.message || JSON.stringify(errorData);
+        } else {
+          errorMessage = await res.text();
+        }
         setSnackbar({
           open: true,
-          message: 'Mật khẩu cũ không đúng',
+          message: errorMessage,
           severity: 'error',
         });
       } else {
@@ -82,8 +91,6 @@ const OldPassWord = ({ role }: OldPassWordProps) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        mt: 5,
       }}
     >
       <Paper elevation={3} sx={{ padding: 4, width: 400 }}>

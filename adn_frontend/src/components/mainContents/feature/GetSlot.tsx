@@ -302,12 +302,12 @@ const GetSlot = () => {
         console.error('Submit error response:', errorText);
       } else {
         navigate(`/checkBooking`);
-        toast.success('Đã đăng ký thành công');
+        toast.success('Đặt lịch thành công');
         setSelectedSlot('');
       }
     } catch (error) {
       console.error('Submit error:', error);
-      toast.error('Không thể đăng ký');
+      toast.error('Không thể đặt lịch');
     } finally {
       setIsSubmitting(false);
     }
