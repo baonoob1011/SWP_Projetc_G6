@@ -8,7 +8,6 @@ import CustomSnackBar from '../mainContents/userinfor/Snackbar';
 import bg from '../../image/Login_banner.png';
 import logo from '../../image/Logo.png';
 
-import './Login.module.css';
 import { motion } from 'framer-motion';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
@@ -162,7 +161,7 @@ const Login = ({ setFullName }: LoginProps) => {
               color: 'white',
               cursor: 'pointer',
               textDecoration: 'none',
-              '&:hover': { opacity: 0.8 }
+              '&:hover': { opacity: 0.8 },
             }}
           >
             Home
@@ -172,7 +171,7 @@ const Login = ({ setFullName }: LoginProps) => {
             sx={{
               color: 'white',
               cursor: 'pointer',
-              '&:hover': { opacity: 0.8 }
+              '&:hover': { opacity: 0.8 },
             }}
           >
             About Us
@@ -182,7 +181,7 @@ const Login = ({ setFullName }: LoginProps) => {
             sx={{
               color: 'white',
               cursor: 'pointer',
-              '&:hover': { opacity: 0.8 }
+              '&:hover': { opacity: 0.8 },
             }}
           >
             Help
@@ -195,7 +194,7 @@ const Login = ({ setFullName }: LoginProps) => {
             sx={{
               color: 'white',
               fontWeight: 'bold',
-              letterSpacing: '1px'
+              letterSpacing: '1px',
             }}
           >
             GENELINK
@@ -211,7 +210,11 @@ const Login = ({ setFullName }: LoginProps) => {
               justifyContent: 'center',
             }}
           >
-            <img src={logo} alt="Logo" style={{ width: '70px', height: '70px' }} />
+            <img
+              src={logo}
+              alt="Logo"
+              style={{ width: '70px', height: '70px' }}
+            />
           </div>
         </div>
       </div>
@@ -226,7 +229,7 @@ const Login = ({ setFullName }: LoginProps) => {
           display: 'grid',
           gridTemplateColumns: 'auto auto',
           columnGap: '200px', // khoảng cách giữa 2 cột
-          rowGap: '60px',    // khoảng cách giữa các hàng
+          rowGap: '60px', // khoảng cách giữa các hàng
         }}
       >
         {/** Hàng 1, Cột 1: Phone **/}
@@ -245,7 +248,10 @@ const Login = ({ setFullName }: LoginProps) => {
             <Typography sx={{ color: 'white', fontSize: 16 }}>📞</Typography>
           </div>
           <div>
-            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+            <Typography
+              variant="body2"
+              sx={{ color: 'white', fontWeight: 'bold' }}
+            >
               Phone
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
@@ -270,7 +276,10 @@ const Login = ({ setFullName }: LoginProps) => {
             <Typography sx={{ color: 'white', fontSize: 16 }}>✉️</Typography>
           </div>
           <div>
-            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+            <Typography
+              variant="body2"
+              sx={{ color: 'white', fontWeight: 'bold' }}
+            >
               E-Mail
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
@@ -295,7 +304,10 @@ const Login = ({ setFullName }: LoginProps) => {
             <Typography sx={{ color: 'white', fontSize: 16 }}>🌐</Typography>
           </div>
           <div>
-            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+            <Typography
+              variant="body2"
+              sx={{ color: 'white', fontWeight: 'bold' }}
+            >
               Website
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
@@ -320,7 +332,10 @@ const Login = ({ setFullName }: LoginProps) => {
             <Typography sx={{ color: 'white', fontSize: 16 }}>📍</Typography>
           </div>
           <div>
-            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+            <Typography
+              variant="body2"
+              sx={{ color: 'white', fontWeight: 'bold' }}
+            >
               Address
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
@@ -423,9 +438,7 @@ const Login = ({ setFullName }: LoginProps) => {
                 onChange={handleInput}
                 variant="outlined"
                 InputProps={{
-                  startAdornment: (
-                    <LockIcon sx={{ color: '#bdc3c7', mr: 1 }} />
-                  ),
+                  startAdornment: <LockIcon sx={{ color: '#bdc3c7', mr: 1 }} />,
                 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -472,7 +485,8 @@ const Login = ({ setFullName }: LoginProps) => {
                 fontWeight: 'bold',
                 mb: 3,
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                  background:
+                    'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
                 },
               }}
             >

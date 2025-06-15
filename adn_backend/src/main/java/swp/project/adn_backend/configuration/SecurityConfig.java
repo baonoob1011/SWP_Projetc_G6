@@ -44,7 +44,7 @@ public class SecurityConfig {
             "/api/register/user-account",
             "/api/services/get-all-administrative-service",
             "/api/services/get-all-civil-service",
-            "/api/price//get-all-price/**",
+            "/api/price/get-all-price/**",
     };
 
     private final String[] USER_ENDPOINTS = {
