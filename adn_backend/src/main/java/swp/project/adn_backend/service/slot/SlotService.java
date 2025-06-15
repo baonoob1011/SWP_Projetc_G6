@@ -208,7 +208,7 @@ public class SlotService {
 
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
                 "s.slotId, s.slotDate, s.startTime, s.endTime, s.room, s.slotStatus) " +
-                "FROM Slot s WHERE s.staff.staffId = :staffId AND s.slotDate > CURRENT_DATE";
+                "FROM Slot s WHERE s.staff.staffId = :staffId AND s.slotDate >= CURRENT_DATE";
 
         TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
         query.setParameter("staffId", staffId);

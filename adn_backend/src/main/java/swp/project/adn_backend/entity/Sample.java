@@ -23,7 +23,7 @@ public class Sample {
     @Column(name = "sample_id")
     long sampleId;
 
-    @Column(name = "sample_type")
+    @Column(name = "sample_type", columnDefinition = "nvarchar(255)")
     String sampleType;
 
     @Column(name = "collection_date")

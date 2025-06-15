@@ -42,12 +42,24 @@ public class Invoice {
     @JoinColumn(name = "service_test_id")
     private ServiceTest serviceTest;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
+
     // Constructors
     public Invoice() {
     }
 
     // Getters & Setters
 
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
 
     public Long getInvoiceId() {
         return invoiceId;

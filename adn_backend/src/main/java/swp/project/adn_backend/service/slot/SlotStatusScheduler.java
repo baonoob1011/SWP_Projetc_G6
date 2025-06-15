@@ -27,7 +27,6 @@ public class SlotStatusScheduler {
         for (Slot slot : expiredSlots) {
             slot.setSlotStatus(SlotStatus.AVAILABLE); // hoặc status bạn muốn
             slotRepository.save(slot);
-            System.out.println("⏱ Slot ID " + slot.getSlotId() + " has expired and is updated.");
         }
     }
 }

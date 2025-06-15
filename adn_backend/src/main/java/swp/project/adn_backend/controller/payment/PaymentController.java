@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.InfoDTO.InvoiceDTO;
 import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
 import swp.project.adn_backend.entity.Invoice;
+import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.exception.AppException;
+import swp.project.adn_backend.repository.InvoiceRepository;
 import swp.project.adn_backend.service.payment.CreatePaymentService;
 import swp.project.adn_backend.service.payment.InvoiceService;
 import swp.project.adn_backend.service.payment.VNPayService;
@@ -17,6 +20,7 @@ import swp.project.adn_backend.service.payment.PaymentService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/payment")
@@ -27,12 +31,6 @@ public class PaymentController {
     private PaymentService getPaymentService;
     private CreatePaymentService createPaymentService;
     private InvoiceService invoiceService;
-
-//    @PostMapping("/create-payment")
-//    public ResponseEntity<Payment> createPayment(PaymentRequest paymentRequest) {
-//        return ResponseEntity.ok(paymentService.createPayment(paymentRequest));
-//    }
-
 
     @Autowired
     public PaymentController(PaymentService paymentService, VNPayService vnPayService, PaymentService getPaymentService, CreatePaymentService createPaymentService, InvoiceService invoiceService) {
@@ -48,7 +46,6 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.getAllPayment(authentication));
     }
 
-    // ✅ Tạo đơn hàng và trả về URL VNPay để chuyển hướng người dùng đến thanh toán
     @PostMapping("/create")
     public ResponseEntity<String> createPayment(
             @RequestParam long paymentId,
@@ -56,20 +53,20 @@ public class PaymentController {
 
         CreatePaymentRequest req = createPaymentService.createPayment(paymentId, serviceId);
 
-        // ép kiểu đúng: double -> long -> int
-        int amount = Math.toIntExact((long) req.getAmount());
+        double rawAmount = req.getAmount(); // ví dụ: 123000.0
+        int amount = (int) Math.round(rawAmount); // giữ nguyên đơn vị VND
 
         String paymentUrl = vnPayService.createOrder(
-                amount,
+                amount, // truyền đúng đơn vị nhỏ nhất
                 req.getOrderInfo(),
                 req.getTxnRef(),
                 req.getReturnUrlBase()
         );
 
+        System.out.println("🔥 Controller called: paymentId=" + paymentId + ", serviceId=" + serviceId);
+
         return ResponseEntity.ok(paymentUrl);
     }
-
-
 
 
     @GetMapping("/vnpay-return")
@@ -94,6 +91,7 @@ public class PaymentController {
         int result = vnPayService.orderReturn(request);
         if (result == 1) {
             return ResponseEntity.ok("Thanh toán thành công");
+
         } else if (result == 0) {
             return ResponseEntity.badRequest().body("Thanh toán thất bại");
         } else {

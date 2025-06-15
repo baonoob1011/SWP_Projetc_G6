@@ -21,6 +21,7 @@ public class InvoiceService {
         invoice.setBankCode(generateRandomBankCode(6));
         invoice.setCreatedDate(LocalDateTime.now());
         invoice.setTransactionStatus(TransactionStatus.SUCCESS);
+        invoice.getAppointment().setNote("Đã thanh toán");
         return invoiceRepository.save(invoice);
     }
 

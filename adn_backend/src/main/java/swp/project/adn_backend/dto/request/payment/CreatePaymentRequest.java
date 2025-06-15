@@ -9,6 +9,13 @@ public class CreatePaymentRequest {
     public CreatePaymentRequest() {
     }
 
+    public CreatePaymentRequest(double amount, String orderInfo, String returnUrlBase, String txnRef) {
+        this.amount = amount;
+        this.orderInfo = orderInfo;
+        this.returnUrlBase = returnUrlBase;
+        this.txnRef = txnRef;
+    }
+
     public String getTxnRef() {
         return txnRef;
     }

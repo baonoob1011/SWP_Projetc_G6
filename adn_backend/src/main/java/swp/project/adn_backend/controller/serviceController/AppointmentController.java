@@ -43,7 +43,7 @@ public class AppointmentController {
         );
     }
 
-    @PostMapping("/book-appointment-at_home/{serviceId}")
+    @PostMapping("/book-appointment-at-home/{serviceId}")
     public AllAppointmentAtHomeResponse bookAppointmentAtHome(@RequestBody BookAppointmentRequest request,
                                                               Authentication authentication,
                                                               @PathVariable long serviceId,
@@ -59,8 +59,13 @@ public class AppointmentController {
     }
 
     @GetMapping("/get-appointment")
-    public ResponseEntity<AllAppointmentResponse> getAppointmentForUserAtCenter(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getAppointment(authentication));
+    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentForUserAtCenter(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAppointmentAtCenter(authentication));
+    }
+
+    @GetMapping("/get-appointment-at-home")
+    public ResponseEntity<List<AllAppointmentAtHomeResponse>> getAppointmentForUserAtHome(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
     }
 
     @GetMapping("/get-appointment-history-user")

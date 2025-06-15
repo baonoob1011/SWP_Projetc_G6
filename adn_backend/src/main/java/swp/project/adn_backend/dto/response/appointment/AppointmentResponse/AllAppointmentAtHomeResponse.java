@@ -8,25 +8,34 @@ public class AllAppointmentAtHomeResponse {
     private ShowAppointmentResponse showAppointmentResponse;
     private List<ServiceAppointmentResponse> serviceAppointmentResponses;
     private KitAppointmentResponse kitAppointmentResponse;
-    private PriceAppointmentResponse priceAppointmentResponse;
-
+    private List<PriceAppointmentResponse> priceAppointmentResponse;
+    private List<PaymentAppointmentResponse> paymentAppointmentResponses;
     public AllAppointmentAtHomeResponse() {
     }
 
-    public AllAppointmentAtHomeResponse(List<PatientAppointmentResponse> patientAppointmentResponse, List<UserAppointmentResponse> userAppointmentResponse, ShowAppointmentResponse showAppointmentResponse, List<ServiceAppointmentResponse> serviceAppointmentResponses, KitAppointmentResponse kitAppointmentResponse, PriceAppointmentResponse priceAppointmentResponse) {
+    public AllAppointmentAtHomeResponse(List<PatientAppointmentResponse> patientAppointmentResponse, List<UserAppointmentResponse> userAppointmentResponse, ShowAppointmentResponse showAppointmentResponse, List<ServiceAppointmentResponse> serviceAppointmentResponses, KitAppointmentResponse kitAppointmentResponse, List<PriceAppointmentResponse> priceAppointmentResponse, List<PaymentAppointmentResponse> paymentAppointmentResponses) {
         this.patientAppointmentResponse = patientAppointmentResponse;
         this.userAppointmentResponse = userAppointmentResponse;
         this.showAppointmentResponse = showAppointmentResponse;
         this.serviceAppointmentResponses = serviceAppointmentResponses;
         this.kitAppointmentResponse = kitAppointmentResponse;
         this.priceAppointmentResponse = priceAppointmentResponse;
+        this.paymentAppointmentResponses = paymentAppointmentResponses;
     }
 
-    public PriceAppointmentResponse getPriceAppointmentResponse() {
+    public List<PaymentAppointmentResponse> getPaymentAppointmentResponses() {
+        return paymentAppointmentResponses;
+    }
+
+    public void setPaymentAppointmentResponses(List<PaymentAppointmentResponse> paymentAppointmentResponses) {
+        this.paymentAppointmentResponses = paymentAppointmentResponses;
+    }
+
+    public List<PriceAppointmentResponse> getPriceAppointmentResponse() {
         return priceAppointmentResponse;
     }
 
-    public void setPriceAppointmentResponse(PriceAppointmentResponse priceAppointmentResponse) {
+    public void setPriceAppointmentResponse(List<PriceAppointmentResponse> priceAppointmentResponse) {
         this.priceAppointmentResponse = priceAppointmentResponse;
     }
 

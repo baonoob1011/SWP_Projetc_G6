@@ -51,6 +51,7 @@ public class SecurityConfig {
             "/api/appointment/book-appointment/**",
             "/api/appointment/cancel-appointment/**",
             "/api/appointment/get-appointment/**",
+            "/api/appointment/get-appointment-at-home/**",
             "/api/appointment/get-appointment-history-user/**",
             "/api/slot/get-all-slot-user/**",
             "/api/patient/register-info",
@@ -60,7 +61,7 @@ public class SecurityConfig {
             "/api/user/**",
             "/api/payment/**",
             "/api/v1/**",
-            "/api/appointment/book-appointment-at_home/**",
+            "/api/appointment/book-appointment-at-home/**",
             "/api/appointment/cancel-appointment/**",
     };
 

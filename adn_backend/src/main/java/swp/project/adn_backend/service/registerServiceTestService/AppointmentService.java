@@ -157,10 +157,10 @@ public class AppointmentService {
 
     @Transactional
     public UpdateAppointmentStatusResponse ConfirmAppointmentAtCenter(long appointmentId,
-                                                                           long userId,
-                                                                           long slotId,
-                                                                           long serviceId,
-                                                                           long locationId) {
+                                                                      long userId,
+                                                                      long slotId,
+                                                                      long serviceId,
+                                                                      long locationId) {
         Users userBookAppointment = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
@@ -265,6 +265,8 @@ public class AppointmentService {
         PriceAppointmentResponse priceAppointmentResponses = new PriceAppointmentResponse();
         priceAppointmentResponses.setTime(priceList.getTime());
         priceAppointmentResponses.setPrice(totalPrice);
+        List<PriceAppointmentResponse> priceAppointmentResponsesList = new ArrayList<>();
+        priceAppointmentResponsesList.add(priceAppointmentResponses);
 
         AllAppointmentAtHomeResponse emailResponse = new AllAppointmentAtHomeResponse();
         emailResponse.setShowAppointmentResponse(showAppointmentResponse);
@@ -272,7 +274,7 @@ public class AppointmentService {
         emailResponse.setServiceAppointmentResponses(List.of(serviceAppointmentResponse));
         emailResponse.setPatientAppointmentResponse(patientAppointmentResponses);
         emailResponse.setKitAppointmentResponse(kitAppointmentResponse);
-        emailResponse.setPriceAppointmentResponse(priceAppointmentResponses);
+        emailResponse.setPriceAppointmentResponse(priceAppointmentResponsesList);
 
         appointmentMapper.toAppointmentResponse(saved);
         return emailResponse;
@@ -280,9 +282,9 @@ public class AppointmentService {
 
     @Transactional
     public UpdateAppointmentStatusResponse ConfirmAppointmentAtHome(long appointmentId,
-                                                                         long userId,
-                                                                         long serviceId,
-                                                                         long kitId) {
+                                                                    long userId,
+                                                                    long serviceId,
+                                                                    long kitId) {
         Users userBookAppointment = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
@@ -333,8 +335,19 @@ public class AppointmentService {
         return query.getResultList();
     }
 
+//    public AllAppointmentAtCenterResponse getAppointmentBySlot(long slotId) {
+//        Slot slot = slotRepository.findById(slotId)
+//                .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
+//
+//        List<Appointment> appointmentList = slot.getAppointment();
+//        List<AllAppointmentAtCenterResponse> responses = new ArrayList<>();
+//        for (Appointment appointment : appointmentList){
+//            List<PatientAppointmentResponse> users = List.of(appointmentMapper.toPatientAppointmentService(appointment.getUsers()));
+//
+//        }
+//    }
 
-    public AllAppointmentResponse getAppointment(Authentication authentication) {
+    public List<AllAppointmentAtCenterResponse> getAppointmentAtCenter(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
 
@@ -342,21 +355,17 @@ public class AppointmentService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
         List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
-
         List<AllAppointmentAtCenterResponse> centerList = new ArrayList<>();
-        List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
 
         for (Appointment appointment : appointmentList) {
-            if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED) &&
-                    appointment.getServices().getServiceType().equals(ServiceType.ADMINISTRATIVE)) {
+            if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
 
                 ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
-
-                List<UserAppointmentResponse> users = List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()));
                 List<StaffAppointmentResponse> staff = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
                 List<SlotAppointmentResponse> slot = List.of(appointmentMapper.toSlotAppointmentResponse(appointment.getSlot()));
                 List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
                 List<LocationAppointmentResponse> locations = List.of(appointmentMapper.toLocationAppointmentResponse(appointment.getLocation()));
+                List<PaymentAppointmentResponse> payments = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
 
                 RoomAppointmentResponse room = new RoomAppointmentResponse();
                 room.setRoomName(appointment.getSlot().getRoom().getRoomName());
@@ -368,32 +377,47 @@ public class AppointmentService {
                 centerResponse.setServiceAppointmentResponses(services);
                 centerResponse.setLocationAppointmentResponses(locations);
                 centerResponse.setRoomAppointmentResponse(room);
+                centerResponse.setPaymentAppointmentResponse(payments);
 
                 centerList.add(centerResponse);
+            }
+        }
 
-            } else if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED) &&
+        return centerList;
+    }
+
+    public List<AllAppointmentAtHomeResponse> getAppointmentAtHome(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+
+        Users userRegister = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+        List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
+        List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
+
+        for (Appointment appointment : appointmentList) {
+            if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED) &&
                     appointment.getServices().getServiceType().equals(ServiceType.CIVIL)) {
 
                 ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
-
-                List<UserAppointmentResponse> users = List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()));
                 List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
                 KitAppointmentResponse kit = appointmentMapper.toKitAppointmentResponse(appointment.getServices().getKit());
+                List<PaymentAppointmentResponse> payments = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
 
                 AllAppointmentAtHomeResponse homeResponse = new AllAppointmentAtHomeResponse();
                 homeResponse.setShowAppointmentResponse(show);
                 homeResponse.setServiceAppointmentResponses(services);
                 homeResponse.setKitAppointmentResponse(kit);
+                homeResponse.setPaymentAppointmentResponses(payments);
 
                 homeList.add(homeResponse);
             }
         }
 
-        AllAppointmentResponse finalResponse = new AllAppointmentResponse();
-        finalResponse.setAllAppointmentAtCenterResponse(centerList);
-        finalResponse.setAllAppointmentAtHomeResponse(homeList);
-        return finalResponse;
+        return homeList;
     }
+
 
     public AllAppointmentResponse getHistoryAppointmentUser(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -411,19 +435,17 @@ public class AppointmentService {
             if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED) &&
                     appointment.getServices().getServiceType().equals(ServiceType.ADMINISTRATIVE)) {
 
-                ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
-
                 List<UserAppointmentResponse> users = List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()));
                 List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
 
-                RoomAppointmentResponse room = new RoomAppointmentResponse();
-                room.setRoomName(appointment.getSlot().getRoom().getRoomName());
+                PriceList firstPrice = appointment.getServices().getPriceLists().get(0);
+                List<PriceAppointmentResponse> priceAppointmentResponse =
+                        appointmentMapper.toPriceAppointmentResponse(List.of(firstPrice));
 
                 AllAppointmentAtCenterResponse centerResponse = new AllAppointmentAtCenterResponse();
-                centerResponse.setShowAppointmentResponse(show);
                 centerResponse.setUserAppointmentResponse(users);
                 centerResponse.setServiceAppointmentResponses(services);
-                centerResponse.setRoomAppointmentResponse(room);
+                centerResponse.setPriceAppointmentResponse(priceAppointmentResponse);
 
                 centerList.add(centerResponse);
 
@@ -434,12 +456,14 @@ public class AppointmentService {
 
                 List<UserAppointmentResponse> users = List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()));
                 List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
+                PriceList firstPrice = appointment.getServices().getPriceLists().get(0);
+                List<PriceAppointmentResponse> priceAppointmentResponse =
+                        appointmentMapper.toPriceAppointmentResponse(List.of(firstPrice));
 
                 AllAppointmentAtHomeResponse homeResponse = new AllAppointmentAtHomeResponse();
-                homeResponse.setShowAppointmentResponse(show);
                 homeResponse.setUserAppointmentResponse(users);
                 homeResponse.setServiceAppointmentResponses(services);
-
+                homeResponse.setPriceAppointmentResponse(priceAppointmentResponse);
                 homeList.add(homeResponse);
             }
         }
@@ -450,9 +474,10 @@ public class AppointmentService {
         return finalResponse;
     }
 
-public void cancelledAppointment(long appointmentId) {
-    Appointment appointment = appointmentRepository.findById(appointmentId)
-            .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
-    appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
-}
+    @Transactional
+    public void cancelledAppointment(long appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
+    }
 }

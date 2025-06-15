@@ -32,39 +32,59 @@ public class CreatePaymentService {
     }
 
     public CreatePaymentRequest createPayment(long paymentId, long serviceId) {
-        Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.PAYMENT_INFO_NOT_EXISTS));
+        System.out.println("▶️ Start createPayment: paymentId=" + paymentId + ", serviceId=" + serviceId);
 
-        ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
+        try {
+            Payment payment = paymentRepository.findById(paymentId)
+                    .orElseThrow(() -> new AppException(ErrorCodeUser.PAYMENT_INFO_NOT_EXISTS));
 
-        // ✅ Tạo mã giao dịch duy nhất (txnRef)
-        String txnRef = UUID.randomUUID().toString().replace("-", "").substring(0, 20); // max 20 ký tự
+            ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
+                    .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
 
-        // ✅ Tạo Invoice
-        Invoice invoice = new Invoice();
-        invoice.setTxnRef(txnRef);
-        invoice.setAmount((long) payment.getAmount());
-        invoice.setOrderInfo(serviceTest.getServiceName());
-        invoice.setStatus("PENDING");
-        invoice.setCreatedDate(LocalDateTime.now());
+            Double amount = payment.getAmount();
+            if (amount == null) {
+                throw new AppException(ErrorCodeUser.INTERNAL_ERROR);
+            }
 
-        // Gán quan hệ nếu có
-        invoice.setPayment(payment);
-        invoice.setServiceTest(serviceTest);
+            // Sinh txnRef duy nhất
+            String txnRef;
+            int attempts = 0;
+            do {
+                txnRef = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+                attempts++;
+                System.out.println("🔁 Generated txnRef attempt " + attempts + ": " + txnRef);
+            } while (invoiceRepository.existsByTxnRef(txnRef));
 
-        // ✅ Lưu hóa đơn
-        invoiceRepository.save(invoice);
+            System.out.println("✅ Final txnRef: " + txnRef);
 
-        // ✅ Tạo request để trả về cho client tạo URL thanh toán
-        CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
-        createPaymentRequest.setAmount(payment.getAmount());
-        createPaymentRequest.setOrderInfo(serviceTest.getServiceName());
-        createPaymentRequest.setTxnRef(txnRef); // rất quan trọng
-        createPaymentRequest.setReturnUrlBase("http://localhost:5173/vnpay-payment");
+            // Tạo hóa đơn
+            Invoice invoice = new Invoice();
+            invoice.setTxnRef(txnRef);
+            invoice.setAmount((long) payment.getAmount());
+            invoice.setOrderInfo(serviceTest.getServiceName());
+            invoice.setStatus("PENDING");
+            invoice.setCreatedDate(LocalDateTime.now());
+            invoice.setPayment(payment);
+            invoice.setServiceTest(serviceTest);
 
-        return createPaymentRequest;
+            invoiceRepository.save(invoice);
+            System.out.println("🧾 Invoice saved: txnRef=" + txnRef + ", amount=" + invoice.getAmount() + ", status=" + invoice.getStatus());
+
+            // Chuẩn bị response trả về FE
+            CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
+            createPaymentRequest.setAmount(payment.getAmount());
+            createPaymentRequest.setOrderInfo(serviceTest.getServiceName());
+            createPaymentRequest.setTxnRef(txnRef);
+            createPaymentRequest.setReturnUrlBase("http://localhost:5173/vnpay-payment");
+
+            System.out.println("↩️ Returning createPaymentRequest with txnRef=" + txnRef);
+
+            return createPaymentRequest;
+
+        } catch (Exception ex) {
+            System.out.println("❌ Error during createPayment: " + ex.getMessage());
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 }
-
-
