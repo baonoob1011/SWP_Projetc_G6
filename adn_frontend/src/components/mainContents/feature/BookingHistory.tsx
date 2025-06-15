@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 // ==== TYPES ====
 type Patient = {
@@ -58,7 +59,7 @@ type RoomResponse = {
 };
 
 type PaymentResponse = {
-  paymentId: string;
+  paymentId: number;
   amount: string;
   paymentMethod: string;
   getPaymentStatus: string;
@@ -86,7 +87,7 @@ const BookingHistory = () => {
     useState<BookingHistoryItem | null>(null);
   const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
+  const fetchData = () => {
     const token = localStorage.getItem('token');
     fetch('http://localhost:8080/api/appointment/get-appointment', {
       method: 'GET',
@@ -123,8 +124,59 @@ const BookingHistory = () => {
         setError(err.message);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
+  const handleCanceled = async (appointmentId: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/appointment/cancel-appointment/${appointmentId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+
+      if (res.ok) {
+        toast.success('Đã hủy cuộc hẹn thành công');
+        fetchData();
+      } else {
+        toast.error('Hủy cuộc hẹn thất bại');
+      }
+    } catch (error) {
+      console.log('❌ Lỗi hệ thống khi gửi request:', error);
+      toast.error('Lỗi hệ thống');
+    }
+  };
+
+  const handlePayment = async (paymentId: number, serviceId: number) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/payment/create?paymentId=${paymentId}&serviceId=${serviceId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      const redirectUrl = await res.text();
+      if (res.ok) {
+        window.location.href = redirectUrl;
+      } else {
+        toast.error('bị lỗi');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="container mb-4">
       {loading && <p>Đang tải dữ liệu...</p>}
@@ -135,9 +187,8 @@ const BookingHistory = () => {
           <table className="table table-bordered">
             <thead className="table-light">
               <tr>
-                <th>#</th>
+                <th>Số</th>
                 <th>Ngày</th>
-                <th>Người đăng ký</th>
                 <th>Trạng thái</th>
                 <th>Dịch vụ</th>
                 <th>Thao tác</th>
@@ -146,9 +197,8 @@ const BookingHistory = () => {
             <tbody>
               {bookingList.map((item, idx) => (
                 <tr key={idx}>
-                  <td>{item.show.appointmentId}</td>
+                  <td>{idx + 1}</td>
                   <td>{item.show.appointmentDate}</td>
-                  <td>{item.user[0]?.fullName}</td>
                   <td>{item.show.appointmentStatus}</td>
                   <td>{item.services.map((s) => s.serviceName).join(', ')}</td>
                   <td>
@@ -161,6 +211,35 @@ const BookingHistory = () => {
                     >
                       Xem thêm
                     </button>
+                    {item.show.appointmentId && (
+                      <button
+                        type="button"
+                        className="btn btn-outline-danger"
+                        onClick={() =>
+                          handleCanceled(item.show.appointmentId.toString())
+                        }
+                      >
+                        Hủy cuộc hẹn
+                      </button>
+                    )}
+                    {item.payments.length > 0 &&
+                      (!item.payments[0].getPaymentStatus ||
+                        item.payments[0].getPaymentStatus === 'UNPAID') &&
+                      item.payments[0].paymentId &&
+                      item.services.length > 0 &&
+                      item.services[0].serviceId && (
+                        <button
+                          className="btn btn-success btn-sm ms-2"
+                          onClick={() =>
+                            handlePayment(
+                              item.payments[0].paymentId,
+                              item.services[0].serviceId
+                            )
+                          }
+                        >
+                          Thanh toán
+                        </button>
+                      )}
                   </td>
                 </tr>
               ))}
@@ -201,24 +280,6 @@ const BookingHistory = () => {
                 <p>
                   <strong>Ghi chú:</strong>{' '}
                   {selectedBooking.show.note || 'Không có'}
-                </p>
-
-                <hr />
-                <p>
-                  <strong>Người đặt:</strong>{' '}
-                  {selectedBooking.user[0]?.fullName}
-                </p>
-                <p>
-                  <strong>Email:</strong> {selectedBooking.user[0]?.email}
-                </p>
-                <p>
-                  <strong>Điện thoại:</strong> {selectedBooking.user[0]?.phone}
-                </p>
-
-                <hr />
-                <p>
-                  <strong>Bệnh nhân:</strong>{' '}
-                  {selectedBooking.patients.map((p) => p.fullName).join(', ')}
                 </p>
                 <p>
                   <strong>Dịch vụ:</strong>{' '}

@@ -11,6 +11,7 @@ import {
   // FileText,
   Shield,
   List,
+  BookImageIcon,
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
@@ -36,6 +37,12 @@ const StaffPage = () => {
       icon: Schedule,
       label: 'Lịch làm',
       path: 's-page/s-slot',
+    },
+    {
+      id: 'schedule',
+      icon: BookImageIcon,
+      label: 'Lịch hẹn',
+      path: 's-page/checkBooking',
     },
   ];
 

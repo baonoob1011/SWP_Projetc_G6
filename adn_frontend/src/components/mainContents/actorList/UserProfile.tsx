@@ -22,7 +22,7 @@ const NewProfile = () => {
   const [editableField, setEditableField] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<
-    'profile' | 'changePassword' | 'history'
+    'profile' | 'changePassword' | 'appointment'
   >('profile');
 
   useEffect(() => {
@@ -100,11 +100,11 @@ const NewProfile = () => {
             </button>
             <button
               className={`list-group-item list-group-item-action ${
-                activeTab === 'history' ? 'active' : ''
+                activeTab === 'appointment' ? 'active' : ''
               }`}
-              onClick={() => setActiveTab('history')}
+              onClick={() => setActiveTab('appointment')}
             >
-              Lịch sử
+              Cuộc hẹn
             </button>
           </div>
         </div>
@@ -171,9 +171,9 @@ const NewProfile = () => {
             </>
           )}
 
-          {activeTab === 'history' && (
+          {activeTab === 'appointment' && (
             <>
-              <h3 className="mb-4">Lịch sử đặt lịch</h3>
+              <h3 className="mb-4">Cuộc hẹn</h3>
               <BookingHistory />
             </>
           )}
