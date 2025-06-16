@@ -1,5 +1,6 @@
 package swp.project.adn_backend.service.payment;
 
+
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.configuration.VNPayConfig;
@@ -26,10 +27,9 @@ public class VNPayService {
         vnp_Params.put("vnp_Command", vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
         int amountInSmallestUnit = (int) Math.round(total * 100); // Nhân với 100 để chuyển sang đơn vị nhỏ nhất
-//        long amountInSmallestUnit = Math.round(total * 100); // Chuyển sang đơn vị nhỏ nhất
-//        vnp_Params.put("vnp_Amount", Long.toString(amountInSmallestUnit));
-
         vnp_Params.put("vnp_Amount", Integer.toString(amountInSmallestUnit));
+        System.out.println(total);
+
         vnp_Params.put("vnp_CurrCode", "VND");
 
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
@@ -73,18 +73,6 @@ public class VNPayService {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-//                try {
-//                    hashData.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8.toString()));
-//                    hashData.append('=');
-//                    hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString()));
-//
-//                    query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8.toString()));
-//                    query.append('=');
-//                    query.append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString()));
-//                } catch (UnsupportedEncodingException e) {
-//                    e.printStackTrace();
-//                }
-
                 if (itr.hasNext()) {
                     query.append('&');
                     hashData.append('&');

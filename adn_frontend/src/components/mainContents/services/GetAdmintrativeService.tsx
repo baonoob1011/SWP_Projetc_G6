@@ -37,16 +37,16 @@ const translateServiceType = (type: string): string => {
   }
 };
 
-const translateSampleMethod = (method: string): string => {
-  switch (method) {
-    case 'AT_HOME':
-      return 'Tại nhà';
-    case 'AT_CLINIC':
-      return 'Tại phòng khám';
-    default:
-      return method;
-  }
-};
+// const translateSampleMethod = (method: string): string => {
+//   switch (method) {
+//     case 'AT_HOME':
+//       return 'Tại nhà';
+//     case 'AT_CLINIC':
+//       return 'Tại phòng khám';
+//     default:
+//       return method;
+//   }
+// };
 
 const AdministrativeServiceList = () => {
   const [services, setServices] = useState<ServiceItem[]>([]);
@@ -153,7 +153,7 @@ const AdministrativeServiceList = () => {
                   ))}
                 </div>
 
-                <div style={{ marginTop: '10px', width: '100%' }}>
+                {/* <div style={{ marginTop: '10px', width: '100%' }}>
                   <strong>Phương pháp lấy mẫu:</strong>
                   {service.serviceResponses?.[0]?.sampleCollectionMethods
                     .length ? (
@@ -165,7 +165,7 @@ const AdministrativeServiceList = () => {
                   ) : (
                     <p>Không có dữ liệu</p>
                   )}
-                </div>
+                </div> */}
                 <Button
                   variant="contained"
                   component={NavLink}

@@ -36,7 +36,7 @@ public class SlotController {
 
     @GetMapping("/get-all-slot-user")
     public ResponseEntity<List<SlotInfoDTO>> getAllSlotUser() {
-        return ResponseEntity.ok(slotService.getALlSlotForUser());
+        return ResponseEntity.ok(slotService.getAllUpcomingSlotsForUser());
     }
 
     @DeleteMapping("/delete-slot/{slotId}")

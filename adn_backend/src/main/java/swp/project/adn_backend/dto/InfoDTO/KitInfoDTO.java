@@ -16,19 +16,22 @@ public class KitInfoDTO {
     double price;
     String contents;
     DeliveryStatus kitStatus;
-    LocalDate delivery_date;
-    LocalDate return_date;
+    LocalDate deliveryDate;
+    LocalDate returnDate;
 
-    public KitInfoDTO(long kitId, String kitCode, String kitName, String targetPersonCount, double price, String contents) {
+    public KitInfoDTO(long kitId, String kitCode, String kitName, String targetPersonCount, double price, String contents, DeliveryStatus kitStatus, LocalDate deliveryDate, LocalDate returnDate) {
         this.kitId = kitId;
         this.kitCode = kitCode;
         this.kitName = kitName;
         this.targetPersonCount = targetPersonCount;
         this.price = price;
         this.contents = contents;
+        this.kitStatus = kitStatus;
+        this.deliveryDate = deliveryDate;
+        this.returnDate = returnDate;
     }
 
-//    public KitInfoDTO(long kitId, String kitCode, String kitName, DeliveryStatus kitStatus, LocalDate delivery_date, LocalDate return_date) {
+    //    public KitInfoDTO(long kitId, String kitCode, String kitName, DeliveryStatus kitStatus, LocalDate delivery_date, LocalDate return_date) {
 //        this.kitId = kitId;
 //        this.kitCode = kitCode;
 //        this.kitName = kitName;
@@ -53,20 +56,20 @@ public class KitInfoDTO {
         this.kitStatus = kitStatus;
     }
 
-    public LocalDate getDelivery_date() {
-        return delivery_date;
+    public LocalDate getDeliveryDate() {
+        return deliveryDate;
     }
 
-    public void setDelivery_date(LocalDate delivery_date) {
-        this.delivery_date = delivery_date;
+    public void setDeliveryDate(LocalDate deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 
-    public LocalDate getReturn_date() {
-        return return_date;
+    public LocalDate getReturnDate() {
+        return returnDate;
     }
 
-    public void setReturn_date(LocalDate return_date) {
-        this.return_date = return_date;
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
     }
 
     public String getKitCode() {

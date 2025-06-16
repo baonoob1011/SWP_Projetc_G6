@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateUserRequest;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentAtCenterResponse;
+import swp.project.adn_backend.dto.response.role.UpdateUserResponse;
 import swp.project.adn_backend.dto.response.slot.SlotResponse;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.service.Location.LocationService;
@@ -38,7 +39,7 @@ public class UserController {
     }
 
     @PutMapping("/update-user")
-    public ResponseEntity<Users> updateUser(Authentication authentication, @RequestBody @Valid UpdateUserRequest updateUserRequest) {
+    public ResponseEntity<UpdateUserResponse> updateUser(Authentication authentication, @RequestBody @Valid UpdateUserRequest updateUserRequest) {
         return ResponseEntity.ok(userService.updateUser(authentication, updateUserRequest));
     }
 

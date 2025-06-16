@@ -35,13 +35,13 @@ const ManagerPage = () => {
     { id: 'data', icon: List, label: 'Danh sách', path: 'manager/data' },
     {
       id: 'services',
-      icon: RoomService,
-      label: 'Lịch làm',
+      icon: ShoppingBag,
+      label: 'Tất cả dịch vụ',
       path: 'manager/services',
     },
     {
       id: 'create-services',
-      icon: ShoppingBag,
+      icon: RoomService,
       label: 'Tạo dịch vụ',
       path: 'manager/create-services',
     },

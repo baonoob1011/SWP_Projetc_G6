@@ -36,16 +36,16 @@ const translateServiceType = (type: string): string => {
   }
 };
 
-const translateSampleMethod = (method: string): string => {
-  switch (method) {
-    case 'AT_HOME':
-      return 'Tại nhà';
-    case 'AT_CLINIC':
-      return 'Tại phòng khám';
-    default:
-      return method;
-  }
-};
+// const translateSampleMethod = (method: string): string => {
+//   switch (method) {
+//     case 'AT_HOME':
+//       return 'Tại nhà';
+//     case 'AT_CLINIC':
+//       return 'Tại phòng khám';
+//     default:
+//       return method;
+//   }
+// };
 
 const CivilServiceList = () => {
   const [services, setServices] = useState<ServiceItem[]>([]);
@@ -132,7 +132,7 @@ const CivilServiceList = () => {
                     ))}
                   </div>
 
-                  <div className="mb-2">
+                  {/* <div className="mb-2">
                     <strong>Phương pháp lấy mẫu:</strong>
                     {service.serviceResponses?.[0]?.sampleCollectionMethods
                       .length ? (
@@ -146,7 +146,7 @@ const CivilServiceList = () => {
                     ) : (
                       <p className="text-muted mb-1">Không có dữ liệu</p>
                     )}
-                  </div>
+                  </div> */}
 
                   <div className="mt-auto text-center">
                     <NavLink
@@ -154,7 +154,7 @@ const CivilServiceList = () => {
                       className="btn btn-outline-danger btn-sm"
                     >
                       <Plus size={14} className="me-1" />
-                      Đặt dịch vụ
+                      Đặt lịch tại cơ sở
                     </NavLink>
                   </div>
                 </div>

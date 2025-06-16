@@ -8,6 +8,12 @@ public class CreatePaymentRequest {
     public CreatePaymentRequest() {
     }
 
+    public CreatePaymentRequest(double amount, String orderInfo, String returnUrlBase) {
+        this.amount = amount;
+        this.orderInfo = orderInfo;
+        this.returnUrlBase = returnUrlBase;
+    }
+
     public double getAmount() {
         return amount;
     }

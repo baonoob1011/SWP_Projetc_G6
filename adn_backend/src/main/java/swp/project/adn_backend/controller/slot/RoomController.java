@@ -26,6 +26,11 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getAllRoom());
     }
 
+    @GetMapping("/get-all-room-active")
+    public ResponseEntity<List<RoomInfoDTO>> getAllRoomActive() {
+        return ResponseEntity.ok(roomService.getAllRoomActive());
+    }
+
     @DeleteMapping("/delete-room/{id}")
     public ResponseEntity<String> deleteRoom(@PathVariable long id) {
         roomService.deleteRoom(id);

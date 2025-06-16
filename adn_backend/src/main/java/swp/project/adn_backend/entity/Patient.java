@@ -15,15 +15,16 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Patient {
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "patient_id")
     long patientId;
 
-    @Column(name = "full_name")
+    @Column(name = "full_name", columnDefinition = "nvarchar(255)")
     String fullName;
 
     String email;
     String phone;
+    @Column(columnDefinition = "nvarchar(255)")
     String address;
     String role;
     @Column(name = "date_of_birth")
@@ -32,13 +33,15 @@ public class Patient {
     @Column(name = "identity_number")
     String identityNumber;
 
+    @Column(columnDefinition = "nvarchar(255)")
     String gender;
+    @Column(columnDefinition = "nvarchar(255)")
     String relationship;
 
     @Column(name = "create_at")
     LocalDate createAt;
 
-//    @Lob
+    //    @Lob
     @Column(name = "birth_certificate")
     String birthCertificate;
 
@@ -62,8 +65,9 @@ public class Patient {
     @JoinColumn(name = "service_id")
     ServiceTest serviceTest;
 
-    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = {
-            CascadeType.ALL
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY,cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Sample> samples;
 

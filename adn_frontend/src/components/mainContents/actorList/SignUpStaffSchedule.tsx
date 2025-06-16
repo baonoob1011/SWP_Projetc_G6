@@ -58,8 +58,10 @@ const SignUpStaffSchedule = () => {
 
   // Kiểm tra quyền truy cập
   useEffect(() => {
-    const role = localStorage.getItem('role');
-    setAuth(role === 'ADMIN' || role === 'MANAGER');
+    setAuth(
+      localStorage.getItem('role') === 'ADMIN' ||
+        localStorage.getItem('role') === 'MANAGER'
+    );
   }, []);
 
   // Gán lại staffId khi thay đổi param

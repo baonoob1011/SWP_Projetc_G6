@@ -38,6 +38,14 @@ public class Room {
         this.slots = slots;
     }
 
+    public RoomStatus getRoomStatus() {
+        return roomStatus;
+    }
+
+    public void setRoomStatus(RoomStatus roomStatus) {
+        this.roomStatus = roomStatus;
+    }
+
     @OneToMany(mappedBy = "room", fetch = FetchType.EAGER, cascade = {
            CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
@@ -77,13 +85,7 @@ public class Room {
         this.roomName = roomName;
     }
 
-    public RoomStatus getRoomStatus() {
-        return roomStatus;
-    }
 
-    public void setRoomStatus(RoomStatus roomStatus) {
-        this.roomStatus = roomStatus;
-    }
 
     public List<Slot> getSlots() {
         return slots;

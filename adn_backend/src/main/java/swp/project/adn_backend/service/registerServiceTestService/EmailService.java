@@ -48,6 +48,8 @@ public class EmailService {
                     .append(response.getShowAppointmentResponse().getAppointmentDate()).append("\n");
             sb.append("📌 Status: ")
                     .append(response.getShowAppointmentResponse().getAppointmentStatus()).append("\n\n");
+            sb.append("📌 Note: ")
+                    .append(response.getShowAppointmentResponse().getNote()).append("\n\n");
         }
 
         // Services
@@ -91,16 +93,6 @@ public class EmailService {
             sb.append("\n");
         }
 
-        // Patients
-        List<PatientAppointmentResponse> patients = response.getPatientAppointmentResponse();
-        if (patients != null && !patients.isEmpty()) {
-            sb.append("👤 Patients:\n");
-            patients.forEach(p -> {
-                sb.append("- ").append(p.getFullName()).append(" (").append(p.getRelationship()).append("), DOB: ")
-                        .append(p.getDateOfBirth()).append(", Gender: ").append(p.getGender()).append("\n");
-            });
-            sb.append("\n");
-        }
 
         // Staff
         List<StaffAppointmentResponse> staff = response.getStaffAppointmentResponse();
@@ -139,6 +131,8 @@ public class EmailService {
                 .append(response.getShowAppointmentResponse().getAppointmentDate()).append("\n");
         sb.append("📌 Status: ")
                 .append(response.getShowAppointmentResponse().getAppointmentStatus()).append("\n\n");
+        sb.append("📌 Note: ")
+                .append(response.getShowAppointmentResponse().getNote()).append("\n\n");
 
         // Services
         sb.append("🧪 Services:\n");
@@ -155,13 +149,6 @@ public class EmailService {
                     .append("- Kit Code: ").append(response.getKitAppointmentResponse().getKitCode()).append("\n\n");
         }
 
-        // Patients
-        sb.append("👤 Patients:\n");
-        response.getPatientAppointmentResponse().forEach(p -> {
-            sb.append("- ").append(p.getFullName()).append(" (").append(p.getRelationship()).append("), DOB: ")
-                    .append(p.getDateOfBirth()).append(", Gender: ").append(p.getGender()).append("\n");
-        });
-        sb.append("\n");
 
         // User
         sb.append("📱 Booked By:\n");

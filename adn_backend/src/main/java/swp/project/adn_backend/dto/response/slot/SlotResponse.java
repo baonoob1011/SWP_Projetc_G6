@@ -7,10 +7,10 @@ import java.time.LocalTime;
 public class SlotResponse {
     long slotId;
     LocalDate slotDate;
-    Time  startTime;
-    Time  endTime;
+    LocalTime  startTime;
+    LocalTime  endTime;
 
-    public SlotResponse(long slotId, LocalDate slotDate, Time startTime, Time endTime) {
+    public SlotResponse(long slotId, LocalDate slotDate, LocalTime startTime, LocalTime endTime) {
         this.slotId = slotId;
         this.slotDate = slotDate;
         this.startTime = startTime;
@@ -33,19 +33,19 @@ public class SlotResponse {
         this.slotDate = slotDate;
     }
 
-    public Time getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
-    public Time getEndTime() {
+    public LocalTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 }

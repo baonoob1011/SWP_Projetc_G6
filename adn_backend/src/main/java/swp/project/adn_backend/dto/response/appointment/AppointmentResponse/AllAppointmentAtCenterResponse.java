@@ -4,6 +4,7 @@ import java.util.List;
 
 public class AllAppointmentAtCenterResponse {
     private List<PatientAppointmentResponse> patientAppointmentResponse;
+    private List<PatientAppointmentFullInfoResponse> patientAppointmentFullInfoResponses;
     private List<StaffAppointmentResponse> staffAppointmentResponse;
     private List<UserAppointmentResponse> userAppointmentResponse;
     private ShowAppointmentResponse showAppointmentResponse;
@@ -18,8 +19,9 @@ public class AllAppointmentAtCenterResponse {
     }
 
 
-    public AllAppointmentAtCenterResponse(List<PatientAppointmentResponse> patientAppointmentResponse, List<StaffAppointmentResponse> staffAppointmentResponse, List<UserAppointmentResponse> userAppointmentResponse, ShowAppointmentResponse showAppointmentResponse, List<SlotAppointmentResponse> slotAppointmentResponse, List<ServiceAppointmentResponse> serviceAppointmentResponses, List<LocationAppointmentResponse> locationAppointmentResponses, RoomAppointmentResponse roomAppointmentResponse, List<PriceAppointmentResponse> priceAppointmentResponse, List<PaymentAppointmentResponse> paymentAppointmentResponse) {
+    public AllAppointmentAtCenterResponse(List<PatientAppointmentResponse> patientAppointmentResponse, List<PatientAppointmentFullInfoResponse> patientAppointmentFullInfoResponses, List<StaffAppointmentResponse> staffAppointmentResponse, List<UserAppointmentResponse> userAppointmentResponse, ShowAppointmentResponse showAppointmentResponse, List<SlotAppointmentResponse> slotAppointmentResponse, List<ServiceAppointmentResponse> serviceAppointmentResponses, List<LocationAppointmentResponse> locationAppointmentResponses, RoomAppointmentResponse roomAppointmentResponse, List<PriceAppointmentResponse> priceAppointmentResponse, List<PaymentAppointmentResponse> paymentAppointmentResponse) {
         this.patientAppointmentResponse = patientAppointmentResponse;
+        this.patientAppointmentFullInfoResponses = patientAppointmentFullInfoResponses;
         this.staffAppointmentResponse = staffAppointmentResponse;
         this.userAppointmentResponse = userAppointmentResponse;
         this.showAppointmentResponse = showAppointmentResponse;
@@ -29,6 +31,14 @@ public class AllAppointmentAtCenterResponse {
         this.roomAppointmentResponse = roomAppointmentResponse;
         this.priceAppointmentResponse = priceAppointmentResponse;
         this.paymentAppointmentResponse = paymentAppointmentResponse;
+    }
+
+    public List<PatientAppointmentFullInfoResponse> getPatientAppointmentFullInfoResponses() {
+        return patientAppointmentFullInfoResponses;
+    }
+
+    public void setPatientAppointmentFullInfoResponses(List<PatientAppointmentFullInfoResponse> patientAppointmentFullInfoResponses) {
+        this.patientAppointmentFullInfoResponses = patientAppointmentFullInfoResponses;
     }
 
     public List<PaymentAppointmentResponse> getPaymentAppointmentResponse() {

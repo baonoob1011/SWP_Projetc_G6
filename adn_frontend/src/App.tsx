@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, matchPath } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 
@@ -47,9 +47,8 @@ import CreateRoom from './components/mainContents/feature/CreateRoom';
 import CreateKit from './components/mainContents/feature/CreateKit';
 import NewPrice from './components/mainContents/feature/NewPrice';
 import GetAppointment from './components/mainContents/feature/GetBooking';
-import SendOTP from './components/mainContents/userinfor/SendOTP';
-import { Email } from '@mui/icons-material';
-import NewPass from './components/mainContents/userinfor/NewPass';
+import VNPayResult from './components/mainContents/feature/VNPAY';
+import AppointmentSchedule from './components/mainContents/feature/staff/AppoimentSchedule';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -64,7 +63,7 @@ function App() {
   const isStaffLayoutRoute = [
     '/s-page/s-userData',
     '/s-page/s-slot',
-    '/s-page/create-services',
+    '/s-page/checkBooking',
     '/s-page',
   ].includes(location.pathname);
 
@@ -75,8 +74,9 @@ function App() {
     '/manager/staff',
     '/manager/user',
     '/manager/createKit',
+    'slot/:staffId',
     '/manager',
-  ].includes(location.pathname);
+  ].some((path) => matchPath(path, location.pathname));
 
   return (
     <>
@@ -249,6 +249,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/s-page/checkBooking"
+                element={
+                  <ProtectedRoute allowedRoles={['STAFF']}>
+                    <AppointmentSchedule />
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
             <ToastContainer />
           </Box>
@@ -329,6 +337,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="slot/:staffId"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <SignUpStaffSchedule />
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
             <ToastContainer />
           </Box>
@@ -351,8 +367,6 @@ function App() {
             <Route path="/branch-and-map" element={<BranchAndMap />} />
             <Route path="/map" element={<Map />} />
             <Route path="/blog" element={<Blog />} />
-            <Route path="/otp" element={<SendOTP email='email'/>} />
-            <Route path="/newpass" element={<NewPass  email='email'/>} />
 
             {/* USER, STAFF, MANAGER DÙNG DEFAULT */}
             <Route
@@ -376,6 +390,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <PatientRequest />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="vnpay-payment/vnpay-payment"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <VNPayResult />
                 </ProtectedRoute>
               }
             />

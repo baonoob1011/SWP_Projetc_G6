@@ -301,13 +301,13 @@ const GetSlot = () => {
         const errorText = await res.text();
         console.error('Submit error response:', errorText);
       } else {
-        navigate(`/checkBooking`);
-        toast.success('Đã đăng ký thành công');
+        navigate(`/`);
+        toast.success('Đặt lịch thành công');
         setSelectedSlot('');
       }
     } catch (error) {
       console.error('Submit error:', error);
-      toast.error('Không thể đăng ký');
+      toast.error('Không thể đặt lịch');
     } finally {
       setIsSubmitting(false);
     }
@@ -395,7 +395,7 @@ const GetSlot = () => {
           >
             {price.map((price) => (
               <MenuItem key={price.priceId} value={price.priceId}>
-                {`${price.price} - ${price.time}`}
+                {`${price.price} : ${price.time}`}
               </MenuItem>
             ))}
           </Select>
@@ -414,7 +414,7 @@ const GetSlot = () => {
             sx={{ fontSize: '16px' }}
             onChange={(e) => setPaymentMethod(e.target.value)} // <- đúng vị trí
           >
-            <MenuItem value="VN_PAY">VN_Pay</MenuItem>
+            <MenuItem value="VN_PAY">VN_PAY</MenuItem>
             <MenuItem value="CASH">Tiền mặt</MenuItem>
             <MenuItem value="BANK_TRANSFER">Chuyển khoản</MenuItem>
           </Select>

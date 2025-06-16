@@ -1,16 +1,50 @@
 package swp.project.adn_backend.dto.response.appointment.AppointmentResponse;
 
+import swp.project.adn_backend.enums.DeliveryStatus;
+
+import java.time.LocalDate;
+
 public class KitAppointmentResponse {
     String kitCode;
     String kitName;
     String targetPersonCount;
     String contents;
+    DeliveryStatus kitStatus;
+    LocalDate deliveryDate;
+    LocalDate returnDate;
 
-    public KitAppointmentResponse(String kitCode, String kitName, String targetPersonCount, String contents) {
+    public KitAppointmentResponse(String kitCode, String kitName, String targetPersonCount, String contents, DeliveryStatus kitStatus, LocalDate deliveryDate, LocalDate returnDate) {
         this.kitCode = kitCode;
         this.kitName = kitName;
         this.targetPersonCount = targetPersonCount;
         this.contents = contents;
+        this.kitStatus = kitStatus;
+        this.deliveryDate = deliveryDate;
+        this.returnDate = returnDate;
+    }
+
+    public DeliveryStatus getKitStatus() {
+        return kitStatus;
+    }
+
+    public void setKitStatus(DeliveryStatus kitStatus) {
+        this.kitStatus = kitStatus;
+    }
+
+    public LocalDate getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(LocalDate deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
     }
 
     public String getKitCode() {
