@@ -1,8 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
+
+import { NavLink } from 'react-router-dom';
+import { showSuccessAlert } from './utils/notifications';
+import {
+  Activity,
+  CheckCircle,
+
+  Edit3,
+
+  Key,
+  Mail,
+
+  Phone,
+  Save,
+  Shield,
+
+  User,
+} from 'lucide-react';
+
 import { toast } from 'react-toastify';
 import OldPassWord from '../feature/OldPassword';
 import BookingHistory from '../feature/BookingHistory';
+
 
 type OldProfile = {
   fullName: string;

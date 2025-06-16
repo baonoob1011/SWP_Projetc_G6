@@ -365,7 +365,7 @@ const Login = ({ setFullName }: LoginProps) => {
             width: '400px',
             borderRadius: '20px',
             p: 4,
-            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
             backdropFilter: 'blur(10px)',
             WebkitBackdropFilter: 'blur(10px)',
             border: '1px solid rgba(255, 255, 255, 0.3)',
