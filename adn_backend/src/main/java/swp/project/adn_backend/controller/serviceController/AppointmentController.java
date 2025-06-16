@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.GlobalRequest.BookAppointmentRequest;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
+import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentAtCenterResponse;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentAtHomeResponse;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentResponse;
@@ -73,9 +74,9 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getHistoryAppointmentUser(authentication));
     }
 
-    @GetMapping("/get-appointment-by-slot/{staffId}")
-    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getHistoryAppointmentUser(@PathVariable("staffId") long staffId) {
-        return ResponseEntity.ok(appointmentService.getAppointmentBySlot(staffId));
+    @GetMapping("/get-appointment-by-slot/{slotId}")
+    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentBySlot(@PathVariable("slotId") long slotId) {
+        return ResponseEntity.ok(appointmentService.getAppointmentBySlot(slotId));
     }
 
 
@@ -109,4 +110,13 @@ public class AppointmentController {
                 kitId));
     }
 
+    // tạo nút update appointment
+    @PutMapping("/update-appointment-status")
+    public ResponseEntity<String> updateAppointmentStatus(@RequestParam long slotId,
+                                                          @RequestParam long patientId,
+                                                          AppointmentRequest appointmentRequest,
+                                                          PatientRequest patientRequest) {
+        appointmentService.updateAppointmentStatus(slotId, patientId, appointmentRequest, patientRequest);
+        return ResponseEntity.ok("Update Successful");
+    }
 }

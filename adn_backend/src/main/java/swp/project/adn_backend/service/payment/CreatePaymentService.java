@@ -56,12 +56,15 @@ public class CreatePaymentService {
         invoice.setOrderInfo(serviceTest.getServiceName());
         invoice.setTransactionStatus(TransactionStatus.PENDING);
         invoice.setCreatedDate(LocalDateTime.now());
-        invoice.setAppointment(invoice.getPayment().getAppointment());
 
-        // Gán quan hệ nếu có
+        // Gán quan hệ trước
         invoice.setPayment(payment);
         invoice.setServiceTest(serviceTest);
 
+        // ✅ Gán appointment từ payment (sau khi đã gán payment ở trên)
+        if (payment.getAppointment() != null) {
+            invoice.setAppointment(payment.getAppointment());
+        }
         // ✅ Lưu hóa đơn
         invoiceRepository.save(invoice);
 
