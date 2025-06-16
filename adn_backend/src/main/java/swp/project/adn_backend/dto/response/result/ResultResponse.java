@@ -1,18 +1,17 @@
-package swp.project.adn_backend.dto.request.result;
+package swp.project.adn_backend.dto.response.result;
 
 
-import jakarta.persistence.Column;
 import swp.project.adn_backend.enums.ResultStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class ResultRequest {
+public class ResultResponse {
     LocalDate collectionDate;
     LocalDate resultDate;
     ResultStatus resultStatus;
 
-    public ResultRequest(LocalDate collectionDate, LocalDate resultDate, ResultStatus resultStatus) {
+    public ResultResponse(LocalDate collectionDate, LocalDate resultDate, ResultStatus resultStatus) {
         this.collectionDate = collectionDate;
         this.resultDate = resultDate;
         this.resultStatus = resultStatus;

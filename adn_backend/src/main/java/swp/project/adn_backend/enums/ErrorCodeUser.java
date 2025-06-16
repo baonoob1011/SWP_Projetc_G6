@@ -48,6 +48,7 @@ public enum ErrorCodeUser {
     PHONE_NOT_EXISTS(1036, "Số điện thoại không tồn tại", HttpStatus.BAD_REQUEST),
     KIT_NOT_EXISTS(1036, "Kit không tồn tại", HttpStatus.BAD_REQUEST),
     PRICE_NOT_EXISTS(1040, "price không tồn tại", HttpStatus.BAD_REQUEST),
+    SAMPLE_NOT_EXISTS(1040, "Sample không tồn tại", HttpStatus.BAD_REQUEST),
 
     // Service validation
     SERVICE_NAME_IS_EXISTED(1037, "Tên dịch vụ đã tồn tại", HttpStatus.BAD_REQUEST),

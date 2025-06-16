@@ -66,6 +66,8 @@ public class Sample {
     })
     List<Result> results;
 
+    public Sample() {
+    }
 
     public Sample(long sampleId, String sampleType, LocalDate collectionDate, SampleStatus sampleStatus, Appointment appointment, Patient patient, Kit kit, Staff staff, List<Result> results) {
         this.sampleId = sampleId;

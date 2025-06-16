@@ -45,6 +45,7 @@ public class SecurityConfig {
             "/api/services/get-all-administrative-service",
             "/api/services/get-all-civil-service",
             "/api/price/get-all-price/**",
+            "/api/jasperpdf/**",
     };
 
     private final String[] USER_ENDPOINTS = {
@@ -104,23 +105,25 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // cấu hình CORS
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+//                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+//
+//                        // Quyền USER
+//                        .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN")
+//
+//                        // Quyền STAFF
+//                        .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")
+//
+//                        // Quyền MANAGER
+//                        .requestMatchers(MANAGER_ENDPOINTS).hasAnyRole("MANAGER", "ADMIN")
+//
+//                        // Quyền ADMIN
+//                        .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
+//                        .requestMatchers(ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
+                                .anyRequest().permitAll()  // ✅ tạm thời cho phép tất cả
 
-                        // Quyền USER
-                        .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN")
 
-                        // Quyền STAFF
-                        .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")
-
-                        // Quyền MANAGER
-                        .requestMatchers(MANAGER_ENDPOINTS).hasAnyRole("MANAGER", "ADMIN")
-
-                        // Quyền ADMIN
-                        .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
-                        .requestMatchers(ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
-
-                        // Các request khác yêu cầu xác thực
-                        .anyRequest().authenticated()
+                                // Các request khác yêu cầu xác thực
+//                        .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/api/logout")
                         .logoutSuccessHandler((request, response, authentication) -> {

@@ -8,13 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import swp.project.adn_backend.enums.ResultStatus;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Table(name = "Result")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Result {
@@ -24,10 +23,10 @@ public class Result {
     long result_id;
 
     @Column(name = "collection_date")
-    LocalDateTime collectionDate;
+    LocalDate collectionDate;
 
     @Column(name = "result_date")
-    LocalDateTime resultDate;
+    LocalDate resultDate;
 
     @Column(name = "result_status")
     ResultStatus resultStatus;
@@ -47,7 +46,10 @@ public class Result {
     @OneToOne(mappedBy = "result")
     ResultDetail resultDetail;
 
-    public Result(long result_id, LocalDateTime collectionDate, LocalDateTime resultDate, ResultStatus resultStatus, Sample sample, List<ResultLocus> resultLocus, ResultDetail resultDetail) {
+    public Result() {
+    }
+
+    public Result(long result_id, LocalDate collectionDate, LocalDate resultDate, ResultStatus resultStatus, Sample sample, List<ResultLocus> resultLocus, ResultDetail resultDetail) {
         this.result_id = result_id;
         this.collectionDate = collectionDate;
         this.resultDate = resultDate;
@@ -65,19 +67,19 @@ public class Result {
         this.result_id = result_id;
     }
 
-    public LocalDateTime getCollectionDate() {
+    public LocalDate getCollectionDate() {
         return collectionDate;
     }
 
-    public void setCollectionDate(LocalDateTime collectionDate) {
+    public void setCollectionDate(LocalDate collectionDate) {
         this.collectionDate = collectionDate;
     }
 
-    public LocalDateTime getResultDate() {
+    public LocalDate getResultDate() {
         return resultDate;
     }
 
-    public void setResultDate(LocalDateTime resultDate) {
+    public void setResultDate(LocalDate resultDate) {
         this.resultDate = resultDate;
     }
 

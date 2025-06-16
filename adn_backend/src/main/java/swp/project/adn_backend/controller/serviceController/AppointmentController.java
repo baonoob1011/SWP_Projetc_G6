@@ -46,8 +46,8 @@ public class AppointmentController {
     @PostMapping("/book-appointment-at-home/{serviceId}")
     public AllAppointmentAtHomeResponse bookAppointmentAtHome(@RequestBody BookAppointmentRequest request,
                                                               Authentication authentication,
-                                                              @PathVariable long serviceId,
-                                                              @RequestParam("priceId") long priceId) {
+                                                              @PathVariable("serviceId") long serviceId,
+                                                              @RequestParam long priceId) {
         return appointmentService.bookAppointmentAtHome(
                 request.getAppointmentRequest(),
                 authentication,
