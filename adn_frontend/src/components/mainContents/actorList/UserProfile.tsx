@@ -12,6 +12,8 @@ type OldProfile = {
   address: string;
 };
 
+
+
 const NewProfile = () => {
   const [profile, setProfile] = useState<OldProfile | null>(null);
   const [updateProfile, setUpdateProfile] = useState<OldProfile>({
