@@ -71,6 +71,8 @@ public class SecurityConfig {
             "/api/kit/update-kit/**",
             "/api/appointment/confirm-appointment-at-center/**",
             "/api/appointment/confirm-appointment-at-home/**",
+            "/api/appointment/get-appointment-by-slot/**",
+            "/api/sample/collect-sample-patient/**",
             "/api/staff/**"
     };
 

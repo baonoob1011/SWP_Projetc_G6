@@ -14,9 +14,9 @@ import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.repository.InvoiceRepository;
 import swp.project.adn_backend.service.payment.CreatePaymentService;
 import swp.project.adn_backend.service.payment.InvoiceService;
-import swp.project.adn_backend.service.payment.VNPayService;
 import swp.project.adn_backend.dto.InfoDTO.PaymentInfoDTO;
 import swp.project.adn_backend.service.payment.PaymentService;
+import swp.project.adn_backend.service.payment.VNPayService;
 
 import java.util.List;
 import java.util.Map;
@@ -46,20 +46,16 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.getAllPayment(authentication));
     }
 
-    @PostMapping("/create")
+        @PostMapping("/create")
     public ResponseEntity<String> createPayment(
             @RequestParam long paymentId,
             @RequestParam long serviceId) {
 
         CreatePaymentRequest req = createPaymentService.createPayment(paymentId, serviceId);
 
-        double rawAmount = req.getAmount(); // ví dụ: 123000.0
-        int amount = (int) Math.round(rawAmount); // giữ nguyên đơn vị VND
-
         String paymentUrl = vnPayService.createOrder(
-                amount, // truyền đúng đơn vị nhỏ nhất
+                (int)req.getAmount(), // truyền đúng đơn vị nhỏ nhất
                 req.getOrderInfo(),
-                req.getTxnRef(),
                 req.getReturnUrlBase()
         );
 
@@ -67,6 +63,24 @@ public class PaymentController {
 
         return ResponseEntity.ok(paymentUrl);
     }
+//    @PostMapping("/create")
+//    public ResponseEntity<String> createPayment(
+//            @RequestParam("amount") int amountVND, // đơn vị VNĐ
+//            @RequestParam("orderInfo") String orderInfo,
+//            @RequestParam("returnUrlBase") String returnUrlBase
+//    ) {
+//        // ✅ Chuyển sang đơn vị nhỏ nhất (x100)
+//        int amountInSmallestUnit = amountVND * 100;
+//
+//        // ✅ Gọi service tạo URL thanh toán
+//        String paymentUrl = vnPayService.createOrder(
+//                amountInSmallestUnit,
+//                orderInfo,
+//                returnUrlBase
+//        );
+//
+//        return ResponseEntity.ok(paymentUrl);
+//    }
 
 
     @GetMapping("/vnpay-return")

@@ -4,24 +4,14 @@ public class CreatePaymentRequest {
     private double amount;
     private String orderInfo;
     private String returnUrlBase;
-    private String txnRef; // ✅ thêm dòng này
 
     public CreatePaymentRequest() {
     }
 
-    public CreatePaymentRequest(double amount, String orderInfo, String returnUrlBase, String txnRef) {
+    public CreatePaymentRequest(double amount, String orderInfo, String returnUrlBase) {
         this.amount = amount;
         this.orderInfo = orderInfo;
         this.returnUrlBase = returnUrlBase;
-        this.txnRef = txnRef;
-    }
-
-    public String getTxnRef() {
-        return txnRef;
-    }
-
-    public void setTxnRef(String txnRef) {
-        this.txnRef = txnRef;
     }
 
     public double getAmount() {

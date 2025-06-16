@@ -335,17 +335,40 @@ public class AppointmentService {
         return query.getResultList();
     }
 
-//    public AllAppointmentAtCenterResponse getAppointmentBySlot(long slotId) {
-//        Slot slot = slotRepository.findById(slotId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
-//
-//        List<Appointment> appointmentList = slot.getAppointment();
-//        List<AllAppointmentAtCenterResponse> responses = new ArrayList<>();
-//        for (Appointment appointment : appointmentList){
-//            List<PatientAppointmentResponse> users = List.of(appointmentMapper.toPatientAppointmentService(appointment.getUsers()));
-//
-//        }
-//    }
+    public List<AllAppointmentAtCenterResponse> getAppointmentBySlot(long slotId) {
+        Slot slot = slotRepository.findById(slotId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
+
+        List<Appointment> appointmentList = slot.getAppointment();
+        List<AllAppointmentAtCenterResponse> responses = new ArrayList<>();
+
+        for (Appointment appointment : appointmentList) {
+            if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
+                List<PatientAppointmentFullInfoResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentFullInfoResponses(appointment.getUsers().getPatients());
+                List<SlotAppointmentResponse> slots = List.of(appointmentMapper.toSlotAppointmentResponse(appointment.getSlot()));
+                List<UserAppointmentResponse> users = List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()));
+                List<StaffAppointmentResponse> staffs = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
+                List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
+                ShowAppointmentResponse appointments = appointmentMapper.toShowAppointmentResponse(appointment);
+
+                RoomAppointmentResponse room = new RoomAppointmentResponse();
+                room.setRoomName(appointment.getSlot().getRoom().getRoomName());
+
+                AllAppointmentAtCenterResponse response = new AllAppointmentAtCenterResponse();
+                response.setPatientAppointmentFullInfoResponses(patientAppointmentResponses);
+                response.setUserAppointmentResponse(users);
+                response.setStaffAppointmentResponse(staffs);
+                response.setSlotAppointmentResponse(slots);
+                response.setServiceAppointmentResponses(services);
+                response.setRoomAppointmentResponse(room);
+                response.setShowAppointmentResponse(appointments);
+                responses.add(response);
+            }
+        }
+
+        return responses;
+    }
+
 
     public List<AllAppointmentAtCenterResponse> getAppointmentAtCenter(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();

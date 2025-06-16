@@ -1,17 +1,16 @@
-package swp.project.adn_backend.dto.request.sample;
+package swp.project.adn_backend.dto.response.sample;
 
-import jakarta.persistence.Column;
 import swp.project.adn_backend.enums.SampleStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class SampleRequest {
+public class SampleResponse {
     String sampleType;
     LocalDate collectionDate;
     SampleStatus sampleStatus;
 
-    public SampleRequest(String sampleType, LocalDate collectionDate, SampleStatus sampleStatus) {
+    public SampleResponse(String sampleType, LocalDate collectionDate, SampleStatus sampleStatus) {
         this.sampleType = sampleType;
         this.collectionDate = collectionDate;
         this.sampleStatus = sampleStatus;

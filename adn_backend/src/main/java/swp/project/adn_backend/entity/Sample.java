@@ -8,13 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import swp.project.adn_backend.enums.SampleStatus;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "Sample")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Sample {
@@ -27,7 +25,8 @@ public class Sample {
     String sampleType;
 
     @Column(name = "collection_date")
-    LocalDateTime collectionDate;
+    LocalDate collectionDate;
+
 
     @Column(name = "sample_status")
     SampleStatus sampleStatus;
@@ -68,4 +67,87 @@ public class Sample {
     List<Result> results;
 
 
+    public Sample(long sampleId, String sampleType, LocalDate collectionDate, SampleStatus sampleStatus, Appointment appointment, Patient patient, Kit kit, Staff staff, List<Result> results) {
+        this.sampleId = sampleId;
+        this.sampleType = sampleType;
+        this.collectionDate = collectionDate;
+        this.sampleStatus = sampleStatus;
+        this.appointment = appointment;
+        this.patient = patient;
+        this.kit = kit;
+        this.staff = staff;
+        this.results = results;
+    }
+
+    public long getSampleId() {
+        return sampleId;
+    }
+
+    public void setSampleId(long sampleId) {
+        this.sampleId = sampleId;
+    }
+
+    public String getSampleType() {
+        return sampleType;
+    }
+
+    public void setSampleType(String sampleType) {
+        this.sampleType = sampleType;
+    }
+
+    public LocalDate getCollectionDate() {
+        return collectionDate;
+    }
+
+    public void setCollectionDate(LocalDate collectionDate) {
+        this.collectionDate = collectionDate;
+    }
+
+    public SampleStatus getSampleStatus() {
+        return sampleStatus;
+    }
+
+    public void setSampleStatus(SampleStatus sampleStatus) {
+        this.sampleStatus = sampleStatus;
+    }
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public Kit getKit() {
+        return kit;
+    }
+
+    public void setKit(Kit kit) {
+        this.kit = kit;
+    }
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
+    }
+
+    public List<Result> getResults() {
+        return results;
+    }
+
+    public void setResults(List<Result> results) {
+        this.results = results;
+    }
 }
