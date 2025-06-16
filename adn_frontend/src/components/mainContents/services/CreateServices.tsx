@@ -8,7 +8,6 @@ import {
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import CustomSnackBar from '../userinfor/Snackbar';
 
 type FormService = {
   serviceName: string;
@@ -60,11 +59,6 @@ const Services = () => {
   const [preview, setPreview] = useState<string>('');
   const fileRef = useRef<HTMLInputElement>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success' as 'success' | 'error',
-  });
 
   useEffect(() => {
     setIsAdmin(
@@ -75,16 +69,13 @@ const Services = () => {
 
   const fetchKit = async () => {
     try {
-      const res = await fetch(
-        'http://localhost:8080/api/kit/get-all-kit-staff',
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
+      const res = await fetch('http://localhost:8080/api/kit/get-all-kit-staff', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
 
       if (res.status === 401) {
         toast.error('Phiên đăng nhập đã hết hạn');
@@ -199,21 +190,8 @@ const Services = () => {
         setPreview('');
         if (fileRef.current) fileRef.current.value = '';
       } else {
-        let errorMessage = 'Không thể đăng ký'; // mặc định
-
-        const contentType = res.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const errorData = await res.json();
-          errorMessage = errorData.message || JSON.stringify(errorData);
-        } else {
-          errorMessage = await res.text();
-        }
-
-        setSnackbar({
-          open: true,
-          message: errorMessage,
-          severity: 'error',
-        });
+        const error = 'Tên dịch vụ đã tồn tại';
+        toast.warning(error);
       }
     } catch (err) {
       console.error(err);
@@ -391,14 +369,10 @@ const Services = () => {
           Gửi đăng ký
         </button>
       </form>
-      <CustomSnackBar
-        open={snackbar.open}
-        message={snackbar.message}
-        severity={snackbar.severity}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-      />
     </div>
   );
+
+  
 };
 
 export default Services;
