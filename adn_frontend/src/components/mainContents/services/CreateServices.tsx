@@ -69,7 +69,7 @@ const Services = () => {
 
   const fetchKit = async () => {
     try {
-      const res = await fetch('http://localhost:8080/api/kit/get-all-kit', {
+      const res = await fetch('http://localhost:8080/api/kit/get-all-kit-staff', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

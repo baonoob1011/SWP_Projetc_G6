@@ -25,6 +25,11 @@
     "react": "^19.1.0",
     "react-countdown": "^2.3.6",
     "react-dom": "^19.1.0",
+<<<<<<< Updated upstream
+=======
+    "react-icons": "^5.5.0",
+    "react-modal": "^3.16.3",
+>>>>>>> Stashed changes
     "react-router-dom": "^7.6.1",
     "react-timer-hook": "^4.0.5",
     "react-toastify": "^11.0.5",
