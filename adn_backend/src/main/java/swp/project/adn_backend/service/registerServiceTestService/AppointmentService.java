@@ -246,7 +246,7 @@ public class AppointmentService {
         double totalPrice = (priceList.getPrice()) + (serviceTest.getKit().getPrice());
         //set payment
         Payment payment = new Payment();
-        payment.setAmount(totalPrice);
+        payment.setAmount(serviceTest.getPriceLists().getFirst().getPrice());
         payment.setAppointment(appointment);
         payment.setUsers(userBookAppointment);
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
@@ -420,7 +420,7 @@ public class AppointmentService {
         List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
 
         for (Appointment appointment : appointmentList) {
-            if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED) &&
+            if (appointment.getAppointmentStatus().equals(AppointmentStatus.PENDING) &&
                     appointment.getServices().getServiceType().equals(ServiceType.CIVIL)) {
 
                 ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);

@@ -72,8 +72,9 @@ public class AppointmentController {
     public ResponseEntity<AllAppointmentResponse> getHistoryAppointmentUser(Authentication authentication) {
         return ResponseEntity.ok(appointmentService.getHistoryAppointmentUser(authentication));
     }
-@GetMapping("/get-appointment-by-slot/{staffId}")
-    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getHistoryAppointmentUser(@PathVariable("staffId")long staffId) {
+
+    @GetMapping("/get-appointment-by-slot/{staffId}")
+    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getHistoryAppointmentUser(@PathVariable("staffId") long staffId) {
         return ResponseEntity.ok(appointmentService.getAppointmentBySlot(staffId));
     }
 

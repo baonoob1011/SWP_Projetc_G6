@@ -212,15 +212,6 @@ public class UserService {
             }
         }
 
-        // 🔐 Address uniqueness check
-        if (updateUserRequest.getAddress() != null) {
-            String oldAddress = existingUser.getAddress();
-            if ((oldAddress == null || !oldAddress.equals(updateUserRequest.getAddress())) &&
-                    userRepository.existsByAddress(updateUserRequest.getAddress())) {
-                throw new AppException(ErrorCodeUser.ADDRESS_EXISTED);
-            }
-        }
-
         // ✅ Set new values
         if (updateUserRequest.getPhone() != null) {
             existingUser.setPhone(updateUserRequest.getPhone());
