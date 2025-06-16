@@ -71,11 +71,13 @@ const SendOTP = ({ email }: { email: string }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      if (!res.ok) { setSnackbar({
-        open: true,
-        message: "Không thể gửi lại OTP",
-        severity: "error",
-      }) } else {
+      if (!res.ok) {
+        setSnackbar({
+          open: true,
+          message: "Không thể gửi lại OTP",
+          severity: "error",
+        })
+      } else {
         setSnackbar({
           open: true,
           message: "Gửi OTP thành công",
@@ -101,7 +103,7 @@ const SendOTP = ({ email }: { email: string }) => {
   if (verified) return <NewPass email={email} />;
 
   return (
-   <div
+    <div
       style={{
         display: 'flex',
         minHeight: '100vh',
@@ -317,111 +319,111 @@ const SendOTP = ({ email }: { email: string }) => {
       </div>
 
       <motion.div
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              transition={{ duration: 0.6, ease: 'easeInOut' }}
-              style={{
-                position: 'absolute',
-                right: '120px',
-                top: '25%',
-                transform: 'translateY(-50%)',
-                zIndex: 2,
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 100 }}
+        transition={{ duration: 0.6, ease: 'easeInOut' }}
+        style={{
+          position: 'absolute',
+          right: '120px',
+          top: '25%',
+          transform: 'translateY(-50%)',
+          zIndex: 2,
+        }}
+      >
+        <Paper
+          elevation={0}
+          sx={{
+            width: '400px',
+            borderRadius: '20px',
+            p: 4,
+            backgroundColor: 'rgba(255, 255, 255, 0.85)',  // match Login form
+            border: 'none',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 'bold',
+              mb: 2,
+              color: '#2c3e50',      // same as Login title
+              textAlign: 'center',
+            }}
+          >
+            Xác thực OTP
+          </Typography>
+
+          <Typography
+            sx={{
+              color: '#7f8c8d',      // same as Login subtitle
+              textAlign: 'center',
+              mb: 3,
+            }}
+          >
+            Mã OTP đã gửi tới: {maskEmail(email)}
+          </Typography>
+
+          <form onSubmit={handleVerifyOtp}>
+            <TextField
+              fullWidth
+              placeholder="Nhập mã OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              required
+              variant="outlined"
+              sx={{
+                mb: 2,
+                '& .MuiOutlinedInput-root': {
+                  height: 56,
+                  borderRadius: '25px',
+                  backgroundColor: '#eaf4ff',    // light blue
+                  border: 'none',
+                  '& fieldset': { border: 'none' },
+                  '&:hover fieldset': { border: 'none' },
+                  '&.Mui-focused fieldset': {
+                    border: '2px solid #667eea',
+                  },
+                },
+                '& input': { color: '#2c3e50' },
+              }}
+            />
+
+            <Box mb={2} display="flex" justifyContent="center" alignItems="center">
+              <CountdownTimer duration={60000} onComplete={() => { }} onResend={resendOtp} />
+            </Box>
+
+            <Button
+              type="submit"
+              fullWidth
+              disabled={isVerifying}
+              sx={{
+                py: 1.5,
+                borderRadius: '25px',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                textTransform: 'none',
+                fontSize: 16,
+                fontWeight: 'bold',
+                mb: 1,
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                },
+                '&:disabled': {
+                  background: 'linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%)',
+                },
               }}
             >
-        <Paper
-  elevation={0}
-  sx={{
-    width: '400px',
-    borderRadius: '20px',
-    p: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',  // match Login form
-    border: 'none',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-  }}
->
-  <Typography
-    variant="h5"
-    sx={{
-      fontWeight: 'bold',
-      mb: 2,
-      color: '#2c3e50',      // same as Login title
-      textAlign: 'center',
-    }}
-  >
-    Xác thực OTP
-  </Typography>
+              {isVerifying ? <div className={styles.spinner} /> : 'Xác nhận OTP'}
+            </Button>
+          </form>
 
-  <Typography
-    sx={{
-      color: '#7f8c8d',      // same as Login subtitle
-      textAlign: 'center',
-      mb: 3,
-    }}
-  >
-    Mã OTP đã gửi tới: {maskEmail(email)}
-  </Typography>
-
-  <form onSubmit={handleVerifyOtp}>
-    <TextField
-      fullWidth
-      placeholder="Nhập mã OTP"
-      value={otp}
-      onChange={(e) => setOtp(e.target.value)}
-      required
-      variant="outlined"
-      sx={{
-        mb: 2,
-        '& .MuiOutlinedInput-root': {
-          height: 56,
-          borderRadius: '25px',
-          backgroundColor: '#eaf4ff',    // light blue
-          border: 'none',
-          '& fieldset': { border: 'none' },
-          '&:hover fieldset': { border: 'none' },
-          '&.Mui-focused fieldset': {
-            border: '2px solid #667eea',
-          },
-        },
-        '& input': { color: '#2c3e50' },
-      }}
-    />
-
-    <Box mb={2} display="flex" justifyContent="center" alignItems="center">
-      <CountdownTimer duration={60000} onComplete={() => {}} onResend={resendOtp} />
-    </Box>
-
-    <Button
-      type="submit"
-      fullWidth
-      disabled={isVerifying}
-      sx={{
-        py: 1.5,
-        borderRadius: '25px',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        textTransform: 'none',
-        fontSize: 16,
-        fontWeight: 'bold',
-        mb: 1,
-        '&:hover': {
-          background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
-        },
-        '&:disabled': {
-          background: 'linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%)',
-        },
-      }}
-    >
-      {isVerifying ? <div className={styles.spinner} /> : 'Xác nhận OTP'}
-    </Button>
-  </form>
-
-  <CustomSnackBar
-    open={snackbar.open}
-    message={snackbar.message}
-    severity={snackbar.severity}
-    onClose={() => setSnackbar({ ...snackbar, open: false })}
-  />
-</Paper>
+          <CustomSnackBar
+            open={snackbar.open}
+            message={snackbar.message}
+            severity={snackbar.severity}
+            onClose={() => setSnackbar({ ...snackbar, open: false })}
+          />
+        </Paper>
 
       </motion.div>
     </div>
