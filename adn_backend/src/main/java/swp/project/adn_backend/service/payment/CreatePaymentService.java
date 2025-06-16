@@ -39,7 +39,7 @@ public class CreatePaymentService {
     public CreatePaymentRequest createPayment(long paymentId, long serviceId) {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PAYMENT_INFO_NOT_EXISTS));
-        if(!payment.getPaymentMethod().equals(PaymentMethod.VN_PAY)){
+        if (!payment.getPaymentMethod().equals(PaymentMethod.VN_PAY)) {
             throw new RuntimeException("Vui lòng chọn phương pháp thanh toán là Vnpay");
         }
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
@@ -56,6 +56,7 @@ public class CreatePaymentService {
         invoice.setOrderInfo(serviceTest.getServiceName());
         invoice.setTransactionStatus(TransactionStatus.PENDING);
         invoice.setCreatedDate(LocalDateTime.now());
+        invoice.setAppointment(invoice.getPayment().getAppointment());
 
         // Gán quan hệ nếu có
         invoice.setPayment(payment);
@@ -73,6 +74,7 @@ public class CreatePaymentService {
 
         return createPaymentRequest;
     }
+
     private String generateRandomBankCode() {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         int length = 6;
@@ -83,10 +85,11 @@ public class CreatePaymentService {
         }
         return result.toString();
     }
-    public void successPayment(String vnpTxnRef,String responseCode){
 
-        Invoice invoice1=invoiceRepository.findByTxnRef(vnpTxnRef)
-                .orElseThrow(()->new AppException(ErrorCodeUser.INVOICE_NOT_EXISTS));
+    public void successPayment(String vnpTxnRef, String responseCode) {
+
+        Invoice invoice1 = invoiceRepository.findByTxnRef(vnpTxnRef)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.INVOICE_NOT_EXISTS));
         invoice1.setTransactionStatus(TransactionStatus.SUCCESS);
         invoice1.setPayDate(LocalDateTime.now());
         invoice1.setResponseCode(responseCode);
@@ -94,11 +97,13 @@ public class CreatePaymentService {
         if (payment != null) {
             payment.setPaymentStatus(PaymentStatus.PAID);
             payment.setTransitionDate(LocalDate.now());
+            payment.getAppointment().setNote("Đã thanh toán");
         }
         invoiceRepository.save(invoice1);
         System.out.println("✅ Invoice updated.");
 
     }
+
     public void failPayment(String vnpTxnRef, String responseCode) {
         Invoice invoice = invoiceRepository.findByTxnRef(vnpTxnRef)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.INVOICE_NOT_EXISTS));
@@ -111,6 +116,7 @@ public class CreatePaymentService {
         if (payment != null) {
             payment.setPaymentStatus(PaymentStatus.FAILED);
             payment.setTransitionDate(LocalDate.now());
+            payment.getAppointment().setNote("thanh toán thất bại");
         }
 
         invoiceRepository.save(invoice);

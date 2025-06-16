@@ -59,14 +59,14 @@ public class AppointmentController {
     }
 
     @GetMapping("/get-appointment")
-    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentForUserAtCenter(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getAppointmentAtCenter(authentication));
+    public ResponseEntity<AllAppointmentResponse> getAppointmentForUserAtCenter(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAllAppointments(authentication));
     }
 
-    @GetMapping("/get-appointment-at-home")
-    public ResponseEntity<List<AllAppointmentAtHomeResponse>> getAppointmentForUserAtHome(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
-    }
+//    @GetMapping("/get-appointment-at-home")
+//    public ResponseEntity<List<AllAppointmentAtHomeResponse>> getAppointmentForUserAtHome(Authentication authentication) {
+//        return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
+//    }
 
     @GetMapping("/get-appointment-history-user")
     public ResponseEntity<AllAppointmentResponse> getHistoryAppointmentUser(Authentication authentication) {
