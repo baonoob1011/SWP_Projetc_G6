@@ -1,15 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
-type Patient = {
-  patientId: number;
-  fullName: string;
-  dateOfBirth: string;
-  gender: string;
-  relationship: string;
-};
 
 type Staff = {
   staffId: number;
@@ -68,8 +61,7 @@ type PaymentResponse = {
 };
 
 const GetAppointment = () => {
-  const [patientOne, setPatientOne] = useState<Patient[]>([]);
-  const [patientTwo, setPatientTwo] = useState<Patient[]>([]);
+  const navigate = useNavigate();
   const [staff, setStaff] = useState<Staff[]>([]);
   const [user, setUser] = useState<User[]>([]);
   const [showResponse, setShowResponse] = useState<ShowResponse | null>(null);
@@ -85,7 +77,6 @@ const GetAppointment = () => {
   // const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem('token');
-
     fetch('http://localhost:8080/api/appointment/get-appointment', {
       method: 'GET',
       headers: {
@@ -102,11 +93,6 @@ const GetAppointment = () => {
 
         if (Array.isArray(data) && data.length > 0) {
           const res = data[0];
-
-          const patients: Patient[] = res.patientAppointmentResponse || [];
-          setPatientOne(patients.length > 0 ? [patients[0]] : []);
-          setPatientTwo(patients.length > 1 ? [patients[1]] : []);
-
           setStaff(res.staffAppointmentResponse || []);
           setUser(res.userAppointmentResponse || []);
           setShowResponse(res.showAppointmentResponse || null);
@@ -124,6 +110,32 @@ const GetAppointment = () => {
         setLoading(false);
       });
   }, []);
+
+  const handleCanceled = async (appointmentId: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/appointment/cancel-appointment/${appointmentId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+
+      if (res.ok) {
+        toast.success('Đã hủy cuộc hẹn thành công');
+        navigate('/service/civil');
+      } else {
+        toast.error('Hủy cuộc hẹn thất bại');
+      }
+    } catch (error) {
+      console.log('❌ Lỗi hệ thống khi gửi request:', error);
+      toast.error('Lỗi hệ thống');
+    }
+  };
+
   const handlePayment = async (paymentId: string, serviceId: string) => {
     try {
       const res = await fetch(
@@ -138,7 +150,6 @@ const GetAppointment = () => {
       );
       const redirectUrl = await res.text();
       if (res.ok) {
-        toast.success('Thành công');
         window.location.href = redirectUrl;
       } else {
         toast.error('bị lỗi');
@@ -150,264 +161,218 @@ const GetAppointment = () => {
   const paymentId = paymentResponse[0]?.paymentId || '';
   const serviceId = serviceResponse[0]?.serviceId.toString() || '';
 
-  if (loading) return <div>Đang tải dữ liệu...</div>;
-  if (error) return <div>Lỗi: {error}</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        Đang tải dữ liệu...
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex justify-center items-center min-h-screen text-red-500">
+        Lỗi: {error}
+      </div>
+    );
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handlePayment(paymentId, serviceId);
-      }}
-    >
-      <div className="container py-4">
-        <h2 className="mb-4">📋 BẢNG THÔNG TIN CHI TIẾT CUỘC HẸN</h2>
-        <table className="table table-bordered table-striped">
-          <tbody>
-            {/* Cuộc hẹn */}
+    <div className="container my-5">
+      <h3 className="text-center text-primary mb-4">
+        Thông tin chi tiết cuộc hẹn
+      </h3>
+
+      <div className="card border shadow-sm">
+        <div className="card-body">
+          {/* Người dùng - đặt lên đầu và căn trái */}
+          {user.map((u, i) => (
+            <div key={`user-${i}`} className="mb-4 text-start">
+              <h5 className="mb-3 border-bottom pb-2">Người dùng đặt lịch</h5>
+
+              <div className="row mb-2">
+                <div className="col-md-2 fw-bold">Họ tên:</div>
+                <div className="col-md-4">{u.fullName}</div>
+
+                <div className="col-md-2 fw-bold">Email:</div>
+                <div className="col-md-4">{u.email}</div>
+              </div>
+
+              <div className="row mb-2">
+                <div className="col-md-2 fw-bold">SĐT:</div>
+                <div className="col-md-4">{u.phone}</div>
+
+                <div className="col-md-2 fw-bold">Địa chỉ:</div>
+                <div className="col-md-4">{u.address || 'Không có'}</div>
+              </div>
+            </div>
+          ))}
+
+          <div className="row">
+            {/* Cột trái */}
+            <div className="col-lg-6">
+              {showResponse && (
+                <div className="mb-4 text-start">
+                  <h5 className="mb-3 border-bottom pb-2 d-inline-block">
+                    Thông tin cuộc hẹn
+                  </h5>
+                  <div>
+                    <p>
+                      <strong>ID:</strong> {showResponse.appointmentId}
+                    </p>
+                    <p>
+                      <strong>Ngày hẹn:</strong> {showResponse.appointmentDate}
+                    </p>
+                    <p>
+                      <strong>Trạng thái:</strong>{' '}
+                      {showResponse.appointmentStatus}
+                    </p>
+                    <p>
+                      <strong>Ghi chú:</strong>{' '}
+                      {showResponse.note || 'Không có'}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {slotResponse.map((slot, i) => (
+                <div key={`slot-${i}`} className="mb-4 text-start">
+                  <h5 className="mb-3 border-bottom pb-2 d-inline-block">
+                    Khung giờ
+                  </h5>
+                  <div>
+                    <p>
+                      <strong>Ngày:</strong> {slot.slotDate}
+                    </p>
+                    <p>
+                      <strong>Bắt đầu:</strong> {slot.startTime}
+                    </p>
+                    <p>
+                      <strong>Kết thúc:</strong> {slot.endTime}
+                    </p>
+                  </div>
+                </div>
+              ))}
+
+              {serviceResponse.map((s, i) => (
+                <div key={`service-${i}`} className="mb-4 text-start">
+                  <h5 className="mb-3 border-bottom pb-2 d-inline-block">
+                    Dịch vụ
+                  </h5>
+                  <div>
+                    <p>
+                      <strong>Tên dịch vụ:</strong> {s.serviceName}
+                    </p>
+                    <p>
+                      <strong>Ngày đăng ký:</strong> {s.registerDate}
+                    </p>
+                    <p>
+                      <strong>Mô tả:</strong> {s.description}
+                    </p>
+                    <p>
+                      <strong>Loại dịch vụ:</strong> {s.serviceType}
+                    </p>
+                  </div>
+                </div>
+              ))}
+
+              {locationResponse.map((loc, i) => (
+                <div key={`location-${i}`} className="mb-4 text-start">
+                  <h5 className="mb-3 border-bottom pb-2 d-inline-block">
+                    Địa điểm
+                  </h5>
+                  <div>
+                    <p>
+                      <strong>Địa chỉ:</strong> {loc.addressLine},{' '}
+                      {loc.district}, {loc.city}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Cột phải */}
+            <div className="col-lg-6">
+              {staff.map((s, i) => (
+                <div key={`staff-${i}`} className="mb-4 text-start">
+                  <h5 className="mb-3 border-bottom pb-2 d-inline-block">
+                    Nhân viên thực hiện
+                  </h5>
+                  <div>
+                    <p>
+                      <strong>Họ tên:</strong> {s.fullName}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {s.email}
+                    </p>
+                    <p>
+                      <strong>SĐT:</strong> {s.phone}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              {roomResponse && (
+                <div className="mb-4 text-start">
+                  <h5 className="mb-3 border-bottom pb-2 d-inline-block">
+                    Phòng xét nghiệm
+                  </h5>
+                  <div>
+                    <p>
+                      <strong>Tên phòng:</strong> {roomResponse.roomName}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {paymentResponse.map((pay, i) => (
+                <div key={`payment-${i}`} className="mb-4 text-start">
+                  <h5 className="mb-3 border-bottom pb-2 d-inline-block">
+                    Thanh toán
+                  </h5>
+                  <div>
+                    <p>
+                      <strong>Phương thức:</strong> {pay.paymentMethod}
+                    </p>
+                    <p>
+                      <strong>Số tiền:</strong> {pay.amount.toLocaleString()}{' '}
+                      VND
+                    </p>
+                    <p>
+                      <strong>Trạng thái:</strong>{' '}
+                      {pay.getPaymentStatus || 'Không xác định'}
+                    </p>
+                    <p>
+                      <strong>Ngày giao dịch:</strong> {pay.transitionDate}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Nút hành động - giữ căn giữa */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handlePayment(paymentId, serviceId);
+            }}
+            className="mt-4 text-center"
+          >
+            <button type="submit" className="btn btn-primary me-2">
+              Thanh toán
+            </button>
             {showResponse && (
-              <>
-                <tr>
-                  <th colSpan={2} className="table-primary">
-                    📝 Cuộc hẹn
-                  </th>
-                </tr>
-                <tr>
-                  <td>ID</td>
-                  <td>{showResponse.appointmentId}</td>
-                </tr>
-                <tr>
-                  <td>Ngày hẹn</td>
-                  <td>{showResponse.appointmentDate}</td>
-                </tr>
-                <tr>
-                  <td>Trạng thái</td>
-                  <td>{showResponse.appointmentStatus}</td>
-                </tr>
-                <tr>
-                  <td>Ghi chú</td>
-                  <td>{showResponse.note || 'Không có'}</td>
-                </tr>
-              </>
+              <button
+                type="button"
+                className="btn btn-outline-danger"
+                onClick={() =>
+                  handleCanceled(showResponse.appointmentId.toString())
+                }
+              >
+                Hủy cuộc hẹn
+              </button>
             )}
-
-            {/* Người dùng */}
-            {user.map((u, index) => (
-              <>
-                <tr key={`user-title-${index}`}>
-                  <th colSpan={2} className="table-success">
-                    🧍 Người dùng đặt lịch
-                  </th>
-                </tr>
-                <tr>
-                  <td>Họ tên</td>
-                  <td>{u.fullName}</td>
-                </tr>
-                <tr>
-                  <td>Email</td>
-                  <td>{u.email}</td>
-                </tr>
-                <tr>
-                  <td>SĐT</td>
-                  <td>{u.phone}</td>
-                </tr>
-                <tr>
-                  <td>Địa chỉ</td>
-                  <td>{u.address || 'Không có'}</td>
-                </tr>
-              </>
-            ))}
-
-            {/* Nhân viên */}
-            {staff.map((s, index) => (
-              <>
-                <tr key={`staff-title-${index}`}>
-                  <th colSpan={2} className="table-info">
-                    👤 Nhân viên thực hiện
-                  </th>
-                </tr>
-                <tr>
-                  <td>Họ tên</td>
-                  <td>{s.fullName}</td>
-                </tr>
-                <tr>
-                  <td>Email</td>
-                  <td>{s.email}</td>
-                </tr>
-                <tr>
-                  <td>SĐT</td>
-                  <td>{s.phone}</td>
-                </tr>
-              </>
-            ))}
-
-            {/* Bệnh nhân 1 */}
-            {patientOne.map((p) => (
-              <>
-                <tr key={`p1-${p.patientId}`}>
-                  <th colSpan={2} className="table-warning">
-                    🧒 Người bệnh thứ nhất
-                  </th>
-                </tr>
-                <tr>
-                  <td>Họ tên</td>
-                  <td>{p.fullName}</td>
-                </tr>
-                <tr>
-                  <td>Ngày sinh</td>
-                  <td>{p.dateOfBirth}</td>
-                </tr>
-                <tr>
-                  <td>Giới tính</td>
-                  <td>{p.gender}</td>
-                </tr>
-                <tr>
-                  <td>Mối quan hệ</td>
-                  <td>{p.relationship}</td>
-                </tr>
-              </>
-            ))}
-
-            {/* Bệnh nhân 2 */}
-            {patientTwo.map((p) => (
-              <>
-                <tr key={`p2-${p.patientId}`}>
-                  <th colSpan={2} className="table-warning">
-                    🧒 Người bệnh thứ hai
-                  </th>
-                </tr>
-                <tr>
-                  <td>Họ tên</td>
-                  <td>{p.fullName}</td>
-                </tr>
-                <tr>
-                  <td>Ngày sinh</td>
-                  <td>{p.dateOfBirth}</td>
-                </tr>
-                <tr>
-                  <td>Giới tính</td>
-                  <td>{p.gender}</td>
-                </tr>
-                <tr>
-                  <td>Mối quan hệ</td>
-                  <td>{p.relationship}</td>
-                </tr>
-              </>
-            ))}
-
-            {/* Slot */}
-            {slotResponse.map((slot, index) => (
-              <>
-                <tr key={`slot-${slot.slotId}-${index}`}>
-                  <th colSpan={2} className="table-light">
-                    ⏰ Khung giờ
-                  </th>
-                </tr>
-                <tr>
-                  <td>Ngày</td>
-                  <td>{slot.slotDate}</td>
-                </tr>
-                <tr>
-                  <td>Bắt đầu</td>
-                  <td>{slot.startTime}</td>
-                </tr>
-                <tr>
-                  <td>Kết thúc</td>
-                  <td>{slot.endTime}</td>
-                </tr>
-              </>
-            ))}
-
-            {/* Dịch vụ */}
-            {serviceResponse.map((s, index) => (
-              <>
-                <tr key={`sv-${s.serviceId}-${index}`}>
-                  <th colSpan={2} className="table-secondary">
-                    💼 Dịch vụ
-                  </th>
-                </tr>
-                <tr>
-                  <td>Tên dịch vụ</td>
-                  <td>{s.serviceName}</td>
-                </tr>
-                <tr>
-                  <td>Ngày đăng ký</td>
-                  <td>{s.registerDate}</td>
-                </tr>
-                <tr>
-                  <td>Mô tả</td>
-                  <td>{s.description}</td>
-                </tr>
-                <tr>
-                  <td>Loại dịch vụ</td>
-                  <td>{s.serviceType}</td>
-                </tr>
-              </>
-            ))}
-
-            {/* Địa điểm */}
-            {locationResponse.map((loc, index) => (
-              <>
-                <tr key={`loc-${loc.locationId}-${index}`}>
-                  <th colSpan={2} className="table-light">
-                    📍 Địa điểm
-                  </th>
-                </tr>
-                <tr>
-                  <td>Địa chỉ</td>
-                  <td>
-                    {loc.addressLine}, {loc.district}, {loc.city}
-                  </td>
-                </tr>
-              </>
-            ))}
-
-            {/* Phòng */}
-            {roomResponse && (
-              <>
-                <tr>
-                  <th colSpan={2} className="table-light">
-                    🏢 Phòng xét nghiệm
-                  </th>
-                </tr>
-                <tr>
-                  <td>Tên phòng</td>
-                  <td>{roomResponse.roomName}</td>
-                </tr>
-              </>
-            )}
-
-            {/* Thanh toán */}
-            {paymentResponse.map((pay, index) => (
-              <>
-                <tr key={`pay-${pay.paymentId}-${index}`}>
-                  <th colSpan={2} className="table-light">
-                    💳 Thanh toán
-                  </th>
-                </tr>
-                <tr>
-                  <td>Phương thức</td>
-                  <td>{pay.paymentMethod}</td>
-                </tr>
-                <tr>
-                  <td>Số tiền</td>
-                  <td>{pay.amount} VND</td>
-                </tr>
-                <tr>
-                  <td>Trạng thái</td>
-                  <td>{pay.getPaymentStatus}</td>
-                </tr>
-                <tr>
-                  <td>Ngày giao dịch</td>
-                  <td>{pay.transitionDate}</td>
-                </tr>
-              </>
-            ))}
-          </tbody>
-        </table>
-        <button type="submit">thanh toán</button>
+          </form>
+        </div>
       </div>
-    </form>
+    </div>
   );
 };
 

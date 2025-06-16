@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -15,8 +16,8 @@ import java.util.*;
 public class VNPayConfig {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static String vnp_Returnurl = "/vnpay-payment";
-    public static String vnp_TmnCode = "3ZI08BC5";
-    public static String vnp_HashSecret = "1BGOPD33JUD1SJYVT9GAZG6OF4OFK650";
+    public static String vnp_TmnCode = "CK63NQF1";
+    public static String vnp_HashSecret = "LU64UUX4I6EBA26B769P45U185E0JPFZ";
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public static String md5(String message) {
@@ -56,25 +57,29 @@ public class VNPayConfig {
     }
 
     //Util for VNPAY
-    public static String hashAllFields(Map fields) {
-        List fieldNames = new ArrayList(fields.keySet());
+    public static String hashAllFields(Map<String, String> fields) {
+        List<String> fieldNames = new ArrayList<>(fields.keySet());
         Collections.sort(fieldNames);
         StringBuilder sb = new StringBuilder();
-        Iterator itr = fieldNames.iterator();
-        while (itr.hasNext()) {
-            String fieldName = (String) itr.next();
-            String fieldValue = (String) fields.get(fieldName);
-            if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                sb.append(fieldName);
-                sb.append("=");
-                sb.append(fieldValue);
+        try {
+            for (int i = 0; i < fieldNames.size(); i++) {
+                String fieldName = fieldNames.get(i);
+                String fieldValue = fields.get(fieldName);
+                if (fieldValue != null && fieldValue.length() > 0) {
+                    sb.append(fieldName);
+                    sb.append("=");
+                    sb.append(URLEncoder.encode(fieldValue, "UTF-8").replaceAll("\\+", "%20")); // theo yêu cầu encoding của VNPay
+                    if (i != fieldNames.size() - 1) {
+                        sb.append("&");
+                    }
+                }
             }
-            if (itr.hasNext()) {
-                sb.append("&");
-            }
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
-        return hmacSHA512(vnp_HashSecret,sb.toString());
+        return hmacSHA512(vnp_HashSecret, sb.toString());
     }
+
 
     public static String hmacSHA512(final String key, final String data) {
         try {

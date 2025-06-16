@@ -7,8 +7,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.GlobalRequest.BookAppointmentRequest;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
+import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentAtCenterResponse;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentAtHomeResponse;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentResponse;
+import swp.project.adn_backend.dto.response.appointment.updateAppointmentStatus.UpdateAppointmentStatusResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
+import swp.project.adn_backend.entity.Appointment;
 import swp.project.adn_backend.service.registerServiceTestService.AppointmentService;
 
 import java.util.List;
@@ -21,11 +26,11 @@ public class AppointmentController {
 
     @PostMapping("/book-appointment/{serviceId}")
     public AllAppointmentAtCenterResponse bookAppointmentAtCenter(@RequestBody BookAppointmentRequest request,
-                                                       Authentication authentication,
-                                                       @PathVariable("serviceId") long serviceId,
-                                                       @RequestParam long slotId,
-                                                       @RequestParam long locationId,
-                                                       @RequestParam long priceId) {
+                                                                  Authentication authentication,
+                                                                  @PathVariable("serviceId") long serviceId,
+                                                                  @RequestParam long slotId,
+                                                                  @RequestParam long locationId,
+                                                                  @RequestParam long priceId) {
         return appointmentService.bookAppointmentAtCenter(
                 request.getAppointmentRequest(),
                 authentication,
@@ -38,11 +43,11 @@ public class AppointmentController {
         );
     }
 
-    @PostMapping("/book-appointment-at_home/{serviceId}")
-    public AppointmentResponse bookAppointmentAtHome(@RequestBody BookAppointmentRequest request,
-                                                     Authentication authentication,
-                                                     @PathVariable long serviceId,
-                                                     @RequestParam("priceId") long priceId) {
+    @PostMapping("/book-appointment-at-home/{serviceId}")
+    public AllAppointmentAtHomeResponse bookAppointmentAtHome(@RequestBody BookAppointmentRequest request,
+                                                              Authentication authentication,
+                                                              @PathVariable long serviceId,
+                                                              @RequestParam("priceId") long priceId) {
         return appointmentService.bookAppointmentAtHome(
                 request.getAppointmentRequest(),
                 authentication,
@@ -54,14 +59,53 @@ public class AppointmentController {
     }
 
     @GetMapping("/get-appointment")
-    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointment(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getAppointmentForUser(authentication));
+    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentForUserAtCenter(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAppointmentAtCenter(authentication));
     }
+
+    @GetMapping("/get-appointment-at-home")
+    public ResponseEntity<List<AllAppointmentAtHomeResponse>> getAppointmentForUserAtHome(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
+    }
+
+    @GetMapping("/get-appointment-history-user")
+    public ResponseEntity<AllAppointmentResponse> getHistoryAppointmentUser(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getHistoryAppointmentUser(authentication));
+    }
+@GetMapping("/get-appointment-by-slot/{staffId}")
+    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getHistoryAppointmentUser(@PathVariable("staffId")long staffId) {
+        return ResponseEntity.ok(appointmentService.getAppointmentBySlot(staffId));
+    }
+
 
     @PostMapping("/cancel-appointment/{appointmentId}")
     public ResponseEntity<String> cancelAppointment(@PathVariable("appointmentId") long appointmentId) {
         appointmentService.cancelledAppointment(appointmentId);
         return ResponseEntity.ok("cancel successful");
+    }
+
+    @PutMapping("/confirm-appointment-at-center")
+    public ResponseEntity<UpdateAppointmentStatusResponse> updateAppointmentStatusAtCenter(@RequestParam long appointmentId,
+                                                                                           @RequestParam long userId,
+                                                                                           @RequestParam long slotId,
+                                                                                           @RequestParam long serviceId,
+                                                                                           @RequestParam long locationId) {
+        return ResponseEntity.ok(appointmentService.ConfirmAppointmentAtCenter(appointmentId,
+                userId,
+                slotId,
+                serviceId,
+                locationId));
+    }
+
+    @PutMapping("/confirm-appointment-at-home")
+    public ResponseEntity<UpdateAppointmentStatusResponse> updateAppointmentStatusAtHome(@RequestParam long appointmentId,
+                                                                                         @RequestParam long userId,
+                                                                                         @RequestParam long serviceId,
+                                                                                         @RequestParam long kitId) {
+        return ResponseEntity.ok(appointmentService.ConfirmAppointmentAtHome(appointmentId,
+                userId,
+                serviceId,
+                kitId));
     }
 
 }

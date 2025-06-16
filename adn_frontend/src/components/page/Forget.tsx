@@ -1,21 +1,13 @@
-
-import {
-  Box,
-  Button,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import CustomSnackBar from "../mainContents/userinfor/Snackbar";
-import SendOTP from "../mainContents/userinfor/SendOTP";
-import EmailIcon from "@mui/icons-material/Email";
-import styles from "./Forget.module.css";
-import bg from "../../image/Login_banner.png";
-import logo from "../../image/Logo.png";
-import { motion } from "framer-motion";
-
+import { Box, Button, Paper, TextField, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import CustomSnackBar from '../mainContents/userinfor/Snackbar';
+import SendOTP from '../mainContents/userinfor/SendOTP';
+import EmailIcon from '@mui/icons-material/Email';
+import styles from './Forget.module.css';
+import bg from '../../image/Login_banner.png';
+import logo from '../../image/Logo.png';
+import { motion } from 'framer-motion';
 
 const Forget = () => {
   const [email, setEmail] = useState('');
@@ -105,9 +97,7 @@ const Forget = () => {
           alignItems: 'center',
         }}
       >
-
-        <div style={{ display: "flex", gap: "60px" }}>
-
+        <div style={{ display: 'flex', gap: '60px' }}>
           <Typography
             variant="body1"
             component={Link}
@@ -174,121 +164,131 @@ const Forget = () => {
         </div>
       </div>
 
-
-    {/* Contact Information */}
+      {/* Contact Information */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '60px',
+          left: '60px',
+          zIndex: 3,
+          display: 'grid',
+          gridTemplateColumns: 'auto auto',
+          columnGap: '200px', // khoảng cách giữa 2 cột
+          rowGap: '60px', // khoảng cách giữa các hàng
+        }}
+      >
+        {/** Hàng 1, Cột 1: Phone **/}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div
             style={{
-              position: 'absolute',
-              bottom: '60px',
-              left: '60px',
-              zIndex: 3,
-              display: 'grid',
-              gridTemplateColumns: 'auto auto',
-              columnGap: '200px', // khoảng cách giữa 2 cột
-              rowGap: '60px',    // khoảng cách giữa các hàng
+              width: 40,
+              height: 40,
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            {/** Hàng 1, Cột 1: Phone **/}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  backgroundColor: 'rgba(255,255,255,0.2)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Typography sx={{ color: 'white', fontSize: 16 }}>📞</Typography>
-              </div>
-              <div>
-                <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
-                  Phone
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-                  +123-456-7890
-                </Typography>
-              </div>
-            </div>
-    
-            {/** Hàng 1, Cột 2: E-Mail **/}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  backgroundColor: 'rgba(255,255,255,0.2)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Typography sx={{ color: 'white', fontSize: 16 }}>✉️</Typography>
-              </div>
-              <div>
-                <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
-                  E-Mail
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-                  hello@genelink.com
-                </Typography>
-              </div>
-            </div>
-    
-            {/** Hàng 2, Cột 1: Website **/}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  backgroundColor: 'rgba(255,255,255,0.2)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Typography sx={{ color: 'white', fontSize: 16 }}>🌐</Typography>
-              </div>
-              <div>
-                <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
-                  Website
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-                  www.genelink.com
-                </Typography>
-              </div>
-            </div>
-    
-            {/** Hàng 2, Cột 2: Address **/}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  backgroundColor: 'rgba(255,255,255,0.2)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Typography sx={{ color: 'white', fontSize: 16 }}>📍</Typography>
-              </div>
-              <div>
-                <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
-                  Address
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-                  123 Anywhere St., Any City
-                </Typography>
-              </div>
-            </div>
+            <Typography sx={{ color: 'white', fontSize: 16 }}>📞</Typography>
           </div>
-    
+          <div>
+            <Typography
+              variant="body2"
+              sx={{ color: 'white', fontWeight: 'bold' }}
+            >
+              Phone
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+              +123-456-7890
+            </Typography>
+          </div>
+        </div>
+
+        {/** Hàng 1, Cột 2: E-Mail **/}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ color: 'white', fontSize: 16 }}>✉️</Typography>
+          </div>
+          <div>
+            <Typography
+              variant="body2"
+              sx={{ color: 'white', fontWeight: 'bold' }}
+            >
+              E-Mail
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+              hello@genelink.com
+            </Typography>
+          </div>
+        </div>
+
+        {/** Hàng 2, Cột 1: Website **/}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ color: 'white', fontSize: 16 }}>🌐</Typography>
+          </div>
+          <div>
+            <Typography
+              variant="body2"
+              sx={{ color: 'white', fontWeight: 'bold' }}
+            >
+              Website
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+              www.genelink.com
+            </Typography>
+          </div>
+        </div>
+
+        {/** Hàng 2, Cột 2: Address **/}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography sx={{ color: 'white', fontSize: 16 }}>📍</Typography>
+          </div>
+          <div>
+            <Typography
+              variant="body2"
+              sx={{ color: 'white', fontWeight: 'bold' }}
+            >
+              Address
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+              123 Anywhere St., Any City
+            </Typography>
+          </div>
+        </div>
+      </div>
 
       {/* Forget Password Form */}
       <motion.div

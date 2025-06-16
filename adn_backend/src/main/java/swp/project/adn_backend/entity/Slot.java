@@ -10,6 +10,7 @@ import swp.project.adn_backend.enums.SlotStatus;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 
@@ -24,9 +25,9 @@ public class Slot {
     @Column(name = "slot_date")
     LocalDate slotDate;
     @Column(name = "start_time")
-    Time  startTime;
+    LocalTime startTime;
     @Column(name = "end_time")
-    Time  endTime;
+    LocalTime  endTime;
 
     @Enumerated(EnumType.STRING)
     SlotStatus slotStatus;
@@ -101,19 +102,19 @@ public class Slot {
         this.slotStatus = slotStatus;
     }
 
-    public Time getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
-    public Time getEndTime() {
+    public LocalTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 

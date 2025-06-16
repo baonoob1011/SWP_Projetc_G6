@@ -46,4 +46,70 @@ public class Result {
 
     @OneToOne(mappedBy = "result")
     ResultDetail resultDetail;
+
+    public Result(long result_id, LocalDateTime collectionDate, LocalDateTime resultDate, ResultStatus resultStatus, Sample sample, List<ResultLocus> resultLocus, ResultDetail resultDetail) {
+        this.result_id = result_id;
+        this.collectionDate = collectionDate;
+        this.resultDate = resultDate;
+        this.resultStatus = resultStatus;
+        this.sample = sample;
+        this.resultLocus = resultLocus;
+        this.resultDetail = resultDetail;
+    }
+
+    public long getResult_id() {
+        return result_id;
+    }
+
+    public void setResult_id(long result_id) {
+        this.result_id = result_id;
+    }
+
+    public LocalDateTime getCollectionDate() {
+        return collectionDate;
+    }
+
+    public void setCollectionDate(LocalDateTime collectionDate) {
+        this.collectionDate = collectionDate;
+    }
+
+    public LocalDateTime getResultDate() {
+        return resultDate;
+    }
+
+    public void setResultDate(LocalDateTime resultDate) {
+        this.resultDate = resultDate;
+    }
+
+    public ResultStatus getResultStatus() {
+        return resultStatus;
+    }
+
+    public void setResultStatus(ResultStatus resultStatus) {
+        this.resultStatus = resultStatus;
+    }
+
+    public Sample getSample() {
+        return sample;
+    }
+
+    public void setSample(Sample sample) {
+        this.sample = sample;
+    }
+
+    public List<ResultLocus> getResultLocus() {
+        return resultLocus;
+    }
+
+    public void setResultLocus(List<ResultLocus> resultLocus) {
+        this.resultLocus = resultLocus;
+    }
+
+    public ResultDetail getResultDetail() {
+        return resultDetail;
+    }
+
+    public void setResultDetail(ResultDetail resultDetail) {
+        this.resultDetail = resultDetail;
+    }
 }

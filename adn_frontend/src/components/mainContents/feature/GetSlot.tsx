@@ -307,12 +307,12 @@ const GetSlot = () => {
         console.error('Submit error response:', errorText);
       } else {
         navigate(`/checkBooking`);
-        toast.success('Đã đăng ký thành công');
+        toast.success('Đặt lịch thành công');
         setSelectedSlot('');
       }
     } catch (error) {
       console.error('Submit error:', error);
-      toast.error('Không thể đăng ký');
+      toast.error('Không thể đặt lịch');
     } finally {
       setIsSubmitting(false);
     }
@@ -354,8 +354,7 @@ const GetSlot = () => {
       <Box sx={{ 
         maxWidth: '1400px', 
         mx: 'auto', 
-        px: 3 ,
-        mt: 10,
+        px: 3 
       }}>
         {/* Header */}
         <Paper 
@@ -385,44 +384,9 @@ const GetSlot = () => {
             color="text.secondary"
             sx={{ textAlign: 'center' }}
           >
-<<<<<<< Updated upstream
-            <MenuItem value="">
-              <em>
-                {isLoadingSlots ? '-- Đang tải slot --' : '-- Chọn slot --'}
-              </em>
-            </MenuItem>
-            {slots.map((slot) => (
-              <MenuItem key={slot.slotId} value={slot.slotId}>
-                {`${slot.slotDate} - ${slot.startTime} đến ${slot.endTime} `}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
-      <Box sx={{ mb: 3 }}>
-        <FormControl fullWidth>
-          <InputLabel id="slot-select-label">Chọn Giá</InputLabel>
-          <Select
-            labelId="slot-select-label"
-            value={selectedPrice}
-            onChange={handlePriceChange}
-            input={<OutlinedInput label="Chọn Giá Dịch Vụ" />}
-            sx={{ fontSize: '16px' }}
-            disabled={selectedSlot === ''}
-          >
-            {price.map((price) => (
-              <MenuItem key={price.priceId} value={price.priceId}>
-                {`${price.price} - ${price.time}`}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
-=======
             Mã dịch vụ: <strong>{serviceId}</strong>
           </Typography>
         </Paper>
->>>>>>> Stashed changes
 
         {/* Booking Configuration */}
         <Paper 

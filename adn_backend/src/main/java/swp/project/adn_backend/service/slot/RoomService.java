@@ -45,6 +45,16 @@ public class RoomService {
         query.setParameter("roomStatus", RoomStatus.AVAILABLE);
         return query.getResultList();
     }
+
+    public List<RoomInfoDTO> getAllRoomActive() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.RoomInfoDTO(" +
+                "s.roomId, s.roomName, s.roomStatus, s.openTime, s.closeTime) " +
+                "FROM Room s WHERE s.roomStatus = :roomStatus";
+
+        TypedQuery<RoomInfoDTO> query = entityManager.createQuery(jpql, RoomInfoDTO.class);
+        query.setParameter("roomStatus", RoomStatus.ACTIVE);
+        return query.getResultList();
+    }
     public Room updateRoom(Long roomId, RoomRequest roomRequest) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.ROOM_NOT_FOUND));
@@ -59,7 +69,6 @@ public class RoomService {
         room.setRoomName(roomRequest.getRoomName());
         room.setOpenTime(roomRequest.getOpenTime());
         room.setCloseTime(roomRequest.getCloseTime());
-        room.setRoomStatus(roomRequest.getRoomStatus());
 
         return roomRepository.save(room);
     }

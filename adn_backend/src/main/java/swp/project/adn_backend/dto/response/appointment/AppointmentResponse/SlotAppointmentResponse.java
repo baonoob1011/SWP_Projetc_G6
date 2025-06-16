@@ -5,15 +5,16 @@ import lombok.experimental.FieldDefaults;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SlotAppointmentResponse {
     long slotId;
     LocalDate slotDate;
-    Time  startTime;
-    Time  endTime;
+    LocalTime startTime;
+    LocalTime  endTime;
 
-    public SlotAppointmentResponse(long slotId, LocalDate slotDate, Time startTime, Time endTime) {
+    public SlotAppointmentResponse(long slotId, LocalDate slotDate, LocalTime startTime, LocalTime endTime) {
         this.slotId = slotId;
         this.slotDate = slotDate;
         this.startTime = startTime;
@@ -36,19 +37,19 @@ public class SlotAppointmentResponse {
         this.slotDate = slotDate;
     }
 
-    public Time getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
-    public Time getEndTime() {
+    public LocalTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 }

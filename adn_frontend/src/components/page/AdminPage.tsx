@@ -49,7 +49,7 @@ const AdminSidebar = () => {
     {
       id: 'kit',
       icon: BaggageClaim,
-      label: 'Tạo phòng',
+      label: 'Tạo kit',
       path: 'kit',
     },
     {
