@@ -45,6 +45,12 @@ public class Appointment {
     @JoinColumn(name = "staff_id")
     Staff staff;
 
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.EAGER, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    List<Invoice> invoices;
+
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH,
@@ -73,7 +79,16 @@ public class Appointment {
 
     @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Payment> payments;
+
     public Appointment() {
+    }
+
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
     }
 
     public List<Payment> getPayments() {

@@ -105,25 +105,24 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // cấu hình CORS
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-//                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-//
-//                        // Quyền USER
-//                        .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN")
-//
-//                        // Quyền STAFF
-//                        .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")
-//
-//                        // Quyền MANAGER
-//                        .requestMatchers(MANAGER_ENDPOINTS).hasAnyRole("MANAGER", "ADMIN")
-//
-//                        // Quyền ADMIN
-//                        .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
-//                        .requestMatchers(ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
-                                .anyRequest().permitAll()  // ✅ tạm thời cho phép tất cả
+                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+
+                        // Quyền USER
+                        .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN")
+
+                        // Quyền STAFF
+                        .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")
+
+                        // Quyền MANAGER
+                        .requestMatchers(MANAGER_ENDPOINTS).hasAnyRole("MANAGER", "ADMIN")
+
+                        // Quyền ADMIN
+                        .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
+                        .requestMatchers(ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
 
 
                                 // Các request khác yêu cầu xác thực
-//                        .anyRequest().authenticated()
+                        .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/api/logout")
                         .logoutSuccessHandler((request, response, authentication) -> {
