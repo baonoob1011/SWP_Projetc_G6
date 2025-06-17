@@ -40,7 +40,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
   const role = localStorage.getItem('role');
 
   const navItems = [
-    { label: 'Home', path: '/' },
+    { label: 'Trang chủ', path: '/' },
     {
       label: 'Dịch vụ',
       children: [
@@ -49,7 +49,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
       ],
     },
     { label: 'Tin tức', path: '/blog' },
-    { label: 'Đặt lịch', path: '/order' },
     { label: 'Địa chỉ', path: '/branch-and-map' },
   ];
 
