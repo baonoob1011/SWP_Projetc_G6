@@ -1,28 +1,26 @@
 import { useEffect, useState } from 'react';
-import Swal from 'sweetalert2';
 import CustomSnackBar from '../userinfor/Snackbar';
-import { Button } from '@mui/material';
-import { NavLink } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { useParams } from 'react-router-dom';
 
-type Room = {
-  roomName: string;
-  openTime: string;
-  closeTime: string;
+type Price = {
+  effectiveDate: string;
+  price: string;
+  time: string;
 };
 
-const CreateRoom = () => {
-  const [room, setRoom] = useState<Room>({
-    roomName: '',
-    openTime: '',
-    closeTime: '',
+const NewPrice = () => {
+  const { serviceId } = useParams<{ serviceId: string }>();
+  const [price, setPrice] = useState<Price>({
+    effectiveDate: '',
+    price: '',
+    time: '',
   });
-
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
     severity: 'success' as 'success' | 'error',
   });
-
   const [auth, setAuth] = useState(false);
 
   useEffect(() => {
@@ -32,9 +30,13 @@ const CreateRoom = () => {
     );
   }, []);
 
+  if (!auth) {
+    return;
+  }
+
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setRoom((prev) => ({
+    setPrice((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -43,41 +45,43 @@ const CreateRoom = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      const res = await fetch('http://localhost:8080/api/room/create-room', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify(room),
+    if (!price.effectiveDate || !price.price || !price.time) {
+      setSnackbar({
+        open: true,
+        message: 'Vui lòng nhập đầy đủ thông tin',
+        severity: 'error',
       });
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/price/add-more-price/${serviceId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+          body: JSON.stringify(price),
+        }
+      );
 
       if (!res.ok) {
-        let errorMessage = 'Không thể đăng ký'; // mặc định
-
-        const contentType = res.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const errorData = await res.json();
-          errorMessage = errorData.message || JSON.stringify(errorData);
-        } else {
-          errorMessage = await res.text();
-        }
-
         setSnackbar({
           open: true,
-          message: errorMessage,
+          message: 'Điền đầy đủ thông tin',
           severity: 'error',
         });
       } else {
         Swal.fire({
           icon: 'success',
-          title: 'Tạo phòng thành công',
+          title: 'Thêm giá thành công',
           showConfirmButton: false,
           timer: 1300,
         });
 
-        setRoom({ roomName: '', openTime: '', closeTime: '' });
+        setPrice({ effectiveDate: '', price: '', time: '' });
       }
     } catch (error) {
       console.log(error);
@@ -89,55 +93,50 @@ const CreateRoom = () => {
     }
   };
 
-  if (!auth) {
-    return;
-  }
   return (
     <div className="container mt-5">
-      <h2 className="mb-4 text-center">Tạo phòng Mới</h2>
+      <h2 className="mb-4 text-center">Tạo giá mới</h2>
       <form onSubmit={handleSubmit} className="card p-4 shadow-sm">
         <div className="mb-3">
-          <label className="form-label">Số phòng</label>
+          <label className="form-label">Ngày áp dụng</label>
+          <input
+            type="date"
+            name="effectiveDate"
+            className="form-control"
+            value={price.effectiveDate}
+            onChange={handleInput}
+            placeholder="chọn ngày"
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Giá</label>
+          <input
+            type="number"
+            name="price"
+            className="form-control"
+            value={price.price}
+            onChange={handleInput}
+            placeholder="Nhập giá mới"
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Thời gian</label>
           <input
             type="text"
-            name="roomName"
+            name="time"
             className="form-control"
-            value={room.roomName}
+            value={price.time}
             onChange={handleInput}
-            placeholder="Nhập phòng"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Mở</label>
-          <input
-            type="time"
-            name="openTime"
-            className="form-control"
-            value={room.openTime}
-            onChange={handleInput}
-            placeholder="Nhập thời gian mở"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Đóng</label>
-          <input
-            type="time"
-            name="closeTime"
-            className="form-control"
-            value={room.closeTime}
-            onChange={handleInput}
-            placeholder="Nhập thời gian đóng"
+            placeholder="Nhập thời gian"
           />
         </div>
 
         <button type="submit" className="btn btn-primary w-100">
-          Tạo phòng
+          Thêm giá
         </button>
-        <Button component={NavLink} to="/schedule">
-          Tạo thời khóa biểu
-        </Button>
+
         <CustomSnackBar
           open={snackbar.open}
           message={snackbar.message}
@@ -149,4 +148,4 @@ const CreateRoom = () => {
   );
 };
 
-export default CreateRoom;
+export default NewPrice;

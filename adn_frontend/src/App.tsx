@@ -17,7 +17,7 @@ import ProtectedRoute from './components/mainContents/feature/ProtectedRoute';
 import OldPassWord from './components/mainContents/feature/OldPassword';
 import CreateLocation from './components/mainContents/feature/CreateLocation';
 import PatientRequest from './components/mainContents/feature/PatientRequest';
-import GetSlot from './components/mainContents/feature/GetSlot';
+import BookingAtCenter from './components/mainContents/services/BookingAtCenter';
 
 import DataList, {
   DataList2,
@@ -31,7 +31,7 @@ import GetUserByManager from './components/mainContents/actorList/GetUserByManag
 
 import NewProfile from './components/mainContents/actorList/StaffAndManagerProfile';
 import NewUserProfile from './components/mainContents/actorList/UserProfile';
-import StaffSlot from './components/mainContents/actorList/StaffShedule';
+import StaffSlot from './components/mainContents/actorList/staff/GetStaffShedule';
 import SignUpStaffSchedule from './components/mainContents/actorList/SignUpStaffSchedule';
 
 import CivilServiceList from './components/mainContents/services/GetCivilService';
@@ -45,10 +45,11 @@ import Forget from './components/page/Forget';
 import Login from './components/page/Login';
 import CreateRoom from './components/mainContents/feature/CreateRoom';
 import CreateKit from './components/mainContents/feature/CreateKit';
-import NewPrice from './components/mainContents/feature/NewPrice';
+import NewPrice from './components/mainContents/services/NewPrice';
 import GetAppointment from './components/mainContents/feature/GetBooking';
-import VNPayResult from './components/mainContents/feature/VNPAY';
-import AppointmentSchedule from './components/mainContents/feature/staff/AppoimentSchedule';
+import VNPayResult from './components/mainContents/services/VNPAY';
+import AppointmentSchedule from './components/mainContents/actorList/staff/AppoimentSchedule';
+import BookingAtHome from './components/mainContents/services/BookingAtHome';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -181,18 +182,18 @@ function App() {
                 }
               />
               <Route
-                path="/s-slot/:staffId"
-                element={
-                  <ProtectedRoute allowedRoles={['ADMIN']}>
-                    <SignUpStaffSchedule />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
                 path="/newPrice/:serviceId"
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <NewPrice />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/schedule"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <SignUpStaffSchedule />
                   </ProtectedRoute>
                 }
               />
@@ -378,10 +379,18 @@ function App() {
               }
             />
             <Route
-              path="/order/:serviceId"
+              path="/order/at-center/:serviceId"
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
-                  <GetSlot />
+                  <BookingAtCenter />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/order/at-home/:serviceId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <BookingAtHome />
                 </ProtectedRoute>
               }
             />

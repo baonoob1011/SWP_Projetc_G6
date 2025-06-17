@@ -138,14 +138,14 @@ const CreateKit = () => {
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Đối tượng sử dụng</label>
+          <label className="form-label">Số người dùng</label>
           <input
             type="text"
             name="targetPersonCount"
             className="form-control"
             value={kit.targetPersonCount}
             onChange={handleInput}
-            placeholder="Nhập Đối tượng sử dụng"
+            placeholder="Nhập số người dùng"
           />
         </div>
         <div className="mb-3">
