@@ -1,19 +1,31 @@
 package swp.project.adn_backend.dto.response.sample;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import swp.project.adn_backend.enums.SampleStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class SampleResponse {
     String sampleType;
     LocalDate collectionDate;
     SampleStatus sampleStatus;
+    String sampleCode;
 
-    public SampleResponse(String sampleType, LocalDate collectionDate, SampleStatus sampleStatus) {
+    public SampleResponse(String sampleType, LocalDate collectionDate, SampleStatus sampleStatus, String sampleCode) {
         this.sampleType = sampleType;
         this.collectionDate = collectionDate;
         this.sampleStatus = sampleStatus;
+        this.sampleCode = sampleCode;
+    }
+
+    public String getSampleCode() {
+        return sampleCode;
+    }
+
+    public void setSampleCode(String sampleCode) {
+        this.sampleCode = sampleCode;
     }
 
     public String getSampleType() {

@@ -60,6 +60,21 @@ public class Slot {
     })
     List<Appointment> appointment;
 
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    @JoinColumn(name = "schedule_id")
+    Schedule schedule;
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+    }
+
     public List<Appointment> getAppointment() {
         return appointment;
     }

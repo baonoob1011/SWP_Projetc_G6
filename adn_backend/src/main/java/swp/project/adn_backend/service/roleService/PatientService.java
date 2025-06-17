@@ -11,6 +11,7 @@ import swp.project.adn_backend.entity.Patient;
 import swp.project.adn_backend.entity.ServiceTest;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.enums.PatientStatus;
 import swp.project.adn_backend.enums.Roles;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.PatientMapper;
@@ -43,6 +44,7 @@ public class PatientService {
             Patient patient = patientMapper.toPatientRequest(request);
             patient.setCreateAt(LocalDate.now());
             patient.setRole(Roles.PATIENT.name());
+            patient.setPatientStatus(PatientStatus.REGISTERED);
             patient.setUsers(userBookAppointment);
             patient.setServiceTest(serviceTest);
             patientList.add(patient);

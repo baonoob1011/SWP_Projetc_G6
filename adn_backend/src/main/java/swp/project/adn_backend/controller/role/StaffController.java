@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo;
 import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
 import swp.project.adn_backend.entity.Users;
@@ -37,10 +38,15 @@ public class StaffController {
         return ResponseEntity.ok(staffService.findUserByPhone(phone));
     }
 
-    @GetMapping("/get-staff-slot")
-    public ResponseEntity<List<SlotInfoDTO>> getSlotById(Authentication authentication) {
-        return ResponseEntity.ok(slotService.getSlotByStaffId(authentication));
+    @GetMapping("/get-all-staff")
+    public ResponseEntity<List<StaffBasicInfo>> getAllStaff() {
+        return ResponseEntity.ok(staffService.getAllStaffBasicInfo());
     }
+
+//    @GetMapping("/get-staff-slot")
+//    public ResponseEntity<List<SlotInfoDTO>> getSlotById(Authentication authentication) {
+//        return ResponseEntity.ok(slotService.getSlotByStaffId(authentication));
+//    }
 
     @GetMapping("/get-appointment-slot")
     public ResponseEntity<List<AppointmentInfoDTO>> getAppointmentByStaffId(Authentication authentication) {

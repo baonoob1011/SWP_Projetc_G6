@@ -31,8 +31,6 @@ public class GlobalException {
     }
 
 
-
-
     @ExceptionHandler(value = RuntimeException.class)
     ResponseEntity<APIResponse> handlingRunTimeException(RuntimeException e) {
         APIResponse apiResponse = new APIResponse<>();

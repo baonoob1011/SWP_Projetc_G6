@@ -8,6 +8,7 @@ import swp.project.adn_backend.enums.PaymentMethod;
 import swp.project.adn_backend.enums.PaymentStatus;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -35,6 +36,12 @@ public class Payment {
     })
     @JoinColumn(name = "appointment_id")
     Appointment appointment;
+
+    @OneToMany(mappedBy = "payment", fetch = FetchType.EAGER, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    List<Invoice> invoices;
 
     public Payment() {
     }
@@ -99,6 +106,22 @@ public class Payment {
 
     public LocalDate getTransitionDate() {
         return transitionDate;
+    }
+
+    public PaymentStatus getGetPaymentStatus() {
+        return getPaymentStatus;
+    }
+
+    public void setGetPaymentStatus(PaymentStatus getPaymentStatus) {
+        this.getPaymentStatus = getPaymentStatus;
+    }
+
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
     }
 
     public void setTransitionDate(LocalDate transitionDate) {
