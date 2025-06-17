@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
-import { ArrowBack, Schedule } from '@mui/icons-material';
+import { AppRegistration, ArrowBack, Schedule } from '@mui/icons-material';
 
 const StaffPage = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -39,10 +39,16 @@ const StaffPage = () => {
       path: 's-page/s-slot',
     },
     {
-      id: 'schedule',
+      id: 'appointment',
       icon: BookImageIcon,
       label: 'Lịch hẹn',
       path: 's-page/checkBooking',
+    },
+    {
+      id: 'checkAppointment',
+      icon: AppRegistration,
+      label: 'Đơn đăng ký',
+      path: 's-page/checkAppointment',
     },
   ];
 

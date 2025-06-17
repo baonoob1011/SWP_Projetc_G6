@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CustomSnackBar from '../userinfor/Snackbar';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
+import { startOfWeek, addWeeks, endOfWeek } from 'date-fns';
 import {
   FormControl,
   MenuItem,
@@ -10,7 +11,7 @@ import {
   Select,
   type SelectChangeEvent,
 } from '@mui/material';
-
+import StaffScheduleTable from './staff/CreateStaffSchedule';
 type Schedule = {
   staffId: string;
   slotDate: string;
@@ -50,13 +51,15 @@ const SignUpStaffSchedule = () => {
   const [isSlot, setIsSlot] = useState<SlotInfo[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<string>('');
   const [auth, setAuth] = useState(false);
+  const [currentWeekStart, setCurrentWeekStart] = useState<Date>(
+    startOfWeek(new Date(), { weekStartsOn: 1 })
+  );
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
     severity: 'success' as 'success' | 'error',
   });
 
-  // Kiểm tra quyền truy cập
   useEffect(() => {
     setAuth(
       localStorage.getItem('role') === 'ADMIN' ||
@@ -64,7 +67,6 @@ const SignUpStaffSchedule = () => {
     );
   }, []);
 
-  // Gán lại staffId khi thay đổi param
   useEffect(() => {
     setIsSchedule((prev) => ({
       ...prev,
@@ -72,7 +74,6 @@ const SignUpStaffSchedule = () => {
     }));
   }, [staffId]);
 
-  // Lấy danh sách phòng
   const fetchRoom = async () => {
     try {
       const res = await fetch('http://localhost:8080/api/room/get-all-room', {
@@ -119,24 +120,20 @@ const SignUpStaffSchedule = () => {
         return;
       }
 
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-      }
-
-      const data = await res.json(); // <-- Đây mới là dữ liệu JSON
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const simplifiedSlotInfo: SlotInfo[] = data.map((item: any) => ({
-        slotId: item.slotResponse.slotId,
-        slotDate: item.slotResponse.slotDate,
-        startTime: item.slotResponse.startTime,
-        endTime: item.slotResponse.endTime,
-        fullName: item.staffSlotResponse.fullName,
-        roomName: item.roomSlotResponse.roomName,
-      }));
+      const data: any[] = await res.json();
 
-      setIsSlot(simplifiedSlotInfo);
+      const slotInfo: SlotInfo[] = data.map((item) => ({
+        slotId: String(item.slotResponse?.slotId ?? ''),
+        slotDate: item.slotResponse?.slotDate ?? '',
+        startTime: item.slotResponse?.startTime ?? '',
+        endTime: item.slotResponse?.endTime ?? '',
+        roomName: item.roomSlotResponse?.roomName ?? '',
+        fullName: item.staffSlotResponse?.fullName ?? '',
+      }));
+      setIsSlot(slotInfo);
     } catch (error) {
-      console.error('Fetch rooms error:', error);
+      console.error('Fetch slots error:', error);
       toast.error('Không thể lấy danh sách lịch làm');
     }
   };
@@ -144,15 +141,10 @@ const SignUpStaffSchedule = () => {
   useEffect(() => {
     if (auth) {
       fetchRoom();
-    }
-  }, [auth]);
-  useEffect(() => {
-    if (auth) {
       fetchSlot();
     }
   }, [auth]);
 
-  // Xử lý thay đổi input
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setIsSchedule((prev) => ({
@@ -161,12 +153,10 @@ const SignUpStaffSchedule = () => {
     }));
   };
 
-  // Xử lý chọn phòng
   const handleRoomChange = (event: SelectChangeEvent<string>) => {
     setSelectedRoom(event.target.value);
   };
 
-  // Submit form
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -188,7 +178,7 @@ const SignUpStaffSchedule = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:8080/api/slot/create-slot/${isSchedule.staffId}?roomId=${selectedRoom}`,
+        `http://localhost:8080/api/slot/create-slot?roomId=${selectedRoom}`,
         {
           method: 'POST',
           headers: {
@@ -200,19 +190,14 @@ const SignUpStaffSchedule = () => {
       );
 
       if (!res.ok) {
-        let errorMessage = 'Không thể đăng ký'; // mặc định
-
         const contentType = res.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const errorData = await res.json();
-          errorMessage = errorData.message || JSON.stringify(errorData);
-        } else {
-          errorMessage = await res.text();
-        }
+        const errorMessage = contentType?.includes('application/json')
+          ? (await res.json()).message
+          : await res.text();
 
         setSnackbar({
           open: true,
-          message: errorMessage,
+          message: errorMessage || 'Không thể đăng ký',
           severity: 'error',
         });
       } else {
@@ -230,9 +215,9 @@ const SignUpStaffSchedule = () => {
           endTime: '',
         }));
         setSelectedRoom('');
+        fetchRoom();
+        fetchSlot();
       }
-      fetchRoom();
-      fetchSlot();
     } catch (error) {
       console.log(error);
       setSnackbar({
@@ -243,7 +228,6 @@ const SignUpStaffSchedule = () => {
     }
   };
 
-  // Nếu không có quyền truy cập
   if (!auth) {
     return (
       <p className="text-center mt-5 text-danger">
@@ -331,37 +315,35 @@ const SignUpStaffSchedule = () => {
         </button>
       </form>
 
-      {/* Bảng danh sách lịch làm */}
+      {/* Chuyển tuần */}
       <div
-        className="p-4 border rounded bg-light"
-        style={{ maxWidth: 800, margin: '20px auto' }}
+        className="d-flex justify-content-between align-items-center mb-3"
+        style={{ maxWidth: 800, margin: '0 auto' }}
       >
-        <h2 className="mb-3">Danh sách lịch đã đăng ký</h2>
-        <table className="table table-bordered table-hover table-striped">
-          <thead className="table-dark">
-            <tr>
-              <th>Số phòng</th>
-              <th>Tên nhân viên</th>
-              <th>Ngày làm</th>
-              <th>Thời gian mở</th>
-              <th>Thời gian đóng</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isSlot.map((slot) => (
-              <tr key={slot.slotId}>
-                <td>{slot.roomName}</td>
-                <td>{slot.fullName}</td>
-                <td>{slot.slotDate}</td>
-                <td>{slot.startTime}</td>
-                <td>{slot.endTime}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <button
+          className="btn btn-outline-primary"
+          onClick={() => setCurrentWeekStart((prev) => addWeeks(prev, -1))}
+        >
+          Tuần trước
+        </button>
+        <strong>
+          Tuần từ {currentWeekStart.toLocaleDateString()} đến{' '}
+          {endOfWeek(currentWeekStart, {
+            weekStartsOn: 1,
+          }).toLocaleDateString()}
+        </strong>
+        <button
+          className="btn btn-outline-primary"
+          onClick={() => setCurrentWeekStart((prev) => addWeeks(prev, 1))}
+        >
+          Tuần sau
+        </button>
       </div>
 
-      {/* Bảng thông tin phòng */}
+      {/* Component hiển thị bảng lịch */}
+      <StaffScheduleTable slots={isSlot} currentWeekStart={currentWeekStart} />
+
+      {/* Bảng phòng */}
       <div
         className="p-4 border rounded bg-light"
         style={{ maxWidth: 800, margin: '20px auto' }}
@@ -387,7 +369,7 @@ const SignUpStaffSchedule = () => {
         </table>
       </div>
 
-      {/* Snackbar thông báo */}
+      {/* Snackbar */}
       <CustomSnackBar
         open={snackbar.open}
         message={snackbar.message}

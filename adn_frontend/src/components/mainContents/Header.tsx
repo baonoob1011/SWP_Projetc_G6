@@ -137,9 +137,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   width: 'auto',
                 }}
               />
-              <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-               
-              </Box>
+              <Box sx={{ display: { xs: 'none', sm: 'block' } }}></Box>
             </NavLink>
           </Box>
 
@@ -255,7 +253,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               justifyContent: 'flex-end',
             }}
           >
-
             {/* User Menu or Auth Buttons */}
             {fullName ? (
               role === 'MANAGER' ? (
