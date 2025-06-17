@@ -13,8 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo;
+import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
+import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
@@ -49,7 +52,12 @@ public class StaffService {
         this.entityManager = entityManager;
     }
 
-
+    public List<StaffBasicInfo> getAllStaffBasicInfo() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo(" +
+                "s.staffId, s.fullName, s.phone, s.email) FROM Staff s";
+        TypedQuery<StaffBasicInfo> query = entityManager.createQuery(jpql, StaffBasicInfo.class);
+        return query.getResultList();
+    }
     // update staff
 
     @Transactional

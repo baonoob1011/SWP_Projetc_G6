@@ -1,14 +1,24 @@
 package swp.project.adn_backend.dto.response.slot;
 
-import java.sql.Time;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class SlotResponse {
     long slotId;
-    LocalDate slotDate;
-    LocalTime  startTime;
-    LocalTime  endTime;
+
+    private LocalDate slotDate;
+
+    private LocalTime startTime;
+
+    private LocalTime endTime;
 
     public SlotResponse(long slotId, LocalDate slotDate, LocalTime startTime, LocalTime endTime) {
         this.slotId = slotId;
