@@ -5,6 +5,7 @@ import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import swp.project.adn_backend.enums.SlotStatus;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,12 +20,20 @@ public class SlotResponse {
     private LocalTime startTime;
 
     private LocalTime endTime;
-
+    private SlotStatus slotStatus;
     public SlotResponse(long slotId, LocalDate slotDate, LocalTime startTime, LocalTime endTime) {
         this.slotId = slotId;
         this.slotDate = slotDate;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public SlotStatus getSlotStatus() {
+        return slotStatus;
+    }
+
+    public void setSlotStatus(SlotStatus slotStatus) {
+        this.slotStatus = slotStatus;
     }
 
     public long getSlotId() {

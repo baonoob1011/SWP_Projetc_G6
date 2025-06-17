@@ -34,6 +34,11 @@ public class SlotController {
         return ResponseEntity.ok(slotService.getAllSlot());
     }
 
+    @GetMapping("/get-all-slot-of-staff")
+    public ResponseEntity<List<GetFullSlotResponse>> getAllSlotOfStaff(Authentication authentication) {
+        return ResponseEntity.ok(slotService.getAllSlotOfStaff(authentication));
+    }
+
     @GetMapping("/get-all-slot-user")
     public ResponseEntity<List<SlotInfoDTO>> getAllSlotUser() {
         return ResponseEntity.ok(slotService.getAllUpcomingSlotsForUser());

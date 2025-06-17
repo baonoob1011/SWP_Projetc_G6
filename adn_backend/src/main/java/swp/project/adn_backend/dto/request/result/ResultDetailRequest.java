@@ -1,4 +1,4 @@
-package swp.project.adn_backend.entity;
+package swp.project.adn_backend.dto.request.result;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,46 +6,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import swp.project.adn_backend.entity.Result;
 
-import java.util.List;
-
-@Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "ResultDetail")
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class ResultDetail {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "result_detail_id")
+public class ResultDetailRequest {
+
     long resultDetailId;
 
-    @Column(name = "combined_paternity_index")
+
     double combinedPaternityIndex;
 
     String conclusion;
 
-    @Column(name = "result_summary")
+
     String resultSummary;
 
-    @OneToOne
-    @JoinColumn(name = "result_id", nullable = false)
     Result result;
-
-    @OneToMany(mappedBy = "resultDetail", fetch = FetchType.EAGER, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
-    })
-    List<ResultLocus> resultLoci;
-
-    public List<ResultLocus> getResultLoci() {
-        return resultLoci;
-    }
-
-    public void setResultLoci(List<ResultLocus> resultLoci) {
-        this.resultLoci = resultLoci;
-    }
 
     public long getResultDetailId() {
         return resultDetailId;

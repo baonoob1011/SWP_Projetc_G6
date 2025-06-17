@@ -21,6 +21,7 @@ public class Sample {
     @Column(name = "sample_id")
     long sampleId;
 
+    String sampleCode;
     @Column(name = "sample_type", columnDefinition = "nvarchar(255)")
     String sampleType;
 
@@ -65,6 +66,11 @@ public class Sample {
             CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Result> results;
+    @OneToMany(mappedBy = "sample", fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    List<ResultLocus> resultLocus;
 
     public Sample() {
     }
@@ -79,6 +85,22 @@ public class Sample {
         this.kit = kit;
         this.staff = staff;
         this.results = results;
+    }
+
+    public String getSampleCode() {
+        return sampleCode;
+    }
+
+    public void setSampleCode(String sampleCode) {
+        this.sampleCode = sampleCode;
+    }
+
+    public List<ResultLocus> getResultLocus() {
+        return resultLocus;
+    }
+
+    public void setResultLocus(List<ResultLocus> resultLocus) {
+        this.resultLocus = resultLocus;
     }
 
     public long getSampleId() {

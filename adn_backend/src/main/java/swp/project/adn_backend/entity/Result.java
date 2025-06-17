@@ -38,10 +38,6 @@ public class Result {
     @JoinColumn(name = "sample_id", nullable = false)
     Sample sample;
 
-    @OneToMany(mappedBy = "result", fetch = FetchType.LAZY, cascade = {
-            CascadeType.ALL
-    })
-    List<ResultLocus> resultLocus;
 
     @OneToOne(mappedBy = "result")
     ResultDetail resultDetail;
@@ -49,13 +45,12 @@ public class Result {
     public Result() {
     }
 
-    public Result(long result_id, LocalDate collectionDate, LocalDate resultDate, ResultStatus resultStatus, Sample sample, List<ResultLocus> resultLocus, ResultDetail resultDetail) {
+    public Result(long result_id, LocalDate collectionDate, LocalDate resultDate, ResultStatus resultStatus, Sample sample, ResultDetail resultDetail) {
         this.result_id = result_id;
         this.collectionDate = collectionDate;
         this.resultDate = resultDate;
         this.resultStatus = resultStatus;
         this.sample = sample;
-        this.resultLocus = resultLocus;
         this.resultDetail = resultDetail;
     }
 
@@ -99,13 +94,6 @@ public class Result {
         this.sample = sample;
     }
 
-    public List<ResultLocus> getResultLocus() {
-        return resultLocus;
-    }
-
-    public void setResultLocus(List<ResultLocus> resultLocus) {
-        this.resultLocus = resultLocus;
-    }
 
     public ResultDetail getResultDetail() {
         return resultDetail;

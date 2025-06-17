@@ -74,6 +74,9 @@ public class SecurityConfig {
             "/api/appointment/confirm-appointment-at-home/**",
             "/api/appointment/get-appointment-by-slot/**",
             "/api/sample/collect-sample-patient/**",
+            "/api/sample/get-all-sample/**",
+            "/api/slot/get-all-slot-of-staff/**",
+            "/api/result-locus/create-result-locus/**",
             "/api/staff/**"
     };
 

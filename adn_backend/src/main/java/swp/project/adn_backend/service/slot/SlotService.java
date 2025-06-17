@@ -21,6 +21,7 @@ import swp.project.adn_backend.dto.response.slot.StaffSlotResponse;
 import swp.project.adn_backend.entity.Room;
 import swp.project.adn_backend.entity.Slot;
 import swp.project.adn_backend.entity.Staff;
+import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.RoomStatus;
 import swp.project.adn_backend.enums.SlotStatus;
@@ -226,30 +227,65 @@ public class SlotService {
         List<Slot> slotList = slotRepository.findAll();
         GetFullSlotResponse getAllServiceResponse = null;
         for (Slot slot : slotList) {
+            if (slot.getSlotStatus().equals(SlotStatus.AVAILABLE)) {
 
-            SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
+                SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
 
-            //lay room
-            RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
-            roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
-            roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
-            roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
-            roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
-
-            //lay staff
-            StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
-            staffSlotResponse.setStaffId(slot.getStaff().getStaffId());
-            staffSlotResponse.setFullName(slot.getStaff().getFullName());
-
-
-            GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
-            getFullSlotResponse.setSlotResponse(slotResponse);
-            getFullSlotResponse.setStaffSlotResponse(staffSlotResponse);
-            getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
+                //lay room
+                RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
+                roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
+                roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
+                roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
+                roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
+//
+//                //lay staff
+//                StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
+//                staffSlotResponse.setStaffId(slot.getStaff().getStaffId());
+//                staffSlotResponse.setFullName(slot.getStaff().getFullName());
 
 
-            //lay full response
-            fullSlotResponses.add(getFullSlotResponse);
+                GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
+                getFullSlotResponse.setSlotResponse(slotResponse);
+//                getFullSlotResponse.setStaffSlotResponse(staffSlotResponse);
+                getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
+
+
+                //lay full response
+                fullSlotResponses.add(getFullSlotResponse);
+
+            }
+        }
+        return fullSlotResponses;
+    }
+
+    public List<GetFullSlotResponse> getAllSlotOfStaff(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+
+        Staff staff = staffRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+        List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();
+        List<Slot> slotList = staff.getSlots();
+        GetFullSlotResponse getAllServiceResponse = null;
+        for (Slot slot : slotList) {
+                SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
+
+                //lay room
+                RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
+                roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
+                roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
+                roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
+                roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
+
+
+                GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
+                getFullSlotResponse.setSlotResponse(slotResponse);
+                getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
+
+
+                //lay full response
+                fullSlotResponses.add(getFullSlotResponse);
+
 
         }
         return fullSlotResponses;
