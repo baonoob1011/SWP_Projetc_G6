@@ -45,7 +45,7 @@ public class SecurityConfig {
             "/api/services/get-all-administrative-service",
             "/api/services/get-all-civil-service",
             "/api/price/get-all-price/**",
-            "/api/jasperpdf/**"
+            "/api/jasperpdf/**",
     };
 
     private final String[] USER_ENDPOINTS = {
@@ -63,7 +63,7 @@ public class SecurityConfig {
             "/api/payment/**",
             "/api/v1/**",
             "/api/appointment/book-appointment-at-home/**",
-            "/api/appointment/cancel-appointment/**"
+            "/api/appointment/cancel-appointment/**",
     };
 
     private final String[] STAFF_ENDPOINTS = {
@@ -77,8 +77,7 @@ public class SecurityConfig {
             "/api/sample/get-all-sample/**",
             "/api/slot/get-all-slot-of-staff/**",
             "/api/result-locus/create-result-locus/**",
-            "/api/staff/**",
-            "/api/dashboard/**"
+            "/api/staff/**"
     };
 
     private final String[] MANAGER_ENDPOINTS = {
@@ -92,8 +91,7 @@ public class SecurityConfig {
             "/api/payment/**",
             "/api/appointment/**",
             "/api/kit/**",
-            "/api/staff/get-all-staff",
-            "/api/dashboard/**"
+            "/api/staff/get-all-staff"
     };
 
     private final String[] ADMIN_ENDPOINTS = {
