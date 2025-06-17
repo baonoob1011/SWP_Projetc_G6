@@ -131,7 +131,7 @@ export default function Home() {
     },
     {
       title: 'Xét nghiệm tại cơ sở',
-      desc: 'Khách hàng có thể đến trực tiếp các chi nhánh hoặc phòng xét nghiệm liên kết của GeneLink để thực hiện lấy mẫu ADN. Cơ sở vật chất hiện đại, nhân viên hỗ trợ tận tình và quy trình chuẩn giúp đảm bảo mẫu thu được chất lượng tốt nhất cho phân tích.',
+      desc: 'Khách hàng có thể đến trực tiếp các chi nhánh hoặc phòng xét nghiệm liên kết của GeneLink để thực hiện lấy mẫu ADN. Cơ sở vật chất hiện đại, nhân viên hỗ trợ tận tình và quy trình chuẩn giúp đảm bảo mẫu thu được chất lượng tốt nhất cho phân tích, nghiên cứu.',
       icon: <Hospital className="w-7 h-7 text-pink-600" />,
       link: '/service/at-center',
     },
@@ -179,7 +179,7 @@ export default function Home() {
     },
     {
       title: 'Mở rộng dịch vụ xét nghiệm di truyền',
-      desc: 'Ra mắt gói xét nghiệm toàn diện cho gia đình',
+      desc: 'Ra mắt gói xét nghiệm toàn diện và chính xác cho gia đình',
       date: '01/06/2025',
     },
     {
@@ -205,16 +205,17 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 relative overflow-x-hidden">
      
      
-     {/* Thanh hỗ trợ */}
-<div className="fixed bottom-6 left-4 z-50 space-y-4 bg-white p-3 rounded-2xl shadow-lg">
+   {/* 3 icon lơ lửng, giữ nguyên shape */}
+<div className="fixed bottom-6 left-4 z-50 space-y-3">
   {/* Hotline */}
   <a
     href="tel:19001234"
-    className="flex flex-col items-center hover:scale-105 transition-transform"
+    className="group flex flex-col items-center transition-all duration-300"
   >
-    <div className="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center text-white text-2xl shake-auto">
-      <FaPhoneAlt />
+    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center text-white text-2xl shadow-lg animate-pulse">
+      <FaPhoneAlt className="group-hover:rotate-12 transition-transform duration-300" />
     </div>
+    <span className="text-xs text-gray-600 mt-1 font-medium">Hotline</span>
   </a>
 
   {/* Messenger */}
@@ -222,11 +223,12 @@ export default function Home() {
     href="https://m.me/yourpage"
     target="_blank"
     rel="noopener noreferrer"
-    className="flex flex-col items-center hover:scale-105 transition-transform"
+    className="group flex flex-col items-center transition-all duration-300"
   >
-    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-pink-500 flex items-center justify-center text-white text-2xl shake-hover">
-      <FaFacebookMessenger />
+    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-white text-2xl shadow-lg">
+      <FaFacebookMessenger className="group-hover:rotate-12 transition-transform duration-300" />
     </div>
+    <span className="text-xs text-gray-600 mt-1 font-medium">Messenger</span>
   </a>
 
   {/* Zalo */}
@@ -234,357 +236,529 @@ export default function Home() {
     href="https://zalo.me/yourzaloid"
     target="_blank"
     rel="noopener noreferrer"
-    className="flex flex-col items-center hover:scale-105 transition-transform"
+    className="group flex flex-col items-center transition-all duration-300"
   >
-    <div className="w-14 h-14 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl shake-hover">
-      <SiZalo />
+    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center text-white text-2xl shadow-lg">
+      <SiZalo className="group-hover:rotate-12 transition-transform duration-300" />
     </div>
+    <span className="text-xs text-gray-600 mt-1 font-medium">Zalo</span>
   </a>
 </div>
 
+{/* Hero Section - Enhanced với overlay gradient và typography */}
+<div className="relative w-full h-[700px] overflow-hidden mt-15">
+  {/* Video Background */}
+  <video
+    className="absolute top-0 left-0 w-full h-full object-cover z-0 scale-105"
+    autoPlay
+    loop
+    muted
+    playsInline
+  >
+    <source src={banner_video} type="video/mp4" />
+    Trình duyệt của bạn không hỗ trợ video.
+  </video>
 
+  {/* Enhanced Overlay với gradient */}
+  <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-gray-900/10 to-blue-900/50 z-10" />
 
-      <div className="relative w-full h-[600px] overflow-hidden mt-15">
-      {/* Video Background */}
-      <video
-        className="absolute top-0 left-0 w-full h-full object-cover z-0"
-        autoPlay
-        loop
-        muted
-        playsInline
-      >
-        <source src={banner_video} type="video/mp4" />
-        Trình duyệt của bạn không hỗ trợ video.
-      </video>
+  {/* Decorative Elements */}
+  <div className="absolute top-20 left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl animate-pulse z-15" />
+  <div className="absolute bottom-20 right-10 w-40 h-40 bg-green-500/10 rounded-full blur-3xl animate-pulse z-15" />
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gray bg-opacity-50 z-10" />
+  {/* Enhanced Text Content */}
+  <div className="relative z-20 flex flex-col items-center justify-center h-full text-white px-6 text-center">
+    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
+      <h1 className="text-5xl md:text-7xl font-black mb-8 drop-shadow-2xl bg-gradient-to-r from-white via-blue-100 to-green-100 bg-clip-text text-transparent leading-tight">
+        Dịch vụ xét nghiệm ADN
+        <span className="block text-blue-300 text-4xl md:text-6xl mt-2">tại GeneLink</span>
+      </h1>
+      <p className="text-xl md:text-2xl max-w-3xl drop-shadow-lg leading-relaxed font-light text-gray-100">
+        <span className="font-semibold text-blue-300">GeneLink</span> cam kết cung cấp dịch vụ xét nghiệm ADN 
+        <span className="text-green-300 font-medium"> hiện đại, chính xác và bảo mật</span>.
+      </p>
+      <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-full shadow-lg hover:shadow-blue-500/30 hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+          Đặt lịch ngay
+        </button>
+        <button className="px-8 py-4 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white font-bold rounded-full border border-white/30 hover:border-white/50 transition-all duration-300">
+          Tìm hiểu thêm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
-      {/* Text Content */}
-      <div className="relative z-20 flex flex-col items-center justify-center h-full text-white px-6 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6 drop-shadow-lg">
-          Dịch vụ xét nghiệm ADN tại GeneLink
-        </h1>
-        <p className="text-lg md:text-xl max-w-2xl drop-shadow-md leading-relaxed">
-          GeneLink cam kết cung cấp dịch vụ xét nghiệm ADN hiện đại, chính xác và bảo mật.
-          Chúng tôi lưu trữ mẫu ADN an toàn, giúp bạn dễ dàng nâng cấp hoặc thực hiện thêm xét nghiệm mà không cần lấy mẫu lại.
+{/* Section giới thiệu GeneLink - Enhanced với modern layout */}
+<section className="w-full bg-gradient-to-br from-blue-50 via-white to-green-50 py-20 font-sans">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-stretch gap-12">
+    {/* Text bên trái với enhanced styling */}
+    <div className="md:w-2/3 flex flex-col justify-center space-y-8 leading-relaxed tracking-wide">
+      <div className="space-y-4">
+        <h2 className="text-6xl md:text-8xl font-black text-transparent bg-gradient-to-r from-blue-600 via-green-600 to-blue-800 bg-clip-text leading-none">
+          Về GeneLink
+        </h2>
+        <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-green-500 rounded-full"></div>
+      </div>
+      
+      <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20 space-y-6">
+        <p className="text-lg md:text-xl text-gray-800 leading-relaxed">
+          <span className="font-bold text-blue-700 text-xl">
+            Công ty Cổ phần Dịch vụ Phân tích Di truyền (GeneLink)
+          </span> – thành viên 
+          <span className="font-bold text-green-700 bg-green-100 px-2 py-1 rounded-lg mx-1">
+            Tập đoàn Eurofins
+          </span> – doanh nghiệp y tế tiên phong được thành lập 
+          <span className="font-semibold text-blue-600">26/10/2010</span>.
+        </p>
+        
+        <p className="text-lg text-gray-700 leading-relaxed">
+          <span className="font-bold text-blue-700">GeneLink</span> khẳng định vai trò 
+          <span className="font-bold text-green-700 bg-green-100 px-2 py-1 rounded-lg mx-1">
+            dẫn đầu về phân tích di truyền
+          </span> trong ngành xét nghiệm hỗ trợ chẩn đoán lâm sàng.
+        </p>
+        
+        <p className="text-lg text-gray-700 leading-relaxed">
+          Gia nhập <span className="font-bold text-blue-700">Tập đoàn Y tế Số 1 Thế giới Eurofins</span> để xây dựng 
+          <span className="font-bold text-green-700">thương hiệu uy tín đa quốc gia</span>.
         </p>
       </div>
     </div>
-      {/* About Section - kéo lên để khỏi trắng */}
-      <section className="relative -mt-20 pt-20 pb-4 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-        {/* …nội dung Về GeneLink… */}
-      </section>
-{/* Section giới thiệu GeneLink */}
-<section className="w-full bg-blue-50 py-16">
-  <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8
-                  flex flex-col md:flex-row items-stretch gap-8">
-    {/* Text bên trái */}
-    <div className="md:w-2/3 flex flex-col justify-center space-y-8 leading-loose tracking-wide">
-      <h2 className="text-3xl font-bold text-blue-700">
-        Về GeneLink
-      </h2>
-      <p className="text-gray-800">
-        <span className="font-semibold text-blue-600">
-          Công ty Cổ phần Dịch vụ Phân tích Di truyền (GeneLink)
-        </span> – thành viên <span className="font-semibold text-purple-600">
-          Tập đoàn Eurofins
-        </span> – là một doanh nghiệp y tế tiên phong trong lĩnh vực xét nghiệm được thành lập ngày <span className="font-medium text-blue-500">26/10/2010</span> bởi đội ngũ các nhà khoa học đầu ngành.
-      </p>
-      <p className="text-gray-800">
-        Trong hành trình nỗ lực phát triển không ngừng, <span className="font-semibold text-blue-600">GeneLink</span> vẫn luôn giữ vững và khẳng định vai trò <span className="font-semibold text-purple-600">dẫn đầu về phân tích di truyền</span> nói riêng cũng như trong ngành xét nghiệm hỗ trợ chẩn đoán lâm sàng nói chung.
-      </p>
-      <p className="text-gray-800">
-        Việc gia nhập <span className="font-semibold text-blue-600">Tập đoàn Y tế Số 1 Thế giới Eurofins</span> là một trong những bước đi chiến lược nhằm trở thành doanh nghiệp có vốn đầu tư nước ngoài và xây dựng <span className="font-semibold text-purple-600">thương hiệu uy tín đa quốc gia</span>.
-      </p>
-    </div>
-    {/* Ảnh bên phải */}
-    <div className="md:w-1/2 flex">
-      <img
-        src={geneLinkImage}
-        alt="GeneLink Laboratory"
-        className="w-full h-full object-cover rounded-2xl"
-      />
-    </div>
+    
+    {/* Ảnh bên phải với hiệu ứng hover “nhấp nhô” */}
+<div className="md:w-1/2 flex justify-center">
+  <img
+    src={geneLinkImage}
+    alt="GeneLink Laboratory"
+    className="w-full h-auto object-cover rounded-3xl shadow-lg border-4 border-blue-200 transition-transform duration-200 hover:scale-105"
+  />
+</div>
+
   </div>
 </section>
 
-
-
-    {/* Section hướng dẫn lấy mẫu ADN tại nhà */}
-<section className="w-full bg-white py-16">
-  <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-stretch gap-8">
+{/* Section hướng dẫn lấy mẫu ADN - Enhanced với step-by-step design */}
+<section className="w-full bg-gradient-to-br from-white to-blue-50 py-20">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-stretch gap-12">
     {/* Text hướng dẫn bên trái */}
-    <div className="md:w-2/3 flex flex-col justify-center space-y-6 leading-relaxed tracking-wide">
-      <h2 className="text-3xl font-bold text-green-700">Lấy mẫu ADN tại nhà</h2>
-      <p className="text-gray-800">
-        Chúng tôi cung cấp dịch vụ lấy mẫu tận nơi tiện lợi, đảm bảo riêng tư và an toàn:
+    <div className="md:w-2/3 flex flex-col justify-center space-y-8">
+      <div className="space-y-4">
+        <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text">
+          Lấy mẫu ADN tại nhà
+        </h2>
+        <div className="w-24 h-1 bg-gradient-to-r from-green-500 to-blue-500 rounded-full"></div>
+      </div>
+      
+      <p className="text-xl text-gray-700 font-medium">
+        Dịch vụ lấy mẫu tận nơi tiện lợi, đảm bảo riêng tư và an toàn
       </p>
-      <ul className="list-disc list-inside space-y-2 text-gray-700">
-        <li className="text-green-600">
-          <strong className="text-green-800">Đặt lịch trực tuyến:</strong> Chọn khung giờ thuận tiện, nhân viên y tế sẽ liên hệ xác nhận.
-        </li>
-        <li className="text-green-600">
-          <strong className="text-green-800">Chuẩn bị dụng cụ:</strong> Bộ kit lấy mẫu bao gồm que tăm bông vô trùng, ống đựng mẫu, và hướng dẫn chi tiết.
-        </li>
-        <li className="text-green-600">
-          <strong className="text-green-800">Thao tác đơn giản:</strong> Dùng que tăm bông quét nhẹ lòng má trong 2–3 lần, cho vào ống, dán nhãn và trả lại cho nhân viên.
-        </li>
-        <li className="text-green-600">
-          <strong className="text-green-800">Vận chuyển an toàn:</strong> Mẫu được đóng gói kín, vận chuyển trong điều kiện bảo quản phù hợp để đảm bảo chất lượng.
-        </li>
-      </ul>
-      <p className="text-gray-800">
-        Thời gian lấy mẫu nhanh chóng (khoảng <span className="text-green-600 font-semibold">5–10 phút</span>), nhân viên được đào tạo chuyên nghiệp sẽ hướng dẫn chi tiết và hỗ trợ bạn trong suốt quá trình.
-      </p>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {[
+          {
+            step: "01",
+            title: "Đặt lịch trực tuyến",
+            desc: "Chọn khung giờ thuận tiện, nhân viên y tế sẽ liên hệ xác nhận",
+            color: "from-blue-500 to-blue-600"
+          },
+          {
+            step: "02", 
+            title: "Chuẩn bị dụng cụ",
+            desc: "Bộ kit lấy mẫu bao gồm que tăm bông vô trùng, ống đựng mẫu",
+            color: "from-green-500 to-green-600"
+          },
+          {
+            step: "03",
+            title: "Thao tác đơn giản", 
+            desc: "Dùng que tăm bông quét nhẹ lòng má, cho vào ống và dán nhãn",
+            color: "from-purple-500 to-purple-600"
+          },
+          {
+            step: "04",
+            title: "Vận chuyển an toàn",
+            desc: "Mẫu được đóng gói kín, vận chuyển trong điều kiện bảo quản phù hợp",
+            color: "from-orange-500 to-orange-600"
+          }
+        ].map((item, index) => (
+          <div key={index} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group hover:scale-105">
+            <div className="flex items-start space-x-4">
+              <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${item.color} flex items-center justify-center text-white font-bold shadow-lg`}>
+                {item.step}
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-lg text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-2xl p-6 border border-green-200">
+        <p className="text-gray-800 text-center">
+          ⏱️ Thời gian lấy mẫu: <span className="text-green-600 font-bold text-lg">5–10 phút</span>
+          <br />
+          <span className="text-sm text-gray-600 mt-2 block">
+            Nhân viên được đào tạo chuyên nghiệp sẽ hướng dẫn chi tiết
+          </span>
+        </p>
+      </div>
     </div>
 
-    {/* Video YouTube bên phải */}
-    <div className="md:w-1/2 flex">
-      <div className="w-full aspect-video overflow-hidden rounded-lg shadow-lg">
-        <iframe
-          className="w-full h-full"
-          src="https://www.youtube.com/embed/ffpkreH-cfk"
-          title="Hướng dẫn lấy mẫu ADN tại nhà"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
+   {/* Video YouTube bên phải với khung viền xanh dương nhạt */}
+<div className="md:w-1/2 flex items-center mt-15">
+  <div className="relative w-full">
+    <div className="relative w-full h-[600px] overflow-hidden rounded-2xl shadow-lg border-4 border-blue-200">
+      <iframe
+        className="w-full h-full"
+        src="https://www.youtube.com/embed/ffpkreH-cfk"
+        title="Hướng dẫn lấy mẫu ADN tại nhà"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    </div>
+  </div>
+</div>
+
+  </div>
+</section>
+
+{/* Section Gói xét nghiệm ADN - Enhanced với modern card và CTA */}
+<section className="w-full bg-gradient-to-br from-blue-600 via-green-600 to-teal-600 py-24 relative overflow-hidden">
+  {/* Decorative elements */}
+  <div className="absolute top-0 left-0 w-full h-full">
+    <div className="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+    <div className="absolute bottom-20 right-20 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+  </div>
+  
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-12">
+    {/* Nội dung bên trái */}
+    <div className="lg:w-2/3 bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-10 space-y-8 border border-white/20">
+      <div className="space-y-4">
+        <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text">
+          Gói xét nghiệm ADN Huyết thống
+        </h2>
+        <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-green-500 rounded-full"></div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {[
+          {
+            icon: "👨‍👩‍👧‍👦",
+            title: "ADN huyết thống trực hệ",
+            desc: "Cha – Con, Mẹ – Con"
+          },
+          {
+            icon: "📋",
+            title: "ADN phục vụ làm giấy khai sinh", 
+            desc: "Hỗ trợ thủ tục pháp lý"
+          },
+          {
+            icon: "⚖️",
+            title: "ADN hỗ trợ các thủ tục pháp lý",
+            desc: "Đảm bảo tính chính xác cao"
+          }
+        ].map((item, index) => (
+          <div key={index} className="bg-gradient-to-br from-blue-50 to-green-50 rounded-xl p-4 text-center hover:shadow-lg transition-all duration-300 group hover:scale-105">
+            <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">{item.icon}</div>
+            <h3 className="font-bold text-gray-800 text-sm mb-1">{item.title}</h3>
+            <p className="text-xs text-gray-600">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+      
+      {/* Enhanced Form tư vấn */}
+      <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-2xl p-6 border border-blue-200">
+        <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">💬 Nhận tư vấn miễn phí</h3>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <input
+            type="text"
+            placeholder="Nhập số điện thoại của bạn"
+            className="flex-grow px-6 py-4 text-gray-700 placeholder-gray-400 bg-white rounded-2xl border border-gray-200 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:border-transparent shadow-lg"
+          />
+          <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 whitespace-nowrap">
+            🚀 Tư vấn ngay
+          </button>
+        </div>
+        <p className="text-xs text-gray-500 text-center mt-2">
+          Chúng tôi sẽ liên hệ với bạn trong vòng 30 phút
+        </p>
+      </div>
+    </div>
+    
+    {/* Hình ảnh bên phải với enhanced styling */}
+    <div className="lg:w-1/3 flex items-center justify-center">
+      <div className="relative group">
+        <div className="absolute -inset-6 bg-white/20 rounded-3xl blur-2xl group-hover:bg-white/30 transition duration-300"></div>
+        <img
+          src={doctor}
+          alt="Phòng xét nghiệm ADN"
+          className="relative w-full h-auto object-cover rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300 border-4 border-white/20"
         />
       </div>
     </div>
   </div>
 </section>
 
-{/* Section Gói xét nghiệm ADN Huyết thống */}
-<section className="w-full bg-gradient-to-br from-green-50 to-blue-50 py-20">
-  <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-stretch gap-10">
-    {/* Nội dung bên trái */}
-    <div className="lg:w-2/3 flex flex-col justify-center bg-white rounded-2xl shadow-lg p-10 space-y-8">
-      <h2 className="text-3xl font-bold text-green-700">
-        Gói xét nghiệm ADN Huyết thống
-      </h2>
-      <ul className="list-disc list-inside space-y-4 text-gray-700 leading-loose">
-        <li>ADN huyết thống trực hệ (Cha – Con, Mẹ – Con)</li>
-        <li>ADN phục vụ làm giấy khai sinh</li>
-        <li>ADN hỗ trợ các thủ tục pháp lý</li>
-      </ul>
-      {/* Form tư vấn */}
-      <div>
-        <div className="flex bg-white border-2 border-green-200 rounded-full overflow-hidden shadow-sm max-w-md">
-          <input
-            type="text"
-            placeholder="Nhập số điện thoại của bạn"
-            className="flex-grow px-4 py-3 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-300"
-          />
-          <button className="px-6 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-full transition">
-            Tư vấn ngay
-          </button>
+{/* Services Section - Enhanced với hover effects và icons */}
+<section className="bg-gradient-to-br from-gray-50 to-blue-50 py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto rounded-3xl my-8">
+  <div className="text-center mb-16 space-y-4">
+    <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text">
+      Dịch vụ nổi bật
+    </h2>
+    <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-teal-500 rounded-full mx-auto"></div>
+    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+      Khám phá các dịch vụ xét nghiệm ADN hàng đầu của chúng tôi
+    </p>
+  </div>
+
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
+    {services.map(({ title, desc, icon, link }, i) => (
+      <div
+        key={i}
+        className="group relative p-8 rounded-3xl bg-white text-gray-800 shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-2 transition-all duration-500 border border-gray-100 flex flex-col overflow-hidden"
+      >
+        {/* Gradient background on hover */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-teal-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        
+        <div className="relative z-10">
+          <div className="w-16 h-16 flex items-center justify-center rounded-2xl bg-gradient-to-br from-blue-100 to-teal-100 mb-6 shadow-lg group-hover:shadow-blue-200 group-hover:scale-110 transition-all duration-300">
+            <div className="text-2xl text-blue-600 group-hover:text-blue-700 transition-colors">
+              {icon}
+            </div>
+          </div>
+          
+          <h3 className="text-xl font-bold mb-3 text-gray-800 group-hover:text-blue-700 transition-colors">
+            {title}
+          </h3>
+          
+          <p className="text-gray-600 flex-grow leading-relaxed group-hover:text-gray-700 transition-colors">
+            {desc}
+          </p>
+          
+          <Box
+            component={NavLink}
+            to={link}
+            className="mt-5 mx-auto inline-flex items-center px-6 py-3 text-sm font-semibold bg-gradient-to-r from-blue-600 to-teal-600 text-white rounded-2xl hover:from-blue-700 hover:to-teal-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group-hover:shadow-blue-500/25"
+          >
+            Xem chi tiết
+            <ArrowForwardRounded className="ml-2 group-hover:translate-x-1 transition-transform" fontSize="small" />
+          </Box>
         </div>
       </div>
-    </div>
-
-    {/* Hình ảnh bên phải */}
-    <div className="lg:w-1/3 flex items-center justify-center">
-      <img
-        src={doctor}
-        alt="Phòng xét nghiệm ADN"
-        className="w-full h-auto object-cover rounded-2xl shadow-lg"
-      />
-    </div>
+    ))}
   </div>
 </section>
 
-
-      {/* Services Section */}
-      <section className="bg-white py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto rounded-xl">
-        <h2 className="text-3xl font-bold text-center mb-12 text-blue-700">
-          Dịch vụ nổi bật
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {services.map(({ title, desc, icon, link }, i) => (
-            <div
-              key={i}
-              className="p-6 rounded-2xl bg-white text-gray-800 shadow-md hover:shadow-xl transform hover:scale-105 transition duration-300 border border-gray-100 flex flex-col"
-            >
-              <div className="w-14 h-14 flex items-center justify-center rounded-full bg-blue-100 mb-4 shadow-inner">
-                {icon}
-              </div>
-              <h3 className="text-lg font-semibold mb-1">{title}</h3>
-              <p className="text-sm text-gray-600 flex-grow">{desc}</p>{' '}
-              {/* flex-grow để đẩy nút xuống dưới */}
-              <Box
-                component={NavLink}
-                to={link}
-                className="mt-6 mx-auto inline-flex items-center px-4 py-2 text-sm bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
-              >
-                Xem chi tiết
-                <ArrowForwardRounded className="ml-2" fontSize="small" />
-              </Box>
-            </div>
-          ))}
-        </div>
-      </section>
-
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-8">
-  <section className="py-16">
+{/* Why Choose GeneLink Section - Enhanced */}
+<div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 p-8">
+  <section className="py-20">
     {/* Header */}
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 className="text-3xl font-bold mb-12 text-center text-blue-700">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16 space-y-4">
+      <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text">
         Vì sao chọn GeneLink
       </h2>
+      <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-teal-500 rounded-full mx-auto"></div>
     </div>
 
-    {/* Reasons grid (full width container) */}
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+    {/* Reasons grid */}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
       {reasons.map(({ icon, text, desc }, i) => (
         <div
           key={i}
-          className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-sm"
+          className="group flex flex-col items-center text-center p-8 bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg hover:shadow-2xl border border-white/50 hover:border-blue-200 transition-all duration-500 hover:scale-105 hover:-translate-y-2"
         >
-          <div className="text-2xl mb-3">{icon}</div>
-          <h3 className="font-semibold text-lg text-gray-800 mb-2">
+          <div className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300">
+            {icon}
+          </div>
+          <h3 className="font-bold text-xl text-gray-800 mb-4 group-hover:text-blue-700 transition-colors">
             {text}
           </h3>
-          <p className="text-gray-600 text-sm">{desc}</p>
+          <p className="text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors">
+            {desc}
+          </p>
         </div>
       ))}
     </div>
-      <h2 className="text-3xl font-bold mb-20 text-center text-blue-700">
-       Đội ngũ chuyên gia
+    
+    {/* Team Section Header */}
+    <div className="text-center mb-16 space-y-4">
+      <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text">
+        Đội ngũ chuyên gia
       </h2>
-    {/* Interactive images grid (full width container) */}
-<div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
-  {imageData.map((image, index) => (
-    <div
-      key={index}
-      onClick={() => setSelectedImage(index)}
-      className={`relative overflow-hidden rounded-lg shadow-md h-[320px] cursor-pointer transition-transform ${
-        selectedImage === index ? 'ring-4 ring-blue-500 ring-opacity-60 scale-105' : ''
-      }`}
-    >
-      <img
-        src={image.src}
-        alt={image.desc}
-        className="w-full h-full object-cover"
-      />
-      <div className="absolute bottom-0 left-0 right-0 p-3 text-white bg-black/40 backdrop-blur-sm">
-        <p className="text-sm font-medium">{image.desc}</p>
+      <div className="w-24 h-1 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full mx-auto"></div>
+    </div>
+    
+    {/* Interactive images grid */}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
+      {imageData.map((image, index) => (
+        <div
+          key={index}
+          onClick={() => setSelectedImage(index)}
+          className={`relative overflow-hidden rounded-2xl shadow-lg h-[350px] cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-2xl group ${
+            selectedImage === index ? 'ring-4 ring-blue-500 ring-opacity-60 scale-105 shadow-2xl' : ''
+          }`}
+        >
+          <img
+            src={image.src}
+            alt={image.desc}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-gradient-to-t from-black/80 to-transparent backdrop-blur-sm transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+            <p className="text-sm font-semibold drop-shadow-lg">{image.desc}</p>
+          </div>
+          <div className="absolute top-4 right-4 w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span className="text-white text-sm">+</span>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* Enhanced Panel */}
+    {selectedImage !== null && (
+      <div className="fixed top-0 right-0 w-full md:w-1/2 h-full bg-white/95 backdrop-blur-md z-50 shadow-2xl transition-transform duration-500 transform translate-x-0 overflow-y-auto flex flex-col justify-between border-l border-gray-200">
+        {/* Header */}
+        <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-teal-50">
+          <h2 className="text-xl font-bold text-gray-800">Thông tin chi tiết</h2>
+          <button
+            onClick={() => setSelectedImage(null)}
+            className="w-12 h-12 flex items-center justify-center text-gray-600 hover:text-white hover:bg-red-500 rounded-full text-2xl font-bold transition-all duration-300 hover:scale-110"
+            title="Đóng"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Nội dung chia 2 bên */}
+        <div className="p-8 flex-1">
+          <div className="flex flex-col lg:flex-row gap-8 h-full">
+            {/* Bên trái: ảnh */}
+            <div className="lg:w-1/2 flex justify-center">
+              <div className="relative group">
+                <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-teal-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
+                <img
+                  src={imageData[selectedImage].src}
+                  alt={`Chi tiết - ${imageData[selectedImage].desc}`}
+                  className="relative h-[400px] w-full object-cover rounded-2xl shadow-2xl"
+                />
+              </div>
+            </div>
+
+            {/* Bên phải: giới thiệu */}
+            <div className="lg:w-1/2 flex items-center">
+              <div className="text-gray-800 space-y-6 bg-gradient-to-br from-blue-50 to-teal-50 rounded-2xl p-6 border border-blue-200">
+                <h3 className="text-2xl font-bold text-transparent bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text">
+                  {imageData[selectedImage].desc}
+                </h3>
+                <div className="text-gray-700 leading-relaxed space-y-4">
+                  {imageData[selectedImage].content}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Nút đóng ở dưới */}
+        <div className="p-6 flex justify-end border-t border-gray-200 bg-gradient-to-r from-blue-50 to-teal-50">
+          <button
+            onClick={() => setSelectedImage(null)}
+            className="px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-lg font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+          >
+            ✕ Đóng 
+          </button>
+        </div>
       </div>
-    </div>
-  ))}
-</div>
-
-{/* Pannel */}
-{selectedImage !== null && (
-  <div className="fixed top-0 right-0 w-full md:w-1/2 h-full bg-white z-50 shadow-xl transition-transform duration-300 transform translate-x-0 overflow-y-auto flex flex-col justify-between">
-    {/* Header */}
-    <div className="flex justify-between items-center p-4 border-b border-gray-200">
-      <button
-        onClick={() => setSelectedImage(null)}
-        className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-white hover:bg-red-500 rounded-full text-xl font-bold transition"
-        title="Đóng"
-      >
-        &times;
-      </button>
-    </div>
-
-    {/* Nội dung chia 2 bên */}
-    <div className="p-6 flex flex-col md:flex-row gap-6 h-full">
-      <div className="p-6 flex flex-col md:flex-row gap-6 h-full">
-  {/* Bên phải: ảnh */}
-  <div className="md:w-1/2 flex justify-center">
-    <img
-      src={imageData[selectedImage].src}
-      alt={`Chi tiết - ${imageData[selectedImage].desc}`}
-      className="h-[400px] object-cover rounded-xl shadow"
-    />
-  </div>
-
-  {/* Bên trái: giới thiệu (căn theo chiều cao ảnh) */}
-  <div className="md:w-1/2 flex items-center">
-    <div className="text-gray-800 space-y-4">
-      <h3 className="text-xl font-semibold">
-        {imageData[selectedImage].desc}
-      </h3>
-      <div className="text-sm text-gray-600 leading-relaxed">
-        {imageData[selectedImage].content}
-      </div>
-    </div>
-  </div>
-</div>
-
-    </div>
-
-    {/* Nút đóng ở dưới */}
-    <div className="p-4 flex justify-end border-t border-gray-200">
-      <button
-        onClick={() => setSelectedImage(null)}
-        className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white text-lg font-bold rounded-xl shadow-lg transition"
-      >
-        ✕ Đóng 
-      </button>
-    </div>
-  </div>
-)}
-
+    )}
   </section>
 </div>
 
-      {/* News Section */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <h2 className="text-3xl font-bold mb-12 text-center text-teal-700">
-          Tin tức mới nhất
-        </h2>
+{/* News Section - Enhanced */}
+<section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+  <div className="text-center mb-16 space-y-4">
+    <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text">
+      Tin tức mới nhất
+    </h2>
+    <div className="w-24 h-1 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full mx-auto"></div>
+    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+      Cập nhật những thông tin mới nhất về công nghệ xét nghiệm ADN
+    </p>
+  </div>
 
-        <div className="relative">
-          {/* Swiper Buttons */}
-          <button
-            onClick={handlePrev}
-            className="absolute top-1/2 -left-10 z-10 bg-teal-600 text-white rounded-full p-2 shadow hover:bg-teal-700 transition"
-            aria-label="Previous slide"
-          >
-            ◀
-          </button>
-          <button
-            onClick={handleNext}
-            className="absolute top-1/2 -right-10 z-10 bg-teal-600 text-white rounded-full p-2 shadow hover:bg-teal-700 transition"
-            aria-label="Next slide"
-          >
-            ▶
-          </button>
+  <div className="relative">
+    {/* Enhanced Swiper Buttons */}
+    <button
+      onClick={handlePrev}
+      className="absolute top-1/2 -left-12 z-10 w-12 h-12 bg-gradient-to-r from-teal-600 to-blue-600 text-white rounded-full shadow-lg hover:shadow-xl hover:from-teal-700 hover:to-blue-700 transform hover:scale-110 transition-all duration-300 flex items-center justify-center"
+      aria-label="Previous slide"
+    >
+      <span className="text-xl">‹</span>
+    </button>
+    <button
+      onClick={handleNext}
+      className="absolute top-1/2 -right-12 z-10 w-12 h-12 bg-gradient-to-r from-teal-600 to-blue-600 text-white rounded-full shadow-lg hover:shadow-xl hover:from-teal-700 hover:to-blue-700 transform hover:scale-110 transition-all duration-300 flex items-center justify-center"
+      aria-label="Next slide"
+    >
+      <span className="text-xl">›</span>
+    </button>
 
-          <Swiper
-            ref={swiperRef} // gán ref đúng kiểu SwiperRef
-            modules={[Autoplay, Scrollbar]}
-            spaceBetween={24}
-            slidesPerView={3}
-            autoplay={{ delay: 3000, disableOnInteraction: false }}
-            loop={true}
-            scrollbar={{ draggable: true }}
-            breakpoints={{
-              320: { slidesPerView: 1 },
-              640: { slidesPerView: 2 },
-              1024: { slidesPerView: 3 },
-            }}
-            className="rounded-xl"
-          >
-            {newsData.map(({ title, desc, date }, i) => (
-              <SwiperSlide
-                key={i}
-                className="bg-white p-6 rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition-shadow duration-300"
-              >
-                <h3 className="font-semibold mb-2 text-lg text-teal-700">
-                  {title}
-                </h3>
-                <p className="text-gray-700 mb-4">{desc}</p>
-                <span className="text-sm text-gray-400">{date}</span>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
-      </section>
-
+    <Swiper
+      ref={swiperRef}
+      modules={[Autoplay, Scrollbar]}
+      spaceBetween={32}
+      slidesPerView={3}
+      autoplay={{ delay: 4000, disableOnInteraction: false }}
+      loop={true}
+      scrollbar={{ draggable: true, el: '.swiper-scrollbar' }}
+      breakpoints={{
+        320: { slidesPerView: 1 },
+        640: { slidesPerView: 2 },
+        1024: { slidesPerView: 3 },
+      }}
+      className="rounded-3xl pb-12"
+    >
+      {newsData.map(({ title, desc, date }, i) => (
+        <SwiperSlide
+          key={i}
+          className="group"
+        >
+          <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl cursor-pointer transform hover:scale-105 hover:-translate-y-2 transition-all duration-500 border border-gray-100 h-full flex flex-col">
+            {/* News icon */}
+            <div className="w-12 h-12 bg-gradient-to-br from-teal-100 to-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <span className="text-2xl">📰</span>
+            </div>
+            
+            <h3 className="font-bold mb-4 text-xl text-gray-800 group-hover:text-teal-700 transition-colors line-clamp-2">
+              {title}
+            </h3>
+            
+            <p className="text-gray-600 mb-6 flex-grow leading-relaxed group-hover:text-gray-700 transition-colors line-clamp-3">
+              {desc}
+            </p>
+            
+            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+              <span className="text-sm text-gray-400 group-hover:text-gray-500 transition-colors">
+                {date}
+              </span>
+              <span className="text-teal-600 font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Đọc thêm →
+              </span>
+            </div>
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+    
+    {/* Custom scrollbar */}
+    <div className="swiper-scrollbar mt-8 bg-gray-200 rounded-full h-2"></div>
+  </div>
+</section>
       {/* FOOTER - PHẦN MỚI THÊM */}
       <footer
         className="bg-gradient-to-br text-white"
