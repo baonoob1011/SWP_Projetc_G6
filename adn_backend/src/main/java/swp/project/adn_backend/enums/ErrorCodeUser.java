@@ -49,6 +49,7 @@ public enum ErrorCodeUser {
     KIT_NOT_EXISTS(1036, "Kit không tồn tại", HttpStatus.BAD_REQUEST),
     PRICE_NOT_EXISTS(1040, "price không tồn tại", HttpStatus.BAD_REQUEST),
     SAMPLE_NOT_EXISTS(1040, "Sample không tồn tại", HttpStatus.BAD_REQUEST),
+    RESULT_LOCUS_NOT_EXISTS(1040, "Result Locus không tồn tại", HttpStatus.BAD_REQUEST),
 
     // Service validation
     SERVICE_NAME_IS_EXISTED(1037, "Tên dịch vụ đã tồn tại", HttpStatus.BAD_REQUEST),
@@ -63,6 +64,7 @@ public enum ErrorCodeUser {
     SLOT_OUTSIDE_ROOM_TIME(10342, "Slot time is outside of room's available time range", HttpStatus.BAD_REQUEST),
     CONFIRM_PASSWORD_NOT_MATCH(1043, "Confirm password does not match the new password", HttpStatus.BAD_REQUEST),
     INVOICE_ALREADY_PAID(1043, "Invoice has already been paid", HttpStatus.BAD_REQUEST),
+    NO_RESULT_LOCUS_FOUND_FOR_SAMPLE(1043, "Không tìm thấy ResultLocus cho mẫu này", HttpStatus.BAD_REQUEST),
 
 
     //

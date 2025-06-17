@@ -1,16 +1,11 @@
-package swp.project.adn_backend.dto.request.result;
+package swp.project.adn_backend.dto.response.result;
 
-import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import swp.project.adn_backend.entity.Result;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResultDetailRequest {
+public class ResultDetailResponse {
 
     double combinedPaternityIndex;
     double paternityProbability;

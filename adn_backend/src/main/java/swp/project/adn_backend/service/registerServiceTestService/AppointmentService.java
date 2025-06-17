@@ -107,7 +107,10 @@ public class AppointmentService {
         }
         patientService.registerServiceTest(patientRequestList, userBookAppointment, serviceTest);
 
-        appointment.setSlot(slot);
+
+
+            appointment.setSlot(slot);
+
         System.out.println("Slot room: " + slot.getRoom()); // ← kiểm tra xem có null không
         appointment.setAppointmentDate(slot.getSlotDate());
         appointment.setAppointmentStatus(AppointmentStatus.PENDING);

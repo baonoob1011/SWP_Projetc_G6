@@ -71,6 +71,8 @@ public class Sample {
             CascadeType.DETACH, CascadeType.REFRESH
     })
     List<ResultLocus> resultLocus;
+    @OneToOne(mappedBy = "sample", cascade = CascadeType.ALL)
+    private ResultDetail resultDetail;
 
     public Sample() {
     }
@@ -85,6 +87,14 @@ public class Sample {
         this.kit = kit;
         this.staff = staff;
         this.results = results;
+    }
+
+    public ResultDetail getResultDetail() {
+        return resultDetail;
+    }
+
+    public void setResultDetail(ResultDetail resultDetail) {
+        this.resultDetail = resultDetail;
     }
 
     public String getSampleCode() {

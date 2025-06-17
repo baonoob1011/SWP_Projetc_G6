@@ -77,6 +77,7 @@ public class SecurityConfig {
             "/api/sample/get-all-sample/**",
             "/api/slot/get-all-slot-of-staff/**",
             "/api/result-locus/create-result-locus/**",
+            "/api/result-detail/create-result-detail/**",
             "/api/staff/**"
     };
 

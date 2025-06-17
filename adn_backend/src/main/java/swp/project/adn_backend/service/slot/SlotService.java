@@ -157,6 +157,7 @@ public class SlotService {
 
             Slot slot = slotMapper.toSlot(slotRequest);
             slot.setSlotStatus(SlotStatus.AVAILABLE);
+            slot.setSlotDate(slotDate);
             slot.setRoom(room);
 
             createdSlots.add(slotRepository.save(slot));
@@ -202,7 +203,9 @@ public class SlotService {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
                 "s.slotId, s.slotDate, s.startTime, s.endTime, s.slotStatus) " +
                 "FROM Slot s " +
-                "WHERE s.slotStatus = :slotStatus AND s.slotDate >= CURRENT_DATE";
+                "WHERE s.slotStatus = :slotStatus " +
+                "AND s.slotDate >= CURRENT_DATE " +
+                "AND s.staff IS NOT NULL";
 
         TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
         query.setParameter("slotStatus", SlotStatus.AVAILABLE);
@@ -268,23 +271,23 @@ public class SlotService {
         List<Slot> slotList = staff.getSlots();
         GetFullSlotResponse getAllServiceResponse = null;
         for (Slot slot : slotList) {
-                SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
+            SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
 
-                //lay room
-                RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
-                roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
-                roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
-                roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
-                roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
-
-
-                GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
-                getFullSlotResponse.setSlotResponse(slotResponse);
-                getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
+            //lay room
+            RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
+            roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
+            roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
+            roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
+            roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
 
 
-                //lay full response
-                fullSlotResponses.add(getFullSlotResponse);
+            GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
+            getFullSlotResponse.setSlotResponse(slotResponse);
+            getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
+
+
+            //lay full response
+            fullSlotResponses.add(getFullSlotResponse);
 
 
         }
@@ -307,12 +310,25 @@ public class SlotService {
     }
 
     @Transactional
-    public Slot updateSlotForStaffId(long staffId, long slotId) {
-        Staff staff = staffRepository.findById(staffId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+    public SlotResponse updateSlot(SlotRequest slotRequest,
+                                   long slotId) {
         Slot slot = slotRepository.findById(slotId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
-        slot.setStaff(staff);
-        return slot;
+        slot.setSlotDate(slotRequest.getSlotDate());
+        slot.setStartTime(slotRequest.getStartTime());
+        slot.setEndTime(slotRequest.getEndTime());
+        SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
+        return slotResponse;
     }
+
+
+//    @Transactional
+//    public Slot updateSlotForStaffId(long staffId, long slotId) {
+//        Staff staff = staffRepository.findById(staffId)
+//                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+//        Slot slot = slotRepository.findById(slotId)
+//                .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
+//        slot.setStaff(staff);
+//        return slot;
+//    }
 }

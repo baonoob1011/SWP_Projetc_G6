@@ -57,10 +57,17 @@ public class SlotController {
         return ResponseEntity.ok("Update Staff to Slot Successful");
     }
 
-    @PutMapping("/update-order-staff")
-    public ResponseEntity<Slot> updateOrderStaff(@RequestParam long staffId,
-                                                 @RequestParam long slotId) {
-        return ResponseEntity.ok(slotService.updateSlotForStaffId(staffId, slotId));
+    @PutMapping("/update-slot")
+    public ResponseEntity<SlotResponse> updateSlot(@RequestBody SlotRequest slotRequest,
+                                                   @RequestParam long slotId) {
+
+        return ResponseEntity.ok(slotService.updateSlot(slotRequest, slotId));
     }
+
+//    @PutMapping("/update-order-staff")
+//    public ResponseEntity<Slot> updateOrderStaff(@RequestParam long staffId,
+//                                                 @RequestParam long slotId) {
+//        return ResponseEntity.ok(slotService.updateSlotForStaffId(staffId, slotId));
+//    }
 
 }
