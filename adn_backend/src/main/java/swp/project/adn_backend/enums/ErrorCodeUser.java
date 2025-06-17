@@ -69,7 +69,9 @@ public enum ErrorCodeUser {
 
     // Trường hợp đặc biệt
     INVALID_REQUEST(1021, "Invalid request"),
-    INTERNAL_ERROR(1022, "Internal server error. Please try again later.");
+    INTERNAL_ERROR(1022, "Internal server error. Please try again later."),
+    BLOG_NOT_FOUND(404, "Blog not found"),
+    USER_NOT_AUTHORIZED(403, "User is not authorized to perform this action");
     int code;
     String message;
     HttpStatusCode httpStatusCode;
