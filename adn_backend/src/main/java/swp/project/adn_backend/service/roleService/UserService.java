@@ -167,6 +167,7 @@ public class UserService {
         return userRepository.save(users);
     }
 
+
     // Cập nhật User
     @Transactional
     public UpdateUserResponse updateUser(Authentication authentication, UpdateUserRequest updateUserRequest) {
@@ -176,7 +177,6 @@ public class UserService {
         Users existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
         // 🔐 Email check
         if (updateUserRequest.getEmail() != null &&
@@ -197,21 +197,18 @@ public class UserService {
             if (!passwordEncoder.matches(updateUserRequest.getOldPassword(), existingUser.getPassword())) {
                 throw new AppException(ErrorCodeUser.OLD_PASSWORD_NOT_MAPPING);
             }
-
-            // ✅ Change password only if both new and confirm passwords are provided
-            if (updateUserRequest.getPassword() != null && updateUserRequest.getConfirmPassword() != null) {
-                if (!updateUserRequest.getPassword().equals(updateUserRequest.getConfirmPassword())) {
-                    throw new AppException(ErrorCodeUser.CONFIRM_PASSWORD_NOT_MATCH);
-                }
-
-                if (passwordEncoder.matches(updateUserRequest.getPassword(), existingUser.getPassword())) {
-                    throw new AppException(ErrorCodeUser.PASSWORD_EXISTED);
-                }
-
-                existingUser.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
-            }
         }
+        if (updateUserRequest.getPassword() != null && updateUserRequest.getConfirmPassword() != null) {
+            if (!updateUserRequest.getPassword().equals(updateUserRequest.getConfirmPassword())) {
+                throw new AppException(ErrorCodeUser.CONFIRM_PASSWORD_NOT_MATCH);
+            }
 
+            if (passwordEncoder.matches(updateUserRequest.getPassword(), existingUser.getPassword())) {
+                throw new AppException(ErrorCodeUser.PASSWORD_EXISTED);
+            }
+
+            existingUser.setPassword(passwordEncoder.encode(updateUserRequest.getPassword()));
+        }
         // ✅ Set new values
         if (updateUserRequest.getPhone() != null) {
             existingUser.setPhone(updateUserRequest.getPhone());
