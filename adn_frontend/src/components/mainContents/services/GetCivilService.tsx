@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, User, TestTube, Mail, CheckSquare, FileText, ArrowRight, Shield, Award, Clock, Phone } from 'lucide-react';
+import { Plus, User, TestTube, Mail, CheckSquare, FileText, ArrowRight, Shield, Award } from 'lucide-react';
 
 type PriceItem = {
   time: string;
@@ -82,52 +82,51 @@ const CivilServiceList = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-cyan-100">
-      {/* Hero Header */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-400">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-sky-400/90 to-cyan-400/90"></div>
-        
-        {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-72 h-72 bg-white/10 rounded-full -translate-x-36 -translate-y-36"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/5 rounded-full translate-x-48 translate-y-48"></div>
-        
-        <div className="relative container mx-auto px-4 py-16">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-r from-cyan-300 to-blue-300 rounded-xl transform rotate-12 flex items-center justify-center shadow-lg">
-                  <TestTube className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-4xl font-bold text-white mb-2">Dịch Vụ GenLink</h1>
-                  <p className="text-sky-50 text-lg font-medium">Xét Nghiệm ADN Dân Sự Chuyên Nghiệp</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-6 text-sky-50">
-                <div className="flex items-center space-x-2">
-                  <Shield className="w-5 h-5" />
-                  <span>Chính xác 99.9%</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Award className="w-5 h-5" />
-                  <span>ISO 17025</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Clock className="w-5 h-5" />
-                  <span>Kết quả trong 5-7 ngày</span>
-                </div>
-              </div>
-            </div>
-            <div className="hidden lg:block">
-              <div className="w-32 h-32 bg-white/10 rounded-full backdrop-blur-sm flex items-center justify-center">
-                <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center">
-                  <TestTube className="w-12 h-12 text-white" />
-                </div>
-              </div>
-            </div>
+     {/* Hero Header */}
+<div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-600">
+  {/* Overlay mờ nhẹ để làm sâu màu hơn */}
+  <div className="absolute inset-0 bg-black/20"></div>
+  
+  {/* Decorative elements với opacity thấp hơn */}
+  <div className="absolute top-0 left-0 w-72 h-72 bg-white/5 rounded-full -translate-x-36 -translate-y-36"></div>
+  <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/10 rounded-full translate-x-48 translate-y-48"></div>
+  
+  <div className="relative container mx-auto px-4 py-16">
+    <div className="flex items-center justify-between">
+      <div>
+        <div className="flex items-center space-x-4 mb-6 mt-25">
+          <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-700 rounded-xl transform rotate-12 flex items-center justify-center shadow-lg">
+            <TestTube className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-2">Dịch Vụ GeneLink</h1>
+            <p className="text-gray-200 text-lg font-medium">
+              Xét Nghiệm ADN Dân Sự
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-6 text-gray-200">
+          <div className="flex items-center space-x-1">
+            <Shield className="w-5 h-5" />
+            <span>Chính xác 99.9%</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <Award className="w-5 h-5" />
+            <span>ISO 17025</span>
           </div>
         </div>
       </div>
+      <div className="hidden lg:block">
+        <div className="w-32 h-32 bg-white/10 rounded-full backdrop-blur-sm flex items-center justify-center">
+          <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center">
+            <TestTube className="w-12 h-12 text-white" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
       {/* Navigation Tabs */}
       <div className="bg-white shadow-lg sticky top-0 z-40">
@@ -170,74 +169,79 @@ const CivilServiceList = () => {
           </div>
         </div>
 
-        {/* Service Types Section */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-16">
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 hover:shadow-2xl transition-all duration-300">
-            <div className="flex items-center mb-6">
-              <div className="w-12 h-12 bg-gradient-to-r from-sky-300 to-cyan-300 rounded-xl flex items-center justify-center mr-4">
-                <User className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-sky-600">Xét nghiệm ADN tự nguyện</h3>
-            </div>
-            <p className="text-gray-600 mb-4 font-medium">Nhằm xác định mối quan hệ:</p>
-            <div className="grid grid-cols-2 gap-3">
-              {['Cha/mẹ-con', 'Ông/bà-cháu', 'Anh/chị-em', 'Họ hàng nội ngoại'].map((item, idx) => (
-                <div key={idx} className="flex items-center space-x-2 p-3 bg-sky-50 rounded-lg">
-                  <div className="w-2 h-2 bg-sky-400 rounded-full"></div>
-                  <span className="text-gray-700 text-sm font-medium">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 hover:shadow-2xl transition-all duration-300">
-            <div className="flex items-center mb-6">
-              <div className="w-12 h-12 bg-gradient-to-r from-cyan-300 to-blue-300 rounded-xl flex items-center justify-center mr-4">
-                <FileText className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-cyan-600">Xét nghiệm ADN hành chính</h3>
-            </div>
-            <div className="space-y-3">
-              {[
-                'Làm giấy khai sinh',
-                'Thủ tục nhận người thân', 
-                'Xác nhận trách nhiệm cấp dưỡng sau ly hôn',
-                'Phân chia tài sản thừa kế',
-                'Các thủ tục pháp lý khác'
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-center space-x-3 p-3 bg-cyan-50 rounded-lg hover:bg-cyan-100 transition-colors">
-                  <ArrowRight className="w-4 h-4 text-cyan-500" />
-                  <span className="text-gray-700 font-medium">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+       {/* Service Types Section */}
+<div className="grid lg:grid-cols-2 gap-8 mb-16">
+  <div className="bg-white rounded-2xl shadow border border-gray-100 p-8 hover:shadow-lg transition-shadow duration-200">
+    <div className="flex items-center mb-6">
+      <div className="w-12 h-12 bg-gradient-to-r from-sky-300 to-cyan-300 rounded-xl flex items-center justify-center mr-4">
+        <User className="w-6 h-6 text-white" />
+      </div>
+      <h3 className="text-xl font-bold text-sky-600">Xét nghiệm ADN tự nguyện</h3>
+    </div>
+    <p className="text-gray-600 mb-4 font-medium">Nhằm xác định mối quan hệ:</p>
+    <div className="grid grid-cols-2 gap-3">
+      {['Cha/mẹ-con', 'Ông/bà-cháu', 'Anh/chị-em', 'Họ hàng nội ngoại'].map((item, idx) => (
+        <div key={idx} className="flex items-center space-x-2 p-3 bg-sky-50 rounded-lg">
+          <div className="w-2 h-2 bg-sky-400 rounded-full"></div>
+          <span className="text-gray-700 text-sm font-medium">{item}</span>
         </div>
+      ))}
+    </div>
+  </div>
 
-        {/* Sample Types Section */}
-        <div className="bg-gradient-to-r from-sky-400 to-cyan-400 rounded-2xl p-8 mb-16 text-white shadow-2xl">
-          <h3 className="text-2xl font-bold mb-6 flex items-center">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mr-4">
-              <TestTube className="w-6 h-6" />
-            </div>
-            Các loại mẫu sử dụng để xét nghiệm ADN
-          </h3>
-          
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-white/10 backdrop-blur rounded-xl p-6">
-              <h4 className="text-xl font-semibold mb-4 text-sky-50">Mẫu thông thường</h4>
-              <p className="text-sky-50 leading-relaxed">
-                Máu mau, niêm mạc miệng, tóc có chân, móng tay/móng chân, cuống rốn
-              </p>
-            </div>
-            <div className="bg-white/10 backdrop-blur rounded-xl p-6">
-              <h4 className="text-xl font-semibold mb-4 text-sky-50">Mẫu đặc biệt</h4>
-              <p className="text-sky-50 leading-relaxed">
-                Xương, răng, đầu lọc thuốc lá, bàn chải đánh răng, kẹo cao su, bao cao su, quần lót
-              </p>
-            </div>
-          </div>
+  <div className="bg-white rounded-2xl shadow border border-gray-100 p-8 ">
+    <div className="flex items-center mb-6">
+      <div className="w-12 h-12 bg-gradient-to-r from-cyan-300 to-blue-300 rounded-xl flex items-center justify-center mr-4">
+        <FileText className="w-6 h-6 text-white" />
+      </div>
+      <h3 className="text-xl font-bold text-cyan-600">Xét nghiệm ADN hành chính</h3>
+    </div>
+    <div className="space-y-3">
+      {[
+        'Làm giấy khai sinh',
+        'Thủ tục nhận người thân', 
+        'Xác nhận trách nhiệm cấp dưỡng sau ly hôn',
+        'Phân chia tài sản thừa kế',
+        'Các thủ tục pháp lý khác'
+      ].map((item, idx) => (
+        <div
+          key={idx}
+          className="flex items-center space-x-3 p-3 bg-cyan-50 rounded-lg"
+        >
+          <ArrowRight className="w-4 h-4 text-cyan-500" />
+          <span className="text-gray-700 font-medium">{item}</span>
         </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+
+    {/* Sample Types Section */}
+<div className="bg-gradient-to-r from-sky-200 to-cyan-200 rounded-2xl p-6 mb-16 text-gray-900 shadow-lg">
+  <h3 className="text-2xl font-bold mb-6 flex items-center">
+    <div className="w-12 h-12 bg-white/80 rounded-xl flex items-center justify-center mr-4 ring-2 ring-cyan-300 shadow-md">
+      {/* Tăng size, đổi màu và thêm ring */}
+      <TestTube className="w-8 h-8 text-cyan-600" />
+    </div>
+    Các loại mẫu sử dụng để xét nghiệm ADN
+  </h3>
+  
+  <div className="grid md:grid-cols-2 gap-6">
+    <div className="bg-white/40 backdrop-blur-sm rounded-xl p-5">
+      <h4 className="text-xl font-semibold mb-3 text-gray-800">Mẫu thông thường</h4>
+      <p className="leading-relaxed text-gray-700">
+        Máu mao, niêm mạc miệng, tóc có chân, móng tay/móng chân, cuống rốn
+      </p>
+    </div>
+    <div className="bg-white/40 backdrop-blur-sm rounded-xl p-5">
+      <h4 className="text-xl font-semibold mb-3 text-gray-800">Mẫu đặc biệt</h4>
+      <p className="leading-relaxed text-gray-700">
+        Xương, răng, đầu lọc thuốc lá, bàn chải đánh răng, kẹo cao su, bao cao su, quần lót
+      </p>
+    </div>
+  </div>
+</div>
 
         {/* Process Steps */}
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-16 border border-gray-100">
@@ -245,7 +249,7 @@ const CivilServiceList = () => {
             Quy trình xét nghiệm ADN tại GenLink
           </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mt-15">
             {[
               { icon: User, title: 'Tư vấn lựa chọn', subtitle: 'dịch vụ', color: 'from-sky-300 to-sky-400' },
               { icon: TestTube, title: 'Thu mẫu xét', subtitle: 'nghiệm theo hướng dẫn', color: 'from-cyan-300 to-cyan-400' },
@@ -358,24 +362,6 @@ const CivilServiceList = () => {
             )}
           </div>
         </div>
-
-        {/* Contact CTA */}
-        <div className="mt-16 text-center">
-          <div className="bg-gradient-to-r from-sky-400 to-cyan-400 rounded-2xl p-8 text-white">
-            <Phone className="w-16 h-16 mx-auto mb-4 text-sky-100" />
-            <h3 className="text-2xl font-bold mb-2">Cần tư vấn thêm?</h3>
-            <p className="text-sky-50 mb-6">Liên hệ hotline để được hỗ trợ 24/7</p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <a href="tel:1900xxxx" className="bg-white text-sky-600 px-6 py-3 rounded-lg font-bold hover:bg-sky-50 transition-colors">
-                📞 1900 xxxx
-              </a>
-              <a href="mailto:info@genlink.vn" className="bg-sky-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-sky-400 transition-colors">
-                ✉️ info@genlink.vn
-              </a>
-            </div>
-          </div>
-        </div>
-
       </div>
 
       
