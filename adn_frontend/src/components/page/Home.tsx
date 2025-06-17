@@ -291,17 +291,21 @@ export default function Home() {
 
 {/* Section giới thiệu GeneLink - Enhanced với modern layout */}
 <section className="w-full bg-gradient-to-br from-blue-50 via-white to-green-50 py-20 font-sans">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-stretch gap-12">
-    {/* Text bên trái với enhanced styling */}
-    <div className="md:w-2/3 flex flex-col justify-center space-y-8 leading-relaxed tracking-wide">
-      <div className="space-y-4">
-        <h2 className="text-6xl md:text-8xl font-black text-transparent bg-gradient-to-r from-blue-600 via-green-600 to-blue-800 bg-clip-text leading-none">
-          Về GeneLink
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 
+                  flex flex-col md:flex-row items-start gap-12">
+                  
+    {/* 3 ô text bên trái */}
+    <div className="md:w-2/3 grid grid-cols-1 gap-8">
+      {/* Tiêu đề chung */}
+      <div>
+        <h2 className="text-4xl font-extrabold text-gray-900 mb-2">
+          Điểm nổi bật về GeneLink
         </h2>
-        <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-green-500 rounded-full"></div>
+        <div className="w-32 h-1 bg-gradient-to-r from-blue-500 to-green-500 rounded-full"></div>
       </div>
-      
-      <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20 space-y-6">
+
+      {/* Card 1 */}
+      <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20">
         <p className="text-lg md:text-xl text-gray-800 leading-relaxed">
           <span className="font-bold text-blue-700 text-xl">
             Công ty Cổ phần Dịch vụ Phân tích Di truyền (GeneLink)
@@ -311,32 +315,40 @@ export default function Home() {
           </span> – doanh nghiệp y tế tiên phong được thành lập 
           <span className="font-semibold text-blue-600">26/10/2010</span>.
         </p>
-        
+      </div>
+
+      {/* Card 2 */}
+      <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20">
         <p className="text-lg text-gray-700 leading-relaxed">
           <span className="font-bold text-blue-700">GeneLink</span> khẳng định vai trò 
           <span className="font-bold text-green-700 bg-green-100 px-2 py-1 rounded-lg mx-1">
             dẫn đầu về phân tích di truyền
           </span> trong ngành xét nghiệm hỗ trợ chẩn đoán lâm sàng.
         </p>
-        
+      </div>
+
+      {/* Card 3 */}
+      <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20">
         <p className="text-lg text-gray-700 leading-relaxed">
           Gia nhập <span className="font-bold text-blue-700">Tập đoàn Y tế Số 1 Thế giới Eurofins</span> để xây dựng 
           <span className="font-bold text-green-700">thương hiệu uy tín đa quốc gia</span>.
         </p>
       </div>
     </div>
-    
-    {/* Ảnh bên phải với hiệu ứng hover “nhấp nhô” */}
-<div className="md:w-1/2 flex justify-center">
-  <img
-    src={geneLinkImage}
-    alt="GeneLink Laboratory"
-    className="w-full h-auto object-cover rounded-3xl shadow-lg border-4 border-blue-200 transition-transform duration-200 hover:scale-105"
-  />
-</div>
 
+    {/* Ảnh bên phải căn lên trên */}
+    <div className="md:w-3/4 flex justify-center mt-5">
+      <img
+        src={geneLinkImage}
+        alt="GeneLink Laboratory"
+        className="w-full h-140 object-cover rounded-3xl shadow-lg border-4 border-blue-200 transition-transform duration-200 hover:scale-105"
+      />
+    </div>
   </div>
 </section>
+
+
+
 
 {/* Section hướng dẫn lấy mẫu ADN - Enhanced với step-by-step design */}
 <section className="w-full bg-gradient-to-br from-white to-blue-50 py-20">
@@ -483,7 +495,7 @@ export default function Home() {
             className="flex-grow px-6 py-4 text-gray-700 placeholder-gray-400 bg-white rounded-2xl border border-gray-200 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:border-transparent shadow-lg"
           />
           <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 whitespace-nowrap">
-            🚀 Tư vấn ngay
+            Tư vấn ngay
           </button>
         </div>
         <p className="text-xs text-gray-500 text-center mt-2">
@@ -499,7 +511,7 @@ export default function Home() {
         <img
           src={doctor}
           alt="Phòng xét nghiệm ADN"
-          className="relative w-full h-auto object-cover rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300 border-4 border-white/20"
+          className="relative w-full h-160 object-cover rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300 border-4 border-white/20"
         />
       </div>
     </div>
