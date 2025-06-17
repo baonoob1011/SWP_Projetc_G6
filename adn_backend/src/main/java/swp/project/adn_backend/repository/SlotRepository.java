@@ -126,5 +126,6 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
             @Param("slotDate") LocalDate slotDate,
             @Param("nowTime") LocalTime nowTime
     );
+    List<Slot> findAllBySlotDate(LocalDate slotDate);
 
 }

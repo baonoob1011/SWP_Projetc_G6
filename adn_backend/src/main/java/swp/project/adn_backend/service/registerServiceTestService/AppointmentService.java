@@ -391,9 +391,9 @@ public class AppointmentService {
 
     @Transactional
     public void updateAppointmentStatus(long slotId,
-                                               long patientId,
-                                               AppointmentRequest appointmentRequest,
-                                               PatientRequest patientRequest) {
+                                        long patientId,
+                                        AppointmentRequest appointmentRequest,
+                                        PatientRequest patientRequest) {
         Slot slot = slotRepository.findById(slotId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
 
@@ -432,8 +432,8 @@ public class AppointmentService {
         List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
 
         for (Appointment appointment : appointmentList) {
-            if (appointment.getAppointmentStatus() == AppointmentStatus.CONFIRMED &&
-                    appointment.getAppointmentType() == AppointmentType.CENTER) {
+            if (!appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED) &&
+                    appointment.getAppointmentType().equals(AppointmentType.CENTER)) {
 
                 ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
                 List<StaffAppointmentResponse> staff = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
@@ -456,7 +456,7 @@ public class AppointmentService {
 
                 centerList.add(centerResponse);
 
-            } else if (appointment.getAppointmentStatus() == AppointmentStatus.PENDING &&
+            } else if (!appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED) &&
                     appointment.getAppointmentType() == AppointmentType.HOME &&
                     appointment.getServices().getServiceType() == ServiceType.CIVIL) {
 

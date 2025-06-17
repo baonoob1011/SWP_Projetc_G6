@@ -23,10 +23,10 @@ public class SlotController {
     SlotService slotService;
 
     @PostMapping("/create-slot/{staffId}")
-    public ResponseEntity<Slot> staffId(@RequestBody @Valid SlotRequest slotRequest,
-                                        @RequestParam long roomId,
-                                        @PathVariable("staffId") long staffId) {
-        return ResponseEntity.ok(slotService.createSlot(slotRequest,roomId , staffId));
+    public ResponseEntity<List<Slot>> staffId(@RequestBody @Valid SlotRequest slotRequest,
+                                              @RequestParam long roomId,
+                                              @PathVariable("staffId") long staffId) {
+        return ResponseEntity.ok(slotService.createSlot(slotRequest, roomId, staffId));
     }
 
     @GetMapping("/get-all-slot")
@@ -43,6 +43,12 @@ public class SlotController {
     public ResponseEntity<String> deleteSlot(@PathVariable("slotId") long slotId) {
         slotService.deleteSlot(slotId);
         return ResponseEntity.ok("Delete Successful");
+    }
+
+    @PutMapping("/update-order-staff")
+    public ResponseEntity<Slot> updateOrderStaff(@RequestParam long staffId,
+                                                 @RequestParam long slotId) {
+        return ResponseEntity.ok(slotService.updateSlotForStaffId(staffId, slotId));
     }
 
 }

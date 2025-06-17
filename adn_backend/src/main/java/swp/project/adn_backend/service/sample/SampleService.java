@@ -50,12 +50,13 @@ public class SampleService {
 
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PAYMENT_INFO_NOT_EXISTS));
+
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
 
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-        Sample sample = sampleMapper.tSample(sampleRequest);
+        Sample sample = sampleMapper.toSample(sampleRequest);
         sample.setSampleStatus(SampleStatus.COLLECTED);
         sample.setCollectionDate(LocalDate.now());
         sample.setPatient(patient);
