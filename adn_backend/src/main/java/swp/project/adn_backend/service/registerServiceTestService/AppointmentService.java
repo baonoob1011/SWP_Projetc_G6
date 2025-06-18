@@ -245,51 +245,64 @@ public class AppointmentService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PRICE_NOT_EXISTS));
 
         if (userBookAppointment.getAddress() == null) {
-            throw new RuntimeException("update your address first");
+            throw new RuntimeException("Please update your address before booking.");
         }
+
         Appointment appointment = appointmentMapper.toAppointment(appointmentRequest);
         if (appointment == null) {
             throw new RuntimeException("Mapper returned null appointment!");
         }
-        patientService.registerServiceTest(patientRequestList, userBookAppointment, serviceTest);
+
+        // Đăng ký bệnh nhân và nhận danh sách đã đăng ký
+        List<Patient> registeredPatients = patientService.registerServiceTest(
+                patientRequestList, userBookAppointment, serviceTest);
+
+        // Gắn danh sách bệnh nhân vào appointment
+        appointment.setPatients(registeredPatients);
+
+        // Thiết lập liên kết ngược lại: mỗi patient trỏ về appointment
+        for (Patient patient : registeredPatients) {
+            patient.setAppointment(appointment);
+        }
 
         appointment.setAppointmentStatus(AppointmentStatus.PENDING);
         appointment.setServices(serviceTest);
         appointment.setAppointmentType(AppointmentType.HOME);
         appointment.setUsers(userBookAppointment);
         appointment.setAppointmentDate(LocalDate.now());
-        appointment.setPatients(userBookAppointment.getPatients());
 
-        //user set appointment
-        //set status send kit
+        // Gắn kit vào và set trạng thái giao hàng
         serviceTest.getKit().setKitStatus(DeliveryStatus.PENDING);
         serviceTest.getKit().setDeliveryDate(LocalDate.now());
-        //tinh price
-        double totalPrice = (priceList.getPrice()) + (serviceTest.getKit().getPrice());
-        //set payment
+
+        // Tính tổng chi phí
+        double totalPrice = priceList.getPrice() + serviceTest.getKit().getPrice();
+
+        // Tạo payment
         Payment payment = new Payment();
-        payment.setAmount(serviceTest.getPriceLists().getFirst().getPrice());
+        payment.setAmount(totalPrice); // dùng tổng giá
         payment.setAppointment(appointment);
         payment.setUsers(userBookAppointment);
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         paymentRepository.save(payment);
 
+        // Lưu appointment
         Appointment saved = appointmentRepository.save(appointment);
 
-
-        // Build email content
+        // Chuẩn bị dữ liệu trả về
         ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(saved);
         KitAppointmentResponse kitAppointmentResponse = appointmentMapper.toKitAppointmentResponse(serviceTest.getKit());
         UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(userBookAppointment);
         ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(serviceTest);
-        List<PatientAppointmentResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentService(userBookAppointment.getPatients());
-        //tinh price
+        List<PatientAppointmentResponse> patientAppointmentResponses =
+                appointmentMapper.toPatientAppointmentService(registeredPatients);
+
         PriceAppointmentResponse priceAppointmentResponses = new PriceAppointmentResponse();
         priceAppointmentResponses.setTime(priceList.getTime());
         priceAppointmentResponses.setPrice(totalPrice);
-        List<PriceAppointmentResponse> priceAppointmentResponsesList = new ArrayList<>();
-        priceAppointmentResponsesList.add(priceAppointmentResponses);
+        List<PriceAppointmentResponse> priceAppointmentResponsesList = List.of(priceAppointmentResponses);
 
+        // Gộp kết quả
         AllAppointmentAtHomeResponse emailResponse = new AllAppointmentAtHomeResponse();
         emailResponse.setShowAppointmentResponse(showAppointmentResponse);
         emailResponse.setUserAppointmentResponse(List.of(userAppointmentResponse));
@@ -301,6 +314,7 @@ public class AppointmentService {
         appointmentMapper.toAppointmentResponse(saved);
         return emailResponse;
     }
+
 
     @Transactional
     public UpdateAppointmentStatusResponse ConfirmAppointmentAtHome(long appointmentId,
