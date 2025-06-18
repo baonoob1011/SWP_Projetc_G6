@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
+import swp.project.adn_backend.dto.request.slot.AllSlotRequest;
 import swp.project.adn_backend.dto.response.slot.GetFullSlotResponse;
 import swp.project.adn_backend.dto.request.slot.SlotRequest;
 import swp.project.adn_backend.dto.response.slot.SlotResponse;
@@ -24,9 +25,13 @@ public class SlotController {
     SlotService slotService;
 
     @PostMapping("/create-slot")
-    public ResponseEntity<List<SlotResponse>> createSlot(@RequestBody @Valid SlotRequest slotRequest,
-                                                         @RequestParam long roomId) {
-        return ResponseEntity.ok(slotService.createSlot(slotRequest, roomId));
+    public ResponseEntity<List<SlotResponse>> createSlot(@RequestBody @Valid AllSlotRequest request,
+                                                         @RequestParam long roomId
+    ) {
+
+        return ResponseEntity.ok(slotService.createSlot(request.getSlotRequest(),
+                roomId,
+                request.getStaffSlotRequest()));
     }
 
     @GetMapping("/get-all-slot")
@@ -50,12 +55,12 @@ public class SlotController {
         return ResponseEntity.ok("Delete Successful");
     }
 
-    @PutMapping("/update-staff-to-slot")
-    public ResponseEntity<String> updateStaffToSlot(@RequestParam long staffId,
-                                                    @RequestParam long slotId) {
-        slotService.updateStaffToSlot(staffId, slotId);
-        return ResponseEntity.ok("Update Staff to Slot Successful");
-    }
+//    @PutMapping("/update-staff-to-slot")
+//    public ResponseEntity<String> updateStaffToSlot(@RequestParam long staffId,
+//                                                    @RequestParam long slotId) {
+//        slotService.updateStaffToSlot(staffId, slotId);
+//        return ResponseEntity.ok("Update Staff to Slot Successful");
+//    }
 
     @PutMapping("/update-slot")
     public ResponseEntity<SlotResponse> updateSlot(@RequestBody SlotRequest slotRequest,

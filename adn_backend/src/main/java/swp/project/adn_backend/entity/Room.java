@@ -24,12 +24,7 @@ public class Room {
 
     @Column(name = "close_time")
     private LocalTime closeTime;
-    @ManyToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    @JoinColumn(name = "schedule_id")
-    Schedule schedule;
+
 
     public Room() {
     }
@@ -43,13 +38,7 @@ public class Room {
         this.slots = slots;
     }
 
-    public Schedule getSchedule() {
-        return schedule;
-    }
 
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
-    }
 
     public RoomStatus getRoomStatus() {
         return roomStatus;

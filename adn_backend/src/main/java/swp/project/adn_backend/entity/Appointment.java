@@ -56,6 +56,12 @@ public class Appointment {
     })
     List<Invoice> invoices;
 
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.EAGER, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    List<Patient> patients;
+
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH,
@@ -90,6 +96,14 @@ public class Appointment {
 
     public List<Invoice> getInvoices() {
         return invoices;
+    }
+
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<Patient> patients) {
+        this.patients = patients;
     }
 
     public AppointmentType getAppointmentType() {

@@ -75,6 +75,20 @@ public class Patient {
             CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Sample> samples;
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    @JoinColumn(name = "appointment_id")
+    Appointment appointment;
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
 
     public PatientStatus getPatientStatus() {
         return patientStatus;
@@ -83,7 +97,6 @@ public class Patient {
     public void setPatientStatus(PatientStatus patientStatus) {
         this.patientStatus = patientStatus;
     }
-
 
 
     public ServiceTest getServiceTest() {

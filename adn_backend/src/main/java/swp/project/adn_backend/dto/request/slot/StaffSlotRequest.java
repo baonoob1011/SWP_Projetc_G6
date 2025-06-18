@@ -1,16 +1,14 @@
-package swp.project.adn_backend.dto.response.slot;
+package swp.project.adn_backend.dto.request.slot;
 
-public class StaffSlotResponse {
-    private Long staffId;
+public class StaffSlotRequest {
+    private long staffId;
     private String fullName;
-    public StaffSlotResponse() {
-    }
 
-    public Long getStaffId() {
+    public long getStaffId() {
         return staffId;
     }
 
-    public void setStaffId(Long staffId) {
+    public void setStaffId(long staffId) {
         this.staffId = staffId;
     }
 

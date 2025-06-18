@@ -65,6 +65,8 @@ public enum ErrorCodeUser {
     CONFIRM_PASSWORD_NOT_MATCH(1043, "Confirm password does not match the new password", HttpStatus.BAD_REQUEST),
     INVOICE_ALREADY_PAID(1043, "Invoice has already been paid", HttpStatus.BAD_REQUEST),
     NO_RESULT_LOCUS_FOUND_FOR_SAMPLE(1043, "Không tìm thấy ResultLocus cho mẫu này", HttpStatus.BAD_REQUEST),
+    STAFF_TIME_OVERLAP(1003, "Nhân viên đã được phân công vào khung giờ này ở phòng khác"),
+    STAFF_SLOT_CREATION_FAILED(1003, "Không thể tạo slot: Nhân viên đã có lịch tại phòng khác trong cùng khung giờ"),
 
 
     //

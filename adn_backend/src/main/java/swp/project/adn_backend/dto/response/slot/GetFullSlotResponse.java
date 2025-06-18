@@ -1,5 +1,7 @@
 package swp.project.adn_backend.dto.response.slot;
 
+import java.util.List;
+
 public class GetFullSlotResponse {
     private SlotResponse slotResponse;
     private StaffSlotResponse staffSlotResponse;
@@ -12,14 +14,6 @@ public class GetFullSlotResponse {
     public GetFullSlotResponse(SlotResponse slotResponse, StaffSlotResponse staffSlotResponse, RoomSlotResponse roomSlotResponse) {
         this.slotResponse = slotResponse;
         this.staffSlotResponse = staffSlotResponse;
-        this.roomSlotResponse = roomSlotResponse;
-    }
-
-    public RoomSlotResponse getRoomSlotResponse() {
-        return roomSlotResponse;
-    }
-
-    public void setRoomSlotResponse(RoomSlotResponse roomSlotResponse) {
         this.roomSlotResponse = roomSlotResponse;
     }
 
@@ -39,11 +33,11 @@ public class GetFullSlotResponse {
         this.staffSlotResponse = staffSlotResponse;
     }
 
-//    public UserSlotResponse getUserSlotResponse() {
-//        return userSlotResponse;
-//    }
-//
-//    public void setUserSlotResponse(UserSlotResponse userSlotResponse) {
-//        this.userSlotResponse = userSlotResponse;
-//    }
+    public RoomSlotResponse getRoomSlotResponse() {
+        return roomSlotResponse;
+    }
+
+    public void setRoomSlotResponse(RoomSlotResponse roomSlotResponse) {
+        this.roomSlotResponse = roomSlotResponse;
+    }
 }

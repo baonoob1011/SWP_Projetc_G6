@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -105,17 +106,25 @@ public class AppointmentService {
         if (appointment == null) {
             throw new RuntimeException("Mapper returned null appointment!");
         }
-        patientService.registerServiceTest(patientRequestList, userBookAppointment, serviceTest);
+//        patientService.registerServiceTest(patientRequestList, userBookAppointment, serviceTest);
 
+        List<Patient> registeredPatients = patientService.registerServiceTest(
+                patientRequestList, userBookAppointment, serviceTest);
 
+        List<Patient> patientSnapshot = new ArrayList<>(registeredPatients);
 
-            appointment.setSlot(slot);
+        appointment.setPatients(patientSnapshot);
+        for (Patient patient : patientSnapshot) {
+            patient.setAppointment(appointment);
+        }
+
+        appointment.setSlot(slot);
 
         System.out.println("Slot room: " + slot.getRoom()); // ← kiểm tra xem có null không
         appointment.setAppointmentDate(slot.getSlotDate());
         appointment.setAppointmentStatus(AppointmentStatus.PENDING);
         appointment.setAppointmentType(AppointmentType.CENTER);
-        appointment.setStaff(slot.getStaff());
+        appointment.setStaff(slot.getStaff().getFirst());
         appointment.setServices(serviceTest);
         appointment.setLocation(location);
         appointment.setUsers(userBookAppointment);
@@ -140,10 +149,10 @@ public class AppointmentService {
         ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(saved);
         List<PriceAppointmentResponse> priceAppointmentResponse = appointmentMapper.toPriceAppointmentResponse(serviceTest.getPriceLists());
         UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(userBookAppointment);
-        StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(slot.getStaff());
+        StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(slot.getStaff().getFirst());
         SlotAppointmentResponse slotAppointmentResponse = appointmentMapper.toSlotAppointmentResponse(slot);
         ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(serviceTest);
-        List<PatientAppointmentResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentService(userBookAppointment.getPatients());
+        List<PatientAppointmentResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentService(appointment.getPatients());
         LocationAppointmentResponse locationAppointmentResponse = appointmentMapper.toLocationAppointmentResponse(location);
         RoomAppointmentResponse roomAppointmentResponse = appointmentMapper.toRoomAppointmentResponse(slot.getRoom());
 
@@ -192,7 +201,7 @@ public class AppointmentService {
         ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
         //  List<PriceAppointmentResponse> priceAppointmentResponse = appointmentMapper.toPriceAppointmentResponse(serviceTest.getPriceLists());
         UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(userBookAppointment);
-        StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(slot.getStaff());
+        StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(slot.getStaff().getFirst());
         SlotAppointmentResponse slotAppointmentResponse = appointmentMapper.toSlotAppointmentResponse(slot);
         ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(serviceTest);
         //  List<PatientAppointmentResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentService(userBookAppointment.getPatients());
@@ -249,9 +258,11 @@ public class AppointmentService {
         appointment.setAppointmentType(AppointmentType.HOME);
         appointment.setUsers(userBookAppointment);
         appointment.setAppointmentDate(LocalDate.now());
+        appointment.setPatients(userBookAppointment.getPatients());
+
         //user set appointment
         //set status send kit
-        serviceTest.getKit().setKitStatus(DeliveryStatus.IN_PROGRESS);
+        serviceTest.getKit().setKitStatus(DeliveryStatus.PENDING);
         serviceTest.getKit().setDeliveryDate(LocalDate.now());
         //tinh price
         double totalPrice = (priceList.getPrice()) + (serviceTest.getKit().getPrice());
@@ -310,7 +321,7 @@ public class AppointmentService {
         appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
         appointment.setNote("Kit sẽ được gửi trong thời gian nhanh nhất! Cảm ơn quý khách đã tin tưởng.");
         appointmentRepository.save(appointment);
-        kit.setKitStatus(DeliveryStatus.PENDING);
+        kit.setKitStatus(DeliveryStatus.IN_PROGRESS);
         kit.setDeliveryDate(LocalDate.now());
         UpdateAppointmentStatusResponse statusResponse = appointmentMapper.toUpdateAppointmentStatusResponse(appointment);
 
@@ -338,7 +349,9 @@ public class AppointmentService {
         Long staffId = jwt.getClaim("id");
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO(" +
                 "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note, s.users.userId, s.slot.slotId, s.services.serviceId, s.location.locationId) " +
-                "FROM Appointment s WHERE s.staff.staffId = :staffId AND s.appointmentDate >= CURRENT_DATE AND s.appointmentStatus=:appointmentStatus";
+                "FROM Appointment s WHERE s.staff.staffId = :staffId " +
+                "AND s.appointmentDate >= CURRENT_DATE " +
+                "AND s.appointmentStatus=:appointmentStatus";
 
         TypedQuery<AppointmentInfoDTO> query = entityManager.createQuery(jpql, AppointmentInfoDTO.class);
         query.setParameter("staffId", staffId);
@@ -357,40 +370,55 @@ public class AppointmentService {
 
         for (Appointment appointment : appointmentList) {
             if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
-                List<Patient> registeredPatients = new ArrayList<>();
-                for (int i = 0; i < appointment.getUsers().getPatients().size(); i++) {
-                    if (appointment.getUsers().getPatients().get(i).getPatientStatus() == PatientStatus.REGISTERED) {
-                        registeredPatients.add(appointment.getUsers().getPatients().get(i));
-                    }
-                }
 
-                // Sau đó map danh sách đã lọc
-                List<PatientAppointmentFullInfoResponse> patientAppointmentResponses =
-                        appointmentMapper.toPatientAppointmentFullInfoResponses(registeredPatients);
+                // Lọc bệnh nhân có trạng thái REGISTERED
+                List<Patient> registeredPatients = appointment.getPatients().stream()
+                        .filter(p -> p.getPatientStatus() == PatientStatus.REGISTERED)
+                        .collect(Collectors.toList());
 
-                List<SlotAppointmentResponse> slots = List.of(appointmentMapper.toSlotAppointmentResponse(appointment.getSlot()));
-                List<UserAppointmentResponse> users = List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()));
-                List<StaffAppointmentResponse> staffs = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
-                List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
-                ShowAppointmentResponse appointments = appointmentMapper.toShowAppointmentResponse(appointment);
-
-                RoomAppointmentResponse room = new RoomAppointmentResponse();
-                room.setRoomName(appointment.getSlot().getRoom().getRoomName());
+                // Map các thông tin liên quan
+                List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
+                        .map(appointmentMapper::toPatientAppointment)
+                        .collect(Collectors.toList());
 
                 AllAppointmentAtCenterResponse response = new AllAppointmentAtCenterResponse();
-                response.setPatientAppointmentFullInfoResponses(patientAppointmentResponses);
-                response.setUserAppointmentResponse(users);
-                response.setStaffAppointmentResponse(staffs);
-                response.setSlotAppointmentResponse(slots);
-                response.setServiceAppointmentResponses(services);
-                response.setRoomAppointmentResponse(room);
-                response.setShowAppointmentResponse(appointments);
+                response.setShowAppointmentResponse(appointmentMapper.toShowAppointmentResponse(appointment));
+                response.setUserAppointmentResponse(
+                        List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()))
+                );
+                response.setStaffAppointmentResponse(
+                        List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()))
+                );
+                response.setSlotAppointmentResponse(
+                        List.of(appointmentMapper.toSlotAppointmentResponse(appointment.getSlot()))
+                );
+                response.setServiceAppointmentResponses(
+                        List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()))
+                );
+                response.setRoomAppointmentResponse(
+                        appointmentMapper.toRoomAppointmentResponse(appointment.getSlot().getRoom())
+                );
+                response.setPatientAppointmentResponse(patientResponses);
+
+                // Nếu bạn muốn thêm location/price:
+                if (appointment.getLocation() != null) {
+                    response.setLocationAppointmentResponses(
+                            List.of(appointmentMapper.toLocationAppointmentResponse(appointment.getLocation()))
+                    );
+                }
+                if (appointment.getServices() != null && appointment.getServices().getPriceLists() != null) {
+                    response.setPriceAppointmentResponse(
+                            appointmentMapper.toPriceAppointmentResponse(appointment.getServices().getPriceLists())
+                    );
+                }
+
                 responses.add(response);
             }
         }
 
         return responses;
     }
+
 
     @Transactional
     public void updateAppointmentStatus(long slotId,
