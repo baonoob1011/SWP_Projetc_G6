@@ -102,12 +102,10 @@ public class AppointmentController {
     @PutMapping("/confirm-appointment-at-home")
     public ResponseEntity<UpdateAppointmentStatusResponse> updateAppointmentStatusAtHome(@RequestParam long appointmentId,
                                                                                          @RequestParam long userId,
-                                                                                         @RequestParam long serviceId,
-                                                                                         @RequestParam long kitId) {
+                                                                                         @RequestParam long serviceId) {
         return ResponseEntity.ok(appointmentService.ConfirmAppointmentAtHome(appointmentId,
                 userId,
-                serviceId,
-                kitId));
+                serviceId));
     }
 
     // tạo nút update appointment

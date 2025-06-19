@@ -198,7 +198,6 @@ public class SlotService {
     }
 
 
-
 //    @Scheduled(cron = "0 0 0 * * MON") // chạy mỗi Thứ Hai lúc 00:00
 //    @Transactional
 //    public void autoCreateSlotsForNextWeek() {
@@ -235,8 +234,7 @@ public class SlotService {
                 "s.slotId, s.slotDate, s.startTime, s.endTime, s.slotStatus) " +
                 "FROM Slot s " +
                 "WHERE s.slotStatus = :slotStatus " +
-                "AND s.slotDate >= CURRENT_DATE " +
-                "AND s.staff IS NOT NULL";
+                "AND s.slotDate >= CURRENT_DATE";
 
         TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
         query.setParameter("slotStatus", SlotStatus.AVAILABLE);
@@ -244,15 +242,23 @@ public class SlotService {
         LocalDate today = LocalDate.now();
         LocalTime now = LocalTime.now();
 
-        return query.getResultList().stream()
-                .filter(slot -> {
-                    // Nếu slot là hôm nay, kiểm tra thời gian kết thúc phải sau hiện tại
-                    if (slot.getSlotDate().isEqual(today)) {
-                        return slot.getEndTime().isAfter(now);
-                    }
-                    return true; // Ngày trong tương lai thì giữ lại
-                })
-                .collect(Collectors.toList());
+        List<SlotInfoDTO> result;
+        try {
+            result = query.getResultList().stream()
+                    .filter(slot -> {
+                        if (slot.getSlotDate().isEqual(today)) {
+                            return slot.getEndTime().isAfter(now);
+                        }
+                        return true;
+                    })
+                    .collect(Collectors.toList());
+        } catch (UnsupportedOperationException e) {
+            System.out.println("🔥 Immutable result list detected - wrapping in ArrayList");
+            e.printStackTrace();
+            result = new ArrayList<>(query.getResultList()); // fallback without filtering
+        }
+
+        return new ArrayList<>(result);
     }
 
 
@@ -272,21 +278,21 @@ public class SlotService {
                 roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
                 roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
 
-                //lay staff
-                StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
-                staffSlotResponse.setStaffId(slot.getStaff().getFirst().getStaffId());
-                staffSlotResponse.setFullName(slot.getStaff().getFirst().getFullName());
-
-//                List<StaffSlotResponse> staffSlotResponses = new ArrayList<>();
+//                //lay staff
 //                StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
-//                for (Staff staff : slot.getStaff()) {
-//                    staffSlotResponse.setStaffId(staff.getStaffId());
-//                    staffSlotResponse.setFullName(staff.getFullName());
-//                    staffSlotResponses.add(staffSlotResponse);
-//                }
+//                staffSlotResponse.setStaffId(slot.getStaff().getFirst().getStaffId());
+//                staffSlotResponse.setFullName(slot.getStaff().getFirst().getFullName());
+
+                List<StaffSlotResponse> staffSlotResponses = new ArrayList<>();
+                for (Staff staff : slot.getStaff()) {
+                    StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
+                    staffSlotResponse.setStaffId(staff.getStaffId());
+                    staffSlotResponse.setFullName(staff.getFullName());
+                    staffSlotResponses.add(staffSlotResponse);
+                }
                 GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
                 getFullSlotResponse.setSlotResponse(slotResponse);
-               getFullSlotResponse.setStaffSlotResponse(staffSlotResponse);
+                getFullSlotResponse.setStaffSlotResponses(staffSlotResponses);
                 getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
 
 
@@ -308,27 +314,27 @@ public class SlotService {
         List<Slot> slotList = staff.getSlots();
         GetFullSlotResponse getAllServiceResponse = null;
         for (Slot slot : slotList) {
-           if(slot.getSlotStatus().equals(SlotStatus.BOOKED)){
-               SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
+//            if (slot.getSlotStatus().equals(SlotStatus.BOOKED)) {
+                SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
 
-               //lay room
-               RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
-               roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
-               roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
-               roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
-               roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
-
-
-               GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
-               getFullSlotResponse.setSlotResponse(slotResponse);
-               getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
+                //lay room
+                RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
+                roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
+                roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
+                roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
+                roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
 
 
-               //lay full response
-               fullSlotResponses.add(getFullSlotResponse);
+                GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
+                getFullSlotResponse.setSlotResponse(slotResponse);
+                getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
 
 
-           }
+                //lay full response
+                fullSlotResponses.add(getFullSlotResponse);
+
+
+//            }
         }
         return fullSlotResponses;
     }
@@ -339,14 +345,22 @@ public class SlotService {
         slotRepository.delete(slot);
     }
 
-//    @Transactional
-//    public void updateStaffToSlot(long staffId, long slotId) {
-//        Staff staff = staffRepository.findById(staffId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-//        Slot slot = slotRepository.findById(slotId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
-//        slot.setStaff(staff);
-//    }
+    @Transactional
+    public void updateStaffToSlot(long staffId1, long staffId2, long slotId) {
+        Staff staff1 = staffRepository.findById(staffId1)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+        Staff staff2 = staffRepository.findById(staffId2)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+        Slot slot = slotRepository.findById(slotId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
+        List<Staff> staffList = slot.getStaff();
+        for (int i = 0; i < staffList.size(); i++) {
+            if (staffList.get(i) == staff1) {
+                staffList.set(i, staff2);
+                break;
+            }
+        }
+    }
 
     @Transactional
     public SlotResponse updateSlot(SlotRequest slotRequest,
@@ -361,13 +375,4 @@ public class SlotService {
     }
 
 
-//    @Transactional
-//    public Slot updateSlotForStaffId(long staffId, long slotId) {
-//        Staff staff = staffRepository.findById(staffId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-//        Slot slot = slotRepository.findById(slotId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
-//        slot.setStaff(staff);
-//        return slot;
-//    }
 }

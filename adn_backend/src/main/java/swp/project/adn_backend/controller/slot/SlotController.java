@@ -55,12 +55,13 @@ public class SlotController {
         return ResponseEntity.ok("Delete Successful");
     }
 
-//    @PutMapping("/update-staff-to-slot")
-//    public ResponseEntity<String> updateStaffToSlot(@RequestParam long staffId,
-//                                                    @RequestParam long slotId) {
-//        slotService.updateStaffToSlot(staffId, slotId);
-//        return ResponseEntity.ok("Update Staff to Slot Successful");
-//    }
+    @PutMapping("/update-staff-to-slot")
+    public ResponseEntity<String> updateStaffToSlot(@RequestParam long staffId1,
+                                                    @RequestParam long staffId2,
+                                                    @RequestParam long slotId) {
+        slotService.updateStaffToSlot(staffId1, staffId2, slotId);
+        return ResponseEntity.ok("Update Staff to Slot Successful");
+    }
 
     @PutMapping("/update-slot")
     public ResponseEntity<SlotResponse> updateSlot(@RequestBody SlotRequest slotRequest,

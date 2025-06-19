@@ -88,10 +88,22 @@ public class Appointment {
     @JoinColumn(name = "location_id")
     Location location;
 
+    @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)
+    private KitDeliveryStatus kitDeliveryStatus;
+
+
     @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Payment> payments;
 
     public Appointment() {
+    }
+
+    public KitDeliveryStatus getKitDeliveryStatus() {
+        return kitDeliveryStatus;
+    }
+
+    public void setKitDeliveryStatus(KitDeliveryStatus kitDeliveryStatus) {
+        this.kitDeliveryStatus = kitDeliveryStatus;
     }
 
     public List<Invoice> getInvoices() {

@@ -4,16 +4,17 @@ import java.util.List;
 
 public class GetFullSlotResponse {
     private SlotResponse slotResponse;
-    private StaffSlotResponse staffSlotResponse;
+    private List<StaffSlotResponse> staffSlotResponses;
     private RoomSlotResponse roomSlotResponse;
 //    private UserSlotResponse userSlotResponse;
 
     public GetFullSlotResponse() {
     }
 
-    public GetFullSlotResponse(SlotResponse slotResponse, StaffSlotResponse staffSlotResponse, RoomSlotResponse roomSlotResponse) {
+
+    public GetFullSlotResponse(SlotResponse slotResponse, List<StaffSlotResponse> staffSlotResponses, RoomSlotResponse roomSlotResponse) {
         this.slotResponse = slotResponse;
-        this.staffSlotResponse = staffSlotResponse;
+        this.staffSlotResponses = staffSlotResponses;
         this.roomSlotResponse = roomSlotResponse;
     }
 
@@ -25,12 +26,12 @@ public class GetFullSlotResponse {
         this.slotResponse = slotResponse;
     }
 
-    public StaffSlotResponse getStaffSlotResponse() {
-        return staffSlotResponse;
+    public List<StaffSlotResponse> getStaffSlotResponses() {
+        return staffSlotResponses;
     }
 
-    public void setStaffSlotResponse(StaffSlotResponse staffSlotResponse) {
-        this.staffSlotResponse = staffSlotResponse;
+    public void setStaffSlotResponses(List<StaffSlotResponse> staffSlotResponses) {
+        this.staffSlotResponses = staffSlotResponses;
     }
 
     public RoomSlotResponse getRoomSlotResponse() {
