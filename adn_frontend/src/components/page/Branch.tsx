@@ -1,5 +1,5 @@
-import { Box, Typography, Card, CardContent } from "@mui/material";
-import { LocationOn, Phone, AccessTime } from "@mui/icons-material";
+import { Box, Typography, Card, CardContent, Button } from "@mui/material";
+import { LocationOn, Phone, AccessTime, Map } from "@mui/icons-material";
 import "./Branch.css";
 
 export default function Branch() {
@@ -46,6 +46,20 @@ export default function Branch() {
               7h - 17h30 từ thứ 2 tới thứ 6
             </Typography>
           </Box>
+        </Box>
+
+        {/* Nút xem đường đi */}
+        <Box className="button-container">
+          <Button
+            variant="contained"
+            className="directions-button"
+            href="https://www.google.com/maps/dir/?api=1&destination=22/14+Phan+Văn+Hớn,+Tân+Thới+Nhất,+Quận+12,+Hồ+Chí+Minh"
+            target="_blank"
+            rel="noopener noreferrer"
+            startIcon={<Map />}
+          >
+            Xem đường đi đến cơ sở
+          </Button>
         </Box>
       </CardContent>
     </Card>
