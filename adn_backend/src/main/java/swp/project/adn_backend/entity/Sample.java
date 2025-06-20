@@ -66,6 +66,12 @@ public class Sample {
             CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Result> results;
+    @OneToMany(mappedBy = "sample", fetch = FetchType.EAGER, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    List<ResultAllele>resultAlleles;
+
     @OneToMany(mappedBy = "sample", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
@@ -87,6 +93,14 @@ public class Sample {
         this.kit = kit;
         this.staff = staff;
         this.results = results;
+    }
+
+    public List<ResultAllele> getResultAlleles() {
+        return resultAlleles;
+    }
+
+    public void setResultAlleles(List<ResultAllele> resultAlleles) {
+        this.resultAlleles = resultAlleles;
     }
 
     public ResultDetail getResultDetail() {

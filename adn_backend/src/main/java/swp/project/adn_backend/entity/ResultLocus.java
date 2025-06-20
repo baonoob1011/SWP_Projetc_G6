@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -44,6 +46,19 @@ public class ResultLocus {
     })
     @JoinColumn(name = "result_detail_id")
     ResultDetail resultDetail;
+    @OneToMany(mappedBy = "resultLocus", fetch = FetchType.EAGER, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    List<ResultAllele>resultAlleles;
+
+    public List<ResultAllele> getResultAlleles() {
+        return resultAlleles;
+    }
+
+    public void setResultAlleles(List<ResultAllele> resultAlleles) {
+        this.resultAlleles = resultAlleles;
+    }
 
     public void setAllele1(double allele1) {
         this.allele1 = allele1;
