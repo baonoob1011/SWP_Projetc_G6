@@ -90,4 +90,36 @@
 .phone-link:hover {
   color: #219a52 !important;
   text-decoration: underline;
+}
+
+/* Button styles */
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px !important;
+}
+
+.directions-button {
+  background: linear-gradient(45deg, #3498db, #2980b9) !important;
+  color: white !important;
+  padding: 12px 28px !important;
+  border-radius: 25px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  font-size: 1rem !important;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3) !important;
+  transition: all 0.3s ease !important;
+  border: none !important;
+  gap: 8px !important;
+}
+
+.directions-button:hover {
+  background: linear-gradient(45deg, #2980b9, #1f5f8b) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4) !important;
+}
+
+.directions-button .MuiButton-startIcon {
+  margin-right: 8px !important;
+  font-size: 20px !important;
 } 
