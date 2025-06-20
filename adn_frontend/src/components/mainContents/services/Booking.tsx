@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import type { BookingHistoryItem } from '../type/BookingType';
+import { FaEye, FaMoneyBillWave, FaTimes } from 'react-icons/fa';
 
 // ==== COMPONENT ====
 const Booking = () => {
@@ -10,6 +11,11 @@ const Booking = () => {
   const [selectedBooking, setSelectedBooking] =
     useState<BookingHistoryItem | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const translateAppointmentType = (type: string) => {
+    if (type === 'CENTER') return 'Lấy mẫu tại cơ sở';
+    if (type === 'HOME') return 'Lấy mẫu tại nhà';
+    return 'Không xác định';
+  };
 
   const fetchData = () => {
     const token = localStorage.getItem('token');
@@ -126,6 +132,7 @@ const Booking = () => {
                 <th>Ngày</th>
                 <th>Trạng thái</th>
                 <th>Dịch vụ</th>
+                <th>Hình thức</th>
                 <th>Thao tác</th>
               </tr>
             </thead>
@@ -140,45 +147,61 @@ const Booking = () => {
                       : 'Chưa xác nhận'}
                   </td>
                   <td>{item.services.map((s) => s.serviceName).join(', ')}</td>
+                  <td>{translateAppointmentType(item.show.appointmentType)}</td>
                   <td>
-                    <button
-                      className="btn btn-primary btn-sm"
-                      onClick={() => {
-                        setSelectedBooking(item);
-                        setShowModal(true);
+                    <div
+                      style={{
+                        display: 'inline-flex',
+                        gap: '8px',
+                        flexWrap: 'wrap',
                       }}
                     >
-                      Xem thêm
-                    </button>
-                    {item.show.appointmentId && (
+                      {/* Xem thêm */}
                       <button
-                        type="button"
-                        className="btn btn-outline-danger ms-1"
-                        onClick={() =>
-                          handleCanceled(item.show.appointmentId.toString())
-                        }
+                        className="btn btn-primary btn-sm d-flex align-items-center gap-1"
+                        onClick={() => {
+                          setSelectedBooking(item);
+                          setShowModal(true);
+                        }}
                       >
-                        Hủy cuộc hẹn
+                        <FaEye />
                       </button>
-                    )}
-                    {item.payments.length > 0 &&
-                      (!item.payments[0].getPaymentStatus ||
-                        item.payments[0].getPaymentStatus === 'UNPAID') &&
-                      item.payments[0].paymentId &&
-                      item.services.length > 0 &&
-                      item.services[0].serviceId && (
+
+                      {/* Hủy */}
+                      {item.show.appointmentId && (
                         <button
-                          className="btn btn-success btn-sm ms-2"
+                          type="button"
+                          className="btn btn-danger btn-sm d-flex align-items-center gap-1"
                           onClick={() =>
-                            handlePayment(
-                              item.payments[0].paymentId,
-                              item.services[0].serviceId
-                            )
+                            handleCanceled(item.show.appointmentId.toString())
                           }
                         >
-                          Thanh toán
+                          <FaTimes />
                         </button>
                       )}
+
+                      {/* Thanh toán */}
+                      {item.payments.length > 0 &&
+                        (!item.payments[0].getPaymentStatus ||
+                          item.payments[0].getPaymentStatus === 'UNPAID') &&
+                        item.payments[0].paymentId &&
+                        item.services.length > 0 &&
+                        item.services[0].serviceId &&
+                        (item.show.appointmentStatus === 'CONFIRMED' ||
+                          item.show.appointmentType === 'HOME') && (
+                          <button
+                            className="btn btn-success btn-sm d-flex align-items-center gap-1"
+                            onClick={() =>
+                              handlePayment(
+                                item.payments[0].paymentId,
+                                item.services[0].serviceId
+                              )
+                            }
+                          >
+                            <FaMoneyBillWave />
+                          </button>
+                        )}
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -15,7 +15,7 @@ import {
   ShoppingBag,
   BaggageClaim,
 } from 'lucide-react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { LocationCity, Room, RoomService } from '@mui/icons-material';
 
@@ -23,7 +23,6 @@ const AdminSidebar = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeItem, setActiveItem] = useState('dashboard');
   const [notifications] = useState(0);
-  const navigate = useNavigate();
   const [fullName, setFullName] = useState<string>('');
 
   useEffect(() => {
@@ -84,7 +83,6 @@ const AdminSidebar = () => {
       localStorage.removeItem('role');
       setFullName('');
 
-      navigate('/login');
       window.location.href = '/login';
     } catch (error) {
       console.error('Logout API error:', error);

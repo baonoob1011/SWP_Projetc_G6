@@ -6,6 +6,10 @@ export type Patient = {
   relationship: string;
 };
 
+export type Appointment ={
+  appointmentStatus: string
+}
+
 export type Staff = {
   staffId: number;
   fullName: string;

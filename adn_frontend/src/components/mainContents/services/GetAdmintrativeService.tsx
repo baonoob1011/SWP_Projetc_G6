@@ -503,7 +503,7 @@ const AdministrativeServiceList = () => {
                         <Button
                           variant="contained"
                           component={NavLink}
-                          to={`/order/${service.serviceRequest.serviceId}`}
+                          to={`/order/at-center/${service.serviceRequest.serviceId}`}
                           sx={{
                             background:
                               'linear-gradient(45deg, #10b981 30%, #14b8a6 90%)',
