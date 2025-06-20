@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO;
 import swp.project.adn_backend.dto.request.payment.PaymentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
@@ -121,13 +122,11 @@ public class AppointmentService {
         }
 
         appointment.setSlot(slot);
-
-        System.out.println("Slot room: " + slot.getRoom()); // ← kiểm tra xem có null không
         appointment.setAppointmentDate(slot.getSlotDate());
         appointment.setAppointmentStatus(AppointmentStatus.PENDING);
         appointment.setAppointmentType(AppointmentType.CENTER);
-        for (Staff staff:slot.getStaff()){
-            if(staff.getRole().equals("SAMPLE_COLLECTOR")){
+        for (Staff staff : slot.getStaff()) {
+            if (staff.getRole().equals("SAMPLE_COLLECTOR")) {
                 appointment.setStaff(staff);
                 break;
             }
@@ -347,8 +346,7 @@ public class AppointmentService {
         appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
         appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.PENDING);
         appointment.setNote("Cảm ơn quý khách đã tin tưởng dịch vụ của chúng tôi. " +
-                "Bộ kit sẽ được gửi trong thời gian sớm nhất. " +
-                "Vui lòng theo dõi trạng thái giao hàng trực tiếp trên website.");
+                "Bộ kit sẽ được gửi trong thời gian sớm nhất");
 
         UpdateAppointmentStatusResponse statusResponse = appointmentMapper.toUpdateAppointmentStatusResponse(appointment);
 
@@ -371,6 +369,7 @@ public class AppointmentService {
         return statusResponse;
     }
 
+    //staff lấy appointment đó để xác nhận
     public List<AppointmentInfoDTO> getAppointmentByStaffId(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long staffId = jwt.getClaim("id");
@@ -383,6 +382,21 @@ public class AppointmentService {
         TypedQuery<AppointmentInfoDTO> query = entityManager.createQuery(jpql, AppointmentInfoDTO.class);
         query.setParameter("staffId", staffId);
         query.setParameter("appointmentStatus", AppointmentStatus.PENDING);
+        return query.getResultList();
+    }
+
+    // shipper lay ra de xac nhan dk tai home
+    public List<AppointmentAtHomeInfoDTO> getAppointmentAtHome(  ) {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO(" +
+                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note " +
+                "FROM Appointment s WHERE " +
+                "s.appointmentDate >= CURRENT_DATE " +
+                "AND s.appointmentStatus=:appointmentStatus " +
+                "AND s.appointmentType=:appointmentType";
+
+        TypedQuery<AppointmentAtHomeInfoDTO> query = entityManager.createQuery(jpql, AppointmentAtHomeInfoDTO.class);
+        query.setParameter("appointmentStatus", AppointmentStatus.PENDING);
+        query.setParameter("appointmentType", AppointmentType.HOME);
         return query.getResultList();
     }
 
@@ -477,6 +491,7 @@ public class AppointmentService {
 
     }
 
+    //user view appointment info
     public AllAppointmentResponse getAllAppointments(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
@@ -515,7 +530,7 @@ public class AppointmentService {
 
             } else if (
                     appointment.getAppointmentType() == AppointmentType.HOME &&
-                    appointment.getServices().getServiceType() == ServiceType.CIVIL) {
+                            appointment.getServices().getServiceType() == ServiceType.CIVIL) {
 
                 ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
                 List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));

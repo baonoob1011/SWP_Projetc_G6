@@ -64,6 +64,8 @@ public class SecurityConfig {
             "/api/v1/**",
             "/api/appointment/book-appointment-at-home/**",
             "/api/appointment/cancel-appointment/**",
+            "/api/kit-delivery-status/get-kit-status-user/**",
+
     };
 
     private final String[] STAFF_ENDPOINTS = {
@@ -78,6 +80,7 @@ public class SecurityConfig {
             "/api/slot/get-all-slot-of-staff/**",
             "/api/result-locus/create-result-locus/**",
             "/api/result-detail/create-result-detail/**",
+            "/api/kit-delivery-status/update-kit-status/**",
             "/api/staff/**"
     };
 

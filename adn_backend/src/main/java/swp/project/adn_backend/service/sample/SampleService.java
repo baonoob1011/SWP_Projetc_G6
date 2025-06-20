@@ -88,15 +88,19 @@ public class SampleService {
         return String.format("%c%04d%c", firstChar, numberPart, lastChar);
     }
 
-    public List<AllSampleResponse> getAllSampleOfPatient(Authentication authentication) {
+    public List<AllSampleResponse> getAllSampleOfPatient(Authentication authentication,
+                                                         long appointmentId) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
 
         Staff staff = staffRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-        List<Sample> sampleList = staff.getSamples();
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        List<Sample> sampleList = appointment.getStaff().getSamples();
         List<AllSampleResponse> allSampleResponseList = new ArrayList<>();
         for (Sample sample : sampleList) {
+
             SampleResponse sampleResponse = sampleMapper.toSampleResponse(sample);
             StaffSampleResponse staffSampleResponse = allSampleResponseMapper.toStaffSampleResponse(sample.getStaff());
             PatientSampleResponse patientSampleResponse = allSampleResponseMapper.toPatientSampleResponse(sample.getPatient());
@@ -109,4 +113,5 @@ public class SampleService {
         return allSampleResponseList;
     }
     // thực làm update status collectSample
+
 }

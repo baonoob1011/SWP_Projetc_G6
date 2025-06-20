@@ -34,7 +34,8 @@ public class SampleController {
 
     }
     @GetMapping("/get-all-sample")
-    public ResponseEntity<List<AllSampleResponse>> getAllSamPl(Authentication authentication){
-        return ResponseEntity.ok(sampleService.getAllSampleOfPatient(authentication));
+    public ResponseEntity<List<AllSampleResponse>> getAllSample(Authentication authentication,
+                                                                long appointmentId){
+        return ResponseEntity.ok(sampleService.getAllSampleOfPatient(authentication,appointmentId));
     }
 }
