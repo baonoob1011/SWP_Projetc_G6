@@ -6,6 +6,7 @@ type Invoice = {
   createdDate: string;
   serviceName: string;
   userFullName: string;
+  bankCode: string;
 };
 
 const VNPayResult = () => {
@@ -52,7 +53,7 @@ const VNPayResult = () => {
 
   if (status === 'pending') {
     return (
-      <div className="text-center mt-5">
+      <div className="text-center" style={{ marginTop: 100 }}>
         ⏳ Đang xử lý kết quả thanh toán...
       </div>
     );
@@ -67,7 +68,7 @@ const VNPayResult = () => {
   }
 
   return (
-    <div className="container mt-5">
+    <div className="container" style={{ marginTop: 150 }}>
       <div className="alert alert-success text-center" role="alert">
         ✅ Thanh toán thành công!
       </div>
@@ -77,7 +78,7 @@ const VNPayResult = () => {
           <tbody>
             <tr>
               <th>Mã hóa đơn</th>
-              <td>{invoice.invoiceId}</td>
+              <td>{invoice.bankCode}</td>
             </tr>
             <tr>
               <th>Dịch vụ</th>

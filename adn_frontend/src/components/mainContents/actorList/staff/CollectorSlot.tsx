@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Typography, CircularProgress, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-export const SlotSelector = () => {
+export const CollectorSlots = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [slots, setSlots] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -41,19 +41,23 @@ export const SlotSelector = () => {
         <CircularProgress />
       ) : (
         <div>
-          {slots.map((slot) => (
-            <Button
-              key={slot.slotResponse.slotId}
-              variant="outlined"
-              onClick={() =>
-                navigate(`/s-page/checkAppointment/${slot.slotResponse.slotId}`)
-              }
-              style={{ margin: '5px' }}
-            >
-              Slot {slot.slotResponse.slotId} - {slot.slotResponse.startTime} ~{' '}
-              {slot.slotResponse.endTime}
-            </Button>
-          ))}
+          {slots
+            .filter((slot) => slot.slotResponse.slotStatus === 'BOOKED')
+            .map((slot) => (
+              <Button
+                key={slot.slotResponse.slotId}
+                variant="outlined"
+                onClick={() =>
+                  navigate(
+                    `/s-page/checkAppointment/${slot.slotResponse.slotId}`
+                  )
+                }
+                style={{ margin: '5px' }}
+              >
+                Slot {slot.slotResponse.slotId} - {slot.slotResponse.startTime}{' '}
+                ~ {slot.slotResponse.endTime}
+              </Button>
+            ))}
         </div>
       )}
     </div>

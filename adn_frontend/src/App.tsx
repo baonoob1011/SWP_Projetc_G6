@@ -51,7 +51,7 @@ import VNPayResult from './components/mainContents/services/VNPAY';
 import AppointmentSchedule from './components/mainContents/actorList/staff/AppoimentSchedule';
 import BookingAtHome from './components/mainContents/services/BookingAtHome';
 import CheckAppointment from './components/mainContents/actorList/staff/CheckAppointment';
-import { SlotSelector } from './components/mainContents/actorList/staff/SelectSlot';
+import { CollectorSlots } from './components/mainContents/actorList/staff/CollectorSlot';
 import GetCollector from './components/mainContents/actorList/GetCollector';
 import SignUpCollector from './components/mainContents/actorList/staff/SignUpColector';
 // import CreateBlog from './components/mainContents/services/CreateBlog';
@@ -293,7 +293,7 @@ function App() {
                 path="/s-page/selectorSlot"
                 element={
                   <ProtectedRoute allowedRoles={['STAFF']}>
-                    <SlotSelector />
+                    <CollectorSlots />
                   </ProtectedRoute>
                 }
               />
