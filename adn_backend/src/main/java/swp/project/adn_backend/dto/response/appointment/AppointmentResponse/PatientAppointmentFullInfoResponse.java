@@ -1,13 +1,13 @@
 package swp.project.adn_backend.dto.response.appointment.AppointmentResponse;
 
 import jakarta.persistence.Column;
+import swp.project.adn_backend.enums.PatientStatus;
 
 import java.time.LocalDate;
 
 public class PatientAppointmentFullInfoResponse {
     long patientId;
     String fullName;
-
     String email;
     String phone;
     String address;
@@ -15,8 +15,9 @@ public class PatientAppointmentFullInfoResponse {
     String identityNumber;
     String gender;
     String relationship;
+    PatientStatus patientStatus;
 
-    public PatientAppointmentFullInfoResponse(long patientId, String fullName, String email, String phone, String address, LocalDate dateOfBirth, String identityNumber, String gender, String relationship) {
+    public PatientAppointmentFullInfoResponse(long patientId, String fullName, String email, String phone, String address, LocalDate dateOfBirth, String identityNumber, String gender, String relationship, PatientStatus patientStatus) {
         this.patientId = patientId;
         this.fullName = fullName;
         this.email = email;
@@ -26,6 +27,15 @@ public class PatientAppointmentFullInfoResponse {
         this.identityNumber = identityNumber;
         this.gender = gender;
         this.relationship = relationship;
+        this.patientStatus = patientStatus;
+    }
+
+    public PatientStatus getPatientStatus() {
+        return patientStatus;
+    }
+
+    public void setPatientStatus(PatientStatus patientStatus) {
+        this.patientStatus = patientStatus;
     }
 
     public String getEmail() {

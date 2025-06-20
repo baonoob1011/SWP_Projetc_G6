@@ -16,7 +16,7 @@ import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SlotRequest {
-    long slotId;
+
     @NotNull(message = "Slot date must not be null")
     @FutureOrPresent(message = "Slot date must be today or in the future")
     private LocalDate slotDate;
@@ -29,19 +29,10 @@ public class SlotRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime endTime;
 
-    public SlotRequest(long slotId, LocalDate slotDate, LocalTime startTime, LocalTime endTime) {
-        this.slotId = slotId;
+    public SlotRequest(LocalDate slotDate, LocalTime startTime, LocalTime endTime) {
         this.slotDate = slotDate;
         this.startTime = startTime;
         this.endTime = endTime;
-    }
-
-    public long getSlotId() {
-        return slotId;
-    }
-
-    public void setSlotId(long slotId) {
-        this.slotId = slotId;
     }
 
     public @NotNull(message = "Slot date must not be null") @FutureOrPresent(message = "Slot date must be today or in the future") LocalDate getSlotDate() {

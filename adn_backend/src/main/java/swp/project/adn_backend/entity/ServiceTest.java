@@ -69,6 +69,12 @@ public class ServiceTest {
     })
     List<CivilService> civilServices;
 
+    @OneToMany(mappedBy = "serviceTest", fetch = FetchType.EAGER, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    List<Invoice> invoices;
+
     @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH,
@@ -97,7 +103,7 @@ public class ServiceTest {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH,
     })
-    @JoinColumn(name = "kid_id")
+    @JoinColumn(name = "kit_id")
     Kit kit;
 
     @OneToMany(mappedBy = "serviceTest", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -120,6 +126,14 @@ public class ServiceTest {
         this.feedbacks = feedbacks;
         this.priceLists = priceLists;
         this.discounts = discounts;
+    }
+
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
     }
 
     public Kit getKit() {

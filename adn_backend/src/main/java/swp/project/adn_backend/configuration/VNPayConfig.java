@@ -16,8 +16,8 @@ import java.util.*;
 public class VNPayConfig {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static String vnp_Returnurl = "/vnpay-payment";
-    public static String vnp_TmnCode = "CK63NQF1";
-    public static String vnp_HashSecret = "LU64UUX4I6EBA26B769P45U185E0JPFZ";
+    public static String vnp_TmnCode = "3ZI08BC5";
+    public static String vnp_HashSecret = "1BGOPD33JUD1SJYVT9GAZG6OF4OFK650";
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public static String md5(String message) {

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
+import swp.project.adn_backend.enums.UserStatus;
 
 
 import java.time.LocalDate;
@@ -131,6 +132,15 @@ public class Users {
 
     public void setBlogs(List<Blog> blogs) {
         this.blogs = blogs;
+    }
+
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
     }
 
     public long getUserId() {

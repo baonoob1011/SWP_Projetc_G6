@@ -12,7 +12,6 @@ public class AppointmentRequest {
     LocalDate appointmentDate;
     AppointmentStatus appointmentStatus;
     String note;
-
     public LocalDate getAppointmentDate() {
         return appointmentDate;
     }
