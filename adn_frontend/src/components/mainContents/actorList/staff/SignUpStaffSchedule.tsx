@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import CustomSnackBar from '../userinfor/Snackbar';
+import CustomSnackBar from '../../userinfor/Snackbar';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { startOfWeek, addWeeks, endOfWeek } from 'date-fns';
@@ -11,7 +12,7 @@ import {
   Select,
   type SelectChangeEvent,
 } from '@mui/material';
-import StaffScheduleTable from './staff/CreateStaffSchedule';
+import StaffScheduleTable from './CreateStaffSchedule';
 type Schedule = {
   staffId: string;
   slotDate: string;
@@ -25,7 +26,7 @@ type SlotInfo = {
   startTime: string;
   endTime: string;
   roomName: string;
-  fullName: string;
+  fullNames: string[]; // sửa cho khớp
 };
 
 type Room = {
@@ -34,6 +35,20 @@ type Room = {
   openTime: string;
   closeTime: string;
   roomStatus: string;
+};
+
+type Staff = {
+  idCard: string;
+  dateOfBirth: string;
+  address: string;
+  gender: string;
+  staffId: number;
+  fullName: string;
+  email: string;
+  enabled: boolean;
+  role: string;
+  phone: string;
+  createAt: string;
 };
 
 const SignUpStaffSchedule = () => {
@@ -48,8 +63,12 @@ const SignUpStaffSchedule = () => {
   });
 
   const [isRoom, setIsRoom] = useState<Room[]>([]);
+  const [isStaff, setIsStaff] = useState<Staff[]>([]);
+  const [isCollector, setIsCollector] = useState<Staff[]>([]);
   const [isSlot, setIsSlot] = useState<SlotInfo[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<string>('');
+  const [selectedStaff1, setSelectedStaff1] = useState<string>('');
+  const [selectedStaff2, setSelectedStaff2] = useState<string>('');
   const [auth, setAuth] = useState(false);
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(
     startOfWeek(new Date(), { weekStartsOn: 1 })
@@ -102,6 +121,66 @@ const SignUpStaffSchedule = () => {
       toast.error('Không thể lấy danh sách phòng');
     }
   };
+  const fetchStaff = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/api/staff/get-all-staff', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (res.status === 401) {
+        toast.error('Phiên đăng nhập đã hết hạn');
+        localStorage.clear();
+        navigate('/login');
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      setIsStaff(data);
+    } catch (error) {
+      console.error('Fetch rooms error:', error);
+      toast.error('Không thể lấy danh sách nhân viên');
+    }
+  };
+
+  const fetchCollector = async () => {
+    try {
+      const res = await fetch(
+        'http://localhost:8080/api/staff/get-all-staff-collector',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+
+      if (res.status === 401) {
+        toast.error('Phiên đăng nhập đã hết hạn');
+        localStorage.clear();
+        navigate('/login');
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      setIsCollector(data);
+    } catch (error) {
+      console.error('Fetch rooms error:', error);
+      toast.error('Không thể lấy danh sách nhân viên');
+    }
+  };
 
   const fetchSlot = async () => {
     try {
@@ -119,8 +198,10 @@ const SignUpStaffSchedule = () => {
         navigate('/login');
         return;
       }
+      if (!res.ok) {
+        toast.error('lỗi');
+      }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const data: any[] = await res.json();
 
       const slotInfo: SlotInfo[] = data.map((item) => ({
@@ -129,8 +210,9 @@ const SignUpStaffSchedule = () => {
         startTime: item.slotResponse?.startTime ?? '',
         endTime: item.slotResponse?.endTime ?? '',
         roomName: item.roomSlotResponse?.roomName ?? '',
-        fullName: item.staffSlotResponse?.fullName ?? '',
+        fullNames: item.staffSlotResponses?.map((s: any) => s.fullName) ?? [],
       }));
+
       setIsSlot(slotInfo);
     } catch (error) {
       console.error('Fetch slots error:', error);
@@ -142,6 +224,8 @@ const SignUpStaffSchedule = () => {
     if (auth) {
       fetchRoom();
       fetchSlot();
+      fetchStaff();
+      fetchCollector();
     }
   }, [auth]);
 
@@ -156,6 +240,12 @@ const SignUpStaffSchedule = () => {
   const handleRoomChange = (event: SelectChangeEvent<string>) => {
     setSelectedRoom(event.target.value);
   };
+  const handleStaff1Change = (event: SelectChangeEvent<string>) => {
+    setSelectedStaff1(event.target.value);
+  };
+  const handleStaff2Change = (event: SelectChangeEvent<string>) => {
+    setSelectedStaff2(event.target.value);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -169,11 +259,16 @@ const SignUpStaffSchedule = () => {
       return;
     }
 
-    const formattedSchedule = {
-      roomId: selectedRoom,
-      slotDate: isSchedule.slotDate,
-      startTime: isSchedule.startTime + ':00',
-      endTime: isSchedule.endTime + ':00',
+    const requestBody = {
+      slotRequest: {
+        slotDate: isSchedule.slotDate,
+        startTime: isSchedule.startTime + ':00',
+        endTime: isSchedule.endTime + ':00',
+      },
+      staffSlotRequest: [
+        { staffId: selectedStaff1 },
+        { staffId: selectedStaff2 },
+      ],
     };
 
     try {
@@ -185,7 +280,7 @@ const SignUpStaffSchedule = () => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
-          body: JSON.stringify(formattedSchedule),
+          body: JSON.stringify(requestBody),
         }
       );
 
@@ -208,15 +303,16 @@ const SignUpStaffSchedule = () => {
           timer: 1500,
         });
 
-        setIsSchedule((prev) => ({
-          ...prev,
+        // Reset form
+        setIsSchedule({
+          staffId: '',
           slotDate: '',
           startTime: '',
           endTime: '',
-        }));
+        });
         setSelectedRoom('');
-        fetchRoom();
-        fetchSlot();
+        setSelectedStaff1('');
+        setSelectedStaff2('');
       }
     } catch (error) {
       console.log(error);
@@ -259,6 +355,46 @@ const SignUpStaffSchedule = () => {
               {isRoom.map((room) => (
                 <MenuItem key={room.roomId} value={room.roomId}>
                   {room.roomName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+        <div className="mb-3">
+          <FormControl fullWidth>
+            <Select
+              labelId="roomId"
+              value={selectedStaff1}
+              onChange={handleStaff1Change}
+              input={<OutlinedInput />}
+              displayEmpty
+            >
+              <MenuItem value="">
+                <em>----Chọn nhân viên----</em>
+              </MenuItem>
+              {isStaff.map((staff) => (
+                <MenuItem key={staff.staffId} value={staff.staffId}>
+                  {staff.fullName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+        <div className="mb-3">
+          <FormControl fullWidth>
+            <Select
+              labelId="roomId"
+              value={selectedStaff2}
+              onChange={handleStaff2Change}
+              input={<OutlinedInput />}
+              displayEmpty
+            >
+              <MenuItem value="">
+                <em>----Chọn nhân viên thu mẫu----</em>
+              </MenuItem>
+              {isCollector.map((staff) => (
+                <MenuItem key={staff.staffId} value={staff.staffId}>
+                  {staff.fullName}
                 </MenuItem>
               ))}
             </Select>
@@ -342,32 +478,6 @@ const SignUpStaffSchedule = () => {
 
       {/* Component hiển thị bảng lịch */}
       <StaffScheduleTable slots={isSlot} currentWeekStart={currentWeekStart} />
-
-      {/* Bảng phòng */}
-      <div
-        className="p-4 border rounded bg-light"
-        style={{ maxWidth: 800, margin: '20px auto' }}
-      >
-        <h2 className="mb-3">Danh sách phòng</h2>
-        <table className="table table-bordered table-hover table-striped">
-          <thead className="table-dark">
-            <tr>
-              <th>Số phòng</th>
-              <th>Thời gian mở</th>
-              <th>Thời gian đóng</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isRoom.map((room) => (
-              <tr key={room.roomId}>
-                <td>{room.roomName}</td>
-                <td>{room.openTime}</td>
-                <td>{room.closeTime}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
 
       {/* Snackbar */}
       <CustomSnackBar

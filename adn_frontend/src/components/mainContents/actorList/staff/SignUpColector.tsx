@@ -12,11 +12,12 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import CustomSnackBar from '../userinfor/Snackbar';
-import { signUpStaffSchema } from '../userinfor/Validation';
+
 import { ValidationError } from 'yup';
 import Swal from 'sweetalert2';
 import styles from './Staff.module.css';
+import { signUpStaffSchema } from '../../userinfor/Validation';
+import CustomSnackBar from '../../userinfor/Snackbar';
 
 type Staff = {
   fullName: string;
@@ -41,7 +42,7 @@ type ErrorResponse = {
   };
 };
 
-const SignUpStaff = () => {
+const SignUpCollector = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [staff, setStaff] = useState<Staff>({
@@ -151,7 +152,7 @@ const SignUpStaff = () => {
       }
 
       const response = await fetch(
-        'http://localhost:8080/api/register/staff-account',
+        'http://localhost:8080/api/register/staff-collector-account',
         {
           method: 'POST',
           headers: {
@@ -404,4 +405,4 @@ const SignUpStaff = () => {
   );
 };
 
-export default SignUpStaff;
+export default SignUpCollector;

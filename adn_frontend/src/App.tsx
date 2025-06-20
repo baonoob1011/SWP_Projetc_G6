@@ -32,7 +32,7 @@ import GetUserByManager from './components/mainContents/actorList/GetUserByManag
 import NewProfile from './components/mainContents/actorList/StaffAndManagerProfile';
 import NewUserProfile from './components/mainContents/actorList/UserProfile';
 import StaffSlot from './components/mainContents/actorList/staff/GetStaffShedule';
-import SignUpStaffSchedule from './components/mainContents/actorList/SignUpStaffSchedule';
+import SignUpStaffSchedule from './components/mainContents/actorList/staff/SignUpStaffSchedule';
 
 import CivilServiceList from './components/mainContents/services/GetCivilService';
 import AdministrativeServiceList from './components/mainContents/services/GetAdmintrativeService';
@@ -50,6 +50,11 @@ import GetAppointment from './components/mainContents/feature/GetBooking';
 import VNPayResult from './components/mainContents/services/VNPAY';
 import AppointmentSchedule from './components/mainContents/actorList/staff/AppoimentSchedule';
 import BookingAtHome from './components/mainContents/services/BookingAtHome';
+import CheckAppointment from './components/mainContents/actorList/staff/CheckAppointment';
+import { CollectorSlots } from './components/mainContents/actorList/staff/CollectorSlot';
+import GetCollector from './components/mainContents/actorList/GetCollector';
+import SignUpCollector from './components/mainContents/actorList/staff/SignUpColector';
+// import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -65,8 +70,10 @@ function App() {
     '/s-page/s-userData',
     '/s-page/s-slot',
     '/s-page/checkBooking',
+    '/s-page/checkAppointment/:slotId',
+    '/s-page/selectorSlot',
     '/s-page',
-  ].includes(location.pathname);
+  ].some((path) => matchPath(path, location.pathname));
 
   const isManagerLayoutRoute = [
     '/manager/data',
@@ -121,6 +128,14 @@ function App() {
                   element={
                     <ProtectedRoute allowedRoles={['ADMIN']}>
                       <GetUserByAdmin />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="collector"
+                  element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <GetCollector />
                     </ProtectedRoute>
                   }
                 />
@@ -197,6 +212,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/signup-collector"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <SignUpCollector />
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
             <ToastContainer />
           </Box>
@@ -255,6 +278,22 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['STAFF']}>
                     <AppointmentSchedule />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/s-page/checkAppointment/:slotId"
+                element={
+                  <ProtectedRoute allowedRoles={['STAFF']}>
+                    <CheckAppointment />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/s-page/selectorSlot"
+                element={
+                  <ProtectedRoute allowedRoles={['STAFF']}>
+                    <CollectorSlots />
                   </ProtectedRoute>
                 }
               />
