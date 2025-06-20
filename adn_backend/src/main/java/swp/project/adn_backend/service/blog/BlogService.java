@@ -53,4 +53,52 @@ public class BlogService {
         }
         return blogRepository.save(blog);
     }
+
+    public Blog updateBlog(Long blogId, BlogRequest blogRequest, Authentication authentication, MultipartFile file) {
+        // Lấy user từ authentication (giống createBlog)
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+        // Tìm blog cần cập nhật
+        Blog blog = blogRepository.findById(blogId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.BLOG_NOT_FOUND));
+
+        // Kiểm tra quyền sửa (nếu cần, ví dụ chỉ cho phép user tạo blog được sửa)
+        if (!Long.valueOf(blog.getUsers().getUserId()).equals(userId)) {
+            throw new AppException(ErrorCodeUser.UNAUTHORIZED);
+        }
+
+        // Cập nhật các trường từ blogRequest
+        blog.setTitle(blogRequest.getTitle());
+        blog.setContent(blogRequest.getContent());
+        // ... các trường khác nếu có
+
+        // Nếu có file ảnh mới, cập nhật ảnh
+        if (file != null && !file.isEmpty()) {
+            try {
+                String base64Image = Base64.getEncoder().encodeToString(file.getBytes());
+                blog.setImage(base64Image);
+            } catch (IOException e) {
+                throw new AppException(ErrorCodeUser.INTERNAL_ERROR);
+            }
+        }
+
+        // Lưu lại blog đã cập nhật
+        return blogRepository.save(blog);
+    }
+
+    public void deleteBlog(Long blogId, Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+        Blog blog = blogRepository.findById(blogId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.BLOG_NOT_FOUND));
+        if (!Long.valueOf(blog.getUsers().getUserId()).equals(userId)) {
+            throw new AppException(ErrorCodeUser.UNAUTHORIZED);
+        }
+        blogRepository.delete(blog);
+    }
 }

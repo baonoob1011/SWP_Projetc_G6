@@ -68,6 +68,8 @@ public enum ErrorCodeUser {
     STAFF_TIME_OVERLAP(1003, "Nhân viên đã được phân công vào khung giờ này ở phòng khác"),
     STAFF_SLOT_CREATION_FAILED(1003, "Không thể tạo slot: Nhân viên đã có lịch tại phòng khác trong cùng khung giờ"),
 
+    // Blog validation  
+    BLOG_NOT_FOUND(1003, "Blog không tồn tại", HttpStatus.BAD_REQUEST),
 
     //
 

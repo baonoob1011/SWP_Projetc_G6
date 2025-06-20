@@ -24,4 +24,18 @@ public class BlogController {
                                           ) {
         return ResponseEntity.ok(blogService.createBlog(blogRequest, authentication,file));
     }
+
+    @PutMapping(value = "/update-blog/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Blog> updateBlog(@PathVariable("id") Long blogId,
+                                           @RequestPart("blogRequest") @Valid BlogRequest blogRequest,
+                                           Authentication authentication,
+                                           @RequestPart(value = "file", required = false) MultipartFile file) {
+        return ResponseEntity.ok(blogService.updateBlog(blogId, blogRequest, authentication, file));
+    }
+
+    @DeleteMapping("/delete-blog/{id}")
+    public ResponseEntity<Void> deleteBlog(@PathVariable("id") Long blogId, Authentication authentication) {
+        blogService.deleteBlog(blogId, authentication);
+        return ResponseEntity.noContent().build();
+    }
 }
