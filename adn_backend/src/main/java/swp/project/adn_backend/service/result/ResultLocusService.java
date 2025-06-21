@@ -98,10 +98,10 @@ public class ResultLocusService {
         for (ResultAllele ra : sample.getResultAlleles()) {
             if (ra.getAlleleStatus() == AlleleStatus.DONE) continue;
 
-            String locus = ra.getResultLocus().getLocusName(); // ⚠️ dùng ra.getLocusName() trực tiếp
-            locusMap.putIfAbsent(locus, new ResultLocusRequest());
-            ResultLocusRequest req = locusMap.get(locus);
-            req.setLocusName(locus);
+            String locusKey = ra.getLocus().getLocusName(); // Lấy từ entity Locus
+            locusMap.putIfAbsent(locusKey, new ResultLocusRequest());
+            ResultLocusRequest req = locusMap.get(locusKey);
+            req.setLocusName(locusKey);
 
             if ("1".equals(ra.getAllelePosition())) {
                 req.setAllele1(ra.getAlleleValue());

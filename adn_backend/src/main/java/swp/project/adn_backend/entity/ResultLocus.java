@@ -51,13 +51,26 @@ public class ResultLocus {
             CascadeType.DETACH, CascadeType.REFRESH,
     })
     List<ResultAllele>resultAlleles;
-
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    @JoinColumn(name = "locus_id")
+    private Locus locus;
     public List<ResultAllele> getResultAlleles() {
         return resultAlleles;
     }
 
     public void setResultAlleles(List<ResultAllele> resultAlleles) {
         this.resultAlleles = resultAlleles;
+    }
+
+    public Locus getLocus() {
+        return locus;
+    }
+
+    public void setLocus(Locus locus) {
+        this.locus = locus;
     }
 
     public void setAllele1(double allele1) {

@@ -27,6 +27,18 @@ public class ResultAllele {
     @JoinColumn(name = "sample_id")
     private Sample sample;
 
+    @ManyToOne
+    @JoinColumn(name = "locus_id")
+    private Locus locus;
+
+    public Locus getLocus() {
+        return locus;
+    }
+
+    public void setLocus(Locus locus) {
+        this.locus = locus;
+    }
+
     public Sample getSample() {
         return sample;
     }
