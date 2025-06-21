@@ -28,7 +28,7 @@ public class Sample {
     @Column(name = "collection_date")
     LocalDate collectionDate;
 
-
+   @Enumerated(EnumType.STRING)
     @Column(name = "sample_status")
     SampleStatus sampleStatus;
 

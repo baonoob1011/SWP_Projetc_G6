@@ -83,6 +83,7 @@ public class SecurityConfig {
             "/api/kit-delivery-status/update-kit-status/**",
             "/api/result-allele/create-result-allele",
             "/api/locus/create-locus",
+            "/api/locus/get-all-locus",
             "/api/staff/**"
     };
 

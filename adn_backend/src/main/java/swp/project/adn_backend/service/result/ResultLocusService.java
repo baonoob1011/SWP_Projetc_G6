@@ -87,7 +87,7 @@ public class ResultLocusService {
             Map.entry(43.0, 0.01)
     );
 
-    public List<ResultLocusResponse> createResultLocus(long sampleId, List<ResultLocusRequest> inputRequests) {
+    public List<ResultLocusResponse> createResultLocus(long sampleId) {
         // 1. Lấy sample
         Sample sample = sampleRepository.findById(sampleId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));

@@ -14,21 +14,22 @@ import java.util.List;
 public class Locus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long locusId;
 
     @Column(unique = true)
     private String locusName;
-
+    @Column(columnDefinition = "nvarchar(255)")
     private String description; // nếu cần
 
     // Mapping nếu cần
 
-    public Long getId() {
-        return id;
+
+    public Long getLocusId() {
+        return locusId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setLocusId(Long locusId) {
+        this.locusId = locusId;
     }
 
     public String getLocusName() {

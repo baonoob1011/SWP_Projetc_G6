@@ -16,9 +16,9 @@ public class ResultLocusController {
     private ResultLocusService resultLocusService;
     @PostMapping("/create-result-locus")
     public ResponseEntity<List<ResultLocusResponse>> createResultLocus(
-            @RequestParam long sampleId,
-            @RequestBody List<ResultLocusRequest> resultLocusRequests) {
-        return ResponseEntity.ok(resultLocusService.createResultLocus(sampleId, resultLocusRequests));
+            @RequestParam long sampleId
+            ) {
+        return ResponseEntity.ok(resultLocusService.createResultLocus(sampleId));
     }
 
 }

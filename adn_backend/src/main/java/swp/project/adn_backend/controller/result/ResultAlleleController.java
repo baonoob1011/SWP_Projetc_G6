@@ -21,8 +21,9 @@ public class ResultAlleleController {
     @PostMapping("/create-result-allele")
     public ResponseEntity<ResultAlleleResponse> createResultLocus(
             @RequestBody ResultAlleleRequest resultAlleleRequest,
-            @RequestParam long sampleId) {
-        return ResponseEntity.ok(resultAlleleService.createAllele(resultAlleleRequest,sampleId));
+            @RequestParam long sampleId,
+            @RequestParam long locusId) {
+        return ResponseEntity.ok(resultAlleleService.createAllele(resultAlleleRequest,sampleId,locusId));
     }
 
 }
