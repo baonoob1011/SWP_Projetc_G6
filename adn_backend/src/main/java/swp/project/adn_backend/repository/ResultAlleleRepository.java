@@ -5,11 +5,13 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import swp.project.adn_backend.entity.Kit;
 import swp.project.adn_backend.entity.ResultAllele;
 
+import java.util.List;
 import java.util.Optional;
 
 
 @RepositoryRestResource(path = "result_allele")
 public interface ResultAlleleRepository extends JpaRepository<ResultAllele,Long> {
+    List<ResultAllele> findBySample_SampleId(Long sampleId);
 
 
 }

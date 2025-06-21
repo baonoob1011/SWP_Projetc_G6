@@ -7,15 +7,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.request.sample.SampleRequest;
-import swp.project.adn_backend.dto.response.sample.AllSampleResponse;
-import swp.project.adn_backend.dto.response.sample.PatientSampleResponse;
-import swp.project.adn_backend.dto.response.sample.SampleResponse;
-import swp.project.adn_backend.dto.response.sample.StaffSampleResponse;
+import swp.project.adn_backend.dto.response.sample.*;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.SampleStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.AllSampleResponseMapper;
+import swp.project.adn_backend.mapper.AppointmentMapper;
 import swp.project.adn_backend.mapper.SampleMapper;
 import swp.project.adn_backend.mapper.StaffMapper;
 import swp.project.adn_backend.repository.*;
@@ -36,9 +34,10 @@ public class SampleService {
     AppointmentRepository appointmentRepository;
     StaffMapper staffMapper;
     AllSampleResponseMapper allSampleResponseMapper;
+    AppointmentMapper appointmentMapper;
 
     @Autowired
-    public SampleService(SampleRepository sampleRepository, SampleMapper sampleMapper, PatientRepository patientRepository, StaffRepository staffRepository, ServiceTestRepository serviceTestRepository, AppointmentRepository appointmentRepository, StaffMapper staffMapper, AllSampleResponseMapper allSampleResponseMapper) {
+    public SampleService(SampleRepository sampleRepository, SampleMapper sampleMapper, PatientRepository patientRepository, StaffRepository staffRepository, ServiceTestRepository serviceTestRepository, AppointmentRepository appointmentRepository, StaffMapper staffMapper, AllSampleResponseMapper allSampleResponseMapper, AppointmentMapper appointmentMapper) {
         this.sampleRepository = sampleRepository;
         this.sampleMapper = sampleMapper;
         this.patientRepository = patientRepository;
@@ -47,8 +46,8 @@ public class SampleService {
         this.appointmentRepository = appointmentRepository;
         this.staffMapper = staffMapper;
         this.allSampleResponseMapper = allSampleResponseMapper;
+        this.appointmentMapper = appointmentMapper;
     }
-
 
     public SampleResponse collectSample(long patientId,
                                         long serviceId,
@@ -93,8 +92,6 @@ public class SampleService {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
 
-        Staff staff = staffRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         List<Sample> sampleList = appointment.getStaff().getSamples();
@@ -104,7 +101,9 @@ public class SampleService {
             SampleResponse sampleResponse = sampleMapper.toSampleResponse(sample);
             StaffSampleResponse staffSampleResponse = allSampleResponseMapper.toStaffSampleResponse(sample.getStaff());
             PatientSampleResponse patientSampleResponse = allSampleResponseMapper.toPatientSampleResponse(sample.getPatient());
+            AppointmentSampleResponse appointmentSampleResponse = appointmentMapper.toAppointmentSampleResponse(appointment);
             AllSampleResponse allSampleResponse = new AllSampleResponse();
+            allSampleResponse.setAppointmentSampleResponse(appointmentSampleResponse);
             allSampleResponse.setSampleResponse(sampleResponse);
             allSampleResponse.setStaffSampleResponse(staffSampleResponse);
             allSampleResponse.setPatientSampleResponse(patientSampleResponse);

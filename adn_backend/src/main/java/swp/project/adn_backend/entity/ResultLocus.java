@@ -33,12 +33,6 @@ public class ResultLocus {
     double frequency;
     double pi;
 
-    @ManyToOne(cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    @JoinColumn(name = "sample_id")
-    Sample sample;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -50,13 +44,29 @@ public class ResultLocus {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH,
     })
-    List<ResultAllele>resultAlleles;
+    List<ResultAllele> resultAlleles;
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
     @JoinColumn(name = "locus_id")
     private Locus locus;
+
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    @JoinColumn(name = "appointment_id")
+    Appointment appointment;
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
+
     public List<ResultAllele> getResultAlleles() {
         return resultAlleles;
     }
@@ -147,11 +157,4 @@ public class ResultLocus {
     }
 
 
-    public Sample getSample() {
-        return sample;
-    }
-
-    public void setSample(Sample sample) {
-        this.sample = sample;
-    }
 }

@@ -35,8 +35,8 @@ public class Result {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    @JoinColumn(name = "sample_id", nullable = false)
-    Sample sample;
+    @JoinColumn(name = "appointment_id", nullable = false)
+    Appointment appointment;
 
 
     @OneToOne(mappedBy = "result")
@@ -45,14 +45,7 @@ public class Result {
     public Result() {
     }
 
-    public Result(long result_id, LocalDate collectionDate, LocalDate resultDate, ResultStatus resultStatus, Sample sample, ResultDetail resultDetail) {
-        this.result_id = result_id;
-        this.collectionDate = collectionDate;
-        this.resultDate = resultDate;
-        this.resultStatus = resultStatus;
-        this.sample = sample;
-        this.resultDetail = resultDetail;
-    }
+
 
     public long getResult_id() {
         return result_id;
@@ -86,14 +79,13 @@ public class Result {
         this.resultStatus = resultStatus;
     }
 
-    public Sample getSample() {
-        return sample;
+    public Appointment getAppointment() {
+        return appointment;
     }
 
-    public void setSample(Sample sample) {
-        this.sample = sample;
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
     }
-
 
     public ResultDetail getResultDetail() {
         return resultDetail;

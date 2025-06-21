@@ -3,18 +3,12 @@ package swp.project.adn_backend.service.result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.response.result.ResultDetailResponse;
-import swp.project.adn_backend.entity.Result;
-import swp.project.adn_backend.entity.ResultDetail;
-import swp.project.adn_backend.entity.ResultLocus;
-import swp.project.adn_backend.entity.Sample;
+import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.ResultStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.ResultDetailsMapper;
-import swp.project.adn_backend.repository.ResultDetailRepository;
-import swp.project.adn_backend.repository.ResultLocusRepository;
-import swp.project.adn_backend.repository.ResultRepository;
-import swp.project.adn_backend.repository.SampleRepository;
+import swp.project.adn_backend.repository.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,23 +20,25 @@ public class ResultDetailsService {
     private ResultDetailsMapper resultDetailsMapper;
     private SampleRepository sampleRepository;
     private ResultRepository resultRepository;
+    private AppointmentRepository appointmentRepository;
 
     @Autowired
-    public ResultDetailsService(ResultDetailRepository resultDetailRepository, ResultDetailsMapper resultDetailsMapper, SampleRepository sampleRepository, ResultRepository resultRepository) {
+    public ResultDetailsService(ResultDetailRepository resultDetailRepository, ResultDetailsMapper resultDetailsMapper, SampleRepository sampleRepository, ResultRepository resultRepository, AppointmentRepository appointmentRepository) {
         this.resultDetailRepository = resultDetailRepository;
         this.resultDetailsMapper = resultDetailsMapper;
         this.sampleRepository = sampleRepository;
         this.resultRepository = resultRepository;
+        this.appointmentRepository = appointmentRepository;
     }
 
-    public ResultDetailResponse CreateResultDetail(long sampleId) {
+    public ResultDetailResponse CreateResultDetail(long appointmentId) {
 
         // Tìm sample theo ID
-        Sample sample = sampleRepository.findById(sampleId)
+        Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
 
         // Kiểm tra sample có ResultLocus không
-        List<ResultLocus> loci = sample.getResultLocus();
+        List<ResultLocus> loci = appointment.getResultLoci();
         if (loci == null || loci.isEmpty()) {
             throw new AppException(ErrorCodeUser.NO_RESULT_LOCUS_FOUND_FOR_SAMPLE);
         }
@@ -67,13 +63,13 @@ public class ResultDetailsService {
 
         resultDetail.setResultSummary(summary);
         resultDetail.setConclusion(conclusion);
-        resultDetail.setSample(sample);
+
 
         // Tạo kết quả
         Result result = new Result();
-        result.setCollectionDate(sample.getCollectionDate());
+        result.setCollectionDate(appointment.getPatients().getFirst().getSamples().getLast().getCollectionDate());
+        result.setAppointment(appointment);
         result.setResultDate(LocalDate.now());
-        result.setSample(sample); // <-- Dòng này cần có
         result.setResultStatus(ResultStatus.COMPLETED);
         resultRepository.save(result);
 
@@ -81,12 +77,6 @@ public class ResultDetailsService {
         resultDetail.setResult(result);
         resultDetailRepository.save(resultDetail);
 
-
-        // Thêm result vào sample (giữ kết quả cũ)
-        if (sample.getResults() == null) {
-            sample.setResults(new ArrayList<>());
-        }
-        sample.getResults().add(result);
 
         return resultDetailsMapper.toResultDetailResponse(resultDetail);
     }

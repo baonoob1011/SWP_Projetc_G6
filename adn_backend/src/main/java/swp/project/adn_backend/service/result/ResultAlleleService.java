@@ -7,6 +7,7 @@ import swp.project.adn_backend.dto.request.result.ResultRequest;
 import swp.project.adn_backend.dto.response.result.ResultAlleleResponse;
 import swp.project.adn_backend.dto.response.result.ResultResponse;
 import swp.project.adn_backend.entity.*;
+import swp.project.adn_backend.enums.AlleleStatus;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.ResultStatus;
 import swp.project.adn_backend.exception.AppException;
@@ -43,6 +44,7 @@ public class ResultAlleleService {
         ResultAllele resultAllele = resultAlleleMapper.toResultAllele(resultAlleleRequest);
         resultAllele.setLocus(locus);
         resultAllele.setSample(sample);
+        resultAllele.setAlleleStatus(AlleleStatus.ENTERED);
         resultAlleleRepository.save(resultAllele);
         ResultAlleleResponse resultAlleleResponse = resultAlleleMapper.toResultAlleleResponse(resultAllele);
         return resultAlleleResponse;

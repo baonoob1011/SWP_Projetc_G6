@@ -26,7 +26,6 @@ public class ResultService {
         Result result=resultMapper.toResult(resultRequest);
         result.setCollectionDate(sample.getCollectionDate());
         result.setResultStatus(ResultStatus.IN_PROGRESS);
-        result.setSample(sample);
         ResultResponse resultResponse=resultMapper.toResultResponse(result);
         return resultResponse;
     }

@@ -6,17 +6,13 @@ import swp.project.adn_backend.dto.request.result.ResultLocusRequest;
 import swp.project.adn_backend.dto.request.result.ResultRequest;
 import swp.project.adn_backend.dto.response.result.ResultLocusResponse;
 import swp.project.adn_backend.dto.response.result.ResultResponse;
-import swp.project.adn_backend.entity.ResultAllele;
-import swp.project.adn_backend.entity.ResultLocus;
-import swp.project.adn_backend.entity.Sample;
+import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.AlleleStatus;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.ResultLocusMapper;
 import swp.project.adn_backend.mapper.ResultMapper;
-import swp.project.adn_backend.repository.ResultLocusRepository;
-import swp.project.adn_backend.repository.ResultRepository;
-import swp.project.adn_backend.repository.SampleRepository;
+import swp.project.adn_backend.repository.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,16 +27,17 @@ public class ResultLocusService {
     private final ResultLocusMapper resultLocusMapper;
     private final SampleRepository sampleRepository;
     private final ResultLocusRepository resultLocusRepository;
+    private ResultAlleleRepository resultAlleleRepository;
+    private AppointmentRepository appointmentRepository;
 
     @Autowired
-    public ResultLocusService(ResultRepository resultRepository,
-                              ResultLocusMapper resultLocusMapper,
-                              SampleRepository sampleRepository,
-                              ResultLocusRepository resultLocusRepository) {
+    public ResultLocusService(ResultRepository resultRepository, ResultLocusMapper resultLocusMapper, SampleRepository sampleRepository, ResultLocusRepository resultLocusRepository, ResultAlleleRepository resultAlleleRepository, AppointmentRepository appointmentRepository) {
         this.resultRepository = resultRepository;
         this.resultLocusMapper = resultLocusMapper;
         this.sampleRepository = sampleRepository;
         this.resultLocusRepository = resultLocusRepository;
+        this.resultAlleleRepository = resultAlleleRepository;
+        this.appointmentRepository = appointmentRepository;
     }
 
     // Tần suất alen mẫu (có thể thay bằng dữ liệu từ DB hoặc file cấu hình)
@@ -87,80 +84,89 @@ public class ResultLocusService {
             Map.entry(43.0, 0.01)
     );
 
-    public List<ResultLocusResponse> createResultLocus(long sampleId) {
-        // 1. Lấy sample
-        Sample sample = sampleRepository.findById(sampleId)
+    public List<ResultLocusResponse> createResultLocus(long sampleId1,
+                                                       long sampleId2,
+                                                       long appointmentId,
+                                                       ResultLocusRequest resultLocusRequest) {
+// Step 1: Load samples and appointment
+        Sample sample1 = sampleRepository.findById(sampleId1)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
+        Sample sample2 = sampleRepository.findById(sampleId2)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
 
-        // 2. Gộp allele theo locus
-        Map<String, ResultLocusRequest> locusMap = new HashMap<>();
+// Step 2: Map allele1 from sample1 (position 1)
+        Map<String, Double> allele1Map = new HashMap<>();
+        Map<String, Long> locusIdMap = new HashMap<>();
 
-        for (ResultAllele ra : sample.getResultAlleles()) {
-            if (ra.getAlleleStatus() == AlleleStatus.DONE) continue;
-
-            String locusKey = ra.getLocus().getLocusName(); // Lấy từ entity Locus
-            locusMap.putIfAbsent(locusKey, new ResultLocusRequest());
-            ResultLocusRequest req = locusMap.get(locusKey);
-            req.setLocusName(locusKey);
-
-            if ("1".equals(ra.getAllelePosition())) {
-                req.setAllele1(ra.getAlleleValue());
-            } else if ("2".equals(ra.getAllelePosition())) {
-                req.setAllele2(ra.getAlleleValue());
+        for (ResultAllele ra : sample1.getResultAlleles()) {
+            if ("1".equals(ra.getAllelePosition().trim())) {
+                String locusName = ra.getLocus().getLocusName();
+                allele1Map.put(locusName, ra.getAlleleValue());
+                locusIdMap.put(locusName, ra.getLocus().getLocusId());
+                System.out.printf("[S1] Locus: %s, Position: 1, Value: %.2f\n", locusName, ra.getAlleleValue());
             }
-
-            // Đánh dấu là đã dùng (tạm thời, sẽ set DONE sau khi gán vào ResultLocus)
         }
 
-        // 3. Danh sách request đã có đủ allele
-        List<ResultLocusRequest> finalRequests = new ArrayList<>(locusMap.values());
+// Step 3: Map allele2 from sample2 (position 2)
+        Map<String, Double> allele2Map = new HashMap<>();
 
-        // 4. Mapping sang entity
-        List<ResultLocus> resultLocusList = resultLocusMapper.toResultLocus(finalRequests);
+        for (ResultAllele ra : sample2.getResultAlleles()) {
+            if ("2".equals(ra.getAllelePosition().trim())) {
+                String locusName = ra.getLocus().getLocusName();
+                allele2Map.put(locusName, ra.getAlleleValue());
+                System.out.printf("[S2] Locus: %s, Position: 2, Value: %.2f\n", locusName, ra.getAlleleValue());
+            }
+        }
+
+// Step 4: Merge by common locus
+        List<ResultLocusRequest> resultRequests = new ArrayList<>();
+
+        for (String locusName : allele1Map.keySet()) {
+            if (allele2Map.containsKey(locusName)) {
+                ResultLocusRequest req = new ResultLocusRequest();
+                req.setLocusName(locusName);
+                req.setAllele1(allele1Map.get(locusName));
+                req.setAllele2(allele2Map.get(locusName));
+                req.setLocusId(locusIdMap.get(locusName));
+
+                // Frequency and PI
+                double freq1 = lookupFrequency(req.getAllele1());
+                double freq2 = lookupFrequency(req.getAllele2());
+
+                if (freq1 <= 0 || freq2 <= 0) {
+                    throw new RuntimeException("Không tìm thấy tần suất cho locus: " + locusName);
+                }
+
+                double avgFreq = (freq1 + freq2) / 2.0;
+                req.setFrequency(avgFreq);
+                double pi = req.getAllele1()==(req.getAllele2())
+                        ? 1.0 / freq1
+                        : 1.0 / (freq1 + freq2);
+                req.setPi(pi);
+
+                resultRequests.add(req);
+
+                System.out.printf("[✓] Gộp locus %s với allele1=%.2f và allele2=%.2f\n",
+                        locusName, req.getAllele1(), req.getAllele2());
+            }
+        }
+
+// Step 5: Mapping and save
+        List<ResultLocus> resultLocusList = resultLocusMapper.toResultLocus(resultRequests);
         List<ResultLocusResponse> responses = new ArrayList<>();
 
         for (ResultLocus rl : resultLocusList) {
-            rl.setSample(sample);
-            rl.setSampleCode(sample.getSampleCode());
-
-            // Kiểm tra dữ liệu đầy đủ
-            if (rl.getAllele1() == null || rl.getAllele2() == null) {
-                throw new RuntimeException("Thiếu allele cho locus: " + rl.getLocusName());
-            }
-
-            // 5. Tính frequency và pi
-            double freq1 = lookupFrequency(rl.getAllele1());
-            double freq2 = lookupFrequency(rl.getAllele2());
-
-            if (freq1 <= 0 || freq2 <= 0) {
-                throw new RuntimeException("Không tìm thấy tần suất cho allele của locus: " + rl.getLocusName());
-            }
-
-            double avgFreq = (freq1 + freq2) / 2.0;
-            rl.setFrequency(avgFreq);
-
-            double pi = rl.getAllele1().equals(rl.getAllele2())
-                    ? 1.0 / freq1
-                    : 1.0 / (freq1 + freq2);
-            rl.setPi(pi);
-
-            // 6. Gán resultLocus cho các ResultAllele tương ứng
-            for (ResultAllele allele : sample.getResultAlleles()) {
-                if (allele.getAlleleStatus() == AlleleStatus.DONE) continue;
-                if (rl.getLocusName().equalsIgnoreCase(allele.getResultLocus().getLocusName())) {
-                    allele.setResultLocus(rl);
-                    allele.setAlleleStatus(AlleleStatus.DONE); // đánh dấu là đã xử lý
-                }
-            }
-
-            // 7. Lưu và map sang response
+            rl.setAppointment(appointment);
             resultLocusRepository.save(rl);
             responses.add(resultLocusMapper.toResultLocusResponse(rl));
         }
 
+        System.out.println("✅ Tổng số ResultLocus created: " + responses.size());
         return responses;
-    }
 
+    }
 
 
     private double lookupFrequency(double allele) {
