@@ -54,6 +54,7 @@ import CheckAppointment from './components/mainContents/actorList/staff/CheckApp
 import { CollectorSlots } from './components/mainContents/actorList/staff/CollectorSlot';
 import GetCollector from './components/mainContents/actorList/GetCollector';
 import SignUpCollector from './components/mainContents/actorList/staff/SignUpColector';
+import GetSampleInfo from './components/mainContents/actorList/staff/GetSampleInfo';
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
@@ -71,6 +72,7 @@ function App() {
     '/s-page/s-slot',
     '/s-page/checkBooking',
     '/s-page/checkAppointment/:slotId',
+    '/s-page/get-appointment/:appointmentId',
     '/s-page/selectorSlot',
     '/s-page',
   ].some((path) => matchPath(path, location.pathname));
@@ -286,6 +288,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['STAFF']}>
                     <CheckAppointment />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/s-page/get-appointment/:appointmentId"
+                element={
+                  <ProtectedRoute allowedRoles={['STAFF']}>
+                    <GetSampleInfo />
                   </ProtectedRoute>
                 }
               />

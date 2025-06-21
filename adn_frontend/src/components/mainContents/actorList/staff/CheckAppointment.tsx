@@ -10,10 +10,12 @@ import {
   Paper,
   TextField,
   Button,
+  Box,
 } from '@mui/material';
 import { toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { Check } from '@mui/icons-material';
+import { FaYelp } from 'react-icons/fa';
 
 const CheckAppointment = () => {
   const { slotId } = useParams();
@@ -76,7 +78,7 @@ const CheckAppointment = () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
           body: JSON.stringify({
-            sample: sampleType,
+            sampleType: sample,
           }),
         }
       );
@@ -150,7 +152,7 @@ const CheckAppointment = () => {
                     </TableCell>
                     <TableCell>
                       {isPaid ? (
-                        <>
+                        <Box display="flex" alignItems="center" gap={1}>
                           <TextField
                             size="small"
                             placeholder="Nhập vật mẫu"
@@ -161,6 +163,7 @@ const CheckAppointment = () => {
                                 [key]: e.target.value,
                               }))
                             }
+                            style={{ minWidth: 150 }}
                           />
                           <Button
                             variant="contained"
@@ -174,10 +177,31 @@ const CheckAppointment = () => {
                                 key
                               )
                             }
+                            style={{
+                              minWidth: 36,
+                              height: 36,
+                              padding: 0,
+                              minHeight: 36,
+                            }}
                           >
-                            <Check />
+                            <Check fontSize="small" />
                           </Button>
-                        </>
+                          <Button
+                            component={NavLink}
+                            to={`/s-page/get-appointment/${appointmentId}`}
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            style={{
+                              minWidth: 36,
+                              height: 36,
+                              padding: 0,
+                              minHeight: 36,
+                            }}
+                          >
+                            <FaYelp fontSize="small" />
+                          </Button>
+                        </Box>
                       ) : (
                         <Typography color="textSecondary">
                           Chưa thanh toán
