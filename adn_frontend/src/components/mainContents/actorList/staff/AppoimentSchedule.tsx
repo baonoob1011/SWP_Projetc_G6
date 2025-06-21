@@ -107,15 +107,7 @@ const AppointmentSchedule = () => {
                 <tr key={index} className="align-middle text-center">
                   <td>{item.appointmentDate}</td>
                   <td>
-                    <span
-                      className={`badge ${
-                        item.appointmentStatus === 'PENDING'
-                          ? 'bg-warning text-dark'
-                          : item.appointmentStatus === 'CONFIRMED'
-                          ? 'bg-success'
-                          : 'bg-secondary'
-                      }`}
-                    >
+                    <span className={'bg-warning text-dark'}>
                       {item.appointmentStatus}
                     </span>
                   </td>

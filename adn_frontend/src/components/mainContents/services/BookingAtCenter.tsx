@@ -26,7 +26,14 @@ import {
   type SlotInfo,
 } from '../type/FillFormType';
 import CustomSnackBar from '../userinfor/Snackbar';
-import { Business, Person, Payment, Schedule, LocationOn, AttachMoney } from '@mui/icons-material';
+import {
+  Business,
+  Person,
+  Payment,
+  Schedule,
+  LocationOn,
+  AttachMoney,
+} from '@mui/icons-material';
 
 const BookingAtCenter = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
@@ -320,7 +327,7 @@ const BookingAtCenter = () => {
           justifyContent: 'center',
           alignItems: 'center',
           minHeight: '50vh',
-          backgroundColor: '#f8faff'
+          backgroundColor: '#f8faff',
         }}
       >
         <Paper
@@ -329,7 +336,7 @@ const BookingAtCenter = () => {
             p: 4,
             textAlign: 'center',
             backgroundColor: '#fff',
-            borderRadius: 3
+            borderRadius: 3,
           }}
         >
           <Typography variant="h6" color="primary">
@@ -341,12 +348,14 @@ const BookingAtCenter = () => {
   }
 
   return (
-    <Box sx={{
-      backgroundColor: '#f8faff',
-      minHeight: '100vh',
-      pt: 12,
-      pb: 4
-    }}>
+    <Box
+      sx={{
+        backgroundColor: '#f8faff',
+        minHeight: '100vh',
+        pt: 12,
+        pb: 4,
+      }}
+    >
       <Container maxWidth="lg">
         {/* Header */}
         <Paper
@@ -356,16 +365,19 @@ const BookingAtCenter = () => {
             mb: 4,
             backgroundColor: '#fff',
             borderRadius: 3,
-            borderLeft: '4px solid #2196f3'
+            borderLeft: '4px solid #2196f3',
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Business sx={{ color: '#2196f3', fontSize: 32 }} />
-            <Typography variant="h4" sx={{
-              color: '#1976d2',
-              fontWeight: 600,
-              fontSize: { xs: '1.5rem', md: '2rem' }
-            }}>
+            <Typography
+              variant="h4"
+              sx={{
+                color: '#1976d2',
+                fontWeight: 600,
+                fontSize: { xs: '1.5rem', md: '2rem' },
+              }}
+            >
               Đặt Lịch Dịch Vụ Tại Trung Tâm
             </Typography>
           </Box>
@@ -381,17 +393,20 @@ const BookingAtCenter = () => {
             p: 4,
             mb: 4,
             backgroundColor: '#fff',
-            borderRadius: 3
+            borderRadius: 3,
           }}
         >
-          <Typography variant="h6" sx={{
-            mb: 3,
-            color: '#1976d2',
-            fontWeight: 600,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1
-          }}>
+          <Typography
+            variant="h6"
+            sx={{
+              mb: 3,
+              color: '#1976d2',
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
             <LocationOn /> Thông Tin Dịch Vụ
           </Typography>
 
@@ -416,7 +431,10 @@ const BookingAtCenter = () => {
                   <em>-- Chọn địa điểm --</em>
                 </MenuItem>
                 {locations.map((location) => (
-                  <MenuItem key={location.locationId} value={location.locationId}>
+                  <MenuItem
+                    key={location.locationId}
+                    value={location.locationId}
+                  >
                     {`${location.addressLine}, ${location.district}, ${location.city}`}
                   </MenuItem>
                 ))}
@@ -448,7 +466,9 @@ const BookingAtCenter = () => {
                 >
                   <MenuItem value="">
                     <em>
-                      {isLoadingSlots ? '-- Đang tải slot --' : '-- Chọn slot --'}
+                      {isLoadingSlots
+                        ? '-- Đang tải slot --'
+                        : '-- Chọn slot --'}
                     </em>
                   </MenuItem>
                   {slots.map((slot) => (
@@ -525,7 +545,7 @@ const BookingAtCenter = () => {
                   textAlign: 'center',
                   backgroundColor: '#fff3cd',
                   border: '1px solid #ffeaa7',
-                  borderRadius: 2
+                  borderRadius: 2,
                 }}
               >
                 <Typography color="#856404">
@@ -537,14 +557,17 @@ const BookingAtCenter = () => {
         </Paper>
 
         {/* Patient Information Section */}
-        <Typography variant="h6" sx={{
-          mb: 3,
-          color: '#1976d2',
-          fontWeight: 600,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1
-        }}>
+        <Typography
+          variant="h6"
+          sx={{
+            mb: 3,
+            color: '#1976d2',
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+          }}
+        >
           <Person /> Thông Tin Bệnh Nhân
         </Typography>
 
@@ -558,18 +581,21 @@ const BookingAtCenter = () => {
               borderRadius: 3,
               '&:hover': {
                 boxShadow: '0 8px 25px rgba(33, 150, 243, 0.15)',
-              }
+              },
             }}
           >
             <CardContent sx={{ p: 3 }}>
-              <Typography variant="h6" sx={{
-                color: '#1976d2',
-                fontWeight: 600,
-                mb: 3,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1
-              }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: '#1976d2',
+                  fontWeight: 600,
+                  mb: 3,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                }}
+              >
                 <Person sx={{ fontSize: 24 }} />
                 Người Thứ Nhất
               </Typography>
@@ -585,7 +611,9 @@ const BookingAtCenter = () => {
                     value={patientOne[name]}
                     onChange={handleInputPatientOne}
                     variant="outlined"
-                    InputLabelProps={type === 'date' ? { shrink: true } : undefined}
+                    InputLabelProps={
+                      type === 'date' ? { shrink: true } : undefined
+                    }
                     sx={{
                       minWidth: '250px',
                       flex: '1 1 300px',
@@ -609,7 +637,10 @@ const BookingAtCenter = () => {
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   {['Nam', 'Nữ'].map((gender) => (
-                    <Box key={`one-gender-${gender}`} sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box
+                      key={`one-gender-${gender}`}
+                      sx={{ display: 'flex', alignItems: 'center' }}
+                    >
                       <input
                         type="radio"
                         name="gender"
@@ -620,7 +651,7 @@ const BookingAtCenter = () => {
                         style={{
                           accentColor: '#1976d2',
                           marginRight: '8px',
-                          transform: 'scale(1.2)'
+                          transform: 'scale(1.2)',
                         }}
                       />
                       <Typography
@@ -646,18 +677,21 @@ const BookingAtCenter = () => {
               borderRadius: 3,
               '&:hover': {
                 boxShadow: '0 8px 25px rgba(33, 150, 243, 0.15)',
-              }
+              },
             }}
           >
             <CardContent sx={{ p: 3 }}>
-              <Typography variant="h6" sx={{
-                color: '#1976d2',
-                fontWeight: 600,
-                mb: 3,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1
-              }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: '#1976d2',
+                  fontWeight: 600,
+                  mb: 3,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                }}
+              >
                 <Person sx={{ fontSize: 24 }} />
                 Người Thứ Hai
               </Typography>
@@ -673,7 +707,9 @@ const BookingAtCenter = () => {
                     value={patientTwo[name]}
                     onChange={handleInputPatientTwo}
                     variant="outlined"
-                    InputLabelProps={type === 'date' ? { shrink: true } : undefined}
+                    InputLabelProps={
+                      type === 'date' ? { shrink: true } : undefined
+                    }
                     sx={{
                       minWidth: '250px',
                       flex: '1 1 300px',
@@ -697,7 +733,10 @@ const BookingAtCenter = () => {
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   {['Nam', 'Nữ'].map((gender) => (
-                    <Box key={`two-gender-${gender}`} sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box
+                      key={`two-gender-${gender}`}
+                      sx={{ display: 'flex', alignItems: 'center' }}
+                    >
                       <input
                         type="radio"
                         name="gender2"
@@ -713,7 +752,7 @@ const BookingAtCenter = () => {
                         style={{
                           accentColor: '#1976d2',
                           marginRight: '8px',
-                          transform: 'scale(1.2)'
+                          transform: 'scale(1.2)',
                         }}
                       />
                       <Typography
@@ -739,11 +778,18 @@ const BookingAtCenter = () => {
             mt: 4,
             backgroundColor: '#fff',
             borderRadius: 3,
-            textAlign: 'center'
+            textAlign: 'center',
           }}
         >
           <Divider sx={{ mb: 3 }} />
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+            }}
+          >
             <Button
               variant="contained"
               size="large"

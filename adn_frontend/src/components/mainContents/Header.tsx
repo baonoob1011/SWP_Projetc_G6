@@ -23,7 +23,7 @@ import {
   AccountCircle,
 } from '@mui/icons-material';
 
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import logo from '../../image/Logo.png';
 
@@ -36,7 +36,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
-  const navigate = useNavigate();
   const role = localStorage.getItem('role');
 
   const navItems = [
@@ -82,7 +81,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
       localStorage.removeItem('fullName');
       localStorage.removeItem('role');
       setFullName('');
-      navigate('/login');
       window.location.href = '/login';
     } catch (error) {
       console.error('Logout API error:', error);
@@ -137,9 +135,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                   width: 'auto',
                 }}
               />
-              <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-               
-              </Box>
+              <Box sx={{ display: { xs: 'none', sm: 'block' } }}></Box>
             </NavLink>
           </Box>
 
@@ -255,7 +251,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               justifyContent: 'flex-end',
             }}
           >
-
             {/* User Menu or Auth Buttons */}
             {fullName ? (
               role === 'MANAGER' ? (

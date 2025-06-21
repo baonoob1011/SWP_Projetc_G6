@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import swp.project.adn_backend.enums.AppointmentStatus;
+import swp.project.adn_backend.enums.AppointmentType;
 
 import java.sql.Time;
 import java.time.LocalDate;
@@ -28,8 +29,12 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     @Column(name = "appointment_status")
     AppointmentStatus appointmentStatus;
+
     @Column(columnDefinition = "nvarchar(255)")
     String note;
+
+    @Enumerated(EnumType.STRING)
+    AppointmentType appointmentType;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -44,6 +49,18 @@ public class Appointment {
     })
     @JoinColumn(name = "staff_id")
     Staff staff;
+
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.EAGER, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    List<Invoice> invoices;
+
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.EAGER, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    List<Patient> patients;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -71,9 +88,46 @@ public class Appointment {
     @JoinColumn(name = "location_id")
     Location location;
 
+    @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)
+    private KitDeliveryStatus kitDeliveryStatus;
+
+
     @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Payment> payments;
+
     public Appointment() {
+    }
+
+    public KitDeliveryStatus getKitDeliveryStatus() {
+        return kitDeliveryStatus;
+    }
+
+    public void setKitDeliveryStatus(KitDeliveryStatus kitDeliveryStatus) {
+        this.kitDeliveryStatus = kitDeliveryStatus;
+    }
+
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<Patient> patients) {
+        this.patients = patients;
+    }
+
+    public AppointmentType getAppointmentType() {
+        return appointmentType;
+    }
+
+    public void setAppointmentType(AppointmentType appointmentType) {
+        this.appointmentType = appointmentType;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
     }
 
     public List<Payment> getPayments() {

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
+import swp.project.adn_backend.enums.UserStatus;
 
 
 import java.time.LocalDate;
@@ -83,7 +84,7 @@ public class Users {
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Appointment> appointments;
 
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+    //    @ManyToMany(fetch = FetchType.LAZY, cascade = {
 //            CascadeType.PERSIST, CascadeType.MERGE,
 //            CascadeType.DETACH, CascadeType.REFRESH
 //    })
@@ -93,6 +94,10 @@ public class Users {
 //    })
 //    @JoinColumn(name = "service_id")
 //    ServiceTest services;
+    @OneToMany(mappedBy = "users", fetch = FetchType.EAGER, cascade = {
+            CascadeType.ALL
+    })
+    List<KitDeliveryStatus> kitDeliveryStatuses;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Feedback> feedbacks;
@@ -103,19 +108,13 @@ public class Users {
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Payment> payments;
 
-//    @OneToOne(mappedBy = "users", cascade = {
-//            CascadeType.PERSIST, CascadeType.MERGE,
-//            CascadeType.DETACH, CascadeType.REFRESH
-//    })
-//    Slot slots;
+    public List<KitDeliveryStatus> getKitDeliveryStatuses() {
+        return kitDeliveryStatuses;
+    }
 
-//    public Slot getSlots() {
-//        return slots;
-//    }
-//
-//    public void setSlots(Slot slots) {
-//        this.slots = slots;
-//    }
+    public void setKitDeliveryStatuses(List<KitDeliveryStatus> kitDeliveryStatuses) {
+        this.kitDeliveryStatuses = kitDeliveryStatuses;
+    }
 
     public Set<String> getRoles() {
         return roles;
@@ -131,6 +130,15 @@ public class Users {
 
     public void setBlogs(List<Blog> blogs) {
         this.blogs = blogs;
+    }
+
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
     }
 
     public long getUserId() {

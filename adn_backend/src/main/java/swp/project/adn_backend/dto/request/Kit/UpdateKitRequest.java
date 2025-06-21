@@ -1,5 +1,7 @@
 package swp.project.adn_backend.dto.request.Kit;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import swp.project.adn_backend.enums.DeliveryStatus;
@@ -12,6 +14,7 @@ public class UpdateKitRequest {
     String targetPersonCount;
     Double  price;
     String contents;
+    @Enumerated(EnumType.STRING)
     DeliveryStatus kitStatus;
     LocalDate deliveryDate;
     LocalDate returnDate;

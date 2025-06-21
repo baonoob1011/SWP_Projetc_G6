@@ -77,7 +77,7 @@ const GetAppointment = () => {
   // const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:8080/api/appointment/get-appointment', {
+    fetch('http://localhost:8080/api/appointment/get-appointment-at-home', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -136,7 +136,7 @@ const GetAppointment = () => {
     }
   };
 
-  const handlePayment = async (paymentId: string, serviceId: string) => {
+  const handlePayment = async (paymentId: number, serviceId: number) => {
     try {
       const res = await fetch(
         `http://localhost:8080/api/payment/create?paymentId=${paymentId}&serviceId=${serviceId}`,
@@ -148,16 +148,21 @@ const GetAppointment = () => {
           },
         }
       );
+
       const redirectUrl = await res.text();
+
       if (res.ok) {
         window.location.href = redirectUrl;
       } else {
-        toast.error('bị lỗi');
+        console.error('❌ Error response:', redirectUrl);
+        toast.error('Thanh toán thất bại!');
       }
     } catch (error) {
-      console.log(error);
+      console.log('❌ Lỗi hệ thống:', error);
+      toast.error('Lỗi hệ thống');
     }
   };
+
   const paymentId = paymentResponse[0]?.paymentId || '';
   const serviceId = serviceResponse[0]?.serviceId.toString() || '';
 
@@ -214,12 +219,6 @@ const GetAppointment = () => {
                     Thông tin cuộc hẹn
                   </h5>
                   <div>
-                    <p>
-                      <strong>ID:</strong> {showResponse.appointmentId}
-                    </p>
-                    <p>
-                      <strong>Ngày hẹn:</strong> {showResponse.appointmentDate}
-                    </p>
                     <p>
                       <strong>Trạng thái:</strong>{' '}
                       {showResponse.appointmentStatus}
@@ -351,7 +350,7 @@ const GetAppointment = () => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              handlePayment(paymentId, serviceId);
+              handlePayment(Number(paymentId), Number(serviceId));
             }}
             className="mt-4 text-center"
           >

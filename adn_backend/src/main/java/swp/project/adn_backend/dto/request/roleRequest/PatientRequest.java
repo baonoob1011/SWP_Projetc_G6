@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import swp.project.adn_backend.annotation.RequireBirthCertificateIfUnder14;
 import swp.project.adn_backend.annotation.RequireIdCardIf16OrOlder;
+import swp.project.adn_backend.enums.PatientStatus;
+import swp.project.adn_backend.enums.PaymentStatus;
 
 
 import java.time.LocalDate;
@@ -31,6 +33,7 @@ public class PatientRequest {
     @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
 
+    private PatientStatus patientStatus;
 
     private String identityNumber;
 
@@ -42,6 +45,13 @@ public class PatientRequest {
 
     private String birthCertificate;
 
+    public PatientStatus getPatientStatus() {
+        return patientStatus;
+    }
+
+    public void setPatientStatus(PatientStatus patientStatus) {
+        this.patientStatus = patientStatus;
+    }
 
     public @NotBlank(message = "Full name is required") String getFullName() {
         return fullName;

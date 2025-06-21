@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO;
-import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
-import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.*;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.service.registerServiceTestService.AppointmentService;
@@ -37,14 +35,31 @@ public class StaffController {
         return ResponseEntity.ok(staffService.findUserByPhone(phone));
     }
 
-    @GetMapping("/get-staff-slot")
-    public ResponseEntity<List<SlotInfoDTO>> getSlotById(Authentication authentication) {
-        return ResponseEntity.ok(slotService.getSlotByStaffId(authentication));
+    @GetMapping("/get-all-staff")
+    public ResponseEntity<List<StaffBasicInfo>> getAllStaff() {
+        return ResponseEntity.ok(staffService.getAllStaffBasicInfo());
+    }
+
+    @GetMapping("/get-all-staff-collector")
+    public ResponseEntity<List<StaffBasicInfo>> getAllStaffCollector() {
+        return ResponseEntity.ok(staffService.getAllStaffCollectorBasicInfo());
+    }
+
+//    @GetMapping("/get-staff-slot")
+//    public ResponseEntity<List<SlotInfoDTO>> getSlotById(Authentication authentication) {
+//        return ResponseEntity.ok(slotService.getSlotByStaffId(authentication));
+//    }
+
+
+    //thanh
+    @GetMapping("/get-appointment-by-staff")
+    public ResponseEntity<List<AppointmentInfoDTO>> getAppointmentByStaffId(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAppointmentByStaffId(authentication));
     }
 
     @GetMapping("/get-appointment-slot")
-    public ResponseEntity<List<AppointmentInfoDTO>> getAppointmentByStaffId(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getAppointmentByStaffId(authentication));
+    public ResponseEntity<List<AppointmentAtHomeInfoDTO>> getAppointmentAtHome() {
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHome());
     }
 
 

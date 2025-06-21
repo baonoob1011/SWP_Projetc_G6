@@ -45,6 +45,7 @@ public class SecurityConfig {
             "/api/services/get-all-administrative-service",
             "/api/services/get-all-civil-service",
             "/api/price/get-all-price/**",
+            "/api/jasperpdf/**",
     };
 
     private final String[] USER_ENDPOINTS = {
@@ -63,6 +64,8 @@ public class SecurityConfig {
             "/api/v1/**",
             "/api/appointment/book-appointment-at-home/**",
             "/api/appointment/cancel-appointment/**",
+            "/api/kit-delivery-status/get-kit-status-user/**",
+
     };
 
     private final String[] STAFF_ENDPOINTS = {
@@ -73,6 +76,13 @@ public class SecurityConfig {
             "/api/appointment/confirm-appointment-at-home/**",
             "/api/appointment/get-appointment-by-slot/**",
             "/api/sample/collect-sample-patient/**",
+            "/api/sample/get-all-sample/**",
+            "/api/slot/get-all-slot-of-staff/**",
+            "/api/result-locus/create-result-locus/**",
+            "/api/result-detail/create-result-detail/**",
+            "/api/kit-delivery-status/update-kit-status/**",
+            "/api/result-allele/create-result-allele",
+            "/api/locus/create-locus",
             "/api/staff/**"
     };
 
@@ -86,7 +96,8 @@ public class SecurityConfig {
             "/api/room/**",
             "/api/payment/**",
             "/api/appointment/**",
-            "/api/kit/**"
+            "/api/kit/**",
+            "/api/staff/get-all-staff"
     };
 
     private final String[] ADMIN_ENDPOINTS = {
@@ -119,7 +130,8 @@ public class SecurityConfig {
                         .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
                         .requestMatchers(ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
 
-                        // Các request khác yêu cầu xác thực
+
+                                // Các request khác yêu cầu xác thực
                         .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/api/logout")

@@ -2,6 +2,7 @@ package swp.project.adn_backend.dto.response.appointment.AppointmentResponse;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import swp.project.adn_backend.enums.UserStatus;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserAppointmentResponse {
@@ -11,13 +12,17 @@ public class UserAppointmentResponse {
     String phone;
     String email;
 
-    public UserAppointmentResponse(long userId, String address, String fullName, String phone, String email) {
+
+    public UserAppointmentResponse(long userId, String address, String fullName, String phone, String email, UserStatus userStatus) {
         this.userId = userId;
         this.address = address;
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
+
     }
+
+
 
     public long getUserId() {
         return userId;

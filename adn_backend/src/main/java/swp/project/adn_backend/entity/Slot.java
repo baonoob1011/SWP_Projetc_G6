@@ -39,12 +39,16 @@ public class Slot {
 //    @JoinColumn(name = "user_id")
 //    Users users;
 
-    @ManyToOne(cascade = {
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    @JoinColumn(name = "staff_id")
-    Staff staff;
+    @JoinTable(
+            name = "staff_slot",
+            joinColumns = @JoinColumn(name = "slot_id"),
+            inverseJoinColumns = @JoinColumn(name = "staff_id")
+    )
+    List<Staff> staff;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -59,6 +63,7 @@ public class Slot {
             CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Appointment> appointment;
+
 
     public List<Appointment> getAppointment() {
         return appointment;
@@ -86,11 +91,12 @@ public class Slot {
 //        this.users = users;
 //    }
 
-    public Staff getStaff() {
+
+    public List<Staff> getStaff() {
         return staff;
     }
 
-    public void setStaff(Staff staff) {
+    public void setStaff(List<Staff> staff) {
         this.staff = staff;
     }
 

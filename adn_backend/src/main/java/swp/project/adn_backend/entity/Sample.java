@@ -21,6 +21,7 @@ public class Sample {
     @Column(name = "sample_id")
     long sampleId;
 
+    String sampleCode;
     @Column(name = "sample_type", columnDefinition = "nvarchar(255)")
     String sampleType;
 
@@ -65,7 +66,22 @@ public class Sample {
             CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Result> results;
+    @OneToMany(mappedBy = "sample", fetch = FetchType.EAGER, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    List<ResultAllele>resultAlleles;
 
+    @OneToMany(mappedBy = "sample", fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    List<ResultLocus> resultLocus;
+    @OneToOne(mappedBy = "sample", cascade = CascadeType.ALL)
+    private ResultDetail resultDetail;
+
+    public Sample() {
+    }
 
     public Sample(long sampleId, String sampleType, LocalDate collectionDate, SampleStatus sampleStatus, Appointment appointment, Patient patient, Kit kit, Staff staff, List<Result> results) {
         this.sampleId = sampleId;
@@ -77,6 +93,38 @@ public class Sample {
         this.kit = kit;
         this.staff = staff;
         this.results = results;
+    }
+
+    public List<ResultAllele> getResultAlleles() {
+        return resultAlleles;
+    }
+
+    public void setResultAlleles(List<ResultAllele> resultAlleles) {
+        this.resultAlleles = resultAlleles;
+    }
+
+    public ResultDetail getResultDetail() {
+        return resultDetail;
+    }
+
+    public void setResultDetail(ResultDetail resultDetail) {
+        this.resultDetail = resultDetail;
+    }
+
+    public String getSampleCode() {
+        return sampleCode;
+    }
+
+    public void setSampleCode(String sampleCode) {
+        this.sampleCode = sampleCode;
+    }
+
+    public List<ResultLocus> getResultLocus() {
+        return resultLocus;
+    }
+
+    public void setResultLocus(List<ResultLocus> resultLocus) {
+        this.resultLocus = resultLocus;
     }
 
     public long getSampleId() {

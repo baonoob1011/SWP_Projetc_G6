@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.InfoDTO.InvoiceDTO;
 import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
 import swp.project.adn_backend.entity.Invoice;
+import swp.project.adn_backend.entity.Payment;
 import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.enums.PaymentStatus;
+import swp.project.adn_backend.enums.TransactionStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.repository.InvoiceRepository;
 import swp.project.adn_backend.service.payment.CreatePaymentService;
@@ -18,6 +21,8 @@ import swp.project.adn_backend.dto.InfoDTO.PaymentInfoDTO;
 import swp.project.adn_backend.service.payment.PaymentService;
 import swp.project.adn_backend.service.payment.VNPayService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +36,7 @@ public class PaymentController {
     private PaymentService getPaymentService;
     private CreatePaymentService createPaymentService;
     private InvoiceService invoiceService;
+    private InvoiceRepository invoiceRepository;
 
     @Autowired
     public PaymentController(PaymentService paymentService, VNPayService vnPayService, PaymentService getPaymentService, CreatePaymentService createPaymentService, InvoiceService invoiceService) {
@@ -46,41 +52,25 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.getAllPayment(authentication));
     }
 
-        @PostMapping("/create")
+    @PostMapping("/create")
     public ResponseEntity<String> createPayment(
             @RequestParam long paymentId,
             @RequestParam long serviceId) {
 
         CreatePaymentRequest req = createPaymentService.createPayment(paymentId, serviceId);
 
+        // ép kiểu đúng: double -> long -> int
+        int amount = Math.toIntExact((long) req.getAmount());
+
         String paymentUrl = vnPayService.createOrder(
-                (int)req.getAmount(), // truyền đúng đơn vị nhỏ nhất
+                amount,
                 req.getOrderInfo(),
+                req.getTxnRef(),
                 req.getReturnUrlBase()
         );
 
-        System.out.println("🔥 Controller called: paymentId=" + paymentId + ", serviceId=" + serviceId);
-
         return ResponseEntity.ok(paymentUrl);
     }
-//    @PostMapping("/create")
-//    public ResponseEntity<String> createPayment(
-//            @RequestParam("amount") int amountVND, // đơn vị VNĐ
-//            @RequestParam("orderInfo") String orderInfo,
-//            @RequestParam("returnUrlBase") String returnUrlBase
-//    ) {
-//        // ✅ Chuyển sang đơn vị nhỏ nhất (x100)
-//        int amountInSmallestUnit = amountVND * 100;
-//
-//        // ✅ Gọi service tạo URL thanh toán
-//        String paymentUrl = vnPayService.createOrder(
-//                amountInSmallestUnit,
-//                orderInfo,
-//                returnUrlBase
-//        );
-//
-//        return ResponseEntity.ok(paymentUrl);
-//    }
 
 
     @GetMapping("/vnpay-return")
@@ -88,11 +78,10 @@ public class PaymentController {
         String vnpTxnRef = params.get("vnp_TxnRef");
         String responseCode = params.get("vnp_ResponseCode");
         String transactionStatus = params.get("vnp_TransactionStatus");
-
         if (!"00".equals(responseCode) || !"00".equals(transactionStatus)) {
-            return ResponseEntity.badRequest().body(null);
+            createPaymentService.failPayment(vnpTxnRef,responseCode);
         }
-
+        createPaymentService.successPayment(vnpTxnRef,responseCode);
         return invoiceService.getInvoiceByTxnRef(vnpTxnRef)
                 .map(invoice -> ResponseEntity.ok(new InvoiceDTO(invoice)))
                 .orElse(ResponseEntity.status(404).body(null));

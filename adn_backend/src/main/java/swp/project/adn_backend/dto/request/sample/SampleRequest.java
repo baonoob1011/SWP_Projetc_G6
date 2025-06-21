@@ -10,11 +10,19 @@ public class SampleRequest {
     String sampleType;
     LocalDate collectionDate;
     SampleStatus sampleStatus;
-
+    String sampleCode;
     public SampleRequest(String sampleType, LocalDate collectionDate, SampleStatus sampleStatus) {
         this.sampleType = sampleType;
         this.collectionDate = collectionDate;
         this.sampleStatus = sampleStatus;
+    }
+
+    public String getSampleCode() {
+        return sampleCode;
+    }
+
+    public void setSampleCode(String sampleCode) {
+        this.sampleCode = sampleCode;
     }
 
     public String getSampleType() {

@@ -6,19 +6,19 @@ public class StaffSlotResponse {
     public StaffSlotResponse() {
     }
 
+    public Long getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(Long staffId) {
+        this.staffId = staffId;
+    }
+
     public String getFullName() {
         return fullName;
     }
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
-    }
-
-    public long getStaffId() {
-        return this.staffId;
-    }
-
-    public void setStaffId(long staffId) {
-        this.staffId = staffId;
     }
 }

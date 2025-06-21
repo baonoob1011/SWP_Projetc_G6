@@ -13,10 +13,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo;
+import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.UserInfoDTO;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateStaffAndManagerRequest;
+import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.enums.Roles;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.exception.MultiFieldValidationException;
 import swp.project.adn_backend.mapper.UserMapper;
@@ -49,7 +53,23 @@ public class StaffService {
         this.entityManager = entityManager;
     }
 
+    public List<StaffBasicInfo> getAllStaffCollectorBasicInfo() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo(" +
+                "s.staffId, s.fullName, s.phone, s.email) FROM Staff s " +
+                "Where s.role=:role";
+        TypedQuery<StaffBasicInfo> query = entityManager.createQuery(jpql, StaffBasicInfo.class);
+        query.setParameter("role", "SAMPLE_COLLECTOR");
+        return query.getResultList();
+    }
 
+    public List<StaffBasicInfo> getAllStaffBasicInfo() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo(" +
+                "s.staffId, s.fullName, s.phone, s.email) FROM Staff s " +
+                "Where s.role=:role";
+        TypedQuery<StaffBasicInfo> query = entityManager.createQuery(jpql, StaffBasicInfo.class);
+        query.setParameter("role", "STAFF");
+        return query.getResultList();
+    }
     // update staff
 
     @Transactional
@@ -129,7 +149,7 @@ public class StaffService {
     }
 
 
-    private void validateUpdateStaff(UpdateStaffAndManagerRequest updateStaffAndManagerRequest,Users existingStaff) {
+    private void validateUpdateStaff(UpdateStaffAndManagerRequest updateStaffAndManagerRequest, Users existingStaff) {
         Map<String, String> errors = new HashMap<>();
 
         if (!existingStaff.getEmail().equals(updateStaffAndManagerRequest.getEmail()) &&
@@ -175,6 +195,4 @@ public class StaffService {
             throw new MultiFieldValidationException(errors);
         }
     }
-
-
 }

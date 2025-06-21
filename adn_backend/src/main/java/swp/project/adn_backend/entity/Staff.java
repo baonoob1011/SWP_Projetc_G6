@@ -43,9 +43,8 @@ public class Staff {
     LocalDate dateOfBirth;
 
 
-
     @Column(name = "create_at")
-     LocalDate createAt;
+    LocalDate createAt;
     //nhân viên lấy mẫu
     @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -66,8 +65,12 @@ public class Staff {
     @JoinColumn(name = "user_id", nullable = false)
     Users users;
 
-    @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<Slot> slots;
+    @ManyToMany(mappedBy = "staff", fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    private List<Slot> slots;
+
 
     public List<Slot> getSlots() {
         return slots;
@@ -116,7 +119,6 @@ public class Staff {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
 
     public boolean isEnabled() {

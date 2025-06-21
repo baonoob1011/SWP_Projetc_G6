@@ -18,6 +18,7 @@ public interface AppointmentMapper {
     KitAppointmentResponse toKitAppointmentResponse(Kit kit);
     ShowAppointmentResponse toShowAppointmentResponse(Appointment appointment);
     List<PatientAppointmentResponse> toPatientAppointmentService(List<Patient> patient);
+    PatientAppointmentResponse toPatientAppointment(Patient patient);
     List<PatientAppointmentFullInfoResponse> toPatientAppointmentFullInfoResponses(List<Patient> patient);
     ServiceAppointmentResponse toServiceAppointmentResponse(ServiceTest serviceTest);
     SlotAppointmentResponse toSlotAppointmentResponse(Slot slot);

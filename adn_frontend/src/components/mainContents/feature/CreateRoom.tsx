@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import CustomSnackBar from '../userinfor/Snackbar';
+import { Button } from '@mui/material';
+import { NavLink } from 'react-router-dom';
 
 type Room = {
   roomName: string;
@@ -133,7 +135,9 @@ const CreateRoom = () => {
         <button type="submit" className="btn btn-primary w-100">
           Tạo phòng
         </button>
-
+        <Button component={NavLink} to="/schedule">
+          Tạo thời khóa biểu
+        </Button>
         <CustomSnackBar
           open={snackbar.open}
           message={snackbar.message}

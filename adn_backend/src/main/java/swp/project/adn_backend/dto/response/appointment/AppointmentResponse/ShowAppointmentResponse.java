@@ -3,6 +3,7 @@ package swp.project.adn_backend.dto.response.appointment.AppointmentResponse;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import swp.project.adn_backend.enums.AppointmentStatus;
+import swp.project.adn_backend.enums.AppointmentType;
 
 import java.time.LocalDate;
 
@@ -12,12 +13,22 @@ public class ShowAppointmentResponse {
     LocalDate appointmentDate;
     AppointmentStatus appointmentStatus;
     String note;
+    AppointmentType appointmentType;
 
-    public ShowAppointmentResponse(long appointmentId, LocalDate appointmentDate, AppointmentStatus appointmentStatus, String note) {
+    public ShowAppointmentResponse(long appointmentId, LocalDate appointmentDate, AppointmentStatus appointmentStatus, String note, AppointmentType appointmentType) {
         this.appointmentId = appointmentId;
         this.appointmentDate = appointmentDate;
         this.appointmentStatus = appointmentStatus;
         this.note = note;
+        this.appointmentType = appointmentType;
+    }
+
+    public AppointmentType getAppointmentType() {
+        return appointmentType;
+    }
+
+    public void setAppointmentType(AppointmentType appointmentType) {
+        this.appointmentType = appointmentType;
     }
 
     public long getAppointmentId() {

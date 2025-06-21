@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import swp.project.adn_backend.enums.PatientStatus;
+import swp.project.adn_backend.enums.PaymentStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,6 +40,9 @@ public class Patient {
     @Column(columnDefinition = "nvarchar(255)")
     String relationship;
 
+    @Enumerated(EnumType.STRING)
+    PatientStatus patientStatus;
+
     @Column(name = "create_at")
     LocalDate createAt;
 
@@ -65,11 +70,34 @@ public class Patient {
     @JoinColumn(name = "service_id")
     ServiceTest serviceTest;
 
-    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY,cascade = {
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Sample> samples;
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    @JoinColumn(name = "appointment_id")
+    Appointment appointment;
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
+
+    public PatientStatus getPatientStatus() {
+        return patientStatus;
+    }
+
+    public void setPatientStatus(PatientStatus patientStatus) {
+        this.patientStatus = patientStatus;
+    }
+
 
     public ServiceTest getServiceTest() {
         return serviceTest;

@@ -8,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
+import swp.project.adn_backend.dto.request.slot.AllSlotRequest;
 import swp.project.adn_backend.dto.response.slot.GetFullSlotResponse;
 import swp.project.adn_backend.dto.request.slot.SlotRequest;
+import swp.project.adn_backend.dto.response.slot.SlotResponse;
 import swp.project.adn_backend.entity.Slot;
 import swp.project.adn_backend.service.slot.SlotService;
 
@@ -22,16 +24,24 @@ public class SlotController {
     @Autowired
     SlotService slotService;
 
-    @PostMapping("/create-slot/{staffId}")
-    public ResponseEntity<Slot> staffId(@RequestBody @Valid SlotRequest slotRequest,
-                                        @RequestParam long roomId,
-                                        @PathVariable("staffId") long staffId) {
-        return ResponseEntity.ok(slotService.createSlot(slotRequest,roomId , staffId));
+    @PostMapping("/create-slot")
+    public ResponseEntity<List<SlotResponse>> createSlot(@RequestBody @Valid AllSlotRequest request,
+                                                         @RequestParam long roomId
+    ) {
+
+        return ResponseEntity.ok(slotService.createSlot(request.getSlotRequest(),
+                roomId,
+                request.getStaffSlotRequest()));
     }
 
     @GetMapping("/get-all-slot")
     public ResponseEntity<List<GetFullSlotResponse>> getAllSlot() {
         return ResponseEntity.ok(slotService.getAllSlot());
+    }
+
+    @GetMapping("/get-all-slot-of-staff")
+    public ResponseEntity<List<GetFullSlotResponse>> getAllSlotOfStaff(Authentication authentication) {
+        return ResponseEntity.ok(slotService.getAllSlotOfStaff(authentication));
     }
 
     @GetMapping("/get-all-slot-user")
@@ -44,5 +54,26 @@ public class SlotController {
         slotService.deleteSlot(slotId);
         return ResponseEntity.ok("Delete Successful");
     }
+
+    @PutMapping("/update-staff-to-slot")
+    public ResponseEntity<String> updateStaffToSlot(@RequestParam long staffId1,
+                                                    @RequestParam long staffId2,
+                                                    @RequestParam long slotId) {
+        slotService.updateStaffToSlot(staffId1, staffId2, slotId);
+        return ResponseEntity.ok("Update Staff to Slot Successful");
+    }
+
+    @PutMapping("/update-slot")
+    public ResponseEntity<SlotResponse> updateSlot(@RequestBody SlotRequest slotRequest,
+                                                   @RequestParam long slotId) {
+
+        return ResponseEntity.ok(slotService.updateSlot(slotRequest, slotId));
+    }
+
+//    @PutMapping("/update-order-staff")
+//    public ResponseEntity<Slot> updateOrderStaff(@RequestParam long staffId,
+//                                                 @RequestParam long slotId) {
+//        return ResponseEntity.ok(slotService.updateSlotForStaffId(staffId, slotId));
+//    }
 
 }

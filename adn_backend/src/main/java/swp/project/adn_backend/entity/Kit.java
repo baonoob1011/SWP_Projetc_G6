@@ -32,20 +32,25 @@ public class Kit {
     String targetPersonCount;
 
     double price;
-    @Column(name = "delivery_date")
-    LocalDate deliveryDate;
 
-    @Column(name = "return_date")
-    LocalDate returnDate;
-
-    DeliveryStatus kitStatus;
     @Column(columnDefinition = "nvarchar(255)")
     String contents;
+
+    @OneToMany(mappedBy = "kit", cascade = CascadeType.ALL)
+    private List<KitDeliveryStatus> kitDeliveryStatuses;
 
     @OneToMany(mappedBy = "kit", fetch = FetchType.EAGER, cascade = {
             CascadeType.ALL
     })
     List<ServiceTest> serviceTest;
+
+    public List<KitDeliveryStatus> getKitDeliveryStatuses() {
+        return kitDeliveryStatuses;
+    }
+
+    public void setKitDeliveryStatuses(List<KitDeliveryStatus> kitDeliveryStatuses) {
+        this.kitDeliveryStatuses = kitDeliveryStatuses;
+    }
 
     public List<ServiceTest> getServiceTest() {
         return serviceTest;
@@ -103,29 +108,6 @@ public class Kit {
         this.price = price;
     }
 
-    public LocalDate getDeliveryDate() {
-        return deliveryDate;
-    }
-
-    public void setDeliveryDate(LocalDate deliveryDate) {
-        this.deliveryDate = deliveryDate;
-    }
-
-    public LocalDate getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(LocalDate returnDate) {
-        this.returnDate = returnDate;
-    }
-
-    public DeliveryStatus getKitStatus() {
-        return kitStatus;
-    }
-
-    public void setKitStatus(DeliveryStatus kitStatus) {
-        this.kitStatus = kitStatus;
-    }
 
     //
 //    @ManyToOne(cascade = {

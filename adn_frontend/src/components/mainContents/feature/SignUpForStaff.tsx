@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Button,
+  CircularProgress,
   FormControlLabel,
   FormHelperText,
   Paper,
@@ -41,6 +43,7 @@ type ErrorResponse = {
 
 const SignUpStaff = () => {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [staff, setStaff] = useState<Staff>({
     fullName: '',
     idCard: '',
@@ -67,14 +70,12 @@ const SignUpStaff = () => {
     );
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const validateField = async (name: string, value: any) => {
     try {
       await signUpStaffSchema.validateAt(name, { ...staff, [name]: value });
       setError((prev) => ({ ...prev, [name]: '' }));
     } catch (err) {
       if (err instanceof ValidationError) {
-        // Hiển thị thông báo chung cho trường hợp trống
         if (value === '') {
           setSnackbar({
             open: true,
@@ -84,7 +85,6 @@ const SignUpStaff = () => {
           return;
         }
 
-        // Thông báo riêng cho số điện thoại
         if (name === 'phone') {
           setSnackbar({
             open: true,
@@ -103,7 +103,6 @@ const SignUpStaff = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let newValue: any = value;
 
     if (name === 'phone' || name === 'idCard') {
@@ -120,6 +119,7 @@ const SignUpStaff = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     const emptyFields = Object.entries(staff).filter(
       ([key, value]) => !value && key !== 'gender'
@@ -130,6 +130,7 @@ const SignUpStaff = () => {
         message: 'Vui lòng điền đầy đủ thông tin',
         severity: 'error',
       });
+      setLoading(false);
       return;
     }
 
@@ -137,7 +138,6 @@ const SignUpStaff = () => {
       await signUpStaffSchema.validate(staff, { abortEarly: false });
       setError({});
 
-      const { ...dataToSend } = staff;
       const token = localStorage.getItem('token');
 
       if (!token) {
@@ -146,6 +146,7 @@ const SignUpStaff = () => {
           message: 'Bạn cần đăng nhập để thực hiện chức năng này',
           severity: 'error',
         });
+        setLoading(false);
         return;
       }
 
@@ -157,7 +158,7 @@ const SignUpStaff = () => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(dataToSend),
+          body: JSON.stringify(staff),
         }
       );
 
@@ -227,12 +228,12 @@ const SignUpStaff = () => {
           severity: 'error',
         });
       }
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!isAdmin) {
-    return;
-  }
+  if (!isAdmin) return null;
 
   return (
     <div className={styles.container} style={{ marginTop: 60 }}>
@@ -374,9 +375,7 @@ const SignUpStaff = () => {
             onChange={handleInput}
             error={!!error.dateOfBirth}
             helperText={error.dateOfBirth}
-            InputLabelProps={{
-              shrink: true,
-            }}
+            InputLabelProps={{ shrink: true }}
           />
 
           <Button
@@ -385,8 +384,13 @@ const SignUpStaff = () => {
             color="primary"
             fullWidth
             sx={{ mt: 2 }}
+            disabled={loading}
           >
-            Đăng Ký Nhân Viên
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              'Đăng Ký Nhân Viên'
+            )}
           </Button>
         </Box>
       </Paper>

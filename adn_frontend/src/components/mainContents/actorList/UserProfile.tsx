@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-toastify';
-import { User, Edit3, Save, Mail, Phone, MapPin, UserCircle, Shield, Calendar } from 'lucide-react';
+import {
+  User,
+  Edit3,
+  Save,
+  Mail,
+  Phone,
+  MapPin,
+  UserCircle,
+  Shield,
+  Calendar,
+} from 'lucide-react';
 import OldPassWord from '../feature/OldPassword';
-import BookingHistory from '../feature/BookingHistory';
+import Booking from '../services/Booking';
 
 type OldProfile = {
   fullName: string;
@@ -11,8 +21,6 @@ type OldProfile = {
   phone: string;
   address: string;
 };
-
-
 
 const NewProfile = () => {
   const [profile, setProfile] = useState<OldProfile | null>(null);
@@ -25,8 +33,8 @@ const NewProfile = () => {
   const [editableField, setEditableField] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<
-    'profile' | 'changePassword' | 'history'
-  >('profile');
+    'profile' | 'changePassword' | 'appointment'
+  >('appointment');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -79,16 +87,55 @@ const NewProfile = () => {
   };
 
   const tabConfig = [
-    { id: 'profile', label: 'Hồ sơ cá nhân', icon: User, color: 'bg-gradient-to-r from-blue-500 to-indigo-600' },
-    { id: 'changePassword', label: 'Đổi mật khẩu', icon: Shield, color: 'bg-gradient-to-r from-blue-500 to-indigo-600' },
-    { id: 'history', label: 'Lịch sử', icon: Calendar, color: 'bg-gradient-to-r from-blue-500 to-indigo-600' }
+    {
+      id: 'appointment',
+      label: 'Cuộc hẹn',
+      icon: Calendar,
+      color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
+    },
+    {
+      id: 'profile',
+      label: 'Hồ sơ cá nhân',
+      icon: User,
+      color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
+    },
+    {
+      id: 'changePassword',
+      label: 'Đổi mật khẩu',
+      icon: Shield,
+      color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
+    },
   ];
 
   const profileFields = [
-    { field: 'fullName', label: 'Họ và tên', icon: UserCircle, type: 'text', gradient: 'from-blue-400 to-indigo-500' },
-    { field: 'email', label: 'Email', icon: Mail, type: 'email', gradient: 'from-green-400 to-emerald-500' },
-    { field: 'phone', label: 'Số điện thoại', icon: Phone, type: 'tel', gradient: 'from-purple-400 to-pink-500' },
-    { field: 'address', label: 'Địa chỉ', icon: MapPin, type: 'text', gradient: 'from-orange-400 to-red-500' }
+    {
+      field: 'fullName',
+      label: 'Họ và tên',
+      icon: UserCircle,
+      type: 'text',
+      gradient: 'from-blue-400 to-indigo-500',
+    },
+    {
+      field: 'email',
+      label: 'Email',
+      icon: Mail,
+      type: 'email',
+      gradient: 'from-green-400 to-emerald-500',
+    },
+    {
+      field: 'phone',
+      label: 'Số điện thoại',
+      icon: Phone,
+      type: 'tel',
+      gradient: 'from-purple-400 to-pink-500',
+    },
+    {
+      field: 'address',
+      label: 'Địa chỉ',
+      icon: MapPin,
+      type: 'text',
+      gradient: 'from-orange-400 to-red-500',
+    },
   ];
 
   return (
@@ -96,12 +143,12 @@ const NewProfile = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Elegant Header */}
         <div className="text-center mb-12 mt-20">
-         
           <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 bg-clip-text text-transparent">
             Quản lý tài khoản
           </h1>
           <p className="text-lg text-gray-600 mt-3 max-w-2xl mx-auto">
-            Cá nhân hóa trải nghiệm của bạn với các tùy chọn quản lý tài khoản toàn diện
+            Cá nhân hóa trải nghiệm của bạn với các tùy chọn quản lý tài khoản
+            toàn diện
           </p>
         </div>
 
@@ -116,16 +163,19 @@ const NewProfile = () => {
                     <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 ring-4 ring-white/30">
                       <UserCircle className="w-8 h-8 text-white" />
                     </div>
-                    <h3 className="font-bold text-white text-lg mb-1">{profile?.fullName}</h3>
+                    <h3 className="font-bold text-white text-lg mb-1">
+                      {profile?.fullName}
+                    </h3>
                     <p className="text-blue-100 text-sm">{profile?.email}</p>
                   </div>
                 </div>
               )}
-              
+
               <nav className="p-3">
                 {tabConfig.map(({ id, label, icon: Icon, color }) => (
                   <button
                     key={id}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     onClick={() => setActiveTab(id as any)}
                     className={`w-full flex items-center space-x-3 px-4 py-4 text-left rounded-xl transition-all duration-300 mb-2 group ${
                       activeTab === id
@@ -133,10 +183,20 @@ const NewProfile = () => {
                         : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 hover:shadow-md'
                     }`}
                   >
-                    <div className={`p-2 rounded-lg transition-all duration-300 ${
-                      activeTab === id ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-blue-100'
-                    }`}>
-                      <Icon className={`w-5 h-5 ${activeTab === id ? 'text-white' : 'text-gray-600 group-hover:text-blue-600'}`} />
+                    <div
+                      className={`p-2 rounded-lg transition-all duration-300 ${
+                        activeTab === id
+                          ? 'bg-white/20'
+                          : 'bg-gray-100 group-hover:bg-blue-100'
+                      }`}
+                    >
+                      <Icon
+                        className={`w-5 h-5 ${
+                          activeTab === id
+                            ? 'text-white'
+                            : 'text-gray-600 group-hover:text-blue-600'
+                        }`}
+                      />
                     </div>
                     <span className="font-medium">{label}</span>
                   </button>
@@ -161,58 +221,85 @@ const NewProfile = () => {
                 </div>
               </div>
             )}
-
+            {activeTab === 'appointment' && (
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl overflow-hidden">
+                <div className="relative px-8 py-6 bg-gradient-to-r from-blue-500 to-indigo-600">
+                  <div className="absolute inset-0 bg-black/10"></div>
+                  <div className="relative">
+                    <h2 className="text-2xl font-bold text-white">Cuộc hẹn</h2>
+                    <p className="text-purple-100 mt-2">
+                      Theo dõi các giao dịch và hoạt động trước đây
+                    </p>
+                  </div>
+                </div>
+                <div className="p-8">
+                  <Booking />
+                </div>
+              </div>
+            )}
             {/* Enhanced Profile Tab */}
-            {activeTab === 'profile' && profile && (
+            {activeTab === 'profile' && (
               <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl overflow-hidden">
                 <div className="relative px-8 py-6 bg-gradient-to-r from-blue-600 to-indigo-700">
                   <div className="absolute inset-0 bg-black/10"></div>
                   <div className="relative">
-                    <h2 className="text-2xl font-bold text-white">Hồ sơ người dùng</h2>
-                    <p className="text-blue-100 mt-2">Cập nhật và quản lý thông tin cá nhân của bạn</p>
+                    <h2 className="text-2xl font-bold text-white">
+                      Hồ sơ người dùng
+                    </h2>
+                    <p className="text-blue-100 mt-2">
+                      Cập nhật và quản lý thông tin cá nhân của bạn
+                    </p>
                   </div>
                 </div>
 
                 <div className="p-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {profileFields.map(({ field, label, icon: Icon, type, gradient }) => (
-                      <div key={field} className="group">
-                        <div className="flex items-center space-x-3 mb-3">
-                          <div className={`p-2 rounded-lg bg-gradient-to-r ${gradient} shadow-md`}>
-                            <Icon className="w-5 h-5 text-white" />
-                          </div>
-                          <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{label}</span>
-                        </div>
-                        <div className="relative">
-                          <input
-                            type={type}
-                            name={field}
-                            value={(updateProfile as any)[field]}
-                            onChange={handleInput}
-                            readOnly={editableField !== field}
-                            onClick={() => setEditableField(field)}
-                            onBlur={() => setEditableField(null)}
-                            className={`w-full px-4 py-4 border-2 rounded-xl transition-all duration-300 text-gray-800 font-medium ${
-                              editableField === field
-                                ? 'border-blue-400 ring-4 ring-blue-100 bg-blue-50 shadow-lg transform scale-105'
-                                : 'border-gray-200 hover:border-gray-300 bg-white/80 hover:shadow-md focus:border-blue-400 focus:ring-4 focus:ring-blue-100'
-                            } focus:outline-none`}
-                            placeholder={`Nhập ${label.toLowerCase()}`}
-                          />
-                          {editableField === field && (
-                            <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                              <div className="p-1 bg-blue-500 rounded-full animate-pulse">
-                                <Edit3 className="w-4 h-4 text-white" />
-                              </div>
+                    {profileFields.map(
+                      ({ field, label, icon: Icon, type, gradient }) => (
+                        <div key={field} className="group">
+                          <div className="flex items-center space-x-3 mb-3">
+                            <div
+                              className={`p-2 rounded-lg bg-gradient-to-r ${gradient} shadow-md`}
+                            >
+                              <Icon className="w-5 h-5 text-white" />
                             </div>
-                          )}
+                            <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                              {label}
+                            </span>
+                          </div>
+                          <div className="relative">
+                            <input
+                              type={type}
+                              name={field}
+                              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                              value={(updateProfile as any)[field]}
+                              onChange={handleInput}
+                              readOnly={editableField !== field}
+                              onClick={() => setEditableField(field)}
+                              onBlur={() => setEditableField(null)}
+                              className={`w-full px-4 py-4 border-2 rounded-xl transition-all duration-300 text-gray-800 font-medium ${
+                                editableField === field
+                                  ? 'border-blue-400 ring-4 ring-blue-100 bg-blue-50 shadow-lg transform scale-105'
+                                  : 'border-gray-200 hover:border-gray-300 bg-white/80 hover:shadow-md focus:border-blue-400 focus:ring-4 focus:ring-blue-100'
+                              } focus:outline-none`}
+                              placeholder={`Nhập ${label.toLowerCase()}`}
+                            />
+                            {editableField === field && (
+                              <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                                <div className="p-1 bg-blue-500 rounded-full animate-pulse">
+                                  <Edit3 className="w-4 h-4 text-white" />
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    )}
                   </div>
 
                   <div className="mt-12 pt-8 border-t border-gray-200">
                     <button
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       onClick={(e) => handleSave(e as any)}
                       className="group inline-flex items-center space-x-3 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300"
                     >
@@ -230,8 +317,12 @@ const NewProfile = () => {
                 <div className="relative px-8 py-6 bg-gradient-to-r from-blue-500 to-indigo-600">
                   <div className="absolute inset-0 bg-black/10"></div>
                   <div className="relative">
-                    <h2 className="text-2xl font-bold text-white">Bảo mật tài khoản</h2>
-                    <p className="text-green-100 mt-2">Thay đổi mật khẩu để tăng cường bảo mật</p>
+                    <h2 className="text-2xl font-bold text-white">
+                      Bảo mật tài khoản
+                    </h2>
+                    <p className="text-green-100 mt-2">
+                      Thay đổi mật khẩu để tăng cường bảo mật
+                    </p>
                   </div>
                 </div>
                 <div className="p-8">
@@ -248,20 +339,6 @@ const NewProfile = () => {
             )}
 
             {/* Enhanced History Tab */}
-            {activeTab === 'history' && (
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl overflow-hidden">
-                <div className="relative px-8 py-6 bg-gradient-to-r from-blue-500 to-indigo-600">
-                  <div className="absolute inset-0 bg-black/10"></div>
-                  <div className="relative">
-                    <h2 className="text-2xl font-bold text-white">Lịch sử hoạt động</h2>
-                    <p className="text-purple-100 mt-2">Theo dõi các giao dịch và hoạt động trước đây</p>
-                  </div>
-                </div>
-                <div className="p-8">
-                  <BookingHistory />
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
