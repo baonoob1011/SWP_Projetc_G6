@@ -42,6 +42,30 @@ const AppointmentSchedule = () => {
     }
   };
 
+  // const fetchScheduleAthome = async () => {
+  //   const token = localStorage.getItem('token');
+  //   try {
+  //     const res = await fetch(
+  //       'http://localhost:8080/api/appointment/get-appointment-at-home-to-get-sample',
+  //       {
+  //         method: 'GET',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     const data = await res.json();
+  //     if (!res.ok) {
+  //       toast.warning('Không có dữ liệu');
+  //     } else {
+  //       setSchedule(data);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   const handleCheck = async (
     appointmentId: string,
     userId: string,
@@ -76,6 +100,9 @@ const AppointmentSchedule = () => {
   useEffect(() => {
     fetchSchedule();
   }, []);
+  // useEffect(() => {
+  //   fetchScheduleAthome();
+  // }, []);
 
   if (!auth) {
     return;

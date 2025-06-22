@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import OldPassWord from '../feature/OldPassword';
 import Booking from '../services/Booking';
+import GetAllResult from '../feature/GetAllResult';
 
 type OldProfile = {
   fullName: string;
@@ -342,6 +343,8 @@ const NewProfile = () => {
           </div>
         </div>
       </div>
+
+      <GetAllResult />
     </div>
   );
 };
