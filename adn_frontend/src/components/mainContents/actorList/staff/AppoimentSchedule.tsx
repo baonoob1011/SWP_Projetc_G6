@@ -22,7 +22,7 @@ const AppointmentSchedule = () => {
     const token = localStorage.getItem('token');
     try {
       const res = await fetch(
-        'http://localhost:8080/api/staff/get-appointment-slot',
+        'http://localhost:8080/api/staff/get-appointment-by-staff',
         {
           method: 'GET',
           headers: {
