@@ -10,6 +10,7 @@ import swp.project.adn_backend.dto.request.Kit.KitRequest;
 import swp.project.adn_backend.dto.request.serviceRequest.FeedbackRequest;
 import swp.project.adn_backend.dto.response.feedback.AllFeedbackResponse;
 import swp.project.adn_backend.dto.response.feedback.FeedbackResponse;
+import swp.project.adn_backend.dto.response.feedback.FeedbackStatisticsResponse;
 import swp.project.adn_backend.entity.Kit;
 import swp.project.adn_backend.service.Kit.KitService;
 import swp.project.adn_backend.service.feedback.FeedbackService;
@@ -32,7 +33,7 @@ public class FeedbackController {
     }
 
     @GetMapping("/get-all-feedback-of-service")
-    public ResponseEntity<List<AllFeedbackResponse>> getFeedbackOfService(@RequestParam long serviceId) {
+    public ResponseEntity<FeedbackStatisticsResponse> getFeedbackOfService(@RequestParam long serviceId) {
         return ResponseEntity.ok(feedbackService.getFeedbackOfService(serviceId));
     }
     // thuc lam update , xoa
