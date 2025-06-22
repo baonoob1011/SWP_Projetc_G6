@@ -43,6 +43,21 @@ public class Feedback {
     @JoinColumn(name = "service_id", nullable = false)
     ServiceTest service;
 
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    @JoinColumn(name = "feedback_statistics_id")
+    FeedbackStatistics feedbackStatistics;
+
+    public FeedbackStatistics getFeedbackStatistics() {
+        return feedbackStatistics;
+    }
+
+    public void setFeedbackStatistics(FeedbackStatistics feedbackStatistics) {
+        this.feedbackStatistics = feedbackStatistics;
+    }
+
     public Feedback() {
     }
 

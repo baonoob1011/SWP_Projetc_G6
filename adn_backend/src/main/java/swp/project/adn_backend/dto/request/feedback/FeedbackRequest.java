@@ -1,10 +1,6 @@
-package swp.project.adn_backend.dto.request.serviceRequest;
+package swp.project.adn_backend.dto.request.feedback;
 
-import swp.project.adn_backend.entity.ServiceTest;
-import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.Rating;
-
-import java.time.LocalDate;
 
 public class FeedbackRequest {
 
