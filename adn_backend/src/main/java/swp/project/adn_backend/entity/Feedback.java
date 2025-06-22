@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import swp.project.adn_backend.enums.Rating;
 
 import java.time.LocalDate;
 
@@ -18,6 +19,9 @@ public class Feedback {
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     @Column(name = "feedback_id")
     long feedbackId;
+    @Enumerated(EnumType.STRING) // lưu dưới dạng chuỗi: "ONE_STAR", "TWO_STAR", ...
+    @Column(name = "rating", nullable = false)
+    private Rating rating;
 
     @Column(name = "feedback_text")
     String feedbackText;
@@ -39,12 +43,23 @@ public class Feedback {
     @JoinColumn(name = "service_id", nullable = false)
     ServiceTest service;
 
+    public Feedback() {
+    }
+
     public Feedback(long feedbackId, String feedbackText, LocalDate dateSubmitted, Users users, ServiceTest service) {
         this.feedbackId = feedbackId;
         this.feedbackText = feedbackText;
         this.dateSubmitted = dateSubmitted;
         this.users = users;
         this.service = service;
+    }
+
+    public Rating getRating() {
+        return rating;
+    }
+
+    public void setRating(Rating rating) {
+        this.rating = rating;
     }
 
     public long getFeedbackId() {

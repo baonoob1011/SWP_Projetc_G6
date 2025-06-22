@@ -65,7 +65,8 @@ public class SecurityConfig {
             "/api/appointment/book-appointment-at-home/**",
             "/api/appointment/cancel-appointment/**",
             "/api/kit-delivery-status/get-kit-status-user/**",
-
+            "/api/feedback/create-feedback/**",
+            "/api/feedback/get-all-feedback-of-service/**",
     };
 
     private final String[] STAFF_ENDPOINTS = {
@@ -135,7 +136,7 @@ public class SecurityConfig {
                         .requestMatchers(ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
 
 
-                                // Các request khác yêu cầu xác thực
+                        // Các request khác yêu cầu xác thực
                         .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/api/logout")

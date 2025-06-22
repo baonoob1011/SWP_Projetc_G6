@@ -62,6 +62,15 @@ public class StaffService {
         return query.getResultList();
     }
 
+    public List<StaffBasicInfo> getAllStaffAtHomeBasicInfo() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo(" +
+                "s.staffId, s.fullName, s.phone, s.email) FROM Staff s " +
+                "Where s.role=:role";
+        TypedQuery<StaffBasicInfo> query = entityManager.createQuery(jpql, StaffBasicInfo.class);
+        query.setParameter("role", "STAFF_AT_HOME");
+        return query.getResultList();
+    }
+
     public List<StaffBasicInfo> getAllStaffBasicInfo() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo(" +
                 "s.staffId, s.fullName, s.phone, s.email) FROM Staff s " +

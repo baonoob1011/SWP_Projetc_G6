@@ -45,6 +45,11 @@ public class StaffController {
         return ResponseEntity.ok(staffService.getAllStaffCollectorBasicInfo());
     }
 
+    @GetMapping("/get-all-staff-at-home")
+    public ResponseEntity<List<StaffBasicInfo>> getAllStaffAtHomeBasicInfo() {
+        return ResponseEntity.ok(staffService.getAllStaffAtHomeBasicInfo());
+    }
+
 //    @GetMapping("/get-staff-slot")
 //    public ResponseEntity<List<SlotInfoDTO>> getSlotById(Authentication authentication) {
 //        return ResponseEntity.ok(slotService.getSlotByStaffId(authentication));
