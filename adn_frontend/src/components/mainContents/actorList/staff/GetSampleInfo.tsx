@@ -129,6 +129,10 @@ const GetSampleInfo = () => {
                 <Button
                   component={NavLink}
                   to={`/s-page/record-result/${item.sampleResponse.sampleId}`}
+                  state={{
+                    patientName: item.patientSampleResponse.fullName,
+                    sampleId: item.sampleResponse.sampleId,
+                  }}
                 >
                   ghi kết quả
                 </Button>
