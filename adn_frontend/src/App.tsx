@@ -54,6 +54,7 @@ import CheckAppointment from './components/mainContents/actorList/staff/CheckApp
 import { CollectorSlots } from './components/mainContents/actorList/staff/CollectorSlot';
 import GetCollector from './components/mainContents/actorList/GetCollector';
 import SignUpCollector from './components/mainContents/actorList/staff/SignUpColector';
+import CreateBlog from './components/mainContents/services/CreateBlog';
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
@@ -185,6 +186,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <Services />
+                  </ProtectedRoute>
+                }
+              />
+               <Route
+                path="/create-blog"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <CreateBlog />
                   </ProtectedRoute>
                 }
               />

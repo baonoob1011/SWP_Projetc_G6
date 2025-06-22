@@ -13,7 +13,7 @@ import banner_video from '../../image/Banner_video.mp4';
 import { FaPhoneAlt } from 'react-icons/fa';
 import { FaFacebookMessenger } from 'react-icons/fa';
 import { SiZalo } from 'react-icons/si';
-
+import Notification from './Notification'; 
 import {
   ClipboardCheck,
   HomeIcon,
@@ -33,6 +33,15 @@ import { ArrowForwardRounded } from '@mui/icons-material';
 
 export default function Home() {
   // ref đúng type SwiperRef
+const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát việc mở/đóng modal
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true); // Mở modal
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false); // Đóng modal
+  };
 
   const swiperRef = useRef<SwiperRef | null>(null);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
@@ -298,12 +307,15 @@ export default function Home() {
                 {' '}
                 hiện đại, chính xác và bảo mật
               </span>
-              .
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-full shadow-lg hover:shadow-blue-500/30 hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-                Đặt lịch ngay
-              </button>
+             {/* Nút Đặt lịch ngay để mở modal */}
+            <button
+              onClick={handleOpenModal} // Khi click vào sẽ mở modal
+              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-full shadow-lg hover:shadow-blue-500/30 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+            >
+              Đặt lịch ngay
+            </button>
               <button className="px-8 py-4 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white font-bold rounded-full border border-white/30 hover:border-white/50 transition-all duration-300">
                 Tìm hiểu thêm
               </button>
@@ -311,7 +323,13 @@ export default function Home() {
           </div>
         </div>
       </div>
-
+      {/* Sử dụng Notification Modal */}
+      <Notification
+        isOpen={isModalOpen} // Mở modal khi isOpen là true
+        onClose={handleCloseModal} // Đóng modal khi người dùng nhấn nút
+        title="Vui lòng chọn dịch vụ xét nghiệm bạn muốn đăng ký"
+        message="Hãy chọn dịch vụ hành chính hoặc dân sự"
+      />
       {/* Section giới thiệu GeneLink - Enhanced với modern layout */}
       <section className="w-full bg-gradient-to-br from-blue-50 via-white to-green-50 py-20 font-sans">
         <div
@@ -376,7 +394,7 @@ export default function Home() {
             <img
               src={geneLinkImage}
               alt="GeneLink Laboratory"
-              className="w-full h-140 object-cover rounded-3xl shadow-lg border-4 border-blue-200 transition-transform duration-200 hover:scale-105"
+              className="w-full h-140 object-cover rounded-3xl shadow-lg border-4 border-blue-200 transition-transform duration-200 "
             />
           </div>
         </div>
@@ -427,7 +445,7 @@ export default function Home() {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group hover:scale-105"
+                  className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group "
                 >
                   <div className="flex items-start space-x-4">
                     <div
@@ -518,7 +536,7 @@ export default function Home() {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="bg-gradient-to-br from-blue-50 to-green-50 rounded-xl p-4 text-center hover:shadow-lg transition-all duration-300 group hover:scale-105"
+                  className="bg-gradient-to-br from-blue-50 to-green-50 rounded-xl p-4 text-center hover:shadow-lg transition-all duration-300 group "
                 >
                   <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
                     {item.icon}
@@ -542,7 +560,7 @@ export default function Home() {
                   placeholder="Nhập số điện thoại của bạn"
                   className="flex-grow px-6 py-4 text-gray-700 placeholder-gray-400 bg-white rounded-2xl border border-gray-200 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:border-transparent shadow-lg"
                 />
-                <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 whitespace-nowrap">
+                <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transform transition-all duration-300 whitespace-nowrap">
                   Tư vấn ngay
                 </button>
               </div>
@@ -559,7 +577,7 @@ export default function Home() {
               <img
                 src={doctor}
                 alt="Phòng xét nghiệm ADN"
-                className="relative w-full h-160 object-cover rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300 border-4 border-white/20"
+                className="relative w-full h-160 object-cover rounded-3xl shadow-2xl  transition-transform duration-300 border-4 border-white/20"
               />
             </div>
           </div>
@@ -582,7 +600,7 @@ export default function Home() {
           {services.map(({ title, desc, icon, link }, i) => (
             <div
               key={i}
-              className="group relative p-8 rounded-3xl bg-white text-gray-800 shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-2 transition-all duration-500 border border-gray-100 flex flex-col overflow-hidden"
+              className="group relative p-8 rounded-3xl bg-white text-gray-800 shadow-lg hover:shadow-2xl transform  hover:-translate-y-2 transition-all duration-500 border border-gray-100 flex flex-col overflow-hidden"
             >
               {/* Gradient background on hover */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-teal-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -601,18 +619,6 @@ export default function Home() {
                 <p className="text-gray-600 flex-grow leading-relaxed group-hover:text-gray-700 transition-colors">
                   {desc}
                 </p>
-
-                <Box
-                  component={NavLink}
-                  to={link}
-                  className="mt-5 mx-auto inline-flex items-center px-6 py-3 text-sm font-semibold bg-gradient-to-r from-blue-600 to-teal-600 text-white rounded-2xl hover:from-blue-700 hover:to-teal-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group-hover:shadow-blue-500/25"
-                >
-                  Xem chi tiết
-                  <ArrowForwardRounded
-                    className="ml-2 group-hover:translate-x-1 transition-transform"
-                    fontSize="small"
-                  />
-                </Box>
               </div>
             </div>
           ))}
@@ -635,7 +641,7 @@ export default function Home() {
             {reasons.map(({ icon, text, desc }, i) => (
               <div
                 key={i}
-                className="group flex flex-col items-center text-center p-8 bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg hover:shadow-2xl border border-white/50 hover:border-blue-200 transition-all duration-500 hover:scale-105 hover:-translate-y-2"
+                className="group flex flex-col items-center text-center p-8 bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg hover:shadow-2xl border border-white/50 hover:border-blue-200 transition-all duration-500  hover:-translate-y-2"
               >
                 <div className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300">
                   {icon}
@@ -664,7 +670,7 @@ export default function Home() {
               <div
                 key={index}
                 onClick={() => setSelectedImage(index)}
-                className={`relative overflow-hidden rounded-2xl shadow-lg h-[350px] cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-2xl group ${
+                className={`relative overflow-hidden rounded-2xl shadow-lg h-[350px] cursor-pointer transition-all duration-500  hover:shadow-2xl group ${
                   selectedImage === index
                     ? 'ring-4 ring-blue-500 ring-opacity-60 scale-105 shadow-2xl'
                     : ''
@@ -738,7 +744,7 @@ export default function Home() {
               <div className="p-6 flex justify-end border-t border-gray-200 bg-gradient-to-r from-blue-50 to-teal-50">
                 <button
                   onClick={() => setSelectedImage(null)}
-                  className="px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-lg font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  className="px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-lg font-bold rounded-2xl shadow-lg hover:shadow-xl transform  transition-all duration-300"
                 >
                   ✕ Đóng
                 </button>
@@ -794,9 +800,9 @@ export default function Home() {
           >
             {newsData.map(({ title, desc, date }, i) => (
               <SwiperSlide key={i} className="group">
-                <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl cursor-pointer transform hover:scale-105 hover:-translate-y-2 transition-all duration-500 border border-gray-100 h-full flex flex-col">
+                <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl cursor-pointer transform hover:-translate-y-2 transition-all duration-500 border border-gray-100 h-full flex flex-col">
                   {/* News icon */}
-                  <div className="w-12 h-12 bg-gradient-to-br from-teal-100 to-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-12 h-12 bg-gradient-to-br from-teal-100 to-blue-100 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300">
                     <span className="text-2xl">📰</span>
                   </div>
 
