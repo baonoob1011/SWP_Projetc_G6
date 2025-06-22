@@ -15,7 +15,6 @@ import {
 import { toast } from 'react-toastify';
 import { NavLink, useParams } from 'react-router-dom';
 import { Check } from '@mui/icons-material';
-import { FaYelp } from 'react-icons/fa';
 
 const CheckAppointment = () => {
   const { slotId } = useParams();
@@ -186,21 +185,6 @@ const CheckAppointment = () => {
                           >
                             <Check fontSize="small" />
                           </Button>
-                          <Button
-                            component={NavLink}
-                            to={`/s-page/get-appointment/${appointmentId}`}
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                            style={{
-                              minWidth: 36,
-                              height: 36,
-                              padding: 0,
-                              minHeight: 36,
-                            }}
-                          >
-                            <FaYelp fontSize="small" />
-                          </Button>
                         </Box>
                       ) : (
                         <Typography color="textSecondary">
@@ -213,6 +197,24 @@ const CheckAppointment = () => {
               })
             )}
           </TableBody>
+          {appointments.length > 0 && (
+            <Button
+              component={NavLink}
+              to={`/s-page/get-appointment/${appointments[0].showAppointmentResponse.appointmentId}`}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{
+                minWidth: 36,
+                height: 36,
+                padding: 0,
+                minHeight: 36,
+                marginTop: '16px',
+              }}
+            >
+              Xem thông tin
+            </Button>
+          )}
         </Table>
       ) : (
         <Typography style={{ marginTop: '20px' }}>
