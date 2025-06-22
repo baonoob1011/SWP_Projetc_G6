@@ -57,11 +57,6 @@ public class StaffController {
         return ResponseEntity.ok(appointmentService.getAppointmentByStaffId(authentication));
     }
 
-    @GetMapping("/get-appointment-slot")
-    public ResponseEntity<List<AppointmentAtHomeInfoDTO>> getAppointmentAtHome() {
-        return ResponseEntity.ok(appointmentService.getAppointmentAtHome());
-    }
-
 
     @PutMapping("/update-profile")
     public ResponseEntity<Users> updateStaffById(@RequestBody @Valid UpdateStaffAndManagerRequest staffRequest, Authentication authentication) {

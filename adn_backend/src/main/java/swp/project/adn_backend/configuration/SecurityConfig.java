@@ -52,7 +52,7 @@ public class SecurityConfig {
             "/api/appointment/book-appointment/**",
             "/api/appointment/cancel-appointment/**",
             "/api/appointment/get-appointment/**",
-            "/api/appointment/get-appointment-at-home/**",
+//            "/api/appointment/get-appointment-at-home/**",
             "/api/appointment/get-appointment-history-user/**",
             "/api/slot/get-all-slot-user/**",
             "/api/patient/register-info",
@@ -84,6 +84,9 @@ public class SecurityConfig {
             "/api/result-allele/create-result-allele",
             "/api/locus/create-locus",
             "/api/locus/get-all-locus",
+            "/api/appointment/get-appointment-at-home-by-staff",
+            "/api/kit-delivery-status/get-kit-status-staff-by-appointment/**",
+            "/api/appointment/get-appointment-at-home-to-get-sample",
             "/api/staff/**"
     };
 

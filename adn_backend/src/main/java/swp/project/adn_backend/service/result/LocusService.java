@@ -37,7 +37,7 @@ public class LocusService {
     }
     public List<LocusInfoDTO> getAllLocus(){
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.LocusInfoDTO(" +
-                "s.id, s.locusName, s.description) " +
+                "s.locusId, s.locusName, s.description) " +
                 "FROM Locus s ";
         TypedQuery<LocusInfoDTO> query = entityManager.createQuery(jpql, LocusInfoDTO.class);
         return query.getResultList();

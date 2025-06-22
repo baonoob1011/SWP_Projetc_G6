@@ -1,22 +1,22 @@
 package swp.project.adn_backend.dto.InfoDTO;
 
 public class LocusInfoDTO {
-    private long id;
+    private long locusId;
     private String locusName;
     private String description;
 
-    public LocusInfoDTO(long id, String locusName, String description) {
-        this.id = id;
+    public LocusInfoDTO(long locusId, String locusName, String description) {
+        this.locusId = locusId;
         this.locusName = locusName;
         this.description = description;
     }
 
-    public long getId() {
-        return id;
+    public long getLocusId() {
+        return locusId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setLocusId(long locusId) {
+        this.locusId = locusId;
     }
 
     public String getLocusName() {

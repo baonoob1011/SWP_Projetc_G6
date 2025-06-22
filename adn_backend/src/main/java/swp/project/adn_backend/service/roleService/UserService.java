@@ -169,7 +169,7 @@ public class UserService {
         return userRepository.save(users);
     }
 
-    public Users registerStaffShippingAccount(StaffRequest staffRequest, Authentication authentication) {
+    public Users registerStaffAtHomeAccount(StaffRequest staffRequest, Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
         Users userRegister = userRepository.findById(userId)
@@ -188,7 +188,7 @@ public class UserService {
         //add vao bang staff
 
         Staff staff = staffMapper.toStaff(staffRequest);
-        staff.setRole("SHIPPING");
+        staff.setRole("STAFF_AT_HOME");
         staff.setStaffId(users.getUserId());
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);

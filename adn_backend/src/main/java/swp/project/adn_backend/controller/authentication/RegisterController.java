@@ -84,7 +84,8 @@ public class RegisterController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/staff-shipping-account")
+
+    @PostMapping("/staff-at-home-account")
     public ResponseEntity<?> registerStaffShippingAccount(
             @RequestBody @Valid StaffRequest staffRequest,
             BindingResult bindingResult,
@@ -98,7 +99,7 @@ public class RegisterController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        Users user = userService.registerStaffShippingAccount(staffRequest, authentication);
+        Users user = userService.registerStaffAtHomeAccount(staffRequest, authentication);
         return ResponseEntity.ok(user);
     }
 

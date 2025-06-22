@@ -11,13 +11,43 @@ public class AppointmentAtHomeInfoDTO {
     private AppointmentStatus appointmentStatus;
     private String note;
     private AppointmentType appointmentType;
+    private long staffId;
+    private long serviceId;
+    private long userId;
 
-    public AppointmentAtHomeInfoDTO(long appointmentId, LocalDate appointmentDate, AppointmentStatus appointmentStatus, String note, AppointmentType appointmentType) {
+    public AppointmentAtHomeInfoDTO(long appointmentId, LocalDate appointmentDate, AppointmentStatus appointmentStatus, String note, AppointmentType appointmentType, long staffId, long serviceId, long userId) {
         this.appointmentId = appointmentId;
         this.appointmentDate = appointmentDate;
         this.appointmentStatus = appointmentStatus;
         this.note = note;
         this.appointmentType = appointmentType;
+        this.staffId = staffId;
+        this.serviceId = serviceId;
+        this.userId = userId;
+    }
+
+    public long getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(long serviceId) {
+        this.serviceId = serviceId;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public long getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(long staffId) {
+        this.staffId = staffId;
     }
 
     public AppointmentType getAppointmentType() {

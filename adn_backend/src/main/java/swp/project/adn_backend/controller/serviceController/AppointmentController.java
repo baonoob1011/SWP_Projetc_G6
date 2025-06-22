@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.GlobalRequest.BookAppointmentRequest;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
+import swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentAtCenterResponse;
@@ -79,6 +80,25 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getAppointmentBySlot(slotId));
     }
 
+
+    //staff lấy đo dk tại nhà ra nhập mẫu
+    @GetMapping("/get-appointment-at-home-to-get-sample")
+    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentAtHomeToGetSample(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeToGetSample(authentication));
+    }
+
+    @GetMapping("/get-appointment-at-home-by-staff")
+    public ResponseEntity<List<AppointmentAtHomeInfoDTO>> getAppointmentAtHome(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
+    }
+
+    //thêm staff vào appointment at home
+    @PutMapping("/update-staff-to-appointment-at-home")
+    public ResponseEntity<String> addStaffToAppointment(@RequestParam long staffId,
+                                                        @RequestParam long appointmentId) {
+        appointmentService.addStaffToAppointment(staffId, appointmentId);
+        return ResponseEntity.ok("add staff to appointment successful");
+    }
 
     @PostMapping("/cancel-appointment/{appointmentId}")
     public ResponseEntity<String> cancelAppointment(@PathVariable("appointmentId") long appointmentId) {
