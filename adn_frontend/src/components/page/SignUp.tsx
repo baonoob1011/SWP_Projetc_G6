@@ -215,7 +215,7 @@ const SignUp = () => {
               '&:hover': { opacity: 0.8 },
             }}
           >
-            Home
+            Trang chủ
           </Typography>
           <Typography
             variant="body1"
@@ -225,7 +225,7 @@ const SignUp = () => {
               '&:hover': { opacity: 0.8 },
             }}
           >
-            About Us
+            Về chúng tôi
           </Typography>
           <Typography
             variant="body1"
@@ -235,7 +235,7 @@ const SignUp = () => {
               '&:hover': { opacity: 0.8 },
             }}
           >
-            Help
+            Trợ giúp
           </Typography>
         </div>
 
@@ -303,10 +303,10 @@ const SignUp = () => {
               variant="body2"
               sx={{ color: 'white', fontWeight: 'bold' }}
             >
-              Phone
+              Số điện thoại
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-              +123-456-7890
+              0943.283.195
             </Typography>
           </div>
         </div>
@@ -334,7 +334,7 @@ const SignUp = () => {
               E-Mail
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-              hello@genelink.com
+              genlink.fpt.vn@gmail.com
             </Typography>
           </div>
         </div>
@@ -387,10 +387,10 @@ const SignUp = () => {
               variant="body2"
               sx={{ color: 'white', fontWeight: 'bold' }}
             >
-              Address
+              Địa chỉ
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-              123 Anywhere St., Any City
+            22/14 Đ. Phan Văn Hớn, Tân Thới Nhất, Quận 12, Hồ Chí Minh
             </Typography>
           </div>
         </div>
@@ -433,7 +433,7 @@ const SignUp = () => {
                 letterSpacing: '2px',
               }}
             >
-              SIGN UP
+              ĐĂNG KÝ
             </Typography>
 
             <Typography
@@ -444,13 +444,13 @@ const SignUp = () => {
                 textAlign: 'center',
               }}
             >
-              Create your account
+              Tạo tài khoản của bạn
             </Typography>
 
             {/* Full Name */}
             <Box sx={{ mb: 2, position: 'relative' }}>
               <TextField
-                placeholder="Full Name"
+                placeholder="Họ và tên"
                 fullWidth
                 name="fullName"
                 value={info.fullName}
@@ -484,7 +484,7 @@ const SignUp = () => {
             {/* Username */}
             <Box sx={{ mb: 2, position: 'relative' }}>
               <TextField
-                placeholder="Username"
+                placeholder="Tên đăng nhập"
                 fullWidth
                 name="username"
                 value={info.username}
@@ -518,7 +518,7 @@ const SignUp = () => {
             {/* Email */}
             <Box sx={{ mb: 2, position: 'relative' }}>
               <TextField
-                placeholder="Email Address"
+                placeholder="Email"
                 fullWidth
                 name="email"
                 type="email"
@@ -553,7 +553,7 @@ const SignUp = () => {
             {/* Phone */}
             <Box sx={{ mb: 2, position: 'relative' }}>
               <TextField
-                placeholder="Phone Number"
+                placeholder="Số điện thoại"
                 fullWidth
                 name="phone"
                 type="tel"
@@ -588,7 +588,7 @@ const SignUp = () => {
             {/* Password */}
             <Box sx={{ mb: 1, position: 'relative' }}>
               <TextField
-                placeholder="Password"
+                placeholder="Mật khẩu"
                 type="password"
                 fullWidth
                 name="password"
@@ -640,7 +640,7 @@ const SignUp = () => {
             {/* Confirm Password */}
             <Box sx={{ mb: 3, position: 'relative' }}>
               <TextField
-                placeholder="Confirm Password"
+                placeholder="Nhập lại mật khẩu"
                 type="password"
                 fullWidth
                 name="confirmPassword"
@@ -688,12 +688,12 @@ const SignUp = () => {
                 },
               }}
             >
-              Sign Up
+              Đăng ký
             </Button>
 
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="body2" sx={{ color: '#7f8c8d' }}>
-                Already have an account?{' '}
+                Đã có tài khoản?{' '}
                 <Link
                   to="/login"
                   style={{
@@ -702,7 +702,7 @@ const SignUp = () => {
                     fontWeight: 'bold',
                   }}
                 >
-                  Sign in
+                  Đăng nhập
                 </Link>
               </Typography>
             </Box>

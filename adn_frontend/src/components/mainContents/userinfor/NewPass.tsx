@@ -125,7 +125,7 @@ const NewPass = ({ email }: { email: string }) => {
               '&:hover': { opacity: 0.8 }
             }}
           >
-            Home
+            Trang chủ
           </Typography>
           <Typography
             variant="body1"
@@ -135,7 +135,7 @@ const NewPass = ({ email }: { email: string }) => {
               '&:hover': { opacity: 0.8 }
             }}
           >
-            About Us
+            Về chúng tôi
           </Typography>
           <Typography
             variant="body1"
@@ -145,7 +145,7 @@ const NewPass = ({ email }: { email: string }) => {
               '&:hover': { opacity: 0.8 }
             }}
           >
-            Help
+            Trợ giúp
           </Typography>
         </div>
 
@@ -206,10 +206,10 @@ const NewPass = ({ email }: { email: string }) => {
           </div>
           <div>
             <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
-              Phone
+              Số điện thoại
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-              +123-456-7890
+              0943.283.195
             </Typography>
           </div>
         </div>
@@ -234,7 +234,7 @@ const NewPass = ({ email }: { email: string }) => {
               E-Mail
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-              hello@genelink.com
+              genlink.fpt.vn@gmail.com
             </Typography>
           </div>
         </div>
@@ -281,10 +281,10 @@ const NewPass = ({ email }: { email: string }) => {
           </div>
           <div>
             <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
-              Address
+              Địa chỉ
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-              123 Anywhere St., Any City
+            22/14 Đ. Phan Văn Hớn, Tân Thới Nhất, Quận 12, Hồ Chí Minh
             </Typography>
           </div>
         </div>
@@ -395,7 +395,7 @@ const NewPass = ({ email }: { email: string }) => {
               sx={{
                 py: 1.5,
                 borderRadius: '25px',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: 'linear-gradient(135deg,rgb(124, 142, 235) 0%,hsl(270, 67.20%, 74.90%) 100%)',
                 textTransform: 'none',
                 fontSize: 16,
                 fontWeight: 'bold',
