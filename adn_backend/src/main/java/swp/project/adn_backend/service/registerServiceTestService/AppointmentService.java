@@ -15,6 +15,10 @@ import swp.project.adn_backend.dto.request.payment.PaymentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.*;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.AllAppointmentResult;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultAppointmentResponse;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultDetailAppointmentResponse;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultLocusAppointmentResponse;
 import swp.project.adn_backend.dto.response.appointment.updateAppointmentStatus.UpdateAppointmentStatusResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.*;
@@ -418,6 +422,7 @@ public class AppointmentService {
     }
 
     //staff xem ds cuar slot ddos va lay mau
+    // thiếu update
     public List<AllAppointmentAtCenterResponse> getAppointmentBySlot(long slotId) {
         Slot slot = slotRepository.findById(slotId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
@@ -476,6 +481,10 @@ public class AppointmentService {
         return responses;
     }  //staff xem ds cuar slot ddos va lay mau
 
+    public void updatePatientStatus(long patientId) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.PATIENT_INFO_NOT_EXISTS));
+    }
 
     //staff lấy đơn dang kis tai nha nhap mau
     public List<AllAppointmentAtCenterResponse> getAppointmentAtHomeToGetSample(Authentication authentication) {
@@ -484,7 +493,7 @@ public class AppointmentService {
 
         Staff staff = staffRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-        if(!staff.getRole().equals("STAFF_AT_HOME")){
+        if (!staff.getRole().equals("STAFF_AT_HOME")) {
             throw new RuntimeException("staff at home not exist");
         }
 
@@ -620,6 +629,53 @@ public class AppointmentService {
         return new AllAppointmentResponse(centerList, homeList);
     }
 
+    public List<AllAppointmentResult> getAllAppointmentsResult(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+
+        Users userRegister = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+        List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
+        List<AllAppointmentResult> results = new ArrayList<>();
+
+        for (Appointment appointment : appointmentList) {
+            ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
+            ShowAppointmentResponse appointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
+            StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(appointment.getStaff());
+            UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(appointment.getUsers());
+
+            List<ResultAppointmentResponse> resultResponses = new ArrayList<>();
+            List<ResultDetailAppointmentResponse> resultDetailAppointmentResponses = new ArrayList<>();
+            List<ResultLocusAppointmentResponse> resultLocusAppointmentResponses = new ArrayList<>();
+
+            for (Result result : appointment.getResults()) {
+                ResultAppointmentResponse resultAppointmentResponse = appointmentMapper.toResultAppointmentResponse(result);
+                ResultDetailAppointmentResponse resultDetailAppointmentResponse = appointmentMapper.toResultDetailAppointmentResponse(result.getResultDetail());
+
+                resultResponses.add(resultAppointmentResponse);
+                resultDetailAppointmentResponses.add(resultDetailAppointmentResponse);
+
+                for (ResultLocus resultLocus : result.getResultDetail().getResultLoci()) {
+                    ResultLocusAppointmentResponse locusResponse = appointmentMapper.toResultLocusAppointmentResponse(resultLocus);
+                    resultLocusAppointmentResponses.add(locusResponse);
+                }
+            }
+
+            AllAppointmentResult result = new AllAppointmentResult();
+            result.setShowAppointmentResponse(appointmentResponse);
+            result.setStaffAppointmentResponse(staffAppointmentResponse);
+            result.setServiceAppointmentResponses(serviceAppointmentResponse);
+            result.setResultAppointmentResponse(resultResponses);
+            result.setResultDetailAppointmentResponse(resultDetailAppointmentResponses);
+            result.setResultLocusAppointmentResponse(resultLocusAppointmentResponses);
+
+            results.add(result);
+        }
+
+        return results;
+    }
+
 
     public AllAppointmentResponse getHistoryAppointmentUser(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -680,8 +736,36 @@ public class AppointmentService {
     public void cancelledAppointment(long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        for (Patient patient : appointment.getPatients()) {
+            patient.setPatientStatus(PatientStatus.CANCELLED);
+        }
         appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
     }
+
+    public List<AppointmentAtHomeInfoDTO> getAppointmentAtHomeForAdmin() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO(" +
+                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note, s.appointmentType, s.staff.staffId, s.services.serviceId, s.users.userId) " +
+                "FROM Appointment s WHERE " +
+                "s.appointmentDate >= CURRENT_DATE " +
+                "AND s.appointmentType=:appointmentType";
+
+        TypedQuery<AppointmentAtHomeInfoDTO> query = entityManager.createQuery(jpql, AppointmentAtHomeInfoDTO.class);
+        query.setParameter("appointmentType", AppointmentType.HOME);
+        return query.getResultList();
+    }
+
+//    public AllAppointmentAtHomeResponse getAppointmentAtHomeForAdmin() {
+//        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO(" +
+//                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note, s.appointmentType, s.staff.staffId, s.services.serviceId, s.users.userId) " +
+//                "FROM Appointment s WHERE " +
+//                "s.appointmentDate >= CURRENT_DATE " +
+//                "AND s.appointmentType=:appointmentType";
+//
+//        TypedQuery<AppointmentAtHomeInfoDTO> query = entityManager.createQuery(jpql, AppointmentAtHomeInfoDTO.class);
+//        query.setParameter("appointmentType", AppointmentType.HOME);
+//        return query.getResultList();
+//    }
+
 }
 //    public List<AllAppointmentAtCenterResponse> getAppointmentAtCenter(Authentication authentication) {
 //        Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -722,35 +806,4 @@ public class AppointmentService {
 //        return centerList;
 //    }
 //
-//    public List<AllAppointmentAtHomeResponse> getAppointmentAtHome(Authentication authentication) {
-//        Jwt jwt = (Jwt) authentication.getPrincipal();
-//        Long userId = jwt.getClaim("id");
-//
-//        Users userRegister = userRepository.findById(userId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
-//
-//        List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
-//        List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
-//
-//        for (Appointment appointment : appointmentList) {
-//            if (appointment.getAppointmentStatus().equals(AppointmentStatus.PENDING) &&
-//                    appointment.getServices().getServiceType().equals(ServiceType.CIVIL) &&
-//                    appointment.getAppointmentType().equals(AppointmentType.HOME)) {
-//                appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
-//                ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
-//                List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
-//                KitAppointmentResponse kit = appointmentMapper.toKitAppointmentResponse(appointment.getServices().getKit());
-//                List<PaymentAppointmentResponse> payments = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
-//
-//                AllAppointmentAtHomeResponse homeResponse = new AllAppointmentAtHomeResponse();
-//                homeResponse.setShowAppointmentResponse(show);
-//                homeResponse.setServiceAppointmentResponses(services);
-//                homeResponse.setKitAppointmentResponse(kit);
-//                homeResponse.setPaymentAppointmentResponses(payments);
-//
-//                homeList.add(homeResponse);
-//            }
-//        }
-//
-//        return homeList;
-//    }
+

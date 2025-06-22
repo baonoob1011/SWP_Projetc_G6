@@ -13,6 +13,7 @@ import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentAtCenterResponse;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentAtHomeResponse;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentResponse;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.AllAppointmentResult;
 import swp.project.adn_backend.dto.response.appointment.updateAppointmentStatus.UpdateAppointmentStatusResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.Appointment;
@@ -90,6 +91,15 @@ public class AppointmentController {
     @GetMapping("/get-appointment-at-home-by-staff")
     public ResponseEntity<List<AppointmentAtHomeInfoDTO>> getAppointmentAtHome(Authentication authentication) {
         return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
+    }
+//admin lấy ra để add staff dô
+    @GetMapping("/get-appointment-at-home-by-admin")
+    public ResponseEntity<List<AppointmentAtHomeInfoDTO>> getAppointmentAtHomeForAdmin() {
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeForAdmin());
+    }
+    @GetMapping("/get-all-result")
+    public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResult(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAllAppointmentsResult(authentication));
     }
 
     //thêm staff vào appointment at home

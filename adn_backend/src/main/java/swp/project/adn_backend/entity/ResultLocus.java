@@ -20,7 +20,8 @@ public class ResultLocus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "result_locus_id")
     long resultLocusId;
-    String sampleCode;
+    private String sampleCode1;
+    private String sampleCode2;
     @Column(name = "locus_name")
     String locusName;
 
@@ -75,6 +76,22 @@ public class ResultLocus {
         this.resultAlleles = resultAlleles;
     }
 
+    public String getSampleCode1() {
+        return sampleCode1;
+    }
+
+    public void setSampleCode1(String sampleCode1) {
+        this.sampleCode1 = sampleCode1;
+    }
+
+    public String getSampleCode2() {
+        return sampleCode2;
+    }
+
+    public void setSampleCode2(String sampleCode2) {
+        this.sampleCode2 = sampleCode2;
+    }
+
     public Locus getLocus() {
         return locus;
     }
@@ -99,9 +116,6 @@ public class ResultLocus {
         this.resultDetail = resultDetail;
     }
 
-    public String getSampleCode() {
-        return sampleCode;
-    }
 
     public void setLocusName(String locusName) {
         this.locusName = locusName;
@@ -135,9 +149,6 @@ public class ResultLocus {
         this.pi = pi;
     }
 
-    public void setSampleCode(String sampleCode) {
-        this.sampleCode = sampleCode;
-    }
 
     public long getResultLocusId() {
         return resultLocusId;

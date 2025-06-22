@@ -10,6 +10,7 @@ import swp.project.adn_backend.dto.request.sample.SampleRequest;
 import swp.project.adn_backend.dto.response.sample.*;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.enums.PatientStatus;
 import swp.project.adn_backend.enums.SampleStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.AllSampleResponseMapper;
@@ -76,6 +77,7 @@ public class SampleService {
         sample.setStaff(staff);
         sample.setKit(serviceTest.getKit());
         sample.setAppointment(appointment);
+        patient.setPatientStatus(PatientStatus.SAMPLE_COLLECTED);
         SampleResponse response = sampleMapper.toSampleResponse(sampleRepository.save(sample));
         return response;
     }

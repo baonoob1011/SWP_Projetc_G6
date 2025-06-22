@@ -52,7 +52,7 @@ public class SecurityConfig {
             "/api/appointment/book-appointment/**",
             "/api/appointment/cancel-appointment/**",
             "/api/appointment/get-appointment/**",
-//            "/api/appointment/get-appointment-at-home/**",
+          "/api/appointment/get-all-result/**",
             "/api/appointment/get-appointment-history-user/**",
             "/api/slot/get-all-slot-user/**",
             "/api/patient/register-info",

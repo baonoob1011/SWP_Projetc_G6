@@ -1,25 +1,23 @@
-package swp.project.adn_backend.dto.request.result;
+package swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult;
 
-import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import swp.project.adn_backend.entity.Result;
+import jakarta.persistence.Column;
 
-public class ResultLocusRequest {
+public class ResultLocusAppointmentResponse {
+    long resultLocusId;
+    private String sampleCode1;
+    private String sampleCode2;
     String locusName;
     double allele1;
     double allele2;
     double frequency;
     double pi;
-    private Long locusId;
-    private String sampleCode1;
-    private String sampleCode2;
 
-    public Long getLocusId() {
-        return locusId;
+    public long getResultLocusId() {
+        return resultLocusId;
+    }
+
+    public void setResultLocusId(long resultLocusId) {
+        this.resultLocusId = resultLocusId;
     }
 
     public String getSampleCode1() {
@@ -36,10 +34,6 @@ public class ResultLocusRequest {
 
     public void setSampleCode2(String sampleCode2) {
         this.sampleCode2 = sampleCode2;
-    }
-
-    public void setLocusId(Long locusId) {
-        this.locusId = locusId;
     }
 
     public String getLocusName() {

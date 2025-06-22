@@ -3,6 +3,9 @@ package swp.project.adn_backend.mapper;
 import org.mapstruct.Mapper;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.*;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultAppointmentResponse;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultDetailAppointmentResponse;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultLocusAppointmentResponse;
 import swp.project.adn_backend.dto.response.appointment.updateAppointmentStatus.UpdateAppointmentStatusResponse;
 import swp.project.adn_backend.dto.response.sample.AppointmentSampleResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
@@ -29,4 +32,7 @@ public interface AppointmentMapper {
     RoomAppointmentResponse toRoomAppointmentResponse(Room room);
     List<PaymentAppointmentResponse> toPaymentAppointmentResponse(List<Payment> payment);
     List<PriceAppointmentResponse> toPriceAppointmentResponse(List<PriceList> priceList);
+    ResultAppointmentResponse toResultAppointmentResponse(Result result);
+    ResultLocusAppointmentResponse toResultLocusAppointmentResponse(ResultLocus resultLocus);
+    ResultDetailAppointmentResponse toResultDetailAppointmentResponse(ResultDetail resultDetail);
 }

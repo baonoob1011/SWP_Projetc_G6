@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.response.result.ResultDetailResponse;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.enums.PatientStatus;
 import swp.project.adn_backend.enums.ResultStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.ResultDetailsMapper;
@@ -53,6 +54,7 @@ public class ResultDetailsService {
 
         // Tạo ResultDetail
         ResultDetail resultDetail = new ResultDetail();
+        resultDetail.setResultLoci(loci);
         resultDetail.setCombinedPaternityIndex(combinedPi);
         resultDetail.setPaternityProbability(paternityProbability);
 
@@ -77,7 +79,9 @@ public class ResultDetailsService {
         resultDetail.setResult(result);
         resultDetailRepository.save(resultDetail);
 
-
+        for (Patient patient: appointment.getPatients()){
+            patient.setPatientStatus(PatientStatus.COMPLETED);
+        }
         return resultDetailsMapper.toResultDetailResponse(resultDetail);
     }
 

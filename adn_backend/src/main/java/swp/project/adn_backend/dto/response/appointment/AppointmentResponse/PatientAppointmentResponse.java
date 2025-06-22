@@ -1,5 +1,7 @@
 package swp.project.adn_backend.dto.response.appointment.AppointmentResponse;
 
+import swp.project.adn_backend.enums.PatientStatus;
+
 import java.time.LocalDate;
 
 public class PatientAppointmentResponse {
@@ -8,13 +10,23 @@ public class PatientAppointmentResponse {
     LocalDate dateOfBirth;
     String gender;
     String relationship;
+    PatientStatus patientStatus;
 
-    public PatientAppointmentResponse(long patientId, String fullName, LocalDate dateOfBirth, String gender, String relationship) {
+    public PatientAppointmentResponse(long patientId, String fullName, LocalDate dateOfBirth, String gender, String relationship, PatientStatus patientStatus) {
         this.patientId = patientId;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.relationship = relationship;
+        this.patientStatus = patientStatus;
+    }
+
+    public PatientStatus getPatientStatus() {
+        return patientStatus;
+    }
+
+    public void setPatientStatus(PatientStatus patientStatus) {
+        this.patientStatus = patientStatus;
     }
 
     public long getPatientId() {

@@ -96,7 +96,7 @@ public class FeedbackService {
         stats.setFourStarPercent(percentMap.get(Rating.FOUR_STAR));
         stats.setFiveStarPercent(percentMap.get(Rating.FIVE_STAR));
         stats.setUpdatedAt(LocalDate.now());
-
+        feedback.setFeedbackStatistics(stats);
         feedbackStatisticsRepository.save(stats);
 
         // 4. Trả về response

@@ -27,7 +27,9 @@ public class ResultDetail {
 
     @Column(name = "result_summary")
     String resultSummary;
-
+    @ManyToOne
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
     @OneToOne
     @JoinColumn(name = "result_id", nullable = false)
     Result result;
@@ -41,6 +43,14 @@ public class ResultDetail {
     @OneToOne
     @JoinColumn(name = "sample_id", referencedColumnName = "sample_id")
     private Sample sample;
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
 
     public Sample getSample() {
         return sample;
