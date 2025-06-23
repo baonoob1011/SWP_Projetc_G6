@@ -23,37 +23,37 @@ const CheckAppointment = () => {
   const [loading, setLoading] = useState(false);
   const [sampleType, setSampleType] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    const fetchAppointment = async () => {
-      if (!slotId) return;
+  const fetchAppointment = async () => {
+    if (!slotId) return;
 
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `http://localhost:8080/api/appointment/get-appointment-by-slot/${slotId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error('Fetch failed');
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://localhost:8080/api/appointment/get-appointment-by-slot/${slotId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
         }
+      );
 
-        const data = await response.json();
-        setAppointments(data);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
-        toast.error('Không thể lấy dữ liệu lịch hẹn');
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error('Fetch failed');
       }
-    };
 
+      const data = await response.json();
+      setAppointments(data);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error('Không thể lấy dữ liệu lịch hẹn');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchAppointment();
-  }, [slotId]);
+  }, []);
 
   const handleSendSample = async (
     patientId: string,
