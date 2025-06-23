@@ -399,7 +399,6 @@ const BookingAtHome = () => {
                     value={patientOne[name]}
                     onChange={handleInputPatientOne}
                     variant="outlined"
-                    // ** new: automatically shrink the label on date fields **
                     InputLabelProps={
                       type === 'date' ? { shrink: true } : undefined
                     }
@@ -488,15 +487,14 @@ const BookingAtHome = () => {
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
                 {fieldLabels.map(({ name, label, type }) => (
                   <TextField
-                    key={`one-${name}`}
+                    key={`two-${name}`}
                     size="small"
                     label={label}
                     type={type || 'text'}
                     name={name}
-                    value={patientOne[name]}
+                    value={patientTwo[name]}
                     onChange={handleInputPatientTwo}
                     variant="outlined"
-                    // ** new: automatically shrink the label on date fields **
                     InputLabelProps={
                       type === 'date' ? { shrink: true } : undefined
                     }
