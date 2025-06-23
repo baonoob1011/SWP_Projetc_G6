@@ -145,87 +145,95 @@ export const CollectorSlots = () => {
       )}
 
       {/* Bảng thông tin khách tại nhà */}
-      <Table>
-        {appointments.map((appointmentItem) => {
-          const appointmentId =
-            appointmentItem.showAppointmentResponse?.appointmentId;
-          const serviceId =
-            appointmentItem.serviceAppointmentResponses?.[0]?.serviceId;
-          const isHome =
-            appointmentItem.showAppointmentResponse?.appointmentType === 'HOME';
-          const isConfirmed =
-            appointmentItem.showAppointmentResponse?.appointmentStatus ===
-            'CONFIRMED';
+      <table className="table table-bordered table-striped table-hover text-center align-middle">
+        <thead className="table-dark">
+          <tr>
+            <th>Họ tên</th>
+            <th>Ngày sinh</th>
+            <th>Giới tính</th>
+            <th>Quan hệ</th>
+            <th>Ngày hẹn</th>
+            <th>Ghi chú</th>
+            <th>Thu mẫu / Xem</th>
+          </tr>
+        </thead>
+        <tbody>
+          {appointments.map((appointmentItem) => {
+            const appointmentId =
+              appointmentItem.showAppointmentResponse?.appointmentId;
+            const serviceId =
+              appointmentItem.serviceAppointmentResponses?.[0]?.serviceId;
+            const isHome =
+              appointmentItem.showAppointmentResponse?.appointmentType ===
+              'HOME';
+            const isConfirmed =
+              appointmentItem.showAppointmentResponse?.appointmentStatus ===
+              'CONFIRMED';
 
-          if (!isHome || !isConfirmed) return null;
+            if (!isHome || !isConfirmed) return null;
 
-          return appointmentItem.patientAppointmentResponse.map(
-            (patient: any, index: number) => {
-              const key = `${appointmentId}_${patient.patientId}`;
-              const isFirstPatient = index === 0;
+            return appointmentItem.patientAppointmentResponse.map(
+              (patient: any, index: number) => {
+                const key = `${appointmentId}_${patient.patientId}`;
+                const isFirstPatient = index === 0;
 
-              return (
-                <TableRow key={key}>
-                  <TableCell>{patient.fullName}</TableCell>
-                  <TableCell>{patient.dateOfBirth}</TableCell>
-                  <TableCell>{patient.gender}</TableCell>
-                  <TableCell>{patient.relationship}</TableCell>
-                  <TableCell>
-                    {appointmentItem.showAppointmentResponse?.appointmentDate}
-                  </TableCell>
-                  <TableCell>
-                    {appointmentItem.showAppointmentResponse?.note || '-'}
-                  </TableCell>
-                  <TableCell>
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <TextField
-                        size="small"
-                        placeholder="Nhập vật mẫu"
-                        value={sampleType[key] || ''}
-                        onChange={(e) =>
-                          setSampleType((prev) => ({
-                            ...prev,
-                            [key]: e.target.value,
-                          }))
-                        }
-                        style={{ minWidth: 150 }}
-                      />
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        onClick={() =>
-                          handleSendSample(
-                            patient.patientId,
-                            serviceId,
-                            appointmentId,
-                            key
-                          )
-                        }
-                      >
-                        <Check fontSize="small" />
-                      </Button>
-
-                      {/* Nút chỉ hiển thị ở dòng đầu tiên */}
-                      {isFirstPatient && (
-                        <Button
-                          component={NavLink}
-                          to={`/s-page/get-appointment/${appointmentId}`}
-                          variant="outlined"
-                          color="secondary"
-                          size="small"
+                return (
+                  <tr key={key}>
+                    <td>{patient.fullName}</td>
+                    <td>{patient.dateOfBirth}</td>
+                    <td>{patient.gender}</td>
+                    <td>{patient.relationship}</td>
+                    <td>
+                      {appointmentItem.showAppointmentResponse?.appointmentDate}
+                    </td>
+                    <td>
+                      {appointmentItem.showAppointmentResponse?.note || '-'}
+                    </td>
+                    <td>
+                      <div className="d-flex justify-content-center align-items-center gap-2">
+                        <input
+                          type="text"
+                          className="form-control form-control-sm"
+                          placeholder="Nhập vật mẫu"
+                          style={{ maxWidth: '150px' }}
+                          value={sampleType[key] || ''}
+                          onChange={(e) =>
+                            setSampleType((prev) => ({
+                              ...prev,
+                              [key]: e.target.value,
+                            }))
+                          }
+                        />
+                        <button
+                          className="btn btn-primary btn-sm"
+                          onClick={() =>
+                            handleSendSample(
+                              patient.patientId,
+                              serviceId,
+                              appointmentId,
+                              key
+                            )
+                          }
                         >
-                          Xem thông tin
-                        </Button>
-                      )}
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              );
-            }
-          );
-        })}
-      </Table>
+                          <Check fontSize="small" />
+                        </button>
+                        {isFirstPatient && (
+                          <NavLink
+                            to={`/s-page/get-appointment/${appointmentId}`}
+                            className="btn btn-outline-secondary btn-sm"
+                          >
+                            Xem
+                          </NavLink>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              }
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 };

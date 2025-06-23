@@ -168,7 +168,7 @@ const Booking = () => {
                       </button>
 
                       {/* Hủy */}
-                      {item.show.appointmentId && (
+                      {item.show.appointmentStatus !== 'COMPLETED' && (
                         <button
                           type="button"
                           className="btn btn-danger btn-sm d-flex align-items-center gap-1"
