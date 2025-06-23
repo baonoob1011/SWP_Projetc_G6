@@ -10,9 +10,10 @@ import {
   Paper,
   TextField,
   Button,
+  Box,
 } from '@mui/material';
 import { toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { Check } from '@mui/icons-material';
 
 const CheckAppointment = () => {
@@ -22,37 +23,37 @@ const CheckAppointment = () => {
   const [loading, setLoading] = useState(false);
   const [sampleType, setSampleType] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    const fetchAppointment = async () => {
-      if (!slotId) return;
+  const fetchAppointment = async () => {
+    if (!slotId) return;
 
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `http://localhost:8080/api/appointment/get-appointment-by-slot/${slotId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error('Fetch failed');
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://localhost:8080/api/appointment/get-appointment-by-slot/${slotId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
         }
+      );
 
-        const data = await response.json();
-        setAppointments(data);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
-        toast.error('Không thể lấy dữ liệu lịch hẹn');
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error('Fetch failed');
       }
-    };
 
+      const data = await response.json();
+      setAppointments(data);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error('Không thể lấy dữ liệu lịch hẹn');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchAppointment();
-  }, [slotId]);
+  }, []);
 
   const handleSendSample = async (
     patientId: string,
@@ -76,7 +77,7 @@ const CheckAppointment = () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
           body: JSON.stringify({
-            sample: sampleType,
+            sampleType: sample,
           }),
         }
       );
@@ -122,6 +123,7 @@ const CheckAppointment = () => {
               <TableCell>Ngày hẹn</TableCell>
               <TableCell>Ghi chú</TableCell>
               <TableCell>Vật xét nghiệm</TableCell>
+              <TableCell>Hành động</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -150,7 +152,7 @@ const CheckAppointment = () => {
                     </TableCell>
                     <TableCell>
                       {isPaid ? (
-                        <>
+                        <Box display="flex" alignItems="center" gap={1}>
                           <TextField
                             size="small"
                             placeholder="Nhập vật mẫu"
@@ -161,6 +163,7 @@ const CheckAppointment = () => {
                                 [key]: e.target.value,
                               }))
                             }
+                            style={{ minWidth: 150 }}
                           />
                           <Button
                             variant="contained"
@@ -174,10 +177,24 @@ const CheckAppointment = () => {
                                 key
                               )
                             }
+                            style={{
+                              minWidth: 36,
+                              height: 36,
+                              padding: 0,
+                              minHeight: 36,
+                            }}
                           >
-                            <Check />
+                            <Check fontSize="small" />
                           </Button>
-                        </>
+                          <Button
+                            component={NavLink}
+                            to={`/s-page/get-appointment/${appointmentId}`}
+                            variant="outlined"
+                            size="small"
+                          >
+                            Xem thông tin
+                          </Button>
+                        </Box>
                       ) : (
                         <Typography color="textSecondary">
                           Chưa thanh toán

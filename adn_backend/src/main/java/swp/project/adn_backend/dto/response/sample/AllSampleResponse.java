@@ -4,11 +4,21 @@ public class AllSampleResponse {
     private SampleResponse sampleResponse;
     private PatientSampleResponse patientSampleResponse;
     private StaffSampleResponse staffSampleResponse;
+    private AppointmentSampleResponse appointmentSampleResponse;
+
 
     public AllSampleResponse(SampleResponse sampleResponse, PatientSampleResponse patientSampleResponse, StaffSampleResponse staffSampleResponse) {
         this.sampleResponse = sampleResponse;
         this.patientSampleResponse = patientSampleResponse;
         this.staffSampleResponse = staffSampleResponse;
+    }
+
+    public AppointmentSampleResponse getAppointmentSampleResponse() {
+        return appointmentSampleResponse;
+    }
+
+    public void setAppointmentSampleResponse(AppointmentSampleResponse appointmentSampleResponse) {
+        this.appointmentSampleResponse = appointmentSampleResponse;
     }
 
     public AllSampleResponse() {

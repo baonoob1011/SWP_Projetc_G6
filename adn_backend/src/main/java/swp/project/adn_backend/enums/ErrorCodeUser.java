@@ -49,7 +49,9 @@ public enum ErrorCodeUser {
     KIT_NOT_EXISTS(1036, "Kit không tồn tại", HttpStatus.BAD_REQUEST),
     PRICE_NOT_EXISTS(1040, "price không tồn tại", HttpStatus.BAD_REQUEST),
     SAMPLE_NOT_EXISTS(1040, "Sample không tồn tại", HttpStatus.BAD_REQUEST),
+    LOCUS_NOT_EXISTS(1040, "locus không tồn tại", HttpStatus.BAD_REQUEST),
     RESULT_LOCUS_NOT_EXISTS(1040, "Result Locus không tồn tại", HttpStatus.BAD_REQUEST),
+    LOCUS_NOT_FOUND(1040, "locus Locus không tồn tại", HttpStatus.BAD_REQUEST),
 
     // Service validation
     SERVICE_NAME_IS_EXISTED(1037, "Tên dịch vụ đã tồn tại", HttpStatus.BAD_REQUEST),

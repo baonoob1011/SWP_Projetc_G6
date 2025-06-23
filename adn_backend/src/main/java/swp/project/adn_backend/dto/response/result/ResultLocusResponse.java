@@ -1,11 +1,33 @@
 package swp.project.adn_backend.dto.response.result;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResultLocusResponse {
     String locusName;
     double allele1;
     double allele2;
     double frequency;
     double pi;
+    String sampleCode1;
+    String sampleCode2;
+
+    public String getSampleCode1() {
+        return sampleCode1;
+    }
+
+    public void setSampleCode1(String sampleCode1) {
+        this.sampleCode1 = sampleCode1;
+    }
+
+    public String getSampleCode2() {
+        return sampleCode2;
+    }
+
+    public void setSampleCode2(String sampleCode2) {
+        this.sampleCode2 = sampleCode2;
+    }
 
     public String getLocusName() {
         return locusName;

@@ -1,13 +1,19 @@
 package swp.project.adn_backend.service.blog;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.BlogsInfoDTO;
 import swp.project.adn_backend.dto.request.blog.BlogRequest;
 import swp.project.adn_backend.entity.Blog;
 import swp.project.adn_backend.entity.Users;
+import swp.project.adn_backend.enums.AppointmentStatus;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.BlogMapper;
@@ -17,6 +23,7 @@ import swp.project.adn_backend.repository.UserRepository;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 public class BlogService {
@@ -24,12 +31,14 @@ public class BlogService {
     private BlogMapper blogMapper;
     private UserRepository userRepository;
     private BlogRepository blogRepository;
+    private EntityManager entityManager;
 
     @Autowired
-    public BlogService(BlogMapper blogMapper, UserRepository userRepository, BlogRepository blogRepository) {
+    public BlogService(BlogMapper blogMapper, UserRepository userRepository, BlogRepository blogRepository, EntityManager entityManager) {
         this.blogMapper = blogMapper;
         this.userRepository = userRepository;
         this.blogRepository = blogRepository;
+        this.entityManager = entityManager;
     }
 
     public Blog createBlog(BlogRequest blogRequest,
@@ -52,6 +61,14 @@ public class BlogService {
             }
         }
         return blogRepository.save(blog);
+    }
+
+    public List<BlogsInfoDTO> getAllBlogs() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.BlogsInfoDTO(" +
+                "s.blogId, s.title, s.content, s.image) " +
+                "FROM Blog s";
+        TypedQuery<BlogsInfoDTO> query = entityManager.createQuery(jpql, BlogsInfoDTO.class);
+        return query.getResultList();
     }
 
     public Blog updateBlog(Long blogId, BlogRequest blogRequest, Authentication authentication, MultipartFile file) {

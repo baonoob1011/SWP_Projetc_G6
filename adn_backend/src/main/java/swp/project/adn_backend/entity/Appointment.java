@@ -61,6 +61,16 @@ public class Appointment {
             CascadeType.DETACH, CascadeType.REFRESH,
     })
     List<Patient> patients;
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.EAGER, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    List<Result> results;
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.EAGER, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
+    List<Sample> sampleList;
 
     @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -94,6 +104,33 @@ public class Appointment {
 
     @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Payment> payments;
+
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<ResultLocus> resultLoci;
+
+    public List<Sample> getSampleList() {
+        return sampleList;
+    }
+
+    public void setSampleList(List<Sample> sampleList) {
+        this.sampleList = sampleList;
+    }
+
+    public List<ResultLocus> getResultLoci() {
+        return resultLoci;
+    }
+
+    public List<Result> getResults() {
+        return results;
+    }
+
+    public void setResults(List<Result> results) {
+        this.results = results;
+    }
+
+    public void setResultLoci(List<ResultLocus> resultLoci) {
+        this.resultLoci = resultLoci;
+    }
 
     public Appointment() {
     }

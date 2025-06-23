@@ -33,8 +33,24 @@ public class SampleController {
         ));
 
     }
+
     @GetMapping("/get-all-sample")
-    public ResponseEntity<List<AllSampleResponse>> getAllSamPl(Authentication authentication){
-        return ResponseEntity.ok(sampleService.getAllSampleOfPatient(authentication));
+    public ResponseEntity<List<AllSampleResponse>> getAllSample(Authentication authentication,
+                                                                @RequestParam long appointmentId) {
+        return ResponseEntity.ok(sampleService.getAllSampleOfPatient(authentication, appointmentId));
     }
+
+    @PutMapping("/update-status-sample")
+    public ResponseEntity<String> updateSampleStatus(@RequestBody SampleRequest sampleRequest,
+                                                     @RequestParam long sampleId) {
+        sampleService.updateSampleStatus(sampleId, sampleRequest);
+        return ResponseEntity.ok("Update successful");
+    }
+
+    @DeleteMapping("/delete-sample")
+    public ResponseEntity<String> deleteSample(@RequestParam long sampleId) {
+        sampleService.deleteSample(sampleId);
+        return ResponseEntity.ok("delete sample successful");
+    }
+
 }

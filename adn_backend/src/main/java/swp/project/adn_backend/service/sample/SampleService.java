@@ -6,16 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.request.sample.SampleRequest;
-import swp.project.adn_backend.dto.response.sample.AllSampleResponse;
-import swp.project.adn_backend.dto.response.sample.PatientSampleResponse;
-import swp.project.adn_backend.dto.response.sample.SampleResponse;
-import swp.project.adn_backend.dto.response.sample.StaffSampleResponse;
+import swp.project.adn_backend.dto.response.sample.*;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.enums.PatientStatus;
 import swp.project.adn_backend.enums.SampleStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.AllSampleResponseMapper;
+import swp.project.adn_backend.mapper.AppointmentMapper;
 import swp.project.adn_backend.mapper.SampleMapper;
 import swp.project.adn_backend.mapper.StaffMapper;
 import swp.project.adn_backend.repository.*;
@@ -36,9 +36,10 @@ public class SampleService {
     AppointmentRepository appointmentRepository;
     StaffMapper staffMapper;
     AllSampleResponseMapper allSampleResponseMapper;
+    AppointmentMapper appointmentMapper;
 
     @Autowired
-    public SampleService(SampleRepository sampleRepository, SampleMapper sampleMapper, PatientRepository patientRepository, StaffRepository staffRepository, ServiceTestRepository serviceTestRepository, AppointmentRepository appointmentRepository, StaffMapper staffMapper, AllSampleResponseMapper allSampleResponseMapper) {
+    public SampleService(SampleRepository sampleRepository, SampleMapper sampleMapper, PatientRepository patientRepository, StaffRepository staffRepository, ServiceTestRepository serviceTestRepository, AppointmentRepository appointmentRepository, StaffMapper staffMapper, AllSampleResponseMapper allSampleResponseMapper, AppointmentMapper appointmentMapper) {
         this.sampleRepository = sampleRepository;
         this.sampleMapper = sampleMapper;
         this.patientRepository = patientRepository;
@@ -47,8 +48,8 @@ public class SampleService {
         this.appointmentRepository = appointmentRepository;
         this.staffMapper = staffMapper;
         this.allSampleResponseMapper = allSampleResponseMapper;
+        this.appointmentMapper = appointmentMapper;
     }
-
 
     public SampleResponse collectSample(long patientId,
                                         long serviceId,
@@ -68,7 +69,7 @@ public class SampleService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
 
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
         Sample sample = sampleMapper.toSample(sampleRequest);
         sample.setSampleStatus(SampleStatus.COLLECTED);
         sample.setCollectionDate(LocalDate.now());
@@ -77,6 +78,7 @@ public class SampleService {
         sample.setStaff(staff);
         sample.setKit(serviceTest.getKit());
         sample.setAppointment(appointment);
+        patient.setPatientStatus(PatientStatus.SAMPLE_COLLECTED);
         SampleResponse response = sampleMapper.toSampleResponse(sampleRepository.save(sample));
         return response;
     }
@@ -88,19 +90,24 @@ public class SampleService {
         return String.format("%c%04d%c", firstChar, numberPart, lastChar);
     }
 
-    public List<AllSampleResponse> getAllSampleOfPatient(Authentication authentication) {
+
+    public List<AllSampleResponse> getAllSampleOfPatient(Authentication authentication,
+                                                         long appointmentId) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
 
-        Staff staff = staffRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-        List<Sample> sampleList = staff.getSamples();
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        List<Sample> sampleList = appointment.getSampleList();
         List<AllSampleResponse> allSampleResponseList = new ArrayList<>();
         for (Sample sample : sampleList) {
+
             SampleResponse sampleResponse = sampleMapper.toSampleResponse(sample);
             StaffSampleResponse staffSampleResponse = allSampleResponseMapper.toStaffSampleResponse(sample.getStaff());
             PatientSampleResponse patientSampleResponse = allSampleResponseMapper.toPatientSampleResponse(sample.getPatient());
+            AppointmentSampleResponse appointmentSampleResponse = appointmentMapper.toAppointmentSampleResponse(appointment);
             AllSampleResponse allSampleResponse = new AllSampleResponse();
+            allSampleResponse.setAppointmentSampleResponse(appointmentSampleResponse);
             allSampleResponse.setSampleResponse(sampleResponse);
             allSampleResponse.setStaffSampleResponse(staffSampleResponse);
             allSampleResponse.setPatientSampleResponse(patientSampleResponse);
@@ -108,5 +115,17 @@ public class SampleService {
         }
         return allSampleResponseList;
     }
-    // thực làm update status collectSample
+
+    @Transactional
+    public void updateSampleStatus(long sampleId, SampleRequest sampleRequest) {
+        Sample sample = sampleRepository.findById(sampleId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
+        sample.setSampleStatus(sampleRequest.getSampleStatus());
+    }
+    @Transactional
+    public void deleteSample(long sampleId) {
+        Sample sample = sampleRepository.findById(sampleId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
+        sampleRepository.findById(sampleId);
+    }
 }

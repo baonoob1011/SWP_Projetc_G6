@@ -28,7 +28,7 @@ public class Sample {
     @Column(name = "collection_date")
     LocalDate collectionDate;
 
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "sample_status")
     SampleStatus sampleStatus;
 
@@ -61,24 +61,22 @@ public class Sample {
     @JoinColumn(name = "staff_id", nullable = false)
     Staff staff;
 
-    @OneToMany(mappedBy = "sample", fetch = FetchType.LAZY, cascade = {
+
+    @OneToMany(mappedBy = "sample", fetch = FetchType.EAGER, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
+            CascadeType.DETACH, CascadeType.REFRESH,
     })
-    List<Result> results;
-    @OneToMany(mappedBy = "sample", fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    })
-    List<ResultLocus> resultLocus;
+    List<ResultAllele> resultAlleles;
+
     @OneToOne(mappedBy = "sample", cascade = CascadeType.ALL)
     private ResultDetail resultDetail;
 
     public Sample() {
     }
 
-    public Sample(long sampleId, String sampleType, LocalDate collectionDate, SampleStatus sampleStatus, Appointment appointment, Patient patient, Kit kit, Staff staff, List<Result> results) {
+    public Sample(long sampleId, String sampleCode, String sampleType, LocalDate collectionDate, SampleStatus sampleStatus, Appointment appointment, Patient patient, Kit kit, Staff staff, List<ResultAllele> resultAlleles, ResultDetail resultDetail) {
         this.sampleId = sampleId;
+        this.sampleCode = sampleCode;
         this.sampleType = sampleType;
         this.collectionDate = collectionDate;
         this.sampleStatus = sampleStatus;
@@ -86,7 +84,16 @@ public class Sample {
         this.patient = patient;
         this.kit = kit;
         this.staff = staff;
-        this.results = results;
+        this.resultAlleles = resultAlleles;
+        this.resultDetail = resultDetail;
+    }
+
+    public List<ResultAllele> getResultAlleles() {
+        return resultAlleles;
+    }
+
+    public void setResultAlleles(List<ResultAllele> resultAlleles) {
+        this.resultAlleles = resultAlleles;
     }
 
     public ResultDetail getResultDetail() {
@@ -105,13 +112,6 @@ public class Sample {
         this.sampleCode = sampleCode;
     }
 
-    public List<ResultLocus> getResultLocus() {
-        return resultLocus;
-    }
-
-    public void setResultLocus(List<ResultLocus> resultLocus) {
-        this.resultLocus = resultLocus;
-    }
 
     public long getSampleId() {
         return sampleId;
@@ -177,11 +177,5 @@ public class Sample {
         this.staff = staff;
     }
 
-    public List<Result> getResults() {
-        return results;
-    }
 
-    public void setResults(List<Result> results) {
-        this.results = results;
-    }
 }

@@ -68,7 +68,15 @@ const AdminSidebar = () => {
       label: 'Tất cả dịch vụ',
       path: 'a-getAllService',
     },
+
    
+
+    {
+      id: 'createLocus',
+      icon: ShoppingBag,
+      label: 'Tạo locus',
+      path: 'create-locus',
+    },
   ];
 
   const handleLogout = async () => {

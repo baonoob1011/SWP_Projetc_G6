@@ -17,7 +17,7 @@ public class ResultDetailController {
     private ResultDetailsService resultDetailsService;
 
     @PostMapping("/create-result-detail")
-    public ResponseEntity<ResultDetailResponse>createResultDetail(@RequestParam long sampleId){
-        return ResponseEntity.ok(resultDetailsService.CreateResultDetail(sampleId));
+    public ResponseEntity<ResultDetailResponse>createResultDetail(@RequestParam long appointmentId){
+        return ResponseEntity.ok(resultDetailsService.CreateResultDetail(appointmentId));
     }
 }

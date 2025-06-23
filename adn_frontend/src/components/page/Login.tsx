@@ -164,7 +164,7 @@ const Login = ({ setFullName }: LoginProps) => {
               '&:hover': { opacity: 0.8 },
             }}
           >
-            Home
+            Trang chủ
           </Typography>
           <Typography
             variant="body1"
@@ -174,7 +174,7 @@ const Login = ({ setFullName }: LoginProps) => {
               '&:hover': { opacity: 0.8 },
             }}
           >
-            About Us
+            Về chúng tôi
           </Typography>
           <Typography
             variant="body1"
@@ -184,7 +184,7 @@ const Login = ({ setFullName }: LoginProps) => {
               '&:hover': { opacity: 0.8 },
             }}
           >
-            Help
+            Trợ giúp
           </Typography>
         </div>
 
@@ -252,10 +252,10 @@ const Login = ({ setFullName }: LoginProps) => {
               variant="body2"
               sx={{ color: 'white', fontWeight: 'bold' }}
             >
-              Phone
+              Số điện thoại
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-              +123-456-7890
+              0943.283.195
             </Typography>
           </div>
         </div>
@@ -283,7 +283,7 @@ const Login = ({ setFullName }: LoginProps) => {
               E-Mail
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-              hello@genelink.com
+              genlink.fpt.vn@gmail.com
             </Typography>
           </div>
         </div>
@@ -336,10 +336,10 @@ const Login = ({ setFullName }: LoginProps) => {
               variant="body2"
               sx={{ color: 'white', fontWeight: 'bold' }}
             >
-              Address
+              Địa chỉ
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-              123 Anywhere St., Any City
+            22/14 Đ. Phan Văn Hớn, Tân Thới Nhất, Quận 12, Hồ Chí Minh
             </Typography>
           </div>
         </div>
@@ -382,7 +382,7 @@ const Login = ({ setFullName }: LoginProps) => {
                 letterSpacing: '2px',
               }}
             >
-              LOGIN
+              ĐĂNG NHẬP
             </Typography>
 
             <Typography
@@ -393,12 +393,12 @@ const Login = ({ setFullName }: LoginProps) => {
                 textAlign: 'center',
               }}
             >
-              Sign in to your account
+              Đăng nhập vào tài khoản của bạn
             </Typography>
 
             <Box sx={{ mb: 3, position: 'relative' }}>
               <TextField
-                placeholder="Username"
+                placeholder="Tên đăng nhập"
                 fullWidth
                 name="username"
                 value={user.username}
@@ -430,7 +430,7 @@ const Login = ({ setFullName }: LoginProps) => {
 
             <Box sx={{ mb: 3, position: 'relative' }}>
               <TextField
-                placeholder="Password"
+                placeholder="Mật khẩu"
                 type="password"
                 fullWidth
                 name="password"
@@ -468,7 +468,7 @@ const Login = ({ setFullName }: LoginProps) => {
                   fontSize: '14px',
                 }}
               >
-                Forgot password?
+                Quên mật khẩu?
               </Link>
             </Box>
 
@@ -490,12 +490,12 @@ const Login = ({ setFullName }: LoginProps) => {
                 },
               }}
             >
-              Login
+              Đăng nhập
             </Button>
 
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="body2" sx={{ color: '#7f8c8d' }}>
-                Don't have an account?{' '}
+                Chưa có tài khoản?{' '}
                 <Link
                   to="/signup"
                   style={{
@@ -504,7 +504,7 @@ const Login = ({ setFullName }: LoginProps) => {
                     fontWeight: 'bold',
                   }}
                 >
-                  Sign up now
+                  Đăng ký ngay
                 </Link>
               </Typography>
             </Box>

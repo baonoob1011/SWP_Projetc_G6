@@ -109,7 +109,7 @@ const Forget = () => {
               '&:hover': { opacity: 0.8 },
             }}
           >
-            Home
+            Trang chủ
           </Typography>
           <Typography
             variant="body1"
@@ -119,7 +119,7 @@ const Forget = () => {
               '&:hover': { opacity: 0.8 },
             }}
           >
-            About Us
+            Về chúng tôi
           </Typography>
           <Typography
             variant="body1"
@@ -129,7 +129,7 @@ const Forget = () => {
               '&:hover': { opacity: 0.8 },
             }}
           >
-            Help
+            Trợ giúp
           </Typography>
         </div>
 
@@ -197,10 +197,10 @@ const Forget = () => {
               variant="body2"
               sx={{ color: 'white', fontWeight: 'bold' }}
             >
-              Phone
+              Số điện thoại
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-              +123-456-7890
+              0943.283.195
             </Typography>
           </div>
         </div>
@@ -228,7 +228,7 @@ const Forget = () => {
               E-Mail
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-              hello@genelink.com
+              genlink.fpt.vn@gmail.com
             </Typography>
           </div>
         </div>
@@ -281,10 +281,10 @@ const Forget = () => {
               variant="body2"
               sx={{ color: 'white', fontWeight: 'bold' }}
             >
-              Address
+              Địa chỉ
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-              123 Anywhere St., Any City
+            22/14 Đ. Phan Văn Hớn, Tân Thới Nhất, Quận 12, Hồ Chí Minh
             </Typography>
           </div>
         </div>
@@ -327,7 +327,7 @@ const Forget = () => {
                 letterSpacing: '2px',
               }}
             >
-              FORGET PASSWORD
+              QUÊN MẬT KHẨU
             </Typography>
 
             <Typography
@@ -338,12 +338,12 @@ const Forget = () => {
                 textAlign: 'center',
               }}
             >
-              Enter your email to receive OTP code
+              Nhập email để nhận mã OTP
             </Typography>
 
             <Box sx={{ mb: 3, position: 'relative' }}>
               <TextField
-                placeholder="Email Address"
+                placeholder="Email"
                 type="email"
                 fullWidth
                 name="email"
@@ -404,7 +404,7 @@ const Forget = () => {
 
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="body2" sx={{ color: '#7f8c8d' }}>
-                Remember your password?{' '}
+                Nhớ mật khẩu của bạn?{' '}
                 <Link
                   to="/login"
                   style={{
@@ -413,7 +413,7 @@ const Forget = () => {
                     fontWeight: 'bold',
                   }}
                 >
-                  Back to Login
+                  Quay lại đăng nhập
                 </Link>
               </Typography>
             </Box>

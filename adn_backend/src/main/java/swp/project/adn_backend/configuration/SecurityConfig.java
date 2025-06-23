@@ -46,13 +46,14 @@ public class SecurityConfig {
             "/api/services/get-all-civil-service",
             "/api/price/get-all-price/**",
             "/api/jasperpdf/**",
+            "/api/blog/get-all-blog",
     };
 
     private final String[] USER_ENDPOINTS = {
             "/api/appointment/book-appointment/**",
             "/api/appointment/cancel-appointment/**",
             "/api/appointment/get-appointment/**",
-            "/api/appointment/get-appointment-at-home/**",
+            "/api/appointment/get-all-result/**",
             "/api/appointment/get-appointment-history-user/**",
             "/api/slot/get-all-slot-user/**",
             "/api/patient/register-info",
@@ -64,6 +65,9 @@ public class SecurityConfig {
             "/api/v1/**",
             "/api/appointment/book-appointment-at-home/**",
             "/api/appointment/cancel-appointment/**",
+            "/api/kit-delivery-status/get-kit-status-user/**",
+            "/api/feedback/create-feedback/**",
+            "/api/feedback/get-all-feedback-of-service/**",
     };
 
     private final String[] STAFF_ENDPOINTS = {
@@ -73,11 +77,20 @@ public class SecurityConfig {
             "/api/appointment/confirm-appointment-at-center/**",
             "/api/appointment/confirm-appointment-at-home/**",
             "/api/appointment/get-appointment-by-slot/**",
+            "/api/appointment/get-appointment-of-user-by-phone/**",
+            "/api/appointment/get-payment-at-center/**",
             "/api/sample/collect-sample-patient/**",
             "/api/sample/get-all-sample/**",
             "/api/slot/get-all-slot-of-staff/**",
             "/api/result-locus/create-result-locus/**",
             "/api/result-detail/create-result-detail/**",
+            "/api/kit-delivery-status/update-kit-status/**",
+            "/api/result-allele/create-result-allele",
+            "/api/locus/create-locus",
+            "/api/locus/get-all-locus",
+            "/api/appointment/get-appointment-at-home-by-staff",
+            "/api/kit-delivery-status/get-kit-status-staff-by-appointment/**",
+            "/api/appointment/get-appointment-at-home-to-get-sample",
             "/api/staff/**"
     };
 
@@ -126,7 +139,7 @@ public class SecurityConfig {
                         .requestMatchers(ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
 
 
-                                // Các request khác yêu cầu xác thực
+                        // Các request khác yêu cầu xác thực
                         .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/api/logout")

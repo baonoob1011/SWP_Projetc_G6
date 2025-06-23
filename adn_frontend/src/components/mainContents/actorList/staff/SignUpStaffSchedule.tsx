@@ -304,7 +304,7 @@ const SignUpStaffSchedule = () => {
           showConfirmButton: false,
           timer: 1500,
         });
-
+        await fetchSlot();
         // Reset form
         setIsSchedule({
           staffId: '',

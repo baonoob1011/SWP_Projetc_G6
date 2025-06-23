@@ -14,6 +14,33 @@ public class ResultLocusRequest {
     double allele2;
     double frequency;
     double pi;
+    private Long locusId;
+    private String sampleCode1;
+    private String sampleCode2;
+
+    public Long getLocusId() {
+        return locusId;
+    }
+
+    public String getSampleCode1() {
+        return sampleCode1;
+    }
+
+    public void setSampleCode1(String sampleCode1) {
+        this.sampleCode1 = sampleCode1;
+    }
+
+    public String getSampleCode2() {
+        return sampleCode2;
+    }
+
+    public void setSampleCode2(String sampleCode2) {
+        this.sampleCode2 = sampleCode2;
+    }
+
+    public void setLocusId(Long locusId) {
+        this.locusId = locusId;
+    }
 
     public String getLocusName() {
         return locusName;

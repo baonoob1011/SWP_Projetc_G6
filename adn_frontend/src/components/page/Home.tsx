@@ -33,6 +33,7 @@ import { ArrowForwardRounded } from '@mui/icons-material';
 
 export default function Home() {
   // ref đúng type SwiperRef
+
 const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát việc mở/đóng modal
 
   const handleOpenModal = () => {
@@ -42,6 +43,7 @@ const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát vi�
   const handleCloseModal = () => {
     setIsModalOpen(false); // Đóng modal
   };
+
 
   const swiperRef = useRef<SwiperRef | null>(null);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
@@ -224,6 +226,7 @@ const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát vi�
     },
   ];
 
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 relative overflow-x-hidden">
       {/* 3 icon lơ lửng, giữ nguyên shape */}
