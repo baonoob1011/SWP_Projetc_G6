@@ -69,7 +69,7 @@ public class SampleService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
 
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
         Sample sample = sampleMapper.toSample(sampleRequest);
         sample.setSampleStatus(SampleStatus.COLLECTED);
         sample.setCollectionDate(LocalDate.now());
@@ -90,6 +90,13 @@ public class SampleService {
         return String.format("%c%04d%c", firstChar, numberPart, lastChar);
     }
 
+
+
+
+
+
+    
+
     public List<AllSampleResponse> getAllSampleOfPatient(Authentication authentication,
                                                          long appointmentId) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -97,7 +104,7 @@ public class SampleService {
 
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
-        List<Sample> sampleList = appointment.getStaff().getSamples();
+        List<Sample> sampleList = appointment.getSampleList();
         List<AllSampleResponse> allSampleResponseList = new ArrayList<>();
         for (Sample sample : sampleList) {
 

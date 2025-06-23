@@ -398,11 +398,11 @@ public class AppointmentService {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long staffId = jwt.getClaim("id");
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO(" +
-                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note, s.appointmentType, s.staff.staffId, s.users.userId, s.services.serviceId) " +
-                "FROM Appointment s WHERE " +
-                "s.appointmentDate >= CURRENT_DATE " +
-                "AND s.appointmentStatus=:appointmentStatus " +
-                "AND s.appointmentType=:appointmentType " +
+                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note, " +
+                "s.appointmentType, s.staff.staffId, s.users.userId, s.services.serviceId) " +
+                "FROM Appointment s " +
+                "WHERE s.appointmentStatus = :appointmentStatus " +
+                "AND s.appointmentType = :appointmentType " +
                 "AND s.staff.staffId = :staffId";
         TypedQuery<AppointmentAtHomeInfoDTO> query = entityManager.createQuery(jpql, AppointmentAtHomeInfoDTO.class);
         query.setParameter("appointmentStatus", AppointmentStatus.PENDING);
