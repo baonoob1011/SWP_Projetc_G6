@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 type Locus = {
-  alleleValue: string;
+  allele1: string;
+  allele2: string;
   locusId: string;
   locusName: string;
 };
 
 const CreateResultAllele = () => {
-  const [allelePosition, setAllelePosition] = useState('');
-  const [alleleValue, setAlleleValue] = useState('');
+  const [allele1, setAllele1] = useState('');
+  const [allele2, setAllele2] = useState('');
   const [alleleStatus, setAlleleStatus] = useState('ENTERED');
   const [locusList, setLocusList] = useState<Locus[]>([]);
   const [selectedLocus, setSelectedLocus] = useState('');
   const { sampleId } = useParams();
   const location = useLocation();
   const { patientName } = location.state || {};
-
+  const navigate = useNavigate();
+  const { appointmentId } = location.state || {};
   const fetchData = async () => {
     try {
       const res = await fetch('http://localhost:8080/api/locus/get-all-locus', {
@@ -51,8 +53,8 @@ const CreateResultAllele = () => {
     }
 
     const data = {
-      alleleValue,
-      allelePosition,
+      allele1,
+      allele2,
       alleleStatus,
     };
 
@@ -71,10 +73,11 @@ const CreateResultAllele = () => {
 
       if (response.ok) {
         toast.success('Tạo kết quả allele thành công!');
-        setAlleleValue('');
-        setAllelePosition('');
+        setAllele1('');
+        setAllele2('');
         setAlleleStatus('ENTERED');
         setSelectedLocus('');
+        navigate(`/s-page/get-appointment/${appointmentId}`);
       } else {
         const errorData = await response.json();
         toast.error('Lỗi: ' + errorData.message);
@@ -107,8 +110,18 @@ const CreateResultAllele = () => {
           <input
             type="text"
             className="form-control"
-            value={alleleValue}
-            onChange={(e) => setAlleleValue(e.target.value)}
+            value={allele1}
+            onChange={(e) => setAllele1(e.target.value)}
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Giá trị Allele</label>
+          <input
+            type="text"
+            className="form-control"
+            value={allele2}
+            onChange={(e) => setAllele2(e.target.value)}
             required
           />
         </div>
