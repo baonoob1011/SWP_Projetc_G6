@@ -13,15 +13,14 @@ import {
   List,
   BookImageIcon,
 } from 'lucide-react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Button } from '@mui/material';
-import { ArrowBack, Schedule } from '@mui/icons-material';
+import { AppRegistration, ArrowBack, Schedule } from '@mui/icons-material';
 
 const StaffPage = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeItem, setActiveItem] = useState('dashboard');
   const [notifications] = useState(0);
-  const navigate = useNavigate();
   const [fullName, setFullName] = useState<string>('');
 
   useEffect(() => {
@@ -39,10 +38,16 @@ const StaffPage = () => {
       path: 's-page/s-slot',
     },
     {
-      id: 'schedule',
+      id: 'appointment',
       icon: BookImageIcon,
       label: 'Lịch hẹn',
       path: 's-page/checkBooking',
+    },
+    {
+      id: 'checkAppointment',
+      icon: AppRegistration,
+      label: 'Đơn đăng ký',
+      path: 's-page/selectorSlot',
     },
   ];
 
@@ -63,8 +68,6 @@ const StaffPage = () => {
       localStorage.removeItem('fullName');
       localStorage.removeItem('role');
       setFullName('');
-
-      navigate('/login');
       window.location.href = '/login';
     } catch (error) {
       console.error('Logout API error:', error);

@@ -3,52 +3,87 @@ import { Routes, Route, useLocation, matchPath } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 
-import Map from './components/page/Map';
+// Trang chính
+import Home from './components/page/Home';
 import Blog from './components/page/Blog';
+import Map from './components/page/Map';
+import SignUp from './components/page/SignUp';
+import Forget from './components/page/Forget';
+import Login from './components/page/Login';
+
+// Layout chung
+import { Header } from './components/mainContents/Header';
 import AdminSidebar from './components/page/AdminPage';
 import StaffPage from './components/page/StaffPage';
 import ManagerPage from './components/page/ManagerPage';
 import BranchAndMap from './components/page/BranchAndMap';
 
-import Home from './components/page/Home';
-
-import { Header } from './components/mainContents/Header';
+// Route được bảo vệ và chức năng phụ
 import ProtectedRoute from './components/mainContents/feature/ProtectedRoute';
 import OldPassWord from './components/mainContents/feature/OldPassword';
 import CreateLocation from './components/mainContents/feature/CreateLocation';
-import PatientRequest from './components/mainContents/feature/PatientRequest';
-import GetSlot from './components/mainContents/feature/GetSlot';
+import CreateRoom from './components/mainContents/feature/CreateRoom';
+import CreateKit from './components/mainContents/feature/CreateKit';
+import CreateLocus from './components/mainContents/feature/CreateLocus';
 
+// Dữ liệu người dùng (User / Staff / Manager / Collector / Admin)
 import DataList, {
   DataList2,
 } from './components/mainContents/actorList/AllDataList';
-import GetUserByStaff from './components/mainContents/actorList/GetUserByStaff';
-import GetManagerByAdmin from './components/mainContents/actorList/GetManagerByAdmin';
-import GetStaffByAdmin from './components/mainContents/actorList/GetStaffByAdmin';
-import GetUserByAdmin from './components/mainContents/actorList/GetUserByAdmin';
-import GetStaffByManager from './components/mainContents/actorList/GetStaffByManager';
-import GetUserByManager from './components/mainContents/actorList/GetUserByManager';
-
-import NewProfile from './components/mainContents/actorList/StaffAndManagerProfile';
 import NewUserProfile from './components/mainContents/actorList/UserProfile';
-import StaffSlot from './components/mainContents/actorList/StaffShedule';
-import SignUpStaffSchedule from './components/mainContents/actorList/SignUpStaffSchedule';
+import NewProfile from './components/mainContents/actorList/StaffAndManagerProfile';
 
-import CivilServiceList from './components/mainContents/services/GetCivilService';
-import AdministrativeServiceList from './components/mainContents/services/GetAdmintrativeService';
-import ServiceList from './components/mainContents/services/GetService';
+import GetUserByAdmin from './components/mainContents/actorList/GetUserByAdmin';
+import GetStaffByAdmin from './components/mainContents/actorList/GetStaffByAdmin';
+import GetManagerByAdmin from './components/mainContents/actorList/GetManagerByAdmin';
+import GetCollector from './components/mainContents/actorList/GetCollector';
+
+import GetUserByStaff from './components/mainContents/actorList/GetUserByStaff';
+import GetUserByManager from './components/mainContents/actorList/GetUserByManager';
+import GetStaffByManager from './components/mainContents/actorList/GetStaffByManager';
+
+// Đăng ký tài khoản
 import SignUpManager from './components/mainContents/feature/SignUpForManager';
 import SignUpStaff from './components/mainContents/feature/SignUpForStaff';
+import SignUpCollector from './components/mainContents/actorList/staff/SignUpColector';
+import SignUpStaffAtHome from './components/mainContents/actorList/staff/StaffAtHome';
+
+// Quản lý lịch & Slot
+import StaffSlot from './components/mainContents/actorList/staff/GetStaffShedule';
+import SignUpStaffSchedule from './components/mainContents/actorList/staff/SignUpStaffSchedule';
+import AppointmentSchedule from './components/mainContents/actorList/staff/AppoimentSchedule';
+import { CollectorSlots } from './components/mainContents/actorList/staff/CollectorSlot';
+
+// Quản lý cuộc hẹn
+import CheckAppointment from './components/mainContents/actorList/staff/CheckAppointment';
+import GetSampleInfo from './components/mainContents/actorList/staff/GetSampleInfo';
+import GetAppointmentByAdmin from './components/mainContents/actorList/admin/GetAppointment';
+
+// Quản lý dịch vụ & kết quả
 import Services from './components/mainContents/services/CreateServices';
-import SignUp from './components/page/SignUp';
-import Forget from './components/page/Forget';
-import Login from './components/page/Login';
-import CreateRoom from './components/mainContents/feature/CreateRoom';
-import CreateKit from './components/mainContents/feature/CreateKit';
-import NewPrice from './components/mainContents/feature/NewPrice';
-import GetAppointment from './components/mainContents/feature/GetBooking';
-import VNPayResult from './components/mainContents/feature/VNPAY';
-import AppointmentSchedule from './components/mainContents/feature/staff/AppoimentSchedule';
+import ServiceList from './components/mainContents/services/GetService';
+import CivilServiceList from './components/mainContents/services/GetCivilService';
+import AdministrativeServiceList from './components/mainContents/services/GetAdmintrativeService';
+import NewPrice from './components/mainContents/services/NewPrice';
+import CreateResultAllele from './components/mainContents/actorList/staff/ResultAllele';
+
+// Đăng ký dịch vụ
+import BookingAtCenter from './components/mainContents/services/BookingAtCenter';
+import BookingAtHome from './components/mainContents/services/BookingAtHome';
+
+import CheckAppointment from './components/mainContents/actorList/staff/CheckAppointment';
+import { CollectorSlots } from './components/mainContents/actorList/staff/CollectorSlot';
+import GetCollector from './components/mainContents/actorList/GetCollector';
+import SignUpCollector from './components/mainContents/actorList/staff/SignUpColector';
+import CreateBlog from './components/mainContents/services/CreateBlog';
+
+import PatientRequest from './components/mainContents/feature/PatientRequest';
+
+// Thanh toán
+import VNPayResult from './components/mainContents/services/VNPAY';
+import GetStaffAtHome from './components/mainContents/actorList/staff/GetStaffAtHome';
+
+// import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
   const [fullname, setFullName] = useState(
@@ -64,8 +99,12 @@ function App() {
     '/s-page/s-userData',
     '/s-page/s-slot',
     '/s-page/checkBooking',
+    '/s-page/checkAppointment/:slotId',
+    '/s-page/get-appointment/:appointmentId',
+    '/s-page/selectorSlot',
+    '/s-page/record-result/:sampleId',
     '/s-page',
-  ].includes(location.pathname);
+  ].some((path) => matchPath(path, location.pathname));
 
   const isManagerLayoutRoute = [
     '/manager/data',
@@ -123,6 +162,30 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route
+                  path="collector"
+                  element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <GetCollector />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="appointment"
+                  element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <GetAppointmentByAdmin />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="staff-at-home"
+                  element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <GetStaffAtHome />
+                    </ProtectedRoute>
+                  }
+                />
               </Route>
               <Route
                 path="/signup-manager"
@@ -172,6 +235,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+               <Route
+                path="/create-blog"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <CreateBlog />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/a-getAllService"
                 element={
@@ -181,7 +252,15 @@ function App() {
                 }
               />
               <Route
-                path="/s-slot/:staffId"
+                path="/newPrice/:serviceId"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <NewPrice />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/schedule"
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <SignUpStaffSchedule />
@@ -189,10 +268,26 @@ function App() {
                 }
               />
               <Route
-                path="/newPrice/:serviceId"
+                path="/create-locus"
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
-                    <NewPrice />
+                    <CreateLocus />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup-collector"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <SignUpCollector />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup-staff-at-home"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <SignUpStaffAtHome />
                   </ProtectedRoute>
                 }
               />
@@ -254,6 +349,38 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['STAFF']}>
                     <AppointmentSchedule />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/s-page/record-result/:sampleId"
+                element={
+                  <ProtectedRoute allowedRoles={['STAFF']}>
+                    <CreateResultAllele />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/s-page/checkAppointment/:slotId"
+                element={
+                  <ProtectedRoute allowedRoles={['STAFF']}>
+                    <CheckAppointment />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/s-page/get-appointment/:appointmentId"
+                element={
+                  <ProtectedRoute allowedRoles={['STAFF']}>
+                    <GetSampleInfo />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/s-page/selectorSlot"
+                element={
+                  <ProtectedRoute allowedRoles={['STAFF']}>
+                    <CollectorSlots />
                   </ProtectedRoute>
                 }
               />
@@ -378,10 +505,18 @@ function App() {
               }
             />
             <Route
-              path="/order/:serviceId"
+              path="/order/at-center/:serviceId"
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
-                  <GetSlot />
+                  <BookingAtCenter />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/order/at-home/:serviceId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <BookingAtHome />
                 </ProtectedRoute>
               }
             />
@@ -398,14 +533,6 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <VNPayResult />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/checkBooking"
-              element={
-                <ProtectedRoute allowedRoles={['USER']}>
-                  <GetAppointment />
                 </ProtectedRoute>
               }
             />

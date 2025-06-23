@@ -1,17 +1,19 @@
 package swp.project.adn_backend.controller.serviceController;
 
 import jakarta.validation.Valid;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.GlobalRequest.BookAppointmentRequest;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
+import swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
-import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentAtCenterResponse;
-import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentAtHomeResponse;
-import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentResponse;
+import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.*;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.AllAppointmentResult;
 import swp.project.adn_backend.dto.response.appointment.updateAppointmentStatus.UpdateAppointmentStatusResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.Appointment;
@@ -80,6 +82,48 @@ public class AppointmentController {
     }
 
 
+    //staff lấy đo dk tại nhà ra nhập mẫu
+    @GetMapping("/get-appointment-at-home-to-get-sample")
+    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentAtHomeToGetSample(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeToGetSample(authentication));
+    }
+    //staff lay appoint de thanh toan tien mat
+    @GetMapping("/get-appointment-of-user-by-phone")
+    public ResponseEntity<List<AllAppointmentAtCenterUserResponse>> getAppointmentOfUser(@RequestBody UserRequest userRequest) {
+        return ResponseEntity.ok(appointmentService.getAppointmentOfUser(userRequest));
+    }//staff lay appoint de thanh toan tien mat
+
+    @PutMapping("/get-payment-at-center")
+    public ResponseEntity<String> getAppointmentOfUser(@RequestParam long paymentId,
+                                                       @RequestParam long appointmentId) {
+        appointmentService.payAppointment(paymentId,appointmentId);
+        return ResponseEntity.ok("thanh toán bằng tiền mặt thành công");
+    }
+
+    @GetMapping("/get-appointment-at-home-by-staff")
+    public ResponseEntity<List<AppointmentAtHomeInfoDTO>> getAppointmentAtHome(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
+    }
+
+    //admin lấy ra để add staff dô
+    @GetMapping("/get-appointment-at-home-by-admin")
+    public ResponseEntity<List<AllAppointmentAtHomeManagerResponse>> getAppointmentAtHomeForAdmin() {
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeForAdmin());
+    }
+
+    @GetMapping("/get-all-result")
+    public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResult(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAllAppointmentsResult(authentication));
+    }
+
+    //thêm staff vào appointment at home
+    @PutMapping("/update-staff-to-appointment-at-home")
+    public ResponseEntity<String> addStaffToAppointment(@RequestParam long staffId,
+                                                        @RequestParam long appointmentId) {
+        appointmentService.addStaffToAppointment(staffId, appointmentId);
+        return ResponseEntity.ok("add staff to appointment successful");
+    }
+
     @PostMapping("/cancel-appointment/{appointmentId}")
     public ResponseEntity<String> cancelAppointment(@PathVariable("appointmentId") long appointmentId) {
         appointmentService.cancelledAppointment(appointmentId);
@@ -102,12 +146,10 @@ public class AppointmentController {
     @PutMapping("/confirm-appointment-at-home")
     public ResponseEntity<UpdateAppointmentStatusResponse> updateAppointmentStatusAtHome(@RequestParam long appointmentId,
                                                                                          @RequestParam long userId,
-                                                                                         @RequestParam long serviceId,
-                                                                                         @RequestParam long kitId) {
+                                                                                         @RequestParam long serviceId) {
         return ResponseEntity.ok(appointmentService.ConfirmAppointmentAtHome(appointmentId,
                 userId,
-                serviceId,
-                kitId));
+                serviceId));
     }
 
     // tạo nút update appointment

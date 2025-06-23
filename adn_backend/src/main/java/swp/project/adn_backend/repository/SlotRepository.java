@@ -126,5 +126,25 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
             @Param("slotDate") LocalDate slotDate,
             @Param("nowTime") LocalTime nowTime
     );
+    List<Slot> findAllBySlotDate(LocalDate slotDate);
+
+    //validation staff k trung thoi gian da book
+    @Query(value = """
+    SELECT COUNT(*) 
+    FROM staff_slot ss
+    JOIN slot s ON ss.slot_id = s.slot_id
+    WHERE ss.staff_id = :staffId
+      AND s.slot_date = :slotDate
+      AND (
+            s.start_time < CAST(:endTime AS time) 
+            AND s.end_time > CAST(:startTime AS time)
+          )
+""", nativeQuery = true)
+    Integer isStaffOverlappingSlot(
+            @Param("staffId") long staffId,
+            @Param("slotDate") LocalDate slotDate,
+            @Param("startTime") LocalTime startTime,
+            @Param("endTime") LocalTime endTime
+    );
 
 }

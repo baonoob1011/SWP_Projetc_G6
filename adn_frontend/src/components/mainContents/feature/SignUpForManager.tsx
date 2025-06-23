@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   FormControlLabel,
   FormHelperText,
   Paper,
@@ -8,14 +9,13 @@ import {
   RadioGroup,
   TextField,
   Typography,
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import CustomSnackBar from "../userinfor/Snackbar";
-import { signUpStaffSchema } from "../userinfor/Validation";
-import { ValidationError } from "yup";
-import Swal from "sweetalert2";
-import styles from "./Staff.module.css";
-
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import CustomSnackBar from '../userinfor/Snackbar';
+import { signUpStaffSchema } from '../userinfor/Validation';
+import { ValidationError } from 'yup';
+import Swal from 'sweetalert2';
+import styles from './Staff.module.css';
 
 type Manager = {
   fullName: string;
@@ -24,7 +24,7 @@ type Manager = {
   username: string;
   password: string;
   confirmPassword: string;
-  gender: "Male" | "Female";
+  gender: 'Male' | 'Female';
   address: string;
   phone: string;
   dateOfBirth: string;
@@ -42,57 +42,52 @@ type ErrorResponse = {
 
 const SignUpManager = () => {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [manager, setManager] = useState<Manager>({
-    fullName: "",
-    idCard: "",
-    email: "",
-    username: "",
-    password: "",
-    confirmPassword: "",
-    gender: "Male",
-    address: "",
-    phone: "",
-    dateOfBirth: "",
+    fullName: '',
+    idCard: '',
+    email: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+    gender: 'Male',
+    address: '',
+    phone: '',
+    dateOfBirth: '',
   });
+
   const [error, setError] = useState<{ [key: string]: string }>({});
   const [snackbar, setSnackbar] = useState({
     open: false,
-    message: "",
-    severity: "success" as "success" | "error",
+    message: '',
+    severity: 'success' as 'success' | 'error',
   });
 
   useEffect(() => {
-    setIsAdmin(localStorage.getItem("role") === "ADMIN");
+    setIsAdmin(localStorage.getItem('role') === 'ADMIN');
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const validateField = async (name: string, value: any) => {
+  const validateField = async (name: string, value: string) => {
     try {
       await signUpStaffSchema.validateAt(name, { ...manager, [name]: value });
-      setError((prev) => ({ ...prev, [name]: "" }));
+      setError((prev) => ({ ...prev, [name]: '' }));
     } catch (err) {
       if (err instanceof ValidationError) {
-        // Hiển thị thông báo chung cho trường hợp trống
-        if (value === "") {
-          setSnackbar({
-            open: true,
-            message: "Vui lòng điền đầy đủ thông tin",
-            severity: "error",
-          });
-          return;
-        }
-        
-        // Thông báo riêng cho số điện thoại
-        if (name === "phone") {
-          setSnackbar({
-            open: true,
-            message: "Vui lòng nhập số điện thoại",
-            severity: "error",
-          });
-          return;
-        }
-
         setError((prev) => ({ ...prev, [name]: err.message }));
+        if (value === '') {
+          setSnackbar({
+            open: true,
+            message: 'Vui lòng điền đầy đủ thông tin',
+            severity: 'error',
+          });
+        } else if (name === 'phone') {
+          setSnackbar({
+            open: true,
+            message: 'Vui lòng nhập số điện thoại hợp lệ',
+            severity: 'error',
+          });
+        }
       }
     }
   };
@@ -101,11 +96,10 @@ const SignUpManager = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let newValue: any = value;
+    let newValue = value;
 
-    if (name === "phone" || name === "idCard") {
-      newValue = value.replace(/\D/g, "");
+    if (name === 'phone' || name === 'idCard') {
+      newValue = value.replace(/\D/g, '');
     }
 
     setManager((prev) => ({
@@ -119,13 +113,14 @@ const SignUpManager = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Kiểm tra xem có trường nào bị trống không
-    const emptyFields = Object.entries(manager).filter(([key, value]) => !value && key !== "gender");
+    const emptyFields = Object.entries(manager).filter(
+      ([key, value]) => !value && key !== 'gender'
+    );
     if (emptyFields.length > 0) {
       setSnackbar({
         open: true,
-        message: "Vui lòng điền đầy đủ thông tin",
-        severity: "error",
+        message: 'Vui lòng điền đầy đủ thông tin',
+        severity: 'error',
       });
       return;
     }
@@ -133,94 +128,91 @@ const SignUpManager = () => {
     try {
       await signUpStaffSchema.validate(manager, { abortEarly: false });
       setError({});
+      setLoading(true);
 
-      const { ...dataToSend } = manager;
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
 
       const response = await fetch(
-        "http://localhost:8080/api/register/manager-account",
+        'http://localhost:8080/api/register/manager-account',
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(dataToSend),
+          body: JSON.stringify(manager),
         }
       );
-
+      setLoading(false);
       if (!response.ok) {
         const errorData: ErrorResponse = await response.json();
 
         if (errorData.errors) {
           const messages = [];
-          if (errorData.errors.username) messages.push("Tên đăng nhập đã tồn tại");
-          if (errorData.errors.email) messages.push("Email đã tồn tại");
-          if (errorData.errors.phone) messages.push("Số điện thoại đã tồn tại");
-          if (errorData.errors.idCard) messages.push("CCCD không hợp lệ");
+          if (errorData.errors.username)
+            messages.push('Tên đăng nhập đã tồn tại');
+          if (errorData.errors.email) messages.push('Email đã tồn tại');
+          if (errorData.errors.phone) messages.push('Số điện thoại đã tồn tại');
+          if (errorData.errors.idCard) messages.push('CCCD không hợp lệ');
 
           setSnackbar({
             open: true,
-            message: messages.join(", "),
-            severity: "error",
+            message: messages.join(', '),
+            severity: 'error',
           });
         } else {
-          let errorMessage = "Có lỗi xảy ra";
-          if (response.status === 401) errorMessage = "Bạn không có quyền thực hiện chức năng này";
-          else if (response.status === 403) errorMessage = "Truy cập bị từ chối";
-          else if (response.status === 400) errorMessage = "Dữ liệu không hợp lệ";
+          let message = 'Đã xảy ra lỗi';
+          if (response.status === 401) message = 'Không có quyền thực hiện';
+          else if (response.status === 403) message = 'Truy cập bị từ chối';
+          else if (response.status === 400) message = 'Dữ liệu không hợp lệ';
 
-          setSnackbar({
-            open: true,
-            message: errorMessage,
-            severity: "error",
-          });
+          setSnackbar({ open: true, message, severity: 'error' });
         }
-      } else {
-        Swal.fire({
-          icon: "success",
-          title: "Đăng ký quản lý thành công!",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-
-        setManager({
-          fullName: "",
-          idCard: "",
-          email: "",
-          username: "",
-          password: "",
-          confirmPassword: "",
-          gender: "Male",
-          address: "",
-          phone: "",
-          dateOfBirth: "",
-        });
+        return;
       }
-    } catch (error) {
-      if (error instanceof ValidationError) {
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Đăng ký quản lý thành công!',
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+      setManager({
+        fullName: '',
+        idCard: '',
+        email: '',
+        username: '',
+        password: '',
+        confirmPassword: '',
+        gender: 'Male',
+        address: '',
+        phone: '',
+        dateOfBirth: '',
+      });
+    } catch (err) {
+      setLoading(false);
+      if (err instanceof ValidationError) {
         setSnackbar({
           open: true,
-          message: "Vui lòng kiểm tra lại thông tin đã nhập",
-          severity: "error",
+          message: 'Vui lòng kiểm tra lại thông tin đã nhập',
+          severity: 'error',
         });
       } else {
         setSnackbar({
           open: true,
-          message: "Không thể kết nối tới máy chủ",
-          severity: "error",
+          message: 'Không thể kết nối tới máy chủ',
+          severity: 'error',
         });
       }
     }
   };
 
-  if (!isAdmin) {
-    return;
-  }
+  if (!isAdmin) return null;
 
   return (
     <div className={styles.container}>
-      <Paper elevation={20} className={styles.paper} >
+      <Paper elevation={20} className={styles.paper}>
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Typography variant="h5" gutterBottom className={styles.title}>
             Thông tin quản lý
@@ -236,7 +228,6 @@ const SignUpManager = () => {
             error={!!error.fullName}
             helperText={error.fullName}
           />
-
           <TextField
             fullWidth
             margin="normal"
@@ -248,7 +239,6 @@ const SignUpManager = () => {
             helperText={error.idCard}
             inputProps={{ maxLength: 12 }}
           />
-
           <TextField
             fullWidth
             margin="normal"
@@ -260,7 +250,6 @@ const SignUpManager = () => {
             error={!!error.email}
             helperText={error.email}
           />
-
           <TextField
             fullWidth
             margin="normal"
@@ -271,24 +260,18 @@ const SignUpManager = () => {
             error={!!error.username}
             helperText={error.username}
           />
-
           <TextField
             fullWidth
             margin="normal"
             name="password"
             label="Mật khẩu"
             type="password"
-            aria-describedby="rulePass"
             value={manager.password}
             onChange={handleInput}
             error={!!error.password}
             helperText={error.password}
           />
-          <FormHelperText
-            id="rulePass"
-            sx={{ textAlign: "left" }}
-            component="div"
-          >
+          <FormHelperText id="rulePass" sx={{ textAlign: 'left' }}>
             <ul style={{ margin: 0, paddingLeft: 20 }}>
               <li>Có ít nhất 8 ký tự</li>
               <li>Có ít nhất 1 chữ thường và hoa</li>
@@ -296,7 +279,6 @@ const SignUpManager = () => {
               <li>Có ít nhất 1 chữ số</li>
             </ul>
           </FormHelperText>
-
           <TextField
             fullWidth
             margin="normal"
@@ -308,7 +290,6 @@ const SignUpManager = () => {
             error={!!error.confirmPassword}
             helperText={error.confirmPassword}
           />
-
           <RadioGroup
             row
             name="gender"
@@ -318,12 +299,6 @@ const SignUpManager = () => {
             <FormControlLabel value="Male" control={<Radio />} label="Nam" />
             <FormControlLabel value="Female" control={<Radio />} label="Nữ" />
           </RadioGroup>
-          {error.gender && (
-            <FormHelperText error sx={{ textAlign: "left", mb: 1 }}>
-              {error.gender}
-            </FormHelperText>
-          )}
-
           <TextField
             fullWidth
             margin="normal"
@@ -334,7 +309,6 @@ const SignUpManager = () => {
             error={!!error.address}
             helperText={error.address}
           />
-
           <TextField
             fullWidth
             margin="normal"
@@ -347,7 +321,6 @@ const SignUpManager = () => {
             helperText={error.phone}
             inputProps={{ maxLength: 10 }}
           />
-
           <TextField
             fullWidth
             margin="normal"
@@ -358,9 +331,7 @@ const SignUpManager = () => {
             onChange={handleInput}
             error={!!error.dateOfBirth}
             helperText={error.dateOfBirth}
-            InputLabelProps={{
-              shrink: true,
-            }}
+            InputLabelProps={{ shrink: true }}
           />
 
           <Button
@@ -369,11 +340,17 @@ const SignUpManager = () => {
             color="primary"
             fullWidth
             sx={{ mt: 2 }}
+            disabled={loading}
           >
-            Đăng Ký Nhân Viên
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              'Đăng ký nhân viên'
+            )}
           </Button>
         </Box>
       </Paper>
+
       <CustomSnackBar
         open={snackbar.open}
         message={snackbar.message}

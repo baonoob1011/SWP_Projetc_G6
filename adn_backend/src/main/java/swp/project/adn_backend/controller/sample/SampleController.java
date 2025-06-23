@@ -5,8 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.request.sample.SampleRequest;
+import swp.project.adn_backend.dto.response.sample.AllSampleResponse;
 import swp.project.adn_backend.dto.response.sample.SampleResponse;
 import swp.project.adn_backend.service.sample.SampleService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/sample")
@@ -14,7 +17,7 @@ public class SampleController {
     @Autowired
     private SampleService sampleService;
 
-    @GetMapping("/collect-sample-patient")
+    @PostMapping("/collect-sample-patient")
     public ResponseEntity<SampleResponse> collectSample(@RequestBody SampleRequest sampleRequest,
                                                         @RequestParam long patientId,
                                                         @RequestParam long serviceId,
@@ -30,4 +33,24 @@ public class SampleController {
         ));
 
     }
+
+    @GetMapping("/get-all-sample")
+    public ResponseEntity<List<AllSampleResponse>> getAllSample(Authentication authentication,
+                                                                @RequestParam long appointmentId) {
+        return ResponseEntity.ok(sampleService.getAllSampleOfPatient(authentication, appointmentId));
+    }
+
+    @PutMapping("/update-status-sample")
+    public ResponseEntity<String> updateSampleStatus(@RequestBody SampleRequest sampleRequest,
+                                                     @RequestParam long sampleId) {
+        sampleService.updateSampleStatus(sampleId, sampleRequest);
+        return ResponseEntity.ok("Update successful");
+    }
+
+    @DeleteMapping("/delete-sample")
+    public ResponseEntity<String> deleteSample(@RequestParam long sampleId) {
+        sampleService.deleteSample(sampleId);
+        return ResponseEntity.ok("delete sample successful");
+    }
+
 }

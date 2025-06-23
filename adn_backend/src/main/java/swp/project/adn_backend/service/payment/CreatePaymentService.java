@@ -125,7 +125,5 @@ public class CreatePaymentService {
         invoiceRepository.save(invoice);
         System.out.println("❌ Invoice marked as FAILED.");
     }
-
-
 }
 

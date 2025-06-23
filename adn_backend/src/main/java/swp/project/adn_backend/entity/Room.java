@@ -38,6 +38,8 @@ public class Room {
         this.slots = slots;
     }
 
+
+
     public RoomStatus getRoomStatus() {
         return roomStatus;
     }

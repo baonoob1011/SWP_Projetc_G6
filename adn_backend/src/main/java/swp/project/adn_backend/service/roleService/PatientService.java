@@ -37,24 +37,31 @@ public class PatientService {
         this.userRepository = userRepository;
     }
 
-    public List<Patient> registerServiceTest(List<PatientRequest> patientRequest
-            , Users userBookAppointment, ServiceTest serviceTest) {
+    public List<Patient> registerServiceTest(List<PatientRequest> patientRequest,
+                                             Users userBookAppointment,
+                                             ServiceTest serviceTest) {
         List<Patient> patientList = new ArrayList<>();
         for (PatientRequest request : patientRequest) {
             Patient patient = patientMapper.toPatientRequest(request);
             patient.setCreateAt(LocalDate.now());
             patient.setRole(Roles.PATIENT.name());
             patient.setPatientStatus(PatientStatus.REGISTERED);
-            patient.setUsers(userBookAppointment);
-            patient.setServiceTest(serviceTest);
-            patientList.add(patient);
+            patient.setUsers(userBookAppointment); // gắn user
+            patient.setServiceTest(serviceTest);   // gắn service
+            patientList.add(patient);              // add vào danh sách mới
         }
 
-        userBookAppointment.setPatients(patientList);
+        // Cập nhật danh sách bệnh nhân của userBookAppointment đúng cách
+        if (userBookAppointment.getPatients() == null) {
+            userBookAppointment.setPatients(new ArrayList<>());
+        }
+        userBookAppointment.getPatients().addAll(patientList); // add all mới đúng chỗ
+
+        // Lưu danh sách
         patientRepository.saveAll(patientList);
 
-        // Trả về danh sách bệnh nhân đã được lưu
         return patientList;
     }
+
 
 }

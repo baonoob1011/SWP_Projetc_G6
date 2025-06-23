@@ -8,7 +8,6 @@ import {
   OutlinedInput,
   Paper,
   Typography,
-  Divider,
   Card,
   CardContent,
   type SelectChangeEvent,
@@ -327,15 +326,15 @@ const GetSlot = () => {
 
   if (!auth) {
     return (
-      <Box 
-        sx={{ 
-          p: 4, 
+      <Box
+        sx={{
+          p: 4,
           textAlign: 'center',
           backgroundColor: '#f0f9ff',
           minHeight: '200px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}
       >
         <Typography variant="h6" color="primary">
@@ -346,41 +345,45 @@ const GetSlot = () => {
   }
 
   return (
-    <Box sx={{ 
-      backgroundColor: '#f0f9ff', 
-      minHeight: '100vh',
-      py: 4
-    }}>
-      <Box sx={{ 
-        maxWidth: '1400px', 
-        mx: 'auto', 
-        px: 3 
-      }}>
+    <Box
+      sx={{
+        backgroundColor: '#f0f9ff',
+        minHeight: '100vh',
+        py: 4,
+      }}
+    >
+      <Box
+        sx={{
+          maxWidth: '1400px',
+          mx: 'auto',
+          px: 3,
+        }}
+      >
         {/* Header */}
-        <Paper 
-          elevation={2} 
-          sx={{ 
-            p: 4, 
-            mb: 4, 
+        <Paper
+          elevation={2}
+          sx={{
+            p: 4,
+            mb: 4,
             backgroundColor: '#ffffff',
             borderRadius: 3,
-            border: '1px solid #e0f2fe'
+            border: '1px solid #e0f2fe',
           }}
         >
-          <Typography 
-            variant="h4" 
-            component="h1" 
-            sx={{ 
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
               color: '#0277bd',
               fontWeight: 600,
               mb: 2,
-              textAlign: 'center'
+              textAlign: 'center',
             }}
           >
             Đặt lịch dịch vụ y tế
           </Typography>
-          <Typography 
-            variant="body1" 
+          <Typography
+            variant="body1"
             color="text.secondary"
             sx={{ textAlign: 'center' }}
           >
@@ -389,24 +392,24 @@ const GetSlot = () => {
         </Paper>
 
         {/* Booking Configuration */}
-        <Paper 
-          elevation={2} 
-          sx={{ 
-            p: 4, 
+        <Paper
+          elevation={2}
+          sx={{
+            p: 4,
             mb: 4,
             backgroundColor: '#ffffff',
             borderRadius: 3,
-            border: '1px solid #e0f2fe'
+            border: '1px solid #e0f2fe',
           }}
         >
-          <Typography 
-            variant="h5" 
-            sx={{ 
+          <Typography
+            variant="h5"
+            sx={{
               color: '#0277bd',
               fontWeight: 600,
               mb: 3,
               pb: 1,
-              borderBottom: '2px solid #b3e5fc'
+              borderBottom: '2px solid #b3e5fc',
             }}
           >
             Thông tin đặt lịch
@@ -415,7 +418,7 @@ const GetSlot = () => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             {/* Location Selection */}
             <FormControl fullWidth>
-              <InputLabel 
+              <InputLabel
                 id="location-select-label"
                 sx={{ color: '#0277bd', fontWeight: 500 }}
               >
@@ -426,25 +429,28 @@ const GetSlot = () => {
                 value={selectedLocation}
                 onChange={handleLocationChange}
                 input={<OutlinedInput label="Chọn Địa Điểm" />}
-                sx={{ 
+                sx={{
                   fontSize: '16px',
                   '& .MuiOutlinedInput-notchedOutline': {
                     borderColor: '#81d4fa',
-                    borderWidth: '2px'
+                    borderWidth: '2px',
                   },
                   '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#0277bd'
+                    borderColor: '#0277bd',
                   },
                   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#0277bd'
-                  }
+                    borderColor: '#0277bd',
+                  },
                 }}
               >
                 <MenuItem value="">
                   <em>-- Chọn địa điểm --</em>
                 </MenuItem>
                 {locations.map((location) => (
-                  <MenuItem key={location.locationId} value={location.locationId}>
+                  <MenuItem
+                    key={location.locationId}
+                    value={location.locationId}
+                  >
                     {`${location.addressLine}, ${location.district}, ${location.city}`}
                   </MenuItem>
                 ))}
@@ -453,7 +459,7 @@ const GetSlot = () => {
 
             {/* Slot Selection */}
             <FormControl fullWidth>
-              <InputLabel 
+              <InputLabel
                 id="slot-select-label"
                 sx={{ color: '#0277bd', fontWeight: 500 }}
               >
@@ -464,18 +470,18 @@ const GetSlot = () => {
                 value={selectedSlot}
                 onChange={handleSlotChange}
                 input={<OutlinedInput label="Chọn Slot" />}
-                sx={{ 
+                sx={{
                   fontSize: '16px',
                   '& .MuiOutlinedInput-notchedOutline': {
                     borderColor: '#81d4fa',
-                    borderWidth: '2px'
+                    borderWidth: '2px',
                   },
                   '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#0277bd'
+                    borderColor: '#0277bd',
                   },
                   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#0277bd'
-                  }
+                    borderColor: '#0277bd',
+                  },
                 }}
                 disabled={selectedLocation === ''}
               >
@@ -494,7 +500,7 @@ const GetSlot = () => {
 
             {/* Price Selection */}
             <FormControl fullWidth>
-              <InputLabel 
+              <InputLabel
                 id="price-select-label"
                 sx={{ color: '#0277bd', fontWeight: 500 }}
               >
@@ -505,18 +511,18 @@ const GetSlot = () => {
                 value={selectedPrice}
                 onChange={handlePriceChange}
                 input={<OutlinedInput label="Chọn Giá Dịch Vụ" />}
-                sx={{ 
+                sx={{
                   fontSize: '16px',
                   '& .MuiOutlinedInput-notchedOutline': {
                     borderColor: '#81d4fa',
-                    borderWidth: '2px'
+                    borderWidth: '2px',
                   },
                   '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#0277bd'
+                    borderColor: '#0277bd',
                   },
                   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#0277bd'
-                  }
+                    borderColor: '#0277bd',
+                  },
                 }}
                 disabled={selectedSlot === ''}
               >
@@ -530,7 +536,7 @@ const GetSlot = () => {
 
             {/* Payment Method */}
             <FormControl fullWidth>
-              <InputLabel 
+              <InputLabel
                 id="payment-select-label"
                 sx={{ color: '#0277bd', fontWeight: 500 }}
               >
@@ -540,18 +546,18 @@ const GetSlot = () => {
                 value={paymentMethod}
                 labelId="payment-select-label"
                 input={<OutlinedInput label="Chọn phương thức thanh toán" />}
-                sx={{ 
+                sx={{
                   fontSize: '16px',
                   '& .MuiOutlinedInput-notchedOutline': {
                     borderColor: '#81d4fa',
-                    borderWidth: '2px'
+                    borderWidth: '2px',
                   },
                   '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#0277bd'
+                    borderColor: '#0277bd',
                   },
                   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#0277bd'
-                  }
+                    borderColor: '#0277bd',
+                  },
                 }}
                 onChange={(e) => setPaymentMethod(e.target.value)}
               >
@@ -566,40 +572,40 @@ const GetSlot = () => {
         {/* Patient Information */}
         <Box sx={{ display: 'flex', gap: 3, mb: 4 }}>
           {/* Patient One */}
-          <Card 
+          <Card
             elevation={3}
-            sx={{ 
+            sx={{
               flex: 1,
               backgroundColor: '#ffffff',
               border: '2px solid #b3e5fc',
-              borderRadius: 3
+              borderRadius: 3,
             }}
           >
             <CardContent sx={{ p: 4 }}>
-              <Typography 
-                variant="h6" 
-                sx={{ 
+              <Typography
+                variant="h6"
+                sx={{
                   color: '#0277bd',
                   fontWeight: 600,
                   mb: 3,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 1
+                  gap: 1,
                 }}
               >
                 👤 Thông tin người thứ nhất
               </Typography>
-              
+
               {fieldLabels.map(({ name, label, type }) => (
                 <Box key={`one-${name}`} sx={{ mb: 2.5 }}>
-                  <Typography 
-                    component="label" 
-                    sx={{ 
+                  <Typography
+                    component="label"
+                    sx={{
                       display: 'block',
                       mb: 1,
-                      color: '#37474f', 
+                      color: '#37474f',
                       fontWeight: 500,
-                      fontSize: '14px'
+                      fontSize: '14px',
                     }}
                   >
                     {label}
@@ -619,11 +625,11 @@ const GetSlot = () => {
                       '&:focus': {
                         outline: 'none',
                         borderColor: '#0277bd',
-                        boxShadow: '0 0 0 2px rgba(2, 119, 189, 0.1)'
+                        boxShadow: '0 0 0 2px rgba(2, 119, 189, 0.1)',
                       },
                       '&:hover': {
-                        borderColor: '#4fc3f7'
-                      }
+                        borderColor: '#4fc3f7',
+                      },
                     }}
                   />
                 </Box>
@@ -631,21 +637,21 @@ const GetSlot = () => {
 
               {/* Gender Selection */}
               <Box sx={{ mb: 2 }}>
-                <Typography 
-                  component="label" 
-                  sx={{ 
+                <Typography
+                  component="label"
+                  sx={{
                     display: 'block',
                     mb: 1.5,
-                    color: '#37474f', 
+                    color: '#37474f',
                     fontWeight: 500,
-                    fontSize: '14px'
+                    fontSize: '14px',
                   }}
                 >
                   Giới tính
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   {['Nam', 'Nữ'].map((gender) => (
-                    <Box 
+                    <Box
                       key={`one-gender-${gender}`}
                       sx={{ display: 'flex', alignItems: 'center' }}
                     >
@@ -657,18 +663,18 @@ const GetSlot = () => {
                         value={gender}
                         checked={patientOne.gender === gender}
                         onChange={handleInputPatientOne}
-                        sx={{ 
+                        sx={{
                           mr: 1,
-                          accentColor: '#0277bd'
+                          accentColor: '#0277bd',
                         }}
                       />
-                      <Typography 
-                        component="label" 
+                      <Typography
+                        component="label"
                         htmlFor={`one-gender-${gender}`}
-                        sx={{ 
+                        sx={{
                           fontWeight: 500,
                           cursor: 'pointer',
-                          color: '#37474f'
+                          color: '#37474f',
                         }}
                       >
                         {gender}
@@ -681,40 +687,40 @@ const GetSlot = () => {
           </Card>
 
           {/* Patient Two */}
-          <Card 
+          <Card
             elevation={3}
-            sx={{ 
+            sx={{
               flex: 1,
               backgroundColor: '#ffffff',
               border: '2px solid #a5d6a7',
-              borderRadius: 3
+              borderRadius: 3,
             }}
           >
             <CardContent sx={{ p: 4 }}>
-              <Typography 
-                variant="h6" 
-                sx={{ 
+              <Typography
+                variant="h6"
+                sx={{
                   color: '#2e7d32',
                   fontWeight: 600,
                   mb: 3,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 1
+                  gap: 1,
                 }}
               >
                 👥 Thông tin người thứ hai
               </Typography>
-              
+
               {fieldLabels.map(({ name, label, type }) => (
                 <Box key={`two-${name}`} sx={{ mb: 2.5 }}>
-                  <Typography 
-                    component="label" 
-                    sx={{ 
+                  <Typography
+                    component="label"
+                    sx={{
                       display: 'block',
                       mb: 1,
-                      color: '#37474f', 
+                      color: '#37474f',
                       fontWeight: 500,
-                      fontSize: '14px'
+                      fontSize: '14px',
                     }}
                   >
                     {label}
@@ -734,11 +740,11 @@ const GetSlot = () => {
                       '&:focus': {
                         outline: 'none',
                         borderColor: '#2e7d32',
-                        boxShadow: '0 0 0 2px rgba(46, 125, 50, 0.1)'
+                        boxShadow: '0 0 0 2px rgba(46, 125, 50, 0.1)',
                       },
                       '&:hover': {
-                        borderColor: '#66bb6a'
-                      }
+                        borderColor: '#66bb6a',
+                      },
                     }}
                   />
                 </Box>
@@ -746,21 +752,21 @@ const GetSlot = () => {
 
               {/* Gender Selection */}
               <Box sx={{ mb: 2 }}>
-                <Typography 
-                  component="label" 
-                  sx={{ 
+                <Typography
+                  component="label"
+                  sx={{
                     display: 'block',
                     mb: 1.5,
-                    color: '#37474f', 
+                    color: '#37474f',
                     fontWeight: 500,
-                    fontSize: '14px'
+                    fontSize: '14px',
                   }}
                 >
                   Giới tính
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   {['Nam', 'Nữ'].map((gender) => (
-                    <Box 
+                    <Box
                       key={`two-gender-${gender}`}
                       sx={{ display: 'flex', alignItems: 'center' }}
                     >
@@ -777,18 +783,18 @@ const GetSlot = () => {
                             gender: e.target.value,
                           }))
                         }
-                        sx={{ 
+                        sx={{
                           mr: 1,
-                          accentColor: '#2e7d32'
+                          accentColor: '#2e7d32',
                         }}
                       />
-                      <Typography 
-                        component="label" 
+                      <Typography
+                        component="label"
                         htmlFor={`two-gender-${gender}`}
-                        sx={{ 
+                        sx={{
                           fontWeight: 500,
                           cursor: 'pointer',
-                          color: '#37474f'
+                          color: '#37474f',
                         }}
                       >
                         {gender}
@@ -802,34 +808,41 @@ const GetSlot = () => {
         </Box>
 
         {/* Action Buttons */}
-        <Paper 
-          elevation={2} 
-          sx={{ 
+        <Paper
+          elevation={2}
+          sx={{
             p: 4,
             backgroundColor: '#ffffff',
             borderRadius: 3,
-            border: '1px solid #e0f2fe'
+            border: '1px solid #e0f2fe',
           }}
         >
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             <Button
               variant="contained"
               onClick={handleSubmit}
               disabled={!selectedSlot || isSubmitting}
-              sx={{ 
+              sx={{
                 fontSize: '16px',
                 px: 4,
                 py: 1.5,
                 backgroundColor: '#0277bd',
                 '&:hover': {
-                  backgroundColor: '#01579b'
+                  backgroundColor: '#01579b',
                 },
                 '&:disabled': {
-                  backgroundColor: '#b0bec5'
+                  backgroundColor: '#b0bec5',
                 },
                 borderRadius: 2,
                 textTransform: 'none',
-                fontWeight: 600
+                fontWeight: 600,
               }}
             >
               {isSubmitting ? 'Đang đăng ký...' : 'Đăng Ký Slot'}
@@ -839,7 +852,7 @@ const GetSlot = () => {
               <Button
                 variant="outlined"
                 onClick={() => setSelectedSlot('')}
-                sx={{ 
+                sx={{
                   fontSize: '16px',
                   px: 4,
                   py: 1.5,
@@ -847,11 +860,11 @@ const GetSlot = () => {
                   color: '#0277bd',
                   '&:hover': {
                     borderColor: '#01579b',
-                    backgroundColor: '#e3f2fd'
+                    backgroundColor: '#e3f2fd',
                   },
                   borderRadius: 2,
                   textTransform: 'none',
-                  fontWeight: 600
+                  fontWeight: 600,
                 }}
               >
                 Bỏ Chọn Slot
@@ -865,7 +878,7 @@ const GetSlot = () => {
                 setSelectedSlot('');
                 setSlots([]);
               }}
-              sx={{ 
+              sx={{
                 fontSize: '16px',
                 px: 4,
                 py: 1.5,
@@ -873,11 +886,11 @@ const GetSlot = () => {
                 color: '#757575',
                 '&:hover': {
                   borderColor: '#424242',
-                  backgroundColor: '#f5f5f5'
+                  backgroundColor: '#f5f5f5',
                 },
                 borderRadius: 2,
                 textTransform: 'none',
-                fontWeight: 600
+                fontWeight: 600,
               }}
             >
               Reset
@@ -887,14 +900,16 @@ const GetSlot = () => {
 
         {/* No slots message */}
         {selectedLocation && !isLoadingSlots && slots.length === 0 && (
-          <Box sx={{ 
-            mt: 3, 
-            p: 3, 
-            textAlign: 'center', 
-            backgroundColor: '#fff3e0',
-            borderRadius: 2,
-            border: '1px solid #ffcc02'
-          }}>
+          <Box
+            sx={{
+              mt: 3,
+              p: 3,
+              textAlign: 'center',
+              backgroundColor: '#fff3e0',
+              borderRadius: 2,
+              border: '1px solid #ffcc02',
+            }}
+          >
             <Typography variant="body1" color="#e65100">
               Không có slot nào khả dụng cho địa điểm này
             </Typography>

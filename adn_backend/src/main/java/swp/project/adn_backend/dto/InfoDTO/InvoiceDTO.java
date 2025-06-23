@@ -9,33 +9,62 @@ public class InvoiceDTO {
     private LocalDateTime createdDate;
     private String serviceName;
     private String userFullName;
+    private String bankCode;
 
     public InvoiceDTO(Invoice invoice) {
         this.invoiceId = invoice.getInvoiceId();
         this.amount = invoice.getAmount();
         this.createdDate = invoice.getCreatedDate();
         this.serviceName = invoice.getServiceTest().getServiceName(); // cần getter từ ServiceTest
-        this.userFullName = invoice.getPayment().getUsers().getFullName(); // cần getter từ Payment → User
+        this.userFullName = invoice.getPayment().getUsers().getFullName();
+        this.bankCode=invoice.getBankCode();
     }
 
-    // Getters
+    public String getBankCode() {
+        return bankCode;
+    }
+
+    public void setBankCode(String bankCode) {
+        this.bankCode = bankCode;
+    }
+
     public Long getInvoiceId() {
         return invoiceId;
+    }
+
+    public void setInvoiceId(Long invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
     public Long getAmount() {
         return amount;
     }
 
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
+
     public LocalDateTime getCreatedDate() {
         return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     public String getServiceName() {
         return serviceName;
     }
 
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
     public String getUserFullName() {
         return userFullName;
+    }
+
+    public void setUserFullName(String userFullName) {
+        this.userFullName = userFullName;
     }
 }

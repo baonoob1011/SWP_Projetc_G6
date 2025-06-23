@@ -78,12 +78,10 @@ const StaffSlot = () => {
         filteredSlots.map((slot) => `${slot.startTime} - ${slot.endTime}`)
       )
     ).sort();
-
     // Add default time slot if empty
     if (timeSlots.length === 0) {
       timeSlots.push('06:00:00 - 18:00:00');
     }
-
     timeSlots.forEach((time) => {
       scheduleMap[time] = daysOfWeek.map((day) => {
         return (
@@ -218,7 +216,7 @@ const StaffSlot = () => {
           <tbody>
             {Object.entries(scheduleMap).map(([time, slotsInTime]) => (
               <tr key={time}>
-                                  <td style={{
+                 <td style={{
                     backgroundColor: '#f8fafc',
                     padding: '20px',
                     fontWeight: '600',

@@ -10,7 +10,7 @@ import swp.project.adn_backend.entity.Sample;
 
 @Mapper(componentModel = "spring")
 public interface SampleMapper {
-    Sample tSample(SampleRequest sampleRequest);
+    Sample toSample(SampleRequest sampleRequest);
 
     SampleResponse toSampleResponse(Sample sample);
 }

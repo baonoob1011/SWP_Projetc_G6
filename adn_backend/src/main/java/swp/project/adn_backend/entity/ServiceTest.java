@@ -103,7 +103,7 @@ public class ServiceTest {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH,
     })
-    @JoinColumn(name = "kid_id")
+    @JoinColumn(name = "kit_id")
     Kit kit;
 
     @OneToMany(mappedBy = "serviceTest", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

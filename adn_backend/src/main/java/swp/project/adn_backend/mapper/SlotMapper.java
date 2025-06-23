@@ -13,4 +13,5 @@ public interface SlotMapper {
 //    Slot toSlot(SlotRequest appointmentRequest);
     SlotResponse toSlotResponse(Slot slot);
     List<SlotResponse> toSlotResponses(List<Slot> slot);
+    Slot toSlot(SlotRequest slotRequest);
 }

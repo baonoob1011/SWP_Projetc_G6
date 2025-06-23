@@ -37,6 +37,7 @@ public enum ErrorCodeUser {
     PASSWORD_BLANK(1025, "Mật khẩu không được để trống", HttpStatus.BAD_REQUEST),
     PASSWORD_TOO_SHORT(1026, "Mật khẩu phải có ít nhất 8 ký tự", HttpStatus.BAD_REQUEST),
     EMAIL_EXISTED(1027, "Email đã được đăng ký", HttpStatus.BAD_REQUEST),
+    LOCUS_EXISTED(1027, "Locus này đã được đăng ký", HttpStatus.BAD_REQUEST),
     PHONE_EXISTED(1028, "Số điện thoại đã được sử dụng", HttpStatus.BAD_REQUEST),
     ADDRESS_EXISTED(1029, "Địa chỉ đã được sử dụng", HttpStatus.BAD_REQUEST),
     INVALID_KEY(1030, "Mã xác minh không hợp lệ", HttpStatus.BAD_REQUEST),
@@ -49,6 +50,9 @@ public enum ErrorCodeUser {
     KIT_NOT_EXISTS(1036, "Kit không tồn tại", HttpStatus.BAD_REQUEST),
     PRICE_NOT_EXISTS(1040, "price không tồn tại", HttpStatus.BAD_REQUEST),
     SAMPLE_NOT_EXISTS(1040, "Sample không tồn tại", HttpStatus.BAD_REQUEST),
+    LOCUS_NOT_EXISTS(1040, "locus không tồn tại", HttpStatus.BAD_REQUEST),
+    RESULT_LOCUS_NOT_EXISTS(1040, "Result Locus không tồn tại", HttpStatus.BAD_REQUEST),
+    LOCUS_NOT_FOUND(1040, "locus Locus không tồn tại", HttpStatus.BAD_REQUEST),
 
     // Service validation
     SERVICE_NAME_IS_EXISTED(1037, "Tên dịch vụ đã tồn tại", HttpStatus.BAD_REQUEST),
@@ -58,11 +62,17 @@ public enum ErrorCodeUser {
     PAYMENT_NOT_EXISTS(1036, "payment không tồn tại", HttpStatus.BAD_REQUEST),
     EMAIL_NOT_EXISTS(10341, "emial không tồn tại", HttpStatus.BAD_REQUEST),
     PAYMENT_INFO_NOT_EXISTS(10341, "payment info không tồn tại", HttpStatus.BAD_REQUEST),
+    PATIENT_INFO_NOT_EXISTS(10341, "patient info không tồn tại", HttpStatus.BAD_REQUEST),
     INVOICE_NOT_EXISTS(10341, "invoice không tồn tại", HttpStatus.BAD_REQUEST),
     SLOT_OUTSIDE_ROOM_TIME(10342, "Slot time is outside of room's available time range", HttpStatus.BAD_REQUEST),
-    CONFIRM_PASSWORD_NOT_MATCH(1043, "Slot time is outside of room's available time range", HttpStatus.BAD_REQUEST),
+    CONFIRM_PASSWORD_NOT_MATCH(1043, "Confirm password does not match the new password", HttpStatus.BAD_REQUEST),
     INVOICE_ALREADY_PAID(1043, "Invoice has already been paid", HttpStatus.BAD_REQUEST),
+    NO_RESULT_LOCUS_FOUND_FOR_SAMPLE(1043, "Không tìm thấy ResultLocus cho mẫu này", HttpStatus.BAD_REQUEST),
+    STAFF_TIME_OVERLAP(1003, "Nhân viên đã được phân công vào khung giờ này ở phòng khác"),
+    STAFF_SLOT_CREATION_FAILED(1003, "Không thể tạo slot: Nhân viên đã có lịch tại phòng khác trong cùng khung giờ"),
 
+    // Blog validation  
+    BLOG_NOT_FOUND(1003, "Blog không tồn tại", HttpStatus.BAD_REQUEST),
 
     //
 

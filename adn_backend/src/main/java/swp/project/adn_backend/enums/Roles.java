@@ -9,7 +9,8 @@ public enum Roles {
     ADMIN,
     STAFF,
     MANAGER,
-    PATIENT
+    PATIENT,
+    COLLECTOR
     ;
 
     Roles() {

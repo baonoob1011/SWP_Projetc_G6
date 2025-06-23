@@ -26,17 +26,18 @@ public class KitController {
 
     @GetMapping("/get-all-kit-staff")
     public ResponseEntity<List<KitInfoDTO>> getALlKit() {
-        return ResponseEntity.ok(kitService.getAllKitForStaff());
+        return ResponseEntity.ok(kitService.getAllKit());
     }
 
-    @GetMapping("/view-kit-status-user")
-    public ResponseEntity<List<KitStatusInfoDTO>> viewKitStatus() {
-        return ResponseEntity.ok(kitService.getKitStatusForUser());
-    }
+//    @GetMapping("/view-kit-status-user")
+//    public ResponseEntity<List<KitStatusInfoDTO>> viewKitStatus() {
+//        return ResponseEntity.ok(kitService.getKitStatusForUser());
+//    }
 
-    @PutMapping("/update-kit/{kitId}")
-    public ResponseEntity<Kit> updateStatusByKitId(@PathVariable("kitId") long kitId,
-                                                   UpdateKitRequest updateKitRequest) {
-        return ResponseEntity.ok(kitService.updateStatusByKitId(kitId, updateKitRequest));
-    }
+//    @PutMapping("/update-kit/{kitId}")
+//    public ResponseEntity<String> updateStatusByKitId(@PathVariable("kitId") long kitId,
+//                                                   @RequestBody UpdateKitRequest updateKitRequest) {
+//        kitService.updateStatusByKitId(kitId,updateKitRequest);
+//        return ResponseEntity.ok("update successful");
+//    }
 }

@@ -9,11 +9,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO;
+import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
 import swp.project.adn_backend.dto.request.payment.PaymentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
+import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.*;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.*;
 import swp.project.adn_backend.dto.response.appointment.updateAppointmentStatus.UpdateAppointmentStatusResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.*;
@@ -25,10 +29,9 @@ import swp.project.adn_backend.repository.*;
 import swp.project.adn_backend.service.roleService.PatientService;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -48,9 +51,11 @@ public class AppointmentService {
     PaymentRepository paymentRepository;
     KitRepository kitRepository;
     PatientRepository patientRepository;
+    KitDeliveryStatusRepository kitDeliveryStatusRepository;
+    InvoiceRepository invoiceRepository;
 
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService, PatientService patientService, PriceListRepository priceListRepository, PaymentRepository paymentRepository, KitRepository kitRepository, PatientRepository patientRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService, PatientService patientService, PriceListRepository priceListRepository, PaymentRepository paymentRepository, KitRepository kitRepository, PatientRepository patientRepository, KitDeliveryStatusRepository kitDeliveryStatusRepository, InvoiceRepository invoiceRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentMapper = appointmentMapper;
         this.userRepository = userRepository;
@@ -66,6 +71,8 @@ public class AppointmentService {
         this.paymentRepository = paymentRepository;
         this.kitRepository = kitRepository;
         this.patientRepository = patientRepository;
+        this.kitDeliveryStatusRepository = kitDeliveryStatusRepository;
+        this.invoiceRepository = invoiceRepository;
     }
 
     @Transactional
@@ -105,14 +112,28 @@ public class AppointmentService {
         if (appointment == null) {
             throw new RuntimeException("Mapper returned null appointment!");
         }
-        patientService.registerServiceTest(patientRequestList, userBookAppointment, serviceTest);
+//        patientService.registerServiceTest(patientRequestList, userBookAppointment, serviceTest);
+
+        List<Patient> registeredPatients = patientService.registerServiceTest(
+                patientRequestList, userBookAppointment, serviceTest);
+
+        List<Patient> patientSnapshot = new ArrayList<>(registeredPatients);
+
+        appointment.setPatients(patientSnapshot);
+        for (Patient patient : patientSnapshot) {
+            patient.setAppointment(appointment);
+        }
 
         appointment.setSlot(slot);
-        System.out.println("Slot room: " + slot.getRoom()); // ← kiểm tra xem có null không
         appointment.setAppointmentDate(slot.getSlotDate());
         appointment.setAppointmentStatus(AppointmentStatus.PENDING);
         appointment.setAppointmentType(AppointmentType.CENTER);
-        appointment.setStaff(slot.getStaff());
+        for (Staff staff : slot.getStaff()) {
+            if (staff.getRole().equals("SAMPLE_COLLECTOR")) {
+                appointment.setStaff(staff);
+                break;
+            }
+        }
         appointment.setServices(serviceTest);
         appointment.setLocation(location);
         appointment.setUsers(userBookAppointment);
@@ -122,6 +143,7 @@ public class AppointmentService {
         payment.setAmount(priceList.getPrice());
         payment.setAppointment(appointment);
         payment.setUsers(userBookAppointment);
+        payment.setPaymentStatus(PaymentStatus.PENDING);
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         paymentRepository.save(payment);
 
@@ -137,10 +159,16 @@ public class AppointmentService {
         ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(saved);
         List<PriceAppointmentResponse> priceAppointmentResponse = appointmentMapper.toPriceAppointmentResponse(serviceTest.getPriceLists());
         UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(userBookAppointment);
-        StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(slot.getStaff());
+        List<StaffAppointmentResponse> staffAppointmentResponses = new ArrayList<>();
+        for (Staff staff : slot.getStaff()) {
+            if (staff.getRole().equals("SAMPLE_COLLECTOR")) {
+                StaffAppointmentResponse response = appointmentMapper.toStaffAppointmentResponse(staff);
+                staffAppointmentResponses.add(response);
+            }
+        }
         SlotAppointmentResponse slotAppointmentResponse = appointmentMapper.toSlotAppointmentResponse(slot);
         ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(serviceTest);
-        List<PatientAppointmentResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentService(userBookAppointment.getPatients());
+        List<PatientAppointmentResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentService(appointment.getPatients());
         LocationAppointmentResponse locationAppointmentResponse = appointmentMapper.toLocationAppointmentResponse(location);
         RoomAppointmentResponse roomAppointmentResponse = appointmentMapper.toRoomAppointmentResponse(slot.getRoom());
 
@@ -148,7 +176,7 @@ public class AppointmentService {
         AllAppointmentAtCenterResponse allAppointmentAtCenterResponse = new AllAppointmentAtCenterResponse();
         allAppointmentAtCenterResponse.setShowAppointmentResponse(showAppointmentResponse);
         allAppointmentAtCenterResponse.setUserAppointmentResponse(List.of(userAppointmentResponse));
-        allAppointmentAtCenterResponse.setStaffAppointmentResponse(List.of(staffAppointmentResponse));
+        allAppointmentAtCenterResponse.setStaffAppointmentResponse(staffAppointmentResponses);
         allAppointmentAtCenterResponse.setSlotAppointmentResponse(List.of(slotAppointmentResponse));
         allAppointmentAtCenterResponse.setRoomAppointmentResponse(roomAppointmentResponse);
         allAppointmentAtCenterResponse.setServiceAppointmentResponses(List.of(serviceAppointmentResponse));
@@ -189,7 +217,7 @@ public class AppointmentService {
         ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
         //  List<PriceAppointmentResponse> priceAppointmentResponse = appointmentMapper.toPriceAppointmentResponse(serviceTest.getPriceLists());
         UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(userBookAppointment);
-        StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(slot.getStaff());
+        StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(slot.getStaff().getFirst());
         SlotAppointmentResponse slotAppointmentResponse = appointmentMapper.toSlotAppointmentResponse(slot);
         ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(serviceTest);
         //  List<PatientAppointmentResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentService(userBookAppointment.getPatients());
@@ -233,49 +261,67 @@ public class AppointmentService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PRICE_NOT_EXISTS));
 
         if (userBookAppointment.getAddress() == null) {
-            throw new RuntimeException("update your address first");
+            throw new RuntimeException("Please update your address before booking.");
         }
+
         Appointment appointment = appointmentMapper.toAppointment(appointmentRequest);
         if (appointment == null) {
             throw new RuntimeException("Mapper returned null appointment!");
         }
-        patientService.registerServiceTest(patientRequestList, userBookAppointment, serviceTest);
+
+        // Đăng ký bệnh nhân và nhận danh sách đã đăng ký
+        List<Patient> registeredPatients = patientService.registerServiceTest(
+                patientRequestList, userBookAppointment, serviceTest);
+
+        // Gắn danh sách bệnh nhân vào appointment
+        appointment.setPatients(registeredPatients);
+
+        // Thiết lập liên kết ngược lại: mỗi patient trỏ về appointment
+        for (Patient patient : registeredPatients) {
+            patient.setAppointment(appointment);
+        }
 
         appointment.setAppointmentStatus(AppointmentStatus.PENDING);
         appointment.setServices(serviceTest);
         appointment.setAppointmentType(AppointmentType.HOME);
         appointment.setUsers(userBookAppointment);
         appointment.setAppointmentDate(LocalDate.now());
-        //user set appointment
-        //set status send kit
-        serviceTest.getKit().setKitStatus(DeliveryStatus.IN_PROGRESS);
-        serviceTest.getKit().setDeliveryDate(LocalDate.now());
-        //tinh price
-        double totalPrice = (priceList.getPrice()) + (serviceTest.getKit().getPrice());
-        //set payment
+
+        KitDeliveryStatus deliveryStatus = new KitDeliveryStatus();
+        deliveryStatus.setAppointment(appointment);
+        deliveryStatus.setKit(serviceTest.getKit());
+        deliveryStatus.setCreateOrderDate(LocalDate.now());
+        deliveryStatus.setDeliveryStatus(DeliveryStatus.IN_PROGRESS);
+        deliveryStatus.setUsers(userBookAppointment);
+        kitDeliveryStatusRepository.save(deliveryStatus);
+
+        double totalPrice = priceList.getPrice();
+        // Tạo payment
         Payment payment = new Payment();
-        payment.setAmount(serviceTest.getPriceLists().getFirst().getPrice());
+        payment.setAmount(totalPrice); // dùng tổng giá
         payment.setAppointment(appointment);
         payment.setUsers(userBookAppointment);
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         paymentRepository.save(payment);
 
+        // Lưu appointment
         Appointment saved = appointmentRepository.save(appointment);
 
-
-        // Build email content
+        // Chuẩn bị dữ liệu trả về
         ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(saved);
         KitAppointmentResponse kitAppointmentResponse = appointmentMapper.toKitAppointmentResponse(serviceTest.getKit());
         UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(userBookAppointment);
         ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(serviceTest);
-        List<PatientAppointmentResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentService(userBookAppointment.getPatients());
-        //tinh price
+        List<PatientAppointmentResponse> patientAppointmentResponses =
+                appointmentMapper.toPatientAppointmentService(registeredPatients);
+
         PriceAppointmentResponse priceAppointmentResponses = new PriceAppointmentResponse();
+        priceAppointmentResponses.setPriceId(priceList.getPriceId());
         priceAppointmentResponses.setTime(priceList.getTime());
         priceAppointmentResponses.setPrice(totalPrice);
-        List<PriceAppointmentResponse> priceAppointmentResponsesList = new ArrayList<>();
-        priceAppointmentResponsesList.add(priceAppointmentResponses);
+        List<PriceAppointmentResponse> priceAppointmentResponsesList = List.of(priceAppointmentResponses);
 
+        // Gộp kết quả
         AllAppointmentAtHomeResponse emailResponse = new AllAppointmentAtHomeResponse();
         emailResponse.setShowAppointmentResponse(showAppointmentResponse);
         emailResponse.setUserAppointmentResponse(List.of(userAppointmentResponse));
@@ -288,27 +334,25 @@ public class AppointmentService {
         return emailResponse;
     }
 
+
     @Transactional
     public UpdateAppointmentStatusResponse ConfirmAppointmentAtHome(long appointmentId,
                                                                     long userId,
-                                                                    long serviceId,
-                                                                    long kitId) {
+                                                                    long serviceId) {
         Users userBookAppointment = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
 
-        Kit kit = kitRepository.findById(kitId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.KIT_NOT_EXISTS));
 
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
-        appointment.setNote("Kit sẽ được gửi trong thời gian nhanh nhất! Cảm ơn quý khách đã tin tưởng.");
-        appointmentRepository.save(appointment);
-        kit.setKitStatus(DeliveryStatus.PENDING);
-        kit.setDeliveryDate(LocalDate.now());
+        appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.PENDING);
+        appointment.setNote("Cảm ơn quý khách đã tin tưởng dịch vụ của chúng tôi. " +
+                "Bộ kit sẽ được gửi trong thời gian sớm nhất");
+
         UpdateAppointmentStatusResponse statusResponse = appointmentMapper.toUpdateAppointmentStatusResponse(appointment);
 
         // Build email content
@@ -330,12 +374,15 @@ public class AppointmentService {
         return statusResponse;
     }
 
+    //staff lấy appointment đó để xác nhận
     public List<AppointmentInfoDTO> getAppointmentByStaffId(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long staffId = jwt.getClaim("id");
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO(" +
                 "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note, s.users.userId, s.slot.slotId, s.services.serviceId, s.location.locationId) " +
-                "FROM Appointment s WHERE s.staff.staffId = :staffId AND s.appointmentDate >= CURRENT_DATE AND s.appointmentStatus=:appointmentStatus";
+                "FROM Appointment s WHERE s.staff.staffId = :staffId " +
+                "AND s.appointmentDate >= CURRENT_DATE " +
+                "AND s.appointmentStatus=:appointmentStatus";
 
         TypedQuery<AppointmentInfoDTO> query = entityManager.createQuery(jpql, AppointmentInfoDTO.class);
         query.setParameter("staffId", staffId);
@@ -343,8 +390,39 @@ public class AppointmentService {
         return query.getResultList();
     }
 
+    // shipper lay ra de xac nhan dk tai home
+    public List<AppointmentAtHomeInfoDTO> getAppointmentAtHome(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long staffId = jwt.getClaim("id");
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO(" +
+                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note, " +
+                "s.appointmentType, s.staff.staffId, s.users.userId, s.services.serviceId) " +
+                "FROM Appointment s " +
+                "WHERE s.appointmentStatus = :appointmentStatus " +
+                "AND s.appointmentType = :appointmentType " +
+                "AND s.staff.staffId = :staffId";
+        TypedQuery<AppointmentAtHomeInfoDTO> query = entityManager.createQuery(jpql, AppointmentAtHomeInfoDTO.class);
+        query.setParameter("appointmentStatus", AppointmentStatus.PENDING);
+        query.setParameter("appointmentType", AppointmentType.HOME);
+        query.setParameter("staffId", staffId);
+        return query.getResultList();
+    }
+
+    @Transactional
+    public void addStaffToAppointment(long staffId, long appointmentId) {
+        Staff staff = staffRepository.findById(staffId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        if (!staff.getRole().equals("STAFF_AT_HOME")) {
+            throw new RuntimeException("Staff at home not exist");
+        }
+        appointment.setStaff(staff);
+    }
 
     //staff xem ds cuar slot ddos va lay mau
+    // thiếu update
     public List<AllAppointmentAtCenterResponse> getAppointmentBySlot(long slotId) {
         Slot slot = slotRepository.findById(slotId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
@@ -354,34 +432,106 @@ public class AppointmentService {
 
         for (Appointment appointment : appointmentList) {
             if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
-                List<Patient> registeredPatients = new ArrayList<>();
-                for (int i = 0; i < appointment.getUsers().getPatients().size(); i++) {
-                    if (appointment.getUsers().getPatients().get(i).getPatientStatus() == PatientStatus.REGISTERED) {
-                        registeredPatients.add(appointment.getUsers().getPatients().get(i));
-                    }
-                }
 
-                // Sau đó map danh sách đã lọc
-                List<PatientAppointmentFullInfoResponse> patientAppointmentResponses =
-                        appointmentMapper.toPatientAppointmentFullInfoResponses(registeredPatients);
+                // Lọc bệnh nhân có trạng thái REGISTERED
+                List<Patient> registeredPatients = appointment.getPatients().stream()
+                        .filter(p -> p.getPatientStatus() == PatientStatus.REGISTERED)
+                        .collect(Collectors.toList());
 
-                List<SlotAppointmentResponse> slots = List.of(appointmentMapper.toSlotAppointmentResponse(appointment.getSlot()));
-                List<UserAppointmentResponse> users = List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()));
-                List<StaffAppointmentResponse> staffs = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
-                List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
-                ShowAppointmentResponse appointments = appointmentMapper.toShowAppointmentResponse(appointment);
-
-                RoomAppointmentResponse room = new RoomAppointmentResponse();
-                room.setRoomName(appointment.getSlot().getRoom().getRoomName());
+                // Map các thông tin liên quan
+                List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
+                        .map(appointmentMapper::toPatientAppointment)
+                        .collect(Collectors.toList());
 
                 AllAppointmentAtCenterResponse response = new AllAppointmentAtCenterResponse();
-                response.setPatientAppointmentFullInfoResponses(patientAppointmentResponses);
-                response.setUserAppointmentResponse(users);
-                response.setStaffAppointmentResponse(staffs);
-                response.setSlotAppointmentResponse(slots);
-                response.setServiceAppointmentResponses(services);
-                response.setRoomAppointmentResponse(room);
-                response.setShowAppointmentResponse(appointments);
+                response.setShowAppointmentResponse(appointmentMapper.toShowAppointmentResponse(appointment));
+                response.setUserAppointmentResponse(
+                        List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()))
+                );
+                response.setStaffAppointmentResponse(
+                        List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()))
+                );
+                response.setSlotAppointmentResponse(
+                        List.of(appointmentMapper.toSlotAppointmentResponse(appointment.getSlot()))
+                );
+                response.setServiceAppointmentResponses(
+                        List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()))
+                );
+                response.setRoomAppointmentResponse(
+                        appointmentMapper.toRoomAppointmentResponse(appointment.getSlot().getRoom())
+                );
+                response.setPatientAppointmentResponse(patientResponses);
+
+                // Nếu bạn muốn thêm location/price:
+                if (appointment.getLocation() != null) {
+                    response.setLocationAppointmentResponses(
+                            List.of(appointmentMapper.toLocationAppointmentResponse(appointment.getLocation()))
+                    );
+                }
+                if (appointment.getServices() != null && appointment.getServices().getPriceLists() != null) {
+                    response.setPriceAppointmentResponse(
+                            appointmentMapper.toPriceAppointmentResponse(appointment.getServices().getPriceLists())
+                    );
+                }
+
+                responses.add(response);
+            }
+        }
+
+        return responses;
+    }  //staff xem ds cuar slot ddos va lay mau
+
+    public void updatePatientStatus(long patientId) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.PATIENT_INFO_NOT_EXISTS));
+    }
+
+    //staff lấy đơn dang kis tai nha nhap mau
+    public List<AllAppointmentAtCenterResponse> getAppointmentAtHomeToGetSample(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+
+        Staff staff = staffRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+        if (!staff.getRole().equals("STAFF_AT_HOME")) {
+            throw new RuntimeException("staff at home not exist");
+        }
+
+        List<Appointment> appointmentList = staff.getAppointments();
+        List<AllAppointmentAtCenterResponse> responses = new ArrayList<>();
+
+        for (Appointment appointment : appointmentList) {
+            if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
+
+                // Lọc bệnh nhân có trạng thái REGISTERED
+                List<Patient> registeredPatients = appointment.getPatients().stream()
+                        .filter(p -> p.getPatientStatus() == PatientStatus.REGISTERED)
+                        .collect(Collectors.toList());
+
+                // Map các thông tin liên quan
+                List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
+                        .map(appointmentMapper::toPatientAppointment)
+                        .collect(Collectors.toList());
+
+                AllAppointmentAtCenterResponse response = new AllAppointmentAtCenterResponse();
+                response.setShowAppointmentResponse(appointmentMapper.toShowAppointmentResponse(appointment));
+                response.setUserAppointmentResponse(
+                        List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()))
+                );
+                response.setStaffAppointmentResponse(
+                        List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()))
+                );
+                response.setServiceAppointmentResponses(
+                        List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()))
+                );
+                response.setPatientAppointmentResponse(patientResponses);
+
+                if (appointment.getServices() != null && appointment.getServices().getPriceLists() != null) {
+                    response.setPriceAppointmentResponse(
+                            appointmentMapper.toPriceAppointmentResponse(appointment.getServices().getPriceLists())
+                    );
+                }
+
                 responses.add(response);
             }
         }
@@ -389,11 +539,12 @@ public class AppointmentService {
         return responses;
     }
 
+
     @Transactional
     public void updateAppointmentStatus(long slotId,
-                                               long patientId,
-                                               AppointmentRequest appointmentRequest,
-                                               PatientRequest patientRequest) {
+                                        long patientId,
+                                        AppointmentRequest appointmentRequest,
+                                        PatientRequest patientRequest) {
         Slot slot = slotRepository.findById(slotId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
 
@@ -419,6 +570,7 @@ public class AppointmentService {
 
     }
 
+    //user view appointment info
     public AllAppointmentResponse getAllAppointments(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
@@ -432,8 +584,7 @@ public class AppointmentService {
         List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
 
         for (Appointment appointment : appointmentList) {
-            if (appointment.getAppointmentStatus() == AppointmentStatus.CONFIRMED &&
-                    appointment.getAppointmentType() == AppointmentType.CENTER) {
+            if (appointment.getAppointmentType().equals(AppointmentType.CENTER)) {
 
                 ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
                 List<StaffAppointmentResponse> staff = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
@@ -441,6 +592,7 @@ public class AppointmentService {
                 List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
                 List<LocationAppointmentResponse> locations = List.of(appointmentMapper.toLocationAppointmentResponse(appointment.getLocation()));
                 List<PaymentAppointmentResponse> payments = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
+
 
                 RoomAppointmentResponse room = new RoomAppointmentResponse();
                 room.setRoomName(appointment.getSlot().getRoom().getRoomName());
@@ -456,9 +608,9 @@ public class AppointmentService {
 
                 centerList.add(centerResponse);
 
-            } else if (appointment.getAppointmentStatus() == AppointmentStatus.PENDING &&
+            } else if (
                     appointment.getAppointmentType() == AppointmentType.HOME &&
-                    appointment.getServices().getServiceType() == ServiceType.CIVIL) {
+                            appointment.getServices().getServiceType() == ServiceType.CIVIL) {
 
                 ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
                 List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
@@ -476,6 +628,61 @@ public class AppointmentService {
         }
 
         return new AllAppointmentResponse(centerList, homeList);
+    }
+
+    public List<AllAppointmentResult> getAllAppointmentsResult(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+
+        Users userRegister = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+        List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
+        List<AllAppointmentResult> results = new ArrayList<>();
+
+        for (Appointment appointment : appointmentList) {
+            if (appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
+                List<PatientAppointmentResponse> patientAppointmentResponse = appointmentMapper.toPatientAppointmentService(appointment.getPatients());
+                ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
+                ShowAppointmentResponse appointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
+                StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(appointment.getStaff());
+                UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(appointment.getUsers());
+                List<SampleAppointmentResponse> sampleAppointmentResponse = appointmentMapper.toSampleAppointmentResponse(appointment.getSampleList());
+                List<ResultAppointmentResponse> resultResponses = new ArrayList<>();
+                List<ResultDetailAppointmentResponse> resultDetailAppointmentResponses = new ArrayList<>();
+                List<ResultLocusAppointmentResponse> resultLocusAppointmentResponses = new ArrayList<>();
+
+                for (Result result : appointment.getResults()) {
+                    if (!result.getResultStatus().equals(ResultStatus.COMPLETED)) {
+                        throw new RuntimeException("Kết quả chưa có");
+                    }
+
+                    ResultAppointmentResponse resultAppointmentResponse = appointmentMapper.toResultAppointmentResponse(result);
+                    ResultDetailAppointmentResponse resultDetailAppointmentResponse = appointmentMapper.toResultDetailAppointmentResponse(result.getResultDetail());
+
+                    resultResponses.add(resultAppointmentResponse);
+                    resultDetailAppointmentResponses.add(resultDetailAppointmentResponse);
+
+                    for (ResultLocus resultLocus : result.getResultDetail().getResultLoci()) {
+                        ResultLocusAppointmentResponse locusResponse = appointmentMapper.toResultLocusAppointmentResponse(resultLocus);
+                        resultLocusAppointmentResponses.add(locusResponse);
+                    }
+                }
+
+                AllAppointmentResult result = new AllAppointmentResult();
+                result.setShowAppointmentResponse(appointmentResponse);
+                result.setStaffAppointmentResponse(staffAppointmentResponse);
+                result.setServiceAppointmentResponses(serviceAppointmentResponse);
+                result.setResultAppointmentResponse(resultResponses);
+                result.setResultDetailAppointmentResponse(resultDetailAppointmentResponses);
+                result.setResultLocusAppointmentResponse(resultLocusAppointmentResponses);
+                result.setPatientAppointmentResponse(patientAppointmentResponse);
+                result.setSampleAppointmentResponse(sampleAppointmentResponse);
+                results.add(result);
+            }
+        }
+
+        return results;
     }
 
 
@@ -538,9 +745,153 @@ public class AppointmentService {
     public void cancelledAppointment(long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        for (Patient patient : appointment.getPatients()) {
+            patient.setPatientStatus(PatientStatus.CANCELLED);
+        }
         appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
     }
+
+    public List<AllAppointmentAtHomeManagerResponse> getAppointmentAtHomeForAdmin() {
+        List<Appointment> appointments = appointmentRepository.findAll();
+        List<AllAppointmentAtHomeManagerResponse> resultList = new ArrayList<>();
+
+        for (Appointment appointment : appointments) {
+            // Chỉ lấy những appointment tại nhà
+            if (appointment.getAppointmentType() == AppointmentType.HOME) {
+                AllAppointmentAtHomeManagerResponse response = new AllAppointmentAtHomeManagerResponse();
+                response.setAppointmentResponse(appointmentMapper.toShowAppointmentResponse(appointment));
+                response.setStaffAppointmentResponse(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
+                resultList.add(response);
+            }
+        }
+
+        return resultList;
+    }
+
+    //staff lay ra de thanh toan bang tien mat
+    public List<AllAppointmentAtCenterUserResponse> getAppointmentOfUser(UserRequest userRequest) {
+        Users userRegister = userRepository.findByPhone(userRequest.getPhone())
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_EXISTED));
+        List<AllAppointmentAtCenterUserResponse> appointmentResponses = new ArrayList<>();
+        for (Appointment appointment : userRegister.getAppointments()) {
+            if (appointment.getAppointmentType().equals(AppointmentType.CENTER) &&
+                    appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
+                for (Payment payment : appointment.getPayments()) {
+                    if (payment.getGetPaymentStatus().equals(PaymentStatus.PENDING)) {
+                        ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
+                        ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
+                        UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(appointment.getUsers());
+                        List<PriceAppointmentResponse> priceAppointmentResponse = appointmentMapper.toPriceAppointmentResponse(appointment.getServices().getPriceLists());
+                        List<PaymentAppointmentResponse> paymentAppointmentResponse = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
+
+                        AllAppointmentAtCenterUserResponse allAppointmentAtCenterUserResponse = new AllAppointmentAtCenterUserResponse();
+                        allAppointmentAtCenterUserResponse.setShowAppointmentResponse(showAppointmentResponse);
+                        allAppointmentAtCenterUserResponse.setServiceAppointmentResponses(serviceAppointmentResponse);
+                        allAppointmentAtCenterUserResponse.setUserAppointmentResponse(userAppointmentResponse);
+                        allAppointmentAtCenterUserResponse.setPriceAppointmentResponse(priceAppointmentResponse);
+                        allAppointmentAtCenterUserResponse.setPaymentAppointmentResponse(paymentAppointmentResponse);
+                        appointmentResponses.add(allAppointmentAtCenterUserResponse);
+                    }
+                }
+            }
+        }
+        return appointmentResponses;
+    }
+
+    @Transactional
+    public void payAppointment(long paymentId, long appointmentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.PAYMENT_INFO_NOT_EXISTS));
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        appointment.setNote("Đã thanh toán");
+        payment.setPaymentStatus(PaymentStatus.PAID);
+        payment.setTransitionDate(LocalDate.now());
+        createPayment(paymentId, appointment.getServices().getServiceId());
+
+    }
+
+    @Transactional
+    public CreatePaymentRequest createPayment(long paymentId, long serviceId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.PAYMENT_INFO_NOT_EXISTS));
+        if (!payment.getPaymentMethod().equals(PaymentMethod.CASH)) {
+            throw new RuntimeException("Vui lòng chọn phương pháp thanh toán là Cash");
+        }
+        ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
+
+        // ✅ Tạo mã giao dịch duy nhất (txnRef)
+        String txnRef = UUID.randomUUID().toString().replace("-", "").substring(0, 20); // max 20 ký tự
+
+        // ✅ Tạo Invoice
+        Invoice invoice = new Invoice();
+        invoice.setTxnRef(txnRef);
+        invoice.setBankCode(generateRandomBankCode()); // sửa dòng này
+        invoice.setAmount((long) payment.getAmount());
+        invoice.setOrderInfo(serviceTest.getServiceName());
+        invoice.setTransactionStatus(TransactionStatus.SUCCESS);
+        invoice.setCreatedDate(LocalDateTime.now());
+        invoice.setPayDate(LocalDateTime.now());
+        invoice.setResponseCode("00");
+
+        // Gán quan hệ trước
+        invoice.setPayment(payment);
+        invoice.setServiceTest(serviceTest);
+
+        // ✅ Gán appointment từ payment (sau khi đã gán payment ở trên)
+        if (payment.getAppointment() != null) {
+            invoice.setAppointment(payment.getAppointment());
+        }
+        // ✅ Lưu hóa đơn
+        invoiceRepository.save(invoice);
+
+        // ✅ Tạo request để trả về cho client tạo URL thanh toán
+        CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
+        createPaymentRequest.setAmount(payment.getAmount());
+        createPaymentRequest.setOrderInfo(serviceTest.getServiceName());
+        createPaymentRequest.setTxnRef(txnRef); // rất quan trọng
+        createPaymentRequest.setReturnUrlBase("http://localhost:5173/vnpay-payment");
+
+        return createPaymentRequest;
+    }
+
+    private String generateRandomBankCode() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        int length = 6;
+        StringBuilder result = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < length; i++) {
+            result.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return result.toString();
+    }
 }
+//    public List<AppointmentAtHomeInfoDTO> getAppointmentAtHomeForAdmin() {
+//        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO(" +
+//                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note, s.appointmentType, s.staff.staffId, s.services.serviceId, s.users.userId) " +
+//                "FROM Appointment s WHERE " +
+//                "s.appointmentDate >= CURRENT_DATE " +
+//                "AND s.appointmentType=:appointmentType";
+//
+//        TypedQuery<AppointmentAtHomeInfoDTO> query = entityManager.createQuery(jpql, AppointmentAtHomeInfoDTO.class);
+//        query.setParameter("appointmentType", AppointmentType.HOME);
+//        return query.getResultList();
+//    }
+
+//    public AllAppointmentAtHomeResponse getAppointmentAtHomeForAdmin() {
+//        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO(" +
+//                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note, s.appointmentType, s.staff.staffId, s.services.serviceId, s.users.userId) " +
+//                "FROM Appointment s WHERE " +
+//                "s.appointmentDate >= CURRENT_DATE " +
+//                "AND s.appointmentType=:appointmentType";
+//
+//        TypedQuery<AppointmentAtHomeInfoDTO> query = entityManager.createQuery(jpql, AppointmentAtHomeInfoDTO.class);
+//        query.setParameter("appointmentType", AppointmentType.HOME);
+//        return query.getResultList();
+//    }
+
+
 //    public List<AllAppointmentAtCenterResponse> getAppointmentAtCenter(Authentication authentication) {
 //        Jwt jwt = (Jwt) authentication.getPrincipal();
 //        Long userId = jwt.getClaim("id");
@@ -580,35 +931,4 @@ public class AppointmentService {
 //        return centerList;
 //    }
 //
-//    public List<AllAppointmentAtHomeResponse> getAppointmentAtHome(Authentication authentication) {
-//        Jwt jwt = (Jwt) authentication.getPrincipal();
-//        Long userId = jwt.getClaim("id");
-//
-//        Users userRegister = userRepository.findById(userId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
-//
-//        List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
-//        List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
-//
-//        for (Appointment appointment : appointmentList) {
-//            if (appointment.getAppointmentStatus().equals(AppointmentStatus.PENDING) &&
-//                    appointment.getServices().getServiceType().equals(ServiceType.CIVIL) &&
-//                    appointment.getAppointmentType().equals(AppointmentType.HOME)) {
-//                appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
-//                ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
-//                List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
-//                KitAppointmentResponse kit = appointmentMapper.toKitAppointmentResponse(appointment.getServices().getKit());
-//                List<PaymentAppointmentResponse> payments = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
-//
-//                AllAppointmentAtHomeResponse homeResponse = new AllAppointmentAtHomeResponse();
-//                homeResponse.setShowAppointmentResponse(show);
-//                homeResponse.setServiceAppointmentResponses(services);
-//                homeResponse.setKitAppointmentResponse(kit);
-//                homeResponse.setPaymentAppointmentResponses(payments);
-//
-//                homeList.add(homeResponse);
-//            }
-//        }
-//
-//        return homeList;
-//    }
+

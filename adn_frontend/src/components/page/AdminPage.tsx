@@ -3,19 +3,18 @@ import {
   Menu,
   X,
   User,
-  //   Settings,
   LogOut,
   Bell,
   Home,
-  // Users,
-  // BarChart3,
-  // FileText,
   Shield,
   List,
   ShoppingBag,
   BaggageClaim,
+  Newspaper,  // Icon cho Blog và Tin tức
+  FileText,   // Icon cho Tin tức
 } from 'lucide-react';
-import { NavLink, useNavigate } from 'react-router-dom';
+
+import { NavLink } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { LocationCity, Room, RoomService } from '@mui/icons-material';
 
@@ -23,7 +22,6 @@ const AdminSidebar = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeItem, setActiveItem] = useState('dashboard');
   const [notifications] = useState(0);
-  const navigate = useNavigate();
   const [fullName, setFullName] = useState<string>('');
 
   useEffect(() => {
@@ -57,12 +55,27 @@ const AdminSidebar = () => {
       icon: RoomService,
       label: 'Tạo Dịch vụ',
       path: 'services',
+    }, 
+    {
+      id: 'blog',
+      icon: Newspaper,
+      label: 'Tạo Blog/Tin tức',
+      path: 'create-blog',
     },
     {
       id: 'servicesInfo',
       icon: ShoppingBag,
       label: 'Tất cả dịch vụ',
       path: 'a-getAllService',
+    },
+
+   
+
+    {
+      id: 'createLocus',
+      icon: ShoppingBag,
+      label: 'Tạo locus',
+      path: 'create-locus',
     },
   ];
 
@@ -84,7 +97,6 @@ const AdminSidebar = () => {
       localStorage.removeItem('role');
       setFullName('');
 
-      navigate('/login');
       window.location.href = '/login';
     } catch (error) {
       console.error('Logout API error:', error);
@@ -137,12 +149,11 @@ const AdminSidebar = () => {
       <div
         className={`
         fixed lg:static inset-y-0 left-0 z-50 
-        w-64
+        w-67
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         bg-white shadow-lg border-r border-gray-200 transition-all duration-300 ease-in-out
         flex flex-col
         h-screen
-        overflow-y-auto 
       `}
       >
         {/* Header */}
