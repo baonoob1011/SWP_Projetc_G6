@@ -59,7 +59,6 @@ public class KitDeliveryStatusService {
         TypedQuery<KitDeliveryStatusInfoDTO> query = entityManager.createQuery(jpql, KitDeliveryStatusInfoDTO.class);
         query.setParameter("userId", userId);
         query.setParameter("excludedStatus", DeliveryStatus.DONE); // hoặc chuỗi nếu dùng Enum/String
-
         return query.getResultList();
     }
 

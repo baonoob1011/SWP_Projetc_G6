@@ -13,6 +13,15 @@ public class AllAppointmentResult {
     private List<ResultAppointmentResponse> resultAppointmentResponse;
     private List<ResultLocusAppointmentResponse> resultLocusAppointmentResponse;
     private List<ResultDetailAppointmentResponse> resultDetailAppointmentResponse;
+    private List<SampleAppointmentResponse> sampleAppointmentResponse;
+
+    public List<SampleAppointmentResponse> getSampleAppointmentResponse() {
+        return sampleAppointmentResponse;
+    }
+
+    public void setSampleAppointmentResponse(List<SampleAppointmentResponse> sampleAppointmentResponse) {
+        this.sampleAppointmentResponse = sampleAppointmentResponse;
+    }
 
     public AllAppointmentResult() {
     }

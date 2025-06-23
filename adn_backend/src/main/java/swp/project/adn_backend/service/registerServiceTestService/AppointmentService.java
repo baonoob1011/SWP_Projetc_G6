@@ -17,10 +17,7 @@ import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.*;
-import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.AllAppointmentResult;
-import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultAppointmentResponse;
-import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultDetailAppointmentResponse;
-import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultLocusAppointmentResponse;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.*;
 import swp.project.adn_backend.dto.response.appointment.updateAppointmentStatus.UpdateAppointmentStatusResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.*;
@@ -596,6 +593,7 @@ public class AppointmentService {
                 List<LocationAppointmentResponse> locations = List.of(appointmentMapper.toLocationAppointmentResponse(appointment.getLocation()));
                 List<PaymentAppointmentResponse> payments = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
 
+
                 RoomAppointmentResponse room = new RoomAppointmentResponse();
                 room.setRoomName(appointment.getSlot().getRoom().getRoomName());
 
@@ -644,11 +642,12 @@ public class AppointmentService {
 
         for (Appointment appointment : appointmentList) {
             if (appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
+                List<PatientAppointmentResponse> patientAppointmentResponse = appointmentMapper.toPatientAppointmentService(appointment.getPatients());
                 ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
                 ShowAppointmentResponse appointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
                 StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(appointment.getStaff());
                 UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(appointment.getUsers());
-
+                List<SampleAppointmentResponse> sampleAppointmentResponse = appointmentMapper.toSampleAppointmentResponse(appointment.getSampleList());
                 List<ResultAppointmentResponse> resultResponses = new ArrayList<>();
                 List<ResultDetailAppointmentResponse> resultDetailAppointmentResponses = new ArrayList<>();
                 List<ResultLocusAppointmentResponse> resultLocusAppointmentResponses = new ArrayList<>();
@@ -677,7 +676,8 @@ public class AppointmentService {
                 result.setResultAppointmentResponse(resultResponses);
                 result.setResultDetailAppointmentResponse(resultDetailAppointmentResponses);
                 result.setResultLocusAppointmentResponse(resultLocusAppointmentResponses);
-
+                result.setPatientAppointmentResponse(patientAppointmentResponse);
+                result.setSampleAppointmentResponse(sampleAppointmentResponse);
                 results.add(result);
             }
         }

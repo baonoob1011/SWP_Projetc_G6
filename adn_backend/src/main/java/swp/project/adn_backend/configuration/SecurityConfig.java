@@ -74,6 +74,7 @@ public class SecurityConfig {
             "/api/staff/update-profile",
             "/api/kit/get-all-kit-staff",
             "/api/kit/update-kit/**",
+            "/api/blog/**",
             "/api/appointment/confirm-appointment-at-center/**",
             "/api/appointment/confirm-appointment-at-home/**",
             "/api/appointment/get-appointment-by-slot/**",

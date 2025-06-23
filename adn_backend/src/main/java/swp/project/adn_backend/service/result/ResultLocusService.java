@@ -104,7 +104,9 @@ public class ResultLocusService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
-
+        if(appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)){
+            throw new RuntimeException("Đơn đăng kí này đã có kết quả");
+        }
         Map<String, List<Double>> allele1Map = new HashMap<>();
         Map<String, List<Double>> allele2Map = new HashMap<>();
         Map<String, Long> locusIdMap = new HashMap<>();
