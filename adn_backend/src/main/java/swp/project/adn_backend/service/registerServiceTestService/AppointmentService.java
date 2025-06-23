@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO;
+import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
 import swp.project.adn_backend.dto.request.payment.PaymentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
+import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.*;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.AllAppointmentResult;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultAppointmentResponse;
@@ -30,10 +32,8 @@ import swp.project.adn_backend.repository.*;
 import swp.project.adn_backend.service.roleService.PatientService;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,9 +55,10 @@ public class AppointmentService {
     KitRepository kitRepository;
     PatientRepository patientRepository;
     KitDeliveryStatusRepository kitDeliveryStatusRepository;
+    InvoiceRepository invoiceRepository;
 
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService, PatientService patientService, PriceListRepository priceListRepository, PaymentRepository paymentRepository, KitRepository kitRepository, PatientRepository patientRepository, KitDeliveryStatusRepository kitDeliveryStatusRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService, PatientService patientService, PriceListRepository priceListRepository, PaymentRepository paymentRepository, KitRepository kitRepository, PatientRepository patientRepository, KitDeliveryStatusRepository kitDeliveryStatusRepository, InvoiceRepository invoiceRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentMapper = appointmentMapper;
         this.userRepository = userRepository;
@@ -74,6 +75,7 @@ public class AppointmentService {
         this.kitRepository = kitRepository;
         this.patientRepository = patientRepository;
         this.kitDeliveryStatusRepository = kitDeliveryStatusRepository;
+        this.invoiceRepository = invoiceRepository;
     }
 
     @Transactional
@@ -144,6 +146,7 @@ public class AppointmentService {
         payment.setAmount(priceList.getPrice());
         payment.setAppointment(appointment);
         payment.setUsers(userBookAppointment);
+        payment.setPaymentStatus(PaymentStatus.PENDING);
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         paymentRepository.save(payment);
 
@@ -640,37 +643,43 @@ public class AppointmentService {
         List<AllAppointmentResult> results = new ArrayList<>();
 
         for (Appointment appointment : appointmentList) {
-            ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
-            ShowAppointmentResponse appointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
-            StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(appointment.getStaff());
-            UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(appointment.getUsers());
+            if (appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
+                ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
+                ShowAppointmentResponse appointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
+                StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(appointment.getStaff());
+                UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(appointment.getUsers());
 
-            List<ResultAppointmentResponse> resultResponses = new ArrayList<>();
-            List<ResultDetailAppointmentResponse> resultDetailAppointmentResponses = new ArrayList<>();
-            List<ResultLocusAppointmentResponse> resultLocusAppointmentResponses = new ArrayList<>();
+                List<ResultAppointmentResponse> resultResponses = new ArrayList<>();
+                List<ResultDetailAppointmentResponse> resultDetailAppointmentResponses = new ArrayList<>();
+                List<ResultLocusAppointmentResponse> resultLocusAppointmentResponses = new ArrayList<>();
 
-            for (Result result : appointment.getResults()) {
-                ResultAppointmentResponse resultAppointmentResponse = appointmentMapper.toResultAppointmentResponse(result);
-                ResultDetailAppointmentResponse resultDetailAppointmentResponse = appointmentMapper.toResultDetailAppointmentResponse(result.getResultDetail());
+                for (Result result : appointment.getResults()) {
+                    if (!result.getResultStatus().equals(ResultStatus.COMPLETED)) {
+                        throw new RuntimeException("Kết quả chưa có");
+                    }
 
-                resultResponses.add(resultAppointmentResponse);
-                resultDetailAppointmentResponses.add(resultDetailAppointmentResponse);
+                    ResultAppointmentResponse resultAppointmentResponse = appointmentMapper.toResultAppointmentResponse(result);
+                    ResultDetailAppointmentResponse resultDetailAppointmentResponse = appointmentMapper.toResultDetailAppointmentResponse(result.getResultDetail());
 
-                for (ResultLocus resultLocus : result.getResultDetail().getResultLoci()) {
-                    ResultLocusAppointmentResponse locusResponse = appointmentMapper.toResultLocusAppointmentResponse(resultLocus);
-                    resultLocusAppointmentResponses.add(locusResponse);
+                    resultResponses.add(resultAppointmentResponse);
+                    resultDetailAppointmentResponses.add(resultDetailAppointmentResponse);
+
+                    for (ResultLocus resultLocus : result.getResultDetail().getResultLoci()) {
+                        ResultLocusAppointmentResponse locusResponse = appointmentMapper.toResultLocusAppointmentResponse(resultLocus);
+                        resultLocusAppointmentResponses.add(locusResponse);
+                    }
                 }
+
+                AllAppointmentResult result = new AllAppointmentResult();
+                result.setShowAppointmentResponse(appointmentResponse);
+                result.setStaffAppointmentResponse(staffAppointmentResponse);
+                result.setServiceAppointmentResponses(serviceAppointmentResponse);
+                result.setResultAppointmentResponse(resultResponses);
+                result.setResultDetailAppointmentResponse(resultDetailAppointmentResponses);
+                result.setResultLocusAppointmentResponse(resultLocusAppointmentResponses);
+
+                results.add(result);
             }
-
-            AllAppointmentResult result = new AllAppointmentResult();
-            result.setShowAppointmentResponse(appointmentResponse);
-            result.setStaffAppointmentResponse(staffAppointmentResponse);
-            result.setServiceAppointmentResponses(serviceAppointmentResponse);
-            result.setResultAppointmentResponse(resultResponses);
-            result.setResultDetailAppointmentResponse(resultDetailAppointmentResponses);
-            result.setResultLocusAppointmentResponse(resultLocusAppointmentResponses);
-
-            results.add(result);
         }
 
         return results;
@@ -742,17 +751,133 @@ public class AppointmentService {
         appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
     }
 
-    public List<AppointmentAtHomeInfoDTO> getAppointmentAtHomeForAdmin() {
-        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO(" +
-                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note, s.appointmentType, s.staff.staffId, s.services.serviceId, s.users.userId) " +
-                "FROM Appointment s WHERE " +
-                "s.appointmentDate >= CURRENT_DATE " +
-                "AND s.appointmentType=:appointmentType";
+    public List<AllAppointmentAtHomeManagerResponse> getAppointmentAtHomeForAdmin() {
+        List<Appointment> appointments = appointmentRepository.findAll();
+        List<AllAppointmentAtHomeManagerResponse> resultList = new ArrayList<>();
 
-        TypedQuery<AppointmentAtHomeInfoDTO> query = entityManager.createQuery(jpql, AppointmentAtHomeInfoDTO.class);
-        query.setParameter("appointmentType", AppointmentType.HOME);
-        return query.getResultList();
+        for (Appointment appointment : appointments) {
+            // Chỉ lấy những appointment tại nhà
+            if (appointment.getAppointmentType() == AppointmentType.HOME) {
+                AllAppointmentAtHomeManagerResponse response = new AllAppointmentAtHomeManagerResponse();
+                response.setAppointmentResponse(appointmentMapper.toShowAppointmentResponse(appointment));
+                response.setStaffAppointmentResponse(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
+                resultList.add(response);
+            }
+        }
+
+        return resultList;
     }
+
+    //staff lay ra de thanh toan bang tien mat
+    public List<AllAppointmentAtCenterUserResponse> getAppointmentOfUser(UserRequest userRequest) {
+        Users userRegister = userRepository.findByPhone(userRequest.getPhone())
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_EXISTED));
+        List<AllAppointmentAtCenterUserResponse> appointmentResponses = new ArrayList<>();
+        for (Appointment appointment : userRegister.getAppointments()) {
+            if (appointment.getAppointmentType().equals(AppointmentType.CENTER) &&
+                    appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
+                for (Payment payment : appointment.getPayments()) {
+                    if (payment.getGetPaymentStatus().equals(PaymentStatus.PENDING)) {
+                        ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
+                        ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
+                        UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(appointment.getUsers());
+                        List<PriceAppointmentResponse> priceAppointmentResponse = appointmentMapper.toPriceAppointmentResponse(appointment.getServices().getPriceLists());
+                        List<PaymentAppointmentResponse> paymentAppointmentResponse = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
+
+                        AllAppointmentAtCenterUserResponse allAppointmentAtCenterUserResponse = new AllAppointmentAtCenterUserResponse();
+                        allAppointmentAtCenterUserResponse.setShowAppointmentResponse(showAppointmentResponse);
+                        allAppointmentAtCenterUserResponse.setServiceAppointmentResponses(serviceAppointmentResponse);
+                        allAppointmentAtCenterUserResponse.setUserAppointmentResponse(userAppointmentResponse);
+                        allAppointmentAtCenterUserResponse.setPriceAppointmentResponse(priceAppointmentResponse);
+                        allAppointmentAtCenterUserResponse.setPaymentAppointmentResponse(paymentAppointmentResponse);
+                        appointmentResponses.add(allAppointmentAtCenterUserResponse);
+                    }
+                }
+            }
+        }
+        return appointmentResponses;
+    }
+
+    @Transactional
+    public void payAppointment(long paymentId, long appointmentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.PAYMENT_INFO_NOT_EXISTS));
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        appointment.setNote("Đã thanh toán");
+        payment.setPaymentStatus(PaymentStatus.PAID);
+        payment.setTransitionDate(LocalDate.now());
+        createPayment(paymentId, appointment.getServices().getServiceId());
+
+    }
+
+    @Transactional
+    public CreatePaymentRequest createPayment(long paymentId, long serviceId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.PAYMENT_INFO_NOT_EXISTS));
+        if (!payment.getPaymentMethod().equals(PaymentMethod.CASH)) {
+            throw new RuntimeException("Vui lòng chọn phương pháp thanh toán là Cash");
+        }
+        ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
+
+        // ✅ Tạo mã giao dịch duy nhất (txnRef)
+        String txnRef = UUID.randomUUID().toString().replace("-", "").substring(0, 20); // max 20 ký tự
+
+        // ✅ Tạo Invoice
+        Invoice invoice = new Invoice();
+        invoice.setTxnRef(txnRef);
+        invoice.setBankCode(generateRandomBankCode()); // sửa dòng này
+        invoice.setAmount((long) payment.getAmount());
+        invoice.setOrderInfo(serviceTest.getServiceName());
+        invoice.setTransactionStatus(TransactionStatus.SUCCESS);
+        invoice.setCreatedDate(LocalDateTime.now());
+        invoice.setPayDate(LocalDateTime.now());
+        invoice.setResponseCode("00");
+
+        // Gán quan hệ trước
+        invoice.setPayment(payment);
+        invoice.setServiceTest(serviceTest);
+
+        // ✅ Gán appointment từ payment (sau khi đã gán payment ở trên)
+        if (payment.getAppointment() != null) {
+            invoice.setAppointment(payment.getAppointment());
+        }
+        // ✅ Lưu hóa đơn
+        invoiceRepository.save(invoice);
+
+        // ✅ Tạo request để trả về cho client tạo URL thanh toán
+        CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
+        createPaymentRequest.setAmount(payment.getAmount());
+        createPaymentRequest.setOrderInfo(serviceTest.getServiceName());
+        createPaymentRequest.setTxnRef(txnRef); // rất quan trọng
+        createPaymentRequest.setReturnUrlBase("http://localhost:5173/vnpay-payment");
+
+        return createPaymentRequest;
+    }
+
+    private String generateRandomBankCode() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        int length = 6;
+        StringBuilder result = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < length; i++) {
+            result.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return result.toString();
+    }
+}
+//    public List<AppointmentAtHomeInfoDTO> getAppointmentAtHomeForAdmin() {
+//        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO(" +
+//                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note, s.appointmentType, s.staff.staffId, s.services.serviceId, s.users.userId) " +
+//                "FROM Appointment s WHERE " +
+//                "s.appointmentDate >= CURRENT_DATE " +
+//                "AND s.appointmentType=:appointmentType";
+//
+//        TypedQuery<AppointmentAtHomeInfoDTO> query = entityManager.createQuery(jpql, AppointmentAtHomeInfoDTO.class);
+//        query.setParameter("appointmentType", AppointmentType.HOME);
+//        return query.getResultList();
+//    }
 
 //    public AllAppointmentAtHomeResponse getAppointmentAtHomeForAdmin() {
 //        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO(" +
@@ -766,7 +891,7 @@ public class AppointmentService {
 //        return query.getResultList();
 //    }
 
-}
+
 //    public List<AllAppointmentAtCenterResponse> getAppointmentAtCenter(Authentication authentication) {
 //        Jwt jwt = (Jwt) authentication.getPrincipal();
 //        Long userId = jwt.getClaim("id");

@@ -5,7 +5,7 @@ import swp.project.adn_backend.enums.AppointmentType;
 
 import java.time.LocalDate;
 
-public class AppointmentAtHomeInfoDTO {
+public class  AppointmentAtHomeInfoDTO {
     private long appointmentId;
     private LocalDate appointmentDate;
     private AppointmentStatus appointmentStatus;

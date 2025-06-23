@@ -56,77 +56,6 @@ public class SlotService {
         this.roomRepository = roomRepository;
     }
 
-
-    //    public Slot createSlot(SlotRequest slotRequest, long roomId, long staffId) {
-//        LocalDate slotDate = slotRequest.getSlotDate();
-//        //so sánh time trong slot
-//        Time startTime = Time.valueOf(slotRequest.getStartTime());
-//        Time endTime = Time.valueOf(slotRequest.getEndTime());
-//        //so sanh time trong room
-//        LocalTime start = startTime.toLocalTime();
-//        LocalTime end = endTime.toLocalTime();
-//
-//        Integer overlapResult = slotRepository.isSlotOverlappingNative(roomId, slotDate, startTime, endTime);
-//        boolean isOverlapping = overlapResult != null && overlapResult == 1;
-//
-//        if (isOverlapping) {
-//            throw new AppException(ErrorCodeUser.TIME_EXISTED);
-//        }
-//
-//
-//        Room room = roomRepository.findById(roomId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.ROOM_NOT_FOUND));
-//
-//        Staff staff = staffRepository.findById(staffId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-//
-//        if (start.isBefore(room.getOpenTime()) || end.isAfter(room.getCloseTime())) {
-//            throw new AppException(ErrorCodeUser.ROOM_TIME_INVALID);
-//        }
-//
-//        Slot slot = new Slot();
-//        slot.setSlotDate(slotDate);
-//        slot.setStartTime(startTime);
-//        slot.setEndTime(endTime);
-//        slot.setSlotStatus(SlotStatus.AVAILABLE);
-//        room.setRoomStatus(RoomStatus.BOOKED);
-//        slot.setRoom(room);
-//        slot.setStaff(staff);
-//
-//        return slotRepository.save(slot);
-//    }
-
-
-//    public Slot createSlot(SlotRequest slotRequest, long roomId, long staffId) {
-//        LocalDate slotDate = slotRequest.getSlotDate();
-//
-//        Integer overlapResult = slotRepository.isSlotOverlappingNative(roomId, slotDate, slotRequest.getStartTime(), slotRequest.getEndTime());
-//        if (overlapResult != null && overlapResult == 1) {
-//            throw new AppException(ErrorCodeUser.TIME_EXISTED);
-//        }
-//
-//        Room room = roomRepository.findById(roomId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.ROOM_NOT_FOUND));
-//        Staff staff = staffRepository.findById(staffId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-//        // ✅ Kiểm tra thời gian slot có nằm trong khoảng hoạt động của phòng không
-//
-//        if (slotRequest.getStartTime().isBefore(room.getOpenTime()) || slotRequest.getEndTime().isAfter(room.getCloseTime())) {
-//            throw new AppException(ErrorCodeUser.SLOT_OUTSIDE_ROOM_TIME);
-//        }
-//        Slot slot = new Slot();
-//        slot.setSlotDate(slotDate);
-//        slot.setStartTime(slotRequest.getStartTime());
-//        slot.setEndTime(slotRequest.getEndTime());
-//        slot.setSlotStatus(SlotStatus.AVAILABLE);
-//        slot.setRoom(room);
-
-    ////        slot.setStaff(staff);
-//        Slot savedSlot = slotRepository.save(slot);
-//
-//        roomRepository.save(room);
-//        return savedSlot;
-//    }
     public List<SlotResponse> createSlot(SlotRequest slotRequest, long roomId, List<StaffSlotRequest> staffSlotRequests) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.ROOM_NOT_FOUND));
@@ -198,68 +127,36 @@ public class SlotService {
     }
 
 
-//    @Scheduled(cron = "0 0 0 * * MON") // chạy mỗi Thứ Hai lúc 00:00
-//    @Transactional
-//    public void autoCreateSlotsForNextWeek() {
-//        LocalDate today = LocalDate.now();
-//        List<Slot> todaySlots = slotRepository.findAllBySlotDate(today);
-//
-//        if (todaySlots.isEmpty()) {
-//            System.out.println("❌ Không có slot nào hôm nay để nhân bản.");
-//            return;
-//        }
-//
-//        for (int i = 1; i <= 6; i++) { // 6 ngày tiếp theo (Thứ Ba → Chủ Nhật)
-//            LocalDate nextDate = today.plusDays(i);
-//            for (Slot slot : todaySlots) {
-//                if (slot.getSlotStatus() == SlotStatus.CANCELLED) continue;
-//
-//                Slot newSlot = new Slot();
-//                newSlot.setSlotDate(nextDate);
-//                newSlot.setStartTime(slot.getStartTime());
-//                newSlot.setEndTime(slot.getEndTime());
-//                newSlot.setSlotStatus(SlotStatus.AVAILABLE);
-//                newSlot.setRoom(slot.getRoom());
-//                newSlot.setStaff(slot.getStaff());
-//
-//                slotRepository.save(newSlot);
-//            }
-//            System.out.println("✅ Slot đã được tạo cho ngày " + nextDate);
-//        }
-//    }
-
 
     public List<SlotInfoDTO> getAllUpcomingSlotsForUser() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
                 "s.slotId, s.slotDate, s.startTime, s.endTime, s.slotStatus) " +
                 "FROM Slot s " +
                 "WHERE s.slotStatus = :slotStatus " +
-                "AND s.slotDate >= CURRENT_DATE";
+                "AND s.slotDate BETWEEN :today AND :afterTwoDays";
+
+        LocalDate today = LocalDate.now();
+        LocalDate afterTwoDays = today.plusDays(2);
+        LocalTime now = LocalTime.now();
 
         TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
         query.setParameter("slotStatus", SlotStatus.AVAILABLE);
+        query.setParameter("today", today);
+        query.setParameter("afterTwoDays", afterTwoDays);
 
-        LocalDate today = LocalDate.now();
-        LocalTime now = LocalTime.now();
+        List<SlotInfoDTO> filteredSlots = query.getResultList().stream()
+                .filter(slot -> {
+                    LocalDate slotDate = slot.getSlotDate();
+                    if (slotDate.isEqual(today)) {
+                        return slot.getEndTime().isAfter(now); // còn thời gian
+                    }
+                    return true; // ngày 24, 25 giữ nguyên
+                })
+                .collect(Collectors.toList());
 
-        List<SlotInfoDTO> result;
-        try {
-            result = query.getResultList().stream()
-                    .filter(slot -> {
-                        if (slot.getSlotDate().isEqual(today)) {
-                            return slot.getEndTime().isAfter(now);
-                        }
-                        return true;
-                    })
-                    .collect(Collectors.toList());
-        } catch (UnsupportedOperationException e) {
-            System.out.println("🔥 Immutable result list detected - wrapping in ArrayList");
-            e.printStackTrace();
-            result = new ArrayList<>(query.getResultList()); // fallback without filtering
-        }
-
-        return new ArrayList<>(result);
+        return new ArrayList<>(filteredSlots);
     }
+
 
 
     public List<GetFullSlotResponse> getAllSlot() {

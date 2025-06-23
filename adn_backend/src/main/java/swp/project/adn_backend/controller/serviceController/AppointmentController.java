@@ -1,6 +1,7 @@
 package swp.project.adn_backend.controller.serviceController;
 
 import jakarta.validation.Valid;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -10,9 +11,8 @@ import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
-import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentAtCenterResponse;
-import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentAtHomeResponse;
-import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentResponse;
+import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.*;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.AllAppointmentResult;
 import swp.project.adn_backend.dto.response.appointment.updateAppointmentStatus.UpdateAppointmentStatusResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
@@ -87,16 +87,30 @@ public class AppointmentController {
     public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentAtHomeToGetSample(Authentication authentication) {
         return ResponseEntity.ok(appointmentService.getAppointmentAtHomeToGetSample(authentication));
     }
+    //staff lay appoint de thanh toan tien mat
+    @GetMapping("/get-appointment-of-user-by-phone")
+    public ResponseEntity<List<AllAppointmentAtCenterUserResponse>> getAppointmentOfUser(@RequestBody UserRequest userRequest) {
+        return ResponseEntity.ok(appointmentService.getAppointmentOfUser(userRequest));
+    }//staff lay appoint de thanh toan tien mat
+
+    @PutMapping("/get-payment-at-center")
+    public ResponseEntity<String> getAppointmentOfUser(@RequestParam long paymentId,
+                                                       @RequestParam long appointmentId) {
+        appointmentService.payAppointment(paymentId,appointmentId);
+        return ResponseEntity.ok("thanh toán bằng tiền mặt thành công");
+    }
 
     @GetMapping("/get-appointment-at-home-by-staff")
     public ResponseEntity<List<AppointmentAtHomeInfoDTO>> getAppointmentAtHome(Authentication authentication) {
         return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
     }
-//admin lấy ra để add staff dô
+
+    //admin lấy ra để add staff dô
     @GetMapping("/get-appointment-at-home-by-admin")
-    public ResponseEntity<List<AppointmentAtHomeInfoDTO>> getAppointmentAtHomeForAdmin() {
+    public ResponseEntity<List<AllAppointmentAtHomeManagerResponse>> getAppointmentAtHomeForAdmin() {
         return ResponseEntity.ok(appointmentService.getAppointmentAtHomeForAdmin());
     }
+
     @GetMapping("/get-all-result")
     public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResult(Authentication authentication) {
         return ResponseEntity.ok(appointmentService.getAllAppointmentsResult(authentication));

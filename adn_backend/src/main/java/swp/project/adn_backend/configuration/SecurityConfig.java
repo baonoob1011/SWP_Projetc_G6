@@ -46,13 +46,14 @@ public class SecurityConfig {
             "/api/services/get-all-civil-service",
             "/api/price/get-all-price/**",
             "/api/jasperpdf/**",
+            "/api/blog/get-all-blog",
     };
 
     private final String[] USER_ENDPOINTS = {
             "/api/appointment/book-appointment/**",
             "/api/appointment/cancel-appointment/**",
             "/api/appointment/get-appointment/**",
-          "/api/appointment/get-all-result/**",
+            "/api/appointment/get-all-result/**",
             "/api/appointment/get-appointment-history-user/**",
             "/api/slot/get-all-slot-user/**",
             "/api/patient/register-info",
@@ -76,6 +77,8 @@ public class SecurityConfig {
             "/api/appointment/confirm-appointment-at-center/**",
             "/api/appointment/confirm-appointment-at-home/**",
             "/api/appointment/get-appointment-by-slot/**",
+            "/api/appointment/get-appointment-of-user-by-phone/**",
+            "/api/appointment/get-payment-at-center/**",
             "/api/sample/collect-sample-patient/**",
             "/api/sample/get-all-sample/**",
             "/api/slot/get-all-slot-of-staff/**",

@@ -30,6 +30,11 @@ public class ResultLocus {
 
     @Column(name = "allele_2")
     double allele2;
+    @Column(name = "father_allele_1")
+    private Double fatherAllele1;
+
+    @Column(name = "father_allele_2")
+    private Double fatherAllele2;
 
     double frequency;
     double pi;
@@ -59,6 +64,22 @@ public class ResultLocus {
     })
     @JoinColumn(name = "appointment_id")
     Appointment appointment;
+
+    public Double getFatherAllele1() {
+        return fatherAllele1;
+    }
+
+    public void setFatherAllele1(Double fatherAllele1) {
+        this.fatherAllele1 = fatherAllele1;
+    }
+
+    public Double getFatherAllele2() {
+        return fatherAllele2;
+    }
+
+    public void setFatherAllele2(Double fatherAllele2) {
+        this.fatherAllele2 = fatherAllele2;
+    }
 
     public Appointment getAppointment() {
         return appointment;

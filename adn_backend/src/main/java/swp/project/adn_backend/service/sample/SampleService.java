@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.request.sample.SampleRequest;
 import swp.project.adn_backend.dto.response.sample.*;
 import swp.project.adn_backend.entity.*;
@@ -113,6 +114,17 @@ public class SampleService {
         }
         return allSampleResponseList;
     }
-    // thực làm update status collectSample
 
+    @Transactional
+    public void updateSampleStatus(long sampleId, SampleRequest sampleRequest) {
+        Sample sample = sampleRepository.findById(sampleId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
+        sample.setSampleStatus(sampleRequest.getSampleStatus());
+    }
+    @Transactional
+    public void deleteSample(long sampleId) {
+        Sample sample = sampleRepository.findById(sampleId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
+        sampleRepository.findById(sampleId);
+    }
 }

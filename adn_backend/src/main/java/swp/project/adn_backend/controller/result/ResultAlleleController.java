@@ -3,6 +3,7 @@ package swp.project.adn_backend.controller.result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import swp.project.adn_backend.dto.request.result.AllelePairRequest;
 import swp.project.adn_backend.dto.request.result.ResultAlleleRequest;
 import swp.project.adn_backend.dto.request.result.ResultLocusRequest;
 import swp.project.adn_backend.dto.response.result.ResultAlleleResponse;
@@ -19,11 +20,13 @@ public class ResultAlleleController {
     private ResultAlleleService resultAlleleService;
 
     @PostMapping("/create-result-allele")
-    public ResponseEntity<ResultAlleleResponse> createResultLocus(
-            @RequestBody ResultAlleleRequest resultAlleleRequest,
+    public ResponseEntity<List<ResultAlleleResponse>> createAllelePair(
             @RequestParam long sampleId,
-            @RequestParam long locusId) {
-        return ResponseEntity.ok(resultAlleleService.createAllele(resultAlleleRequest,sampleId,locusId));
+            @RequestParam long locusId,
+            @RequestBody AllelePairRequest request) {
+
+        List<ResultAlleleResponse> responses = resultAlleleService.createAllelePair(request, sampleId, locusId);
+        return ResponseEntity.ok(responses);
     }
 
 }

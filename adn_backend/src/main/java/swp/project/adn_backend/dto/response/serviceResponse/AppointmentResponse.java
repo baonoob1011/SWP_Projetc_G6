@@ -23,7 +23,6 @@ public class AppointmentResponse {
     LocalDate appointmentDate;
     AppointmentStatus appointmentStatus;
     String note;
-
     ServiceTest serviceTest;
     Users users;
     Staff staff;
