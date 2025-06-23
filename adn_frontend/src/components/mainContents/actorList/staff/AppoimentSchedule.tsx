@@ -7,19 +7,26 @@ type Appointment = {
   appointmentStatus: string;
   note: string;
   userId: string;
-  slotId: string;
+  slotId?: string;
   serviceId: string;
-  locationId: string;
+  locationId?: string;
+  appointmentType: 'HOME' | 'CENTER';
 };
 
 const AppointmentSchedule = () => {
-  const [schedule, setSchedule] = useState<Appointment[]>([]);
+  const [centerSchedule, setCenterSchedule] = useState<Appointment[]>([]);
+  const [homeSchedule, setHomeSchedule] = useState<Appointment[]>([]);
+  const [loadingCenter, setLoadingCenter] = useState(false);
+  const [loadingHome, setLoadingHome] = useState(false);
   const [auth, setAuth] = useState(false);
+
   useEffect(() => {
     setAuth(localStorage.getItem('role') === 'STAFF');
-  });
+  }, []);
+
   const fetchSchedule = async () => {
     const token = localStorage.getItem('token');
+    setLoadingCenter(true);
     try {
       const res = await fetch(
         'http://localhost:8080/api/staff/get-appointment-by-staff',
@@ -32,39 +39,46 @@ const AppointmentSchedule = () => {
         }
       );
       const data = await res.json();
-      if (!res.ok) {
-        toast.warning('Không có dữ liệu');
-      } else {
-        setSchedule(data);
+      if (res.ok) {
+        const filteredData = data.filter(
+          (item: Appointment) => item.appointmentType === 'CENTER'
+        );
+        setCenterSchedule(filteredData);
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoadingCenter(false);
     }
   };
 
-  // const fetchScheduleAthome = async () => {
-  //   const token = localStorage.getItem('token');
-  //   try {
-  //     const res = await fetch(
-  //       'http://localhost:8080/api/appointment/get-appointment-at-home-to-get-sample',
-  //       {
-  //         method: 'GET',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     const data = await res.json();
-  //     if (!res.ok) {
-  //       toast.warning('Không có dữ liệu');
-  //     } else {
-  //       setSchedule(data);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const fetchScheduleAtHome = async () => {
+    const token = localStorage.getItem('token');
+    setLoadingHome(true);
+    try {
+      const res = await fetch(
+        'http://localhost:8080/api/appointment/get-appointment-at-home-by-staff',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        const filteredData = data.filter(
+          (item: Appointment) => item.appointmentType === 'HOME'
+        );
+        setHomeSchedule(filteredData);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingHome(false);
+    }
+  };
 
   const handleCheck = async (
     appointmentId: string,
@@ -86,11 +100,36 @@ const AppointmentSchedule = () => {
         }
       );
 
-      if (!res.ok) {
-        toast.warning('Không có dữ liệu');
-      } else {
-        toast.success('thành công');
+      if (res.ok) {
+        toast.success('Xác nhận lịch tại trung tâm thành công');
         fetchSchedule();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCheckAtHome = async (
+    appointmentId: string,
+    userId: string,
+    serviceId: string
+  ) => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/appointment/confirm-appointment-at-home?appointmentId=${appointmentId}&userId=${userId}&serviceId=${serviceId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.ok) {
+        toast.success('Xác nhận lịch tại nhà thành công');
+        fetchScheduleAtHome();
       }
     } catch (error) {
       console.log(error);
@@ -100,67 +139,129 @@ const AppointmentSchedule = () => {
   useEffect(() => {
     fetchSchedule();
   }, []);
-  // useEffect(() => {
-  //   fetchScheduleAthome();
-  // }, []);
+  useEffect(() => {
+    fetchScheduleAtHome();
+  }, []);
 
-  if (!auth) {
-    return;
-  }
+  if (!auth) return null;
 
   return (
     <div className="container mt-4">
-      <h4 className="text-center text-primary mb-4">Lịch Hẹn Của Nhân Viên</h4>
-
-      <div className="table-responsive">
-        <table className="table table-hover border shadow-sm">
-          <thead className="table-primary text-center">
-            <tr>
-              <th>Ngày Hẹn</th>
-              <th>Trạng Thái</th>
-              <th>Ghi Chú</th>
-              <th>Thao Tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {schedule.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="text-center text-secondary">
-                  Không có lịch hẹn
-                </td>
-              </tr>
-            ) : (
-              schedule.map((item, index) => (
-                <tr key={index} className="align-middle text-center">
-                  <td>{item.appointmentDate}</td>
-                  <td>
-                    <span className={'bg-warning text-dark'}>
-                      {item.appointmentStatus}
-                    </span>
-                  </td>
-                  <td>{item.note}</td>
-                  <td>
-                    <button
-                      onClick={() =>
-                        handleCheck(
-                          item.appointmentId,
-                          item.userId,
-                          item.slotId,
-                          item.serviceId,
-                          item.locationId
-                        )
-                      }
-                      className="btn btn-outline-primary btn-sm"
-                    >
-                      Xác Nhận
-                    </button>
-                  </td>
+      {/* Lịch Trung Tâm */}
+      {loadingCenter || centerSchedule.length > 0 ? (
+        <>
+          <h4 className="text-center text-primary mb-4">
+            Lịch Hẹn Tại Trung Tâm
+          </h4>
+          <div className="table-responsive mb-5">
+            <table className="table table-hover border shadow-sm">
+              <thead className="table-primary text-center">
+                <tr>
+                  <th>Ngày Hẹn</th>
+                  <th>Trạng Thái</th>
+                  <th>Ghi Chú</th>
+                  <th>Thao Tác</th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody>
+                {loadingCenter ? (
+                  <tr>
+                    <td colSpan={4} className="text-center text-secondary">
+                      Đang tải dữ liệu...
+                    </td>
+                  </tr>
+                ) : (
+                  centerSchedule.map((item, index) => (
+                    <tr key={index} className="align-middle text-center">
+                      <td>{item.appointmentDate}</td>
+                      <td>
+                        <span className="bg-warning text-dark px-2 py-1 rounded">
+                          {item.appointmentStatus}
+                        </span>
+                      </td>
+                      <td>{item.note}</td>
+                      <td>
+                        <button
+                          onClick={() =>
+                            handleCheck(
+                              item.appointmentId,
+                              item.userId,
+                              item.slotId!,
+                              item.serviceId,
+                              item.locationId!
+                            )
+                          }
+                          className="btn btn-outline-primary btn-sm"
+                        >
+                          Xác Nhận
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : null}
+
+      {/* Lịch Tại Nhà */}
+      {/* Lịch Tại Nhà */}
+      {loadingHome ||
+      homeSchedule.some((item) => item.note === 'Đã thanh toán') ? (
+        <>
+          <h4 className="text-center text-success mb-4">Lịch Hẹn Tại Nhà</h4>
+          <div className="table-responsive">
+            <table className="table table-hover border shadow-sm">
+              <thead className="table-success text-center">
+                <tr>
+                  <th>Ngày Hẹn</th>
+                  <th>Trạng Thái</th>
+                  <th>Ghi Chú</th>
+                  <th>Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loadingHome ? (
+                  <tr>
+                    <td colSpan={4} className="text-center text-secondary">
+                      Đang tải dữ liệu...
+                    </td>
+                  </tr>
+                ) : (
+                  homeSchedule
+                    .filter((item) => item.note === 'Đã thanh toán')
+                    .map((item, index) => (
+                      <tr key={index} className="align-middle text-center">
+                        <td>{item.appointmentDate}</td>
+                        <td>
+                          <span className="bg-warning text-dark px-2 py-1 rounded">
+                            {item.appointmentStatus}
+                          </span>
+                        </td>
+                        <td>{item.note}</td>
+                        <td>
+                          <button
+                            onClick={() =>
+                              handleCheckAtHome(
+                                item.appointmentId,
+                                item.serviceId,
+                                item.userId
+                              )
+                            }
+                            className="btn btn-outline-success btn-sm"
+                          >
+                            Xác Nhận
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 };

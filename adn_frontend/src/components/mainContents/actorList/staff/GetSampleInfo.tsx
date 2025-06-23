@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { ArrowBack } from '@mui/icons-material';
 
 // type Result = {
 //   locusName: string;
@@ -92,12 +91,6 @@ const GetSampleInfo = () => {
     <Paper
       style={{ padding: 20, maxWidth: 1000, margin: 'auto', marginTop: 40 }}
     >
-      <Button
-        component={NavLink}
-        to={`/s-page/checkAppointment/${appointmentId}`}
-      >
-        <ArrowBack />
-      </Button>
       <Typography variant="h6" gutterBottom>
         Danh sách mẫu đã thu
       </Typography>
