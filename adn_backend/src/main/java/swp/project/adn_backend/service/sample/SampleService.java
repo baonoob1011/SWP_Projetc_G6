@@ -91,12 +91,6 @@ public class SampleService {
     }
 
 
-
-
-
-
-    
-
     public List<AllSampleResponse> getAllSampleOfPatient(Authentication authentication,
                                                          long appointmentId) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
