@@ -70,6 +70,13 @@ import CreateResultAllele from './components/mainContents/actorList/staff/Result
 // Đăng ký dịch vụ
 import BookingAtCenter from './components/mainContents/services/BookingAtCenter';
 import BookingAtHome from './components/mainContents/services/BookingAtHome';
+
+import CheckAppointment from './components/mainContents/actorList/staff/CheckAppointment';
+import { CollectorSlots } from './components/mainContents/actorList/staff/CollectorSlot';
+import GetCollector from './components/mainContents/actorList/GetCollector';
+import SignUpCollector from './components/mainContents/actorList/staff/SignUpColector';
+import CreateBlog from './components/mainContents/services/CreateBlog';
+
 import PatientRequest from './components/mainContents/feature/PatientRequest';
 
 // Thanh toán
@@ -225,6 +232,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <Services />
+                  </ProtectedRoute>
+                }
+              />
+               <Route
+                path="/create-blog"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <CreateBlog />
                   </ProtectedRoute>
                 }
               />

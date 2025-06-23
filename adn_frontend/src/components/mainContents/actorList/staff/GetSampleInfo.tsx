@@ -125,6 +125,7 @@ const GetSampleInfo = () => {
                   state={{
                     patientName: item.patientSampleResponse.fullName,
                     sampleId: item.sampleResponse.sampleId,
+                    appointmentId: appointmentId,
                   }}
                 >
                   ghi kết quả

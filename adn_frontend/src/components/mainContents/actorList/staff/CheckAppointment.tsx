@@ -123,6 +123,7 @@ const CheckAppointment = () => {
               <TableCell>Ngày hẹn</TableCell>
               <TableCell>Ghi chú</TableCell>
               <TableCell>Vật xét nghiệm</TableCell>
+              <TableCell>Hành động</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -185,6 +186,14 @@ const CheckAppointment = () => {
                           >
                             <Check fontSize="small" />
                           </Button>
+                          <Button
+                            component={NavLink}
+                            to={`/s-page/get-appointment/${appointmentId}`}
+                            variant="outlined"
+                            size="small"
+                          >
+                            Xem thông tin
+                          </Button>
                         </Box>
                       ) : (
                         <Typography color="textSecondary">
@@ -197,24 +206,6 @@ const CheckAppointment = () => {
               })
             )}
           </TableBody>
-          {appointments.length > 0 && (
-            <Button
-              component={NavLink}
-              to={`/s-page/get-appointment/${appointments[0].showAppointmentResponse.appointmentId}`}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{
-                minWidth: 36,
-                height: 36,
-                padding: 0,
-                minHeight: 36,
-                marginTop: '16px',
-              }}
-            >
-              Xem thông tin
-            </Button>
-          )}
         </Table>
       ) : (
         <Typography style={{ marginTop: '20px' }}>
