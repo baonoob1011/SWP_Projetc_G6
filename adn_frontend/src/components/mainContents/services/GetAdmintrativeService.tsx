@@ -61,7 +61,12 @@ const AdministrativeServiceList = () => {
       try {
         const response = await fetch(
           'http://localhost:8080/api/services/get-all-administrative-service',
-          { method: 'GET' }
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
         );
         if (!response.ok) {
           setError('Không thể lấy dữ liệu dịch vụ');
