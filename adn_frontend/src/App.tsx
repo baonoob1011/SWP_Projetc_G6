@@ -78,7 +78,7 @@ import PatientRequest from './components/mainContents/feature/PatientRequest';
 // Thanh toán
 import VNPayResult from './components/mainContents/services/VNPAY';
 import GetStaffAtHome from './components/mainContents/actorList/staff/GetStaffAtHome';
-import TotalUserChart from './components/mainContents/actorList/admin/GetDashBoard';
+// import TotalUserChart from './components/mainContents/actorList/admin/GetDashBoard';
 import GetAllResult from './components/mainContents/feature/GetAllResult';
 
 // import CreateBlog from './components/mainContents/services/CreateBlog';
@@ -185,14 +185,7 @@ function App() {
                   }
                 />
               </Route>
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute allowedRoles={['ADMIN']}>
-                    <TotalUserChart />
-                  </ProtectedRoute>
-                }
-              />
+
               <Route
                 path="/signup-manager"
                 element={

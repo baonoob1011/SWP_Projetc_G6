@@ -147,6 +147,8 @@ const Booking = () => {
                   <td>
                     {item.show.appointmentStatus === 'CONFIRMED'
                       ? 'Đã xác nhận'
+                      : item.show.appointmentStatus === 'COMPLETED'
+                      ? 'Đã có kết quả'
                       : 'Chưa xác nhận'}
                   </td>
                   <td>{item.services.map((s) => s.serviceName).join(', ')}</td>
@@ -160,16 +162,17 @@ const Booking = () => {
                       }}
                     >
                       {/* Xem thêm */}
-                      <button
-                        className="btn btn-primary btn-sm d-flex align-items-center gap-1"
-                        onClick={() => {
-                          setSelectedBooking(item);
-                          setShowModal(true);
-                        }}
-                      >
-                        <FaEye />
-                      </button>
-
+                      {item.show.appointmentStatus === 'COMPLETED' && (
+                        <button
+                          className="btn btn-primary btn-sm d-flex align-items-center gap-1"
+                          onClick={() => {
+                            setSelectedBooking(item);
+                            setShowModal(true);
+                          }}
+                        >
+                          <FaEye />
+                        </button>
+                      )}
                       {/* Hủy */}
                       {item.show.appointmentStatus !== 'COMPLETED' && (
                         <button

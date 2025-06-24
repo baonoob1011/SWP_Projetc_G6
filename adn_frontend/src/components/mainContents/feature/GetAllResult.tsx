@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ArrowBack } from '@mui/icons-material';
+import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const GetAllResult = () => {
@@ -39,8 +41,9 @@ const GetAllResult = () => {
       className="container"
       style={{ maxWidth: 1000, margin: 120, padding: 20 }}
     >
-      <h5 className="mb-4">Hóa đơn kết quả hoàn tất</h5>
-
+      <Button component={NavLink} to="/u-profile">
+        <ArrowBack />
+      </Button>
       {isResult
         .filter(
           (item) =>
