@@ -36,7 +36,6 @@ import NewProfile from './components/mainContents/actorList/StaffAndManagerProfi
 import GetUserByAdmin from './components/mainContents/actorList/GetUserByAdmin';
 import GetStaffByAdmin from './components/mainContents/actorList/GetStaffByAdmin';
 import GetManagerByAdmin from './components/mainContents/actorList/GetManagerByAdmin';
-import GetCollector from './components/mainContents/actorList/GetCollector';
 
 import GetUserByStaff from './components/mainContents/actorList/GetUserByStaff';
 import GetUserByManager from './components/mainContents/actorList/GetUserByManager';
@@ -45,17 +44,14 @@ import GetStaffByManager from './components/mainContents/actorList/GetStaffByMan
 // Đăng ký tài khoản
 import SignUpManager from './components/mainContents/feature/SignUpForManager';
 import SignUpStaff from './components/mainContents/feature/SignUpForStaff';
-import SignUpCollector from './components/mainContents/actorList/staff/SignUpColector';
 import SignUpStaffAtHome from './components/mainContents/actorList/staff/StaffAtHome';
 
 // Quản lý lịch & Slot
 import StaffSlot from './components/mainContents/actorList/staff/GetStaffShedule';
 import SignUpStaffSchedule from './components/mainContents/actorList/staff/SignUpStaffSchedule';
 import AppointmentSchedule from './components/mainContents/actorList/staff/AppoimentSchedule';
-import { CollectorSlots } from './components/mainContents/actorList/staff/CollectorSlot';
 
 // Quản lý cuộc hẹn
-import CheckAppointment from './components/mainContents/actorList/staff/CheckAppointment';
 import GetSampleInfo from './components/mainContents/actorList/staff/GetSampleInfo';
 import GetAppointmentByAdmin from './components/mainContents/actorList/admin/GetAppointment';
 
@@ -82,6 +78,8 @@ import PatientRequest from './components/mainContents/feature/PatientRequest';
 // Thanh toán
 import VNPayResult from './components/mainContents/services/VNPAY';
 import GetStaffAtHome from './components/mainContents/actorList/staff/GetStaffAtHome';
+// import TotalUserChart from './components/mainContents/actorList/admin/GetDashBoard';
+import GetAllResult from './components/mainContents/feature/GetAllResult';
 
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
@@ -193,6 +191,7 @@ function App() {
                   }
                 />
               </Route>
+
               <Route
                 path="/signup-manager"
                 element={
@@ -241,7 +240,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-               <Route
+              <Route
                 path="/create-blog"
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
@@ -579,6 +578,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <PatientRequest />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/result/:appointmentId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <GetAllResult />
                 </ProtectedRoute>
               }
             />

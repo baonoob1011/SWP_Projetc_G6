@@ -47,9 +47,7 @@ public class Users {
 
     @Column(columnDefinition = "nvarchar(255)")
     String email;
-
     Boolean enabled = true;
-
     String otpCode;
     LocalDateTime otpExpiryTime;
 

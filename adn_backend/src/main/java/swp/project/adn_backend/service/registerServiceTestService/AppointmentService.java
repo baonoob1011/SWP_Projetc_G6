@@ -630,29 +630,31 @@ public class AppointmentService {
         return new AllAppointmentResponse(centerList, homeList);
     }
 
-    public List<AllAppointmentResult> getAllAppointmentsResult(Authentication authentication) {
+    public List<AllAppointmentResult> getAllAppointmentsResult(Authentication authentication, long appointmentId) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
 
         Users userRegister = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+        Appointment appointment1 = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
 
         List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
         List<AllAppointmentResult> results = new ArrayList<>();
 
-        for (Appointment appointment : appointmentList) {
-            if (appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
-                List<PatientAppointmentResponse> patientAppointmentResponse = appointmentMapper.toPatientAppointmentService(appointment.getPatients());
-                ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
-                ShowAppointmentResponse appointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
-                StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(appointment.getStaff());
-                UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(appointment.getUsers());
-                List<SampleAppointmentResponse> sampleAppointmentResponse = appointmentMapper.toSampleAppointmentResponse(appointment.getSampleList());
+
+            if (appointment1.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
+                List<PatientAppointmentResponse> patientAppointmentResponse = appointmentMapper.toPatientAppointmentService(appointment1.getPatients());
+                ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment1.getServices());
+                ShowAppointmentResponse appointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment1);
+                StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(appointment1.getStaff());
+                UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(appointment1.getUsers());
+                List<SampleAppointmentResponse> sampleAppointmentResponse = appointmentMapper.toSampleAppointmentResponse(appointment1.getSampleList());
                 List<ResultAppointmentResponse> resultResponses = new ArrayList<>();
                 List<ResultDetailAppointmentResponse> resultDetailAppointmentResponses = new ArrayList<>();
                 List<ResultLocusAppointmentResponse> resultLocusAppointmentResponses = new ArrayList<>();
 
-                for (Result result : appointment.getResults()) {
+                for (Result result : appointment1.getResults()) {
                     if (!result.getResultStatus().equals(ResultStatus.COMPLETED)) {
                         throw new RuntimeException("Kết quả chưa có");
                     }
@@ -679,7 +681,7 @@ public class AppointmentService {
                 result.setPatientAppointmentResponse(patientAppointmentResponse);
                 result.setSampleAppointmentResponse(sampleAppointmentResponse);
                 results.add(result);
-            }
+
         }
 
         return results;

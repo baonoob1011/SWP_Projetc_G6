@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
+import swp.project.adn_backend.dto.InfoDTO.ServiceFeedbackInfoDTO;
 import swp.project.adn_backend.dto.response.serviceResponse.FullCivilServiceResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.FullServiceTestResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.FullAdministrationServiceResponse;
@@ -25,7 +26,7 @@ public class ServiceTestController {
     public ResponseEntity<String> createService(
             @RequestPart("request") @Valid CreateServiceRequest request,
             @RequestPart(value = "file", required = false) MultipartFile file,
-            @PathVariable("kitId")long kitId) {
+            @PathVariable("kitId") long kitId) {
 
         serviceTestService.createService(
                 request.getServiceRequest(),
@@ -62,6 +63,11 @@ public class ServiceTestController {
     @GetMapping("/get-all-service")
     public ResponseEntity<List<FullServiceTestResponse>> getAllService() {
         return ResponseEntity.ok(serviceTestService.getAllService());
+    }
+
+    @GetMapping("/get-service-to-feedback")
+    public ResponseEntity<List<ServiceFeedbackInfoDTO>> getAllService(@RequestParam long serviceId) {
+        return ResponseEntity.ok(serviceTestService.getServiceById(serviceId));
     }
 
     @GetMapping("/get-all-administrative-service")
