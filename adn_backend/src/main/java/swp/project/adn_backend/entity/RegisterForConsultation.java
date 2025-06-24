@@ -9,7 +9,7 @@ import swp.project.adn_backend.enums.ConsultationStatus;
 public class RegisterForConsultation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long register_for_consultation_id;
+    private long registerForConsultationId;
     @Column(columnDefinition = "NVARCHAR(100)")
     private String name;
     private String phone;
@@ -17,12 +17,12 @@ public class RegisterForConsultation {
     @Enumerated(EnumType.STRING)
     private ConsultationStatus consultationStatus;
 
-    public long getRegister_for_consultation_id() {
-        return register_for_consultation_id;
+    public long getRegisterForConsultationId() {
+        return registerForConsultationId;
     }
 
-    public void setRegister_for_consultation_id(long register_for_consultation_id) {
-        this.register_for_consultation_id = register_for_consultation_id;
+    public void setRegisterForConsultationId(long registerForConsultationId) {
+        this.registerForConsultationId = registerForConsultationId;
     }
 
     public String getName() {

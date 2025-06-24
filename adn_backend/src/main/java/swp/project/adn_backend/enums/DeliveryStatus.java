@@ -4,7 +4,7 @@ public enum DeliveryStatus {
     PENDING,       // Waiting to be delivered
     IN_PROGRESS,   // Currently being delivered
     DELIVERED,     // Successfully delivered
-    FAILED    ,
+    FAILED    ,// Delivery failed
     COMPLETED ,
-    DONE// Delivery failed
+    DONE//đã nhận kit về lại
 }
