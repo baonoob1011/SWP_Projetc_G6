@@ -24,6 +24,10 @@ export const CollectorSlots = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [sampleType, setSampleType] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<{
+    [key: string]: string;
+  }>({});
+
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const fetchSlots = async () => {
@@ -60,12 +64,10 @@ export const CollectorSlots = () => {
         }
       );
 
-      if (!response.ok) {
-        throw new Error('Fetch failed');
+      if (response.ok) {
+        const data = await response.json();
+        setAppointments(data);
       }
-
-      const data = await response.json();
-      setAppointments(data);
     } catch (error) {
       toast.error('Không thể lấy dữ liệu lịch hẹn');
     } finally {
@@ -114,6 +116,29 @@ export const CollectorSlots = () => {
     }
   };
 
+  const handleUpdateStatus = async (appointmentId: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/kit-delivery-status/update-kit-status?appointmentId=${appointmentId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+          body: JSON.stringify({
+            selectedStatus: selectedStatus[appointmentId],
+          }),
+        }
+      );
+      if (res.ok) {
+        toast.success('Cập nhật trạng thái thành công');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div style={{ padding: 20 }}>
       <Typography variant="h5" gutterBottom>
@@ -153,8 +178,8 @@ export const CollectorSlots = () => {
             <th>Giới tính</th>
             <th>Quan hệ</th>
             <th>Ngày hẹn</th>
-            <th>Ghi chú</th>
             <th>Thu mẫu / Xem</th>
+            <th>Trạng thái</th>
           </tr>
         </thead>
         <tbody>
@@ -172,65 +197,85 @@ export const CollectorSlots = () => {
 
             if (!isHome || !isConfirmed) return null;
 
-            return appointmentItem.patientAppointmentResponse.map(
-              (patient: any, index: number) => {
-                const key = `${appointmentId}_${patient.patientId}`;
-                const isFirstPatient = index === 0;
+            const patients = appointmentItem.patientAppointmentResponse;
 
-                return (
-                  <tr key={key}>
-                    <td>{patient.fullName}</td>
-                    <td>{patient.dateOfBirth}</td>
-                    <td>{patient.gender}</td>
-                    <td>{patient.relationship}</td>
-                    <td>
-                      {appointmentItem.showAppointmentResponse?.appointmentDate}
-                    </td>
-                    <td>
-                      {appointmentItem.showAppointmentResponse?.note || '-'}
-                    </td>
-                    <td>
-                      <div className="d-flex justify-content-center align-items-center gap-2">
-                        <input
-                          type="text"
-                          className="form-control form-control-sm"
-                          placeholder="Nhập vật mẫu"
-                          style={{ maxWidth: '150px' }}
-                          value={sampleType[key] || ''}
-                          onChange={(e) =>
-                            setSampleType((prev) => ({
-                              ...prev,
-                              [key]: e.target.value,
-                            }))
-                          }
-                        />
-                        <button
-                          className="btn btn-primary btn-sm"
-                          onClick={() =>
-                            handleSendSample(
-                              patient.patientId,
-                              serviceId,
-                              appointmentId,
-                              key
-                            )
-                          }
+            return patients.map((patient: any, index: number) => {
+              const key = `${appointmentId}_${patient.patientId}`;
+              const isFirstPatient = index === 0;
+
+              return (
+                <tr key={key}>
+                  <td>{patient.fullName}</td>
+                  <td>{patient.dateOfBirth}</td>
+                  <td>{patient.gender}</td>
+                  <td>{patient.relationship}</td>
+                  <td>
+                    {appointmentItem.showAppointmentResponse?.appointmentDate}
+                  </td>
+                  <td>
+                    <div className="d-flex justify-content-center align-items-center gap-2">
+                      <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        placeholder="Nhập vật mẫu"
+                        style={{ maxWidth: '150px' }}
+                        value={sampleType[key] || ''}
+                        onChange={(e) =>
+                          setSampleType((prev) => ({
+                            ...prev,
+                            [key]: e.target.value,
+                          }))
+                        }
+                      />
+                      <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() =>
+                          handleSendSample(
+                            patient.patientId,
+                            serviceId,
+                            appointmentId,
+                            key
+                          )
+                        }
+                      >
+                        <Check fontSize="small" />
+                      </button>
+                      {isFirstPatient && (
+                        <NavLink
+                          to={`/s-page/get-appointment/${appointmentId}`}
+                          className="btn btn-outline-secondary btn-sm"
                         >
-                          <Check fontSize="small" />
-                        </button>
-                        {isFirstPatient && (
-                          <NavLink
-                            to={`/s-page/get-appointment/${appointmentId}`}
-                            className="btn btn-outline-secondary btn-sm"
-                          >
-                            Xem
-                          </NavLink>
-                        )}
-                      </div>
+                          Xem
+                        </NavLink>
+                      )}
+                    </div>
+                  </td>
+
+                  {isFirstPatient && (
+                    <td rowSpan={patients.length}>
+                      <select
+                        className="form-select form-select-sm"
+                        value={selectedStatus[appointmentId] || 'PENDING'}
+                        onChange={(e) =>
+                          setSelectedStatus((prev) => ({
+                            ...prev,
+                            [appointmentId]: e.target.value,
+                          }))
+                        }
+                        onBlur={() => handleUpdateStatus(appointmentId)}
+                      >
+                        <option value="PENDING">PENDING</option>
+                        <option value="IN_PROGRESS">IN_PROGRESS</option>
+                        <option value="DELIVERED">DELIVERED</option>
+                        <option value="FAILED">FAILED </option>
+                        <option value="COMPLETED">COMPLETED</option>
+                        <option value="DONE">DONE</option>
+                      </select>
                     </td>
-                  </tr>
-                );
-              }
-            );
+                  )}
+                </tr>
+              );
+            });
           })}
         </tbody>
       </table>
