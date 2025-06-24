@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import OldPassWord from '../feature/OldPassword';
 import Booking from '../services/Booking';
-import GetAllResult from '../feature/GetAllResult';
+// import GetAllResult from '../feature/GetAllResult';
 import GetKitDeliveryStatus from '../feature/AppointmentStatus';
 
 type OldProfile = {
@@ -353,7 +353,7 @@ const NewProfile = () => {
         </div>
       </div>
 
-      <GetAllResult />
+      {/* <GetAllResult /> */}
     </div>
   );
 };

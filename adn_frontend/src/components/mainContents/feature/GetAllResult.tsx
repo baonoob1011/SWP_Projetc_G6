@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const GetAllResult = () => {
+  const { appointmentId } = useParams(); // 👈 Lấy ID từ URL
   const [isResult, setIsResult] = useState<any[]>([]);
 
   const fetchData = async () => {
     try {
       const res = await fetch(
-        'http://localhost:8080/api/appointment/get-all-result',
+        `http://localhost:8080/api/appointment/get-all-result?appointmentId=${appointmentId}`,
         {
           method: 'GET',
           headers: {
@@ -29,15 +31,13 @@ const GetAllResult = () => {
       toast.error('Lỗi hệ thống khi lấy dữ liệu');
     }
   };
-
   useEffect(() => {
-    fetchData();
-  }, []);
-
+    if (appointmentId) fetchData(); // 👈 Gọi API khi có ID
+  }, [appointmentId]);
   return (
     <div
       className="container"
-      style={{ maxWidth: 1000, margin: 'auto', padding: 20 }}
+      style={{ maxWidth: 1000, margin: 120, padding: 20 }}
     >
       <h5 className="mb-4">Hóa đơn kết quả hoàn tất</h5>
 
@@ -98,7 +98,9 @@ const GetAllResult = () => {
                           <td>{patient.fullName}</td>
                           <td>{patient.dateOfBirth}</td>
                           <td>{patient.relationship}</td>
-                          <td>{patient.relationship}</td>
+                          <td>
+                            {item.sampleAppointmentResponse?.[0].sampleType}
+                          </td>
                           <td>
                             {item.showAppointmentResponse?.appointmentDate}
                           </td>
