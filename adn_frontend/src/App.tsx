@@ -111,7 +111,13 @@ function App() {
     '/manager/staff',
     '/manager/user',
     '/manager/createKit',
+    '/manager/location',
+    '/manager/room',
+    '/manager/create-blog',
+    '/schedule',
     'slot/:staffId',
+    '/manager/create-locus',
+    '/newPrice/:serviceId',
     '/manager',
   ].some((path) => matchPath(path, location.pathname));
 
@@ -440,10 +446,50 @@ function App() {
                 />
               </Route>
               <Route
+                path="manager/location"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateLocation />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="manager/room"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateRoom />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/schedule"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <SignUpStaffSchedule />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="manager/services"
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
                     <ServiceList />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/newPrice/:serviceId"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <NewPrice />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="manager/create-blog"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateBlog />
                   </ProtectedRoute>
                 }
               />
@@ -468,6 +514,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
                     <SignUpStaffSchedule />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="manager/create-locus"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateLocus />
                   </ProtectedRoute>
                 }
               />
