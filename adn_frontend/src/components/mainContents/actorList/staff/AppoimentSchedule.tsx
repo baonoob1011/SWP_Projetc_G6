@@ -40,10 +40,7 @@ const AppointmentSchedule = () => {
       );
       const data = await res.json();
       if (res.ok) {
-        const filteredData = data.filter(
-          (item: Appointment) => item.appointmentType === 'CENTER'
-        );
-        setCenterSchedule(filteredData);
+        setCenterSchedule(data);
       }
     } catch (error) {
       console.log(error);
@@ -205,7 +202,6 @@ const AppointmentSchedule = () => {
         </>
       ) : null}
 
-      {/* Lịch Tại Nhà */}
       {/* Lịch Tại Nhà */}
       {loadingHome ||
       homeSchedule.some((item) => item.note === 'Đã thanh toán') ? (

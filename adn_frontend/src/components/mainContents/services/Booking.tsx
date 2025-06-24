@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import type { BookingHistoryItem } from '../type/BookingType';
 import { FaEye, FaMoneyBillWave, FaTimes } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 // ==== COMPONENT ====
 const Booking = () => {
@@ -16,6 +17,7 @@ const Booking = () => {
     if (type === 'HOME') return 'Lấy mẫu tại nhà';
     return 'Không xác định';
   };
+  const navigate = useNavigate();
 
   const fetchData = () => {
     const token = localStorage.getItem('token');
@@ -134,6 +136,7 @@ const Booking = () => {
                 <th>Dịch vụ</th>
                 <th>Hình thức</th>
                 <th>Thao tác</th>
+                <th>Kết quả</th>
               </tr>
             </thead>
             <tbody>
@@ -202,6 +205,16 @@ const Booking = () => {
                           </button>
                         )}
                     </div>
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-info btn-sm"
+                      onClick={() =>
+                        navigate(`/result/${item.show.appointmentId}`)
+                      }
+                    >
+                      <FaEye />
+                    </button>
                   </td>
                 </tr>
               ))}
