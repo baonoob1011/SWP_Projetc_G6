@@ -13,10 +13,11 @@ import {
   List,
   ShoppingBag,
   BaggageClaim,
+  Newspaper,
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { Button } from '@mui/material';
-import { ArrowBack, RoomService } from '@mui/icons-material';
+import { ArrowBack, LocationCity, Room, RoomService } from '@mui/icons-material';
 
 const ManagerPage = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -33,10 +34,28 @@ const ManagerPage = () => {
     { id: 'dashboard', icon: ArrowBack, label: 'Home', path: '' },
     { id: 'data', icon: List, label: 'Danh sách', path: 'manager/data' },
     {
+          id: 'location',
+          icon: LocationCity,
+          label: 'Tạo địa chỉ mới',
+          path: 'manager/location',
+        },
+    {
+          id: 'room',
+          icon: Room,
+          label: 'Tạo phòng',
+          path: 'manager/room',
+        },  
+    {
       id: 'services',
       icon: ShoppingBag,
       label: 'Tất cả dịch vụ',
       path: 'manager/services',
+    },
+    {
+      id: 'blog',
+      icon: Newspaper,
+      label: 'Tạo Blog/Tin tức',
+      path: 'manager/create-blog',
     },
     {
       id: 'create-services',
@@ -49,6 +68,12 @@ const ManagerPage = () => {
       icon: BaggageClaim,
       label: 'Tạo kit',
       path: 'manager/createKit',
+    },
+    {
+      id: 'createLocus',
+      icon: ShoppingBag,
+      label: 'Tạo locus',
+      path: 'manager/create-locus',
     },
   ];
 

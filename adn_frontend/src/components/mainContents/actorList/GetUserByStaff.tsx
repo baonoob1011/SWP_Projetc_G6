@@ -136,7 +136,8 @@ function GetUserByStaff() {
                 color: 'white',
                 fontWeight: 'bold',
                 textAlign: 'center',
-                borderRight: '1px solid rgba(255, 255, 255, 0.2)'
+                borderRight: '1px solid rgba(255, 255, 255, 0.2)',
+                width: '10%'
               }}>
                 STT
               </th>
@@ -145,16 +146,18 @@ function GetUserByStaff() {
                 color: 'white',
                 fontWeight: 'bold',
                 textAlign: 'center',
-                borderRight: '1px solid rgba(255, 255, 255, 0.2)'
+                borderRight: '1px solid rgba(255, 255, 255, 0.2)',
+                width: '25%'
               }}>
-                HỌ TÊN
+                HỌ VÀ TÊN
               </th>
               <th style={{
                 padding: '15px',
                 color: 'white',
                 fontWeight: 'bold',
                 textAlign: 'center',
-                borderRight: '1px solid rgba(255, 255, 255, 0.2)'
+                borderRight: '1px solid rgba(255, 255, 255, 0.2)',
+                width: '30%'
               }}>
                 EMAIL
               </th>
@@ -163,7 +166,8 @@ function GetUserByStaff() {
                 color: 'white',
                 fontWeight: 'bold',
                 textAlign: 'center',
-                borderRight: '1px solid rgba(255, 255, 255, 0.2)'
+                borderRight: '1px solid rgba(255, 255, 255, 0.2)',
+                width: '20%'
               }}>
                 SĐT
               </th>
@@ -172,15 +176,7 @@ function GetUserByStaff() {
                 color: 'white',
                 fontWeight: 'bold',
                 textAlign: 'center',
-                borderRight: '1px solid rgba(255, 255, 255, 0.2)'
-              }}>
-                VAI TRÒ
-              </th>
-              <th style={{
-                padding: '15px',
-                color: 'white',
-                fontWeight: 'bold',
-                textAlign: 'center'
+                width: '35%'
               }}>
                 NGÀY ĐĂNG KÝ
               </th>
@@ -194,7 +190,8 @@ function GetUserByStaff() {
                     padding: '20px',
                     textAlign: 'center',
                     borderRight: '1px solid #e5e7eb',
-                    backgroundColor: '#f8fafc'
+                    backgroundColor: '#f8fafc',
+                    width: '10%'
                   }}>
                     <div style={{
                       width: '30px',
@@ -216,7 +213,8 @@ function GetUserByStaff() {
                     textAlign: 'center',
                     borderRight: '1px solid #e5e7eb',
                     fontWeight: '500',
-                    color: '#374151'
+                    color: '#374151',
+                    width: '25%'
                   }}>
                     {user.fullName}
                   </td>
@@ -224,7 +222,8 @@ function GetUserByStaff() {
                     padding: '20px',
                     textAlign: 'center',
                     borderRight: '1px solid #e5e7eb',
-                    color: '#374151'
+                    color: '#374151',
+                    width: '30%'
                   }}>
                     {user.email}
                   </td>
@@ -232,31 +231,16 @@ function GetUserByStaff() {
                     padding: '20px',
                     textAlign: 'center',
                     borderRight: '1px solid #e5e7eb',
-                    color: '#374151'
+                    color: '#374151',
+                    width: '20%'
                   }}>
                     {user.phone}
                   </td>
                   <td style={{
                     padding: '20px',
                     textAlign: 'center',
-                    borderRight: '1px solid #e5e7eb',
-                    color: '#374151'
-                  }}>
-                    <span style={{
-                      padding: '4px 12px',
-                      backgroundColor: '#dbeafe',
-                      color: '#3b82f6',
-                      borderRadius: '6px',
-                      fontSize: '14px',
-                      fontWeight: '500'
-                    }}>
-                      {user.role}
-                    </span>
-                  </td>
-                  <td style={{
-                    padding: '20px',
-                    textAlign: 'center',
-                    color: '#374151'
+                    color: '#374151',
+                    width: '35%'
                   }}>
                     {user.createAt}
                   </td>
@@ -264,7 +248,7 @@ function GetUserByStaff() {
               ))
             ) : (
               <tr>
-                <td colSpan={6} style={{
+                <td colSpan={5} style={{
                   padding: '40px',
                   textAlign: 'center',
                   color: '#9ca3af',
