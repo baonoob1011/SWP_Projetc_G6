@@ -10,8 +10,7 @@ import {
   List,
   ShoppingBag,
   BaggageClaim,
-  Newspaper,  // Icon cho Blog và Tin tức
-  FileText,   // Icon cho Tin tức
+  Newspaper, // Icon cho Blog và Tin tức
 } from 'lucide-react';
 
 import { NavLink } from 'react-router-dom';
@@ -55,7 +54,7 @@ const AdminSidebar = () => {
       icon: RoomService,
       label: 'Tạo Dịch vụ',
       path: 'services',
-    }, 
+    },
     {
       id: 'blog',
       icon: Newspaper,
@@ -68,9 +67,6 @@ const AdminSidebar = () => {
       label: 'Tất cả dịch vụ',
       path: 'a-getAllService',
     },
-
-   
-
     {
       id: 'createLocus',
       icon: ShoppingBag,
@@ -148,13 +144,18 @@ const AdminSidebar = () => {
       {/* Sidebar */}
       <div
         className={`
-        fixed lg:static inset-y-0 left-0 z-50 
-        w-67
-        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        bg-white shadow-lg border-r border-gray-200 transition-all duration-300 ease-in-out
-        flex flex-col
-        h-screen
-      `}
+          fixed lg:static inset-y-0 left-0 z-50 
+          w-64
+          ${
+            isMobileOpen
+              ? 'translate-x-0'
+              : '-translate-x-full lg:translate-x-0'
+          }
+          bg-white shadow-lg border-r border-gray-200 transition-all duration-300 ease-in-out
+          flex flex-col
+          h-screen
+          overflow-y-auto 
+        `}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
@@ -186,13 +187,13 @@ const AdminSidebar = () => {
                 key={item.id}
                 onClick={() => setActiveItem(item.id)}
                 className={`
-                  px-0 py-0 normal-case rounded-lg transition-all duration-200 w-full text-left
-                    ${
-                      isActive
-                        ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'
-                    }
-                `}
+                    px-0 py-0 normal-case rounded-lg transition-all duration-200 w-full text-left
+                      ${
+                        isActive
+                          ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600'
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'
+                      }
+                  `}
               >
                 <div className="flex items-center space-x-3 px-3 py-3 w-full justify-start">
                   <Icon className="h-5 w-5 flex-shrink-0" />
@@ -207,22 +208,22 @@ const AdminSidebar = () => {
         <div className="border-t border-gray-200 p-4 space-y-2">
           {/* Notifications */}
           {/* <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">
-            <div className="relative">
-              <Bell className="h-5 w-5" />
-              {notifications > 0 && (
-                <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                  {notifications}
-                </span>
-              )}
-            </div>
-            <span className="font-medium">Thông báo</span>
-          </button> */}
+              <div className="relative">
+                <Bell className="h-5 w-5" />
+                {notifications > 0 && (
+                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    {notifications}
+                  </span>
+                )}
+              </div>
+              <span className="font-medium">Thông báo</span>
+            </button> */}
 
           {/* Settings
-          <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">
-            <Settings className="h-5 w-5" />
-            <span className="font-medium">Cài đặt</span>
-          </button> */}
+            <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">
+              <Settings className="h-5 w-5" />
+              <span className="font-medium">Cài đặt</span>
+            </button> */}
 
           {/* User Profile */}
           <div className="flex items-center space-x-3 px-3 py-3 rounded-lg bg-gray-50">

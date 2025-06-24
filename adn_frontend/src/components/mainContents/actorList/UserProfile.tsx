@@ -11,10 +11,12 @@ import {
   UserCircle,
   Shield,
   Calendar,
+  PackageSearch,
 } from 'lucide-react';
 import OldPassWord from '../feature/OldPassword';
 import Booking from '../services/Booking';
 import GetAllResult from '../feature/GetAllResult';
+import GetKitDeliveryStatus from '../feature/AppointmentStatus';
 
 type OldProfile = {
   fullName: string;
@@ -34,7 +36,7 @@ const NewProfile = () => {
   const [editableField, setEditableField] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<
-    'profile' | 'changePassword' | 'appointment'
+    'profile' | 'changePassword' | 'appointment' | 'follow'
   >('appointment');
 
   useEffect(() => {
@@ -104,6 +106,12 @@ const NewProfile = () => {
       id: 'changePassword',
       label: 'Đổi mật khẩu',
       icon: Shield,
+      color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
+    },
+    {
+      id: 'follow',
+      label: 'Theo dõi đơn hàng',
+      icon: PackageSearch,
       color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
     },
   ];
@@ -338,6 +346,7 @@ const NewProfile = () => {
                 </div>
               </div>
             )}
+            {activeTab === 'follow' && <GetKitDeliveryStatus />}
 
             {/* Enhanced History Tab */}
           </div>

@@ -435,26 +435,25 @@ const CivilServiceList = () => {
                         </div>
                       </div>
                       <div className="d-flex justify-content-between gap-3">
-  <div className="flex-fill text-center">
-    <NavLink
-      to={`/order/at-center/${service.serviceRequest.serviceId}`}
-      className="btn btn-danger btn-sm text-white d-flex align-items-center justify-content-center"
-    >
-      <Plus size={14} className="me-2" />
-      Đặt lịch tại cơ sở
-    </NavLink>
-  </div>
-  <div className="flex-fill text-center">
-    <NavLink
-      to={`/order/at-home/${service.serviceRequest.serviceId}`}
-      className="btn btn-danger btn-sm text-white d-flex align-items-center justify-content-center"
-    >
-      <Plus size={14} className="me-2" />
-      Đặt lịch tại nhà
-    </NavLink>
-  </div>
-</div>
-
+                        <div className="flex-fill text-center">
+                          <NavLink
+                            to={`/order/at-center/${service.serviceRequest.serviceId}`}
+                            className="btn btn-danger btn-sm text-white d-flex align-items-center justify-content-center"
+                          >
+                            <Plus size={14} className="me-2" />
+                            Đặt lịch tại cơ sở
+                          </NavLink>
+                        </div>
+                        <div className="flex-fill text-center">
+                          <NavLink
+                            to={`/order/at-home/${service.serviceRequest.serviceId}`}
+                            className="btn btn-danger btn-sm text-white d-flex align-items-center justify-content-center"
+                          >
+                            <Plus size={14} className="me-2" />
+                            Đặt lịch tại nhà
+                          </NavLink>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
