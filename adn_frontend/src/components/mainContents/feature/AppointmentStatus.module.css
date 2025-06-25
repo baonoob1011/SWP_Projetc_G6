@@ -23,6 +23,21 @@
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
   padding: 2rem;
   margin-bottom: 2rem;
+  transition: all 0.3s ease;
+  border-left: 5px solid transparent;
+}
+
+/* Status color variants for order cards */
+.orderCard.statusGray {
+  border-left-color: #8c8c8c;
+}
+
+.orderCard.statusRed {
+  border-left-color: #ff4d4f;
+}
+
+.orderCard.statusGreen {
+  border-left-color: #52c41a;
 }
 
 .orderHeader {
@@ -32,6 +47,12 @@
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid #f0f2f5;
+}
+
+.orderActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .orderInfo {
@@ -53,12 +74,47 @@
 }
 
 .orderStatus {
-  background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-weight: 600;
   font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+/* Status color variants */
+.orderStatus.statusGray {
+  background: linear-gradient(135deg, #8c8c8c 0%, #595959 100%);
+}
+
+.orderStatus.statusRed {
+  background: linear-gradient(135deg, #ff4d4f 0%, #f5222d 100%);
+}
+
+.orderStatus.statusGreen {
+  background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
+}
+
+.toggleButton {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+}
+
+.toggleButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.5);
+}
+
+.toggleButton:active {
+  transform: translateY(0);
 }
 
 /* Timeline Stepper */
@@ -95,6 +151,10 @@
 
 .timelineStep.active:not(:last-child)::after {
   background: linear-gradient(to bottom, #1890ff 0%, #096dd9 100%);
+}
+
+.timelineStep.failed:not(:last-child)::after {
+  background: linear-gradient(to bottom, #ff4d4f 0%, #f5222d 100%);
 }
 
 .stepIcon {
@@ -135,6 +195,8 @@
   background: linear-gradient(135deg, #ff4d4f 0%, #f5222d 100%);
   color: white;
   animation: shake 0.5s ease-in-out;
+  font-size: 1.4rem;
+  font-weight: 900;
 }
 
 @keyframes shake {
@@ -418,6 +480,33 @@
   .header {
     padding: 1.5rem;
     font-size: 1.3rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .header button {
+    margin-left: 0 !important;
+  }
+  
+  .orderCard {
+    padding: 1.5rem;
+  }
+  
+  .orderHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .orderActions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .toggleButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.7rem;
   }
   
   .tableHeaderCell,
