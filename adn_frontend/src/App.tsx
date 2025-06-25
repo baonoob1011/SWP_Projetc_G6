@@ -76,10 +76,12 @@ import CreateBlog from './components/mainContents/services/CreateBlog';
 import PatientRequest from './components/mainContents/feature/PatientRequest';
 
 // Thanh toán
-import VNPayResult from './components/mainContents/services/VNPAY';
+import VNPayResult from './components/mainContents/feature/VNPAY';
 import GetStaffAtHome from './components/mainContents/actorList/staff/GetStaffAtHome';
-// import TotalUserChart from './components/mainContents/actorList/admin/GetDashBoard';
+import TotalUserChart from './components/mainContents/actorList/admin/GetDashBoard';
 import GetAllResult from './components/mainContents/feature/GetAllResult';
+import GetCashier from './components/mainContents/actorList/admin/GetAllCashier';
+import SignUpCashier from './components/mainContents/actorList/staff/SignUpCashier';
 
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
@@ -111,7 +113,13 @@ function App() {
     '/manager/staff',
     '/manager/user',
     '/manager/createKit',
+    '/manager/location',
+    '/manager/room',
+    '/manager/create-blog',
+    '/schedule',
     'slot/:staffId',
+    '/manager/create-locus',
+    '/newPrice/:serviceId',
     '/manager',
   ].some((path) => matchPath(path, location.pathname));
 
@@ -181,6 +189,14 @@ function App() {
                   element={
                     <ProtectedRoute allowedRoles={['ADMIN']}>
                       <GetStaffAtHome />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="cashier"
+                  element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <GetCashier />
                     </ProtectedRoute>
                   }
                 />
@@ -279,6 +295,22 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <SignUpCollector />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup-cashier"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <SignUpCashier />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <TotalUserChart />
                   </ProtectedRoute>
                 }
               />
@@ -440,10 +472,50 @@ function App() {
                 />
               </Route>
               <Route
+                path="manager/location"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateLocation />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="manager/room"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateRoom />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/schedule"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <SignUpStaffSchedule />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="manager/services"
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
                     <ServiceList />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/newPrice/:serviceId"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <NewPrice />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="manager/create-blog"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateBlog />
                   </ProtectedRoute>
                 }
               />
@@ -468,6 +540,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
                     <SignUpStaffSchedule />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="manager/create-locus"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateLocus />
                   </ProtectedRoute>
                 }
               />

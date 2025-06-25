@@ -37,6 +37,9 @@ const DataList = () => {
         <Button component={NavLink} to="/admin/staff-at-home" sx={linkStyle}>
           Danh sách nhân viên dịch vụ tại nhà
         </Button>
+        <Button component={NavLink} to="/admin/cashier" sx={linkStyle}>
+          Danh sách nhân viên thu ngân
+        </Button>
         <Button component={NavLink} to="/admin/appointment" sx={linkStyle}>
           Danh sách lịch hẹn
         </Button>
