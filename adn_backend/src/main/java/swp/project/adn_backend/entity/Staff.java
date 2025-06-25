@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import swp.project.adn_backend.enums.Roles;
+import swp.project.adn_backend.enums.StaffStatus;
 
 
 import java.time.LocalDate;
@@ -119,6 +120,7 @@ public class Staff {
     public void setEmail(String email) {
         this.email = email;
     }
+
 
 
     public boolean isEnabled() {

@@ -40,6 +40,11 @@ public class StaffController {
         return ResponseEntity.ok(staffService.getAllStaffBasicInfo());
     }
 
+    @GetMapping("/get-all-cashier")
+    public ResponseEntity<List<StaffBasicInfo>> getAllCashier() {
+        return ResponseEntity.ok(staffService.getAllCashierAccount());
+    }
+
     @GetMapping("/get-all-staff-collector")
     public ResponseEntity<List<StaffBasicInfo>> getAllStaffCollector() {
         return ResponseEntity.ok(staffService.getAllStaffCollectorBasicInfo());

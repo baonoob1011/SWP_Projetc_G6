@@ -47,6 +47,10 @@ public class SecurityConfig {
             "/api/price/get-all-price/**",
             "/api/jasperpdf/**",
             "/api/blog/get-all-blog",
+            "/api/discount/get-discount-by-service",
+    };
+    private final String[] CASHIER_ENDPOINTS = {
+            "/api/cashier/**",
     };
 
     private final String[] USER_ENDPOINTS = {
@@ -107,7 +111,8 @@ public class SecurityConfig {
             "/api/payment/**",
             "/api/appointment/**",
             "/api/kit/**",
-            "/api/staff/get-all-staff"
+            "/api/staff/get-all-staff",
+            "/api/discount/create-discount-service",
     };
 
     private final String[] ADMIN_ENDPOINTS = {
@@ -128,7 +133,8 @@ public class SecurityConfig {
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
 
                         // Quyền USER
-                        .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN","MANAGER")
+                        .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN", "MANAGER")
+                        .requestMatchers(CASHIER_ENDPOINTS).hasAnyRole("CASHIER", "ADMIN")
 
                         // Quyền STAFF
                         .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")
