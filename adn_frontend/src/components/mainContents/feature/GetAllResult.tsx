@@ -1,13 +1,55 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { ArrowBack } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import jsPDF from 'jspdf';
 
 const GetAllResult = () => {
   const { appointmentId } = useParams(); // 👈 Lấy ID từ URL
   const [isResult, setIsResult] = useState<any[]>([]);
+
+  const exportResultToPDF = (item: any) => {
+    const doc = new jsPDF();
+
+    doc.setFont('Roboto'); // 👈 Dùng font hỗ trợ UTF-8
+    doc.setFontSize(16);
+    doc.text('PHIẾU KẾT QUẢ XÉT NGHIỆM ADN', 70, 15, { maxWidth: 180 });
+
+    doc.setFontSize(12);
+    let y = 30;
+
+    const addLine = (text: string) => {
+      doc.text(text, 10, y, { maxWidth: 180 });
+      y += 8;
+    };
+
+    addLine(`Mã cuộc hẹn: ${item.showAppointmentResponse?.appointmentId}`);
+    addLine(`Ngày hẹn: ${item.showAppointmentResponse?.appointmentDate}`);
+    addLine(`Trạng thái: ${item.showAppointmentResponse?.appointmentStatus}`);
+    addLine(`Hình thức: ${item.showAppointmentResponse?.appointmentType}`);
+    y += 8;
+    addLine(`--- KẾT QUẢ ---`);
+    addLine(`Mã kết quả: ${item.resultAppointmentResponse?.[0]?.result_id}`);
+    addLine(`Ngày trả: ${item.resultAppointmentResponse?.[0]?.resultDate}`);
+    addLine(`Trạng thái: ${item.resultAppointmentResponse?.[0]?.resultStatus}`);
+
+    if (item.resultDetailAppointmentResponse?.length > 0) {
+      const detail = item.resultDetailAppointmentResponse[0];
+      y += 8;
+      addLine(`--- TỔNG KẾT ---`);
+      addLine(`Kết luận: ${detail.conclusion}`);
+      addLine(`Combined PI: ${detail.combinedPaternityIndex}`);
+      addLine(`Xác suất cha con: ${detail.paternityProbability?.toFixed(4)}%`);
+      addLine(`Tóm tắt: ${detail.resultSummary}`);
+    }
+
+    doc.save(
+      `phieu-ket-qua-${item.showAppointmentResponse?.appointmentId}.pdf`
+    );
+  };
 
   const fetchData = async () => {
     try {
@@ -172,9 +214,8 @@ const GetAllResult = () => {
                         <th>Locus</th>
                         <th>Sample 1</th>
                         <th>Sample 2</th>
-                        <th>Father Allele 1</th>
+                        <th>Allele 1</th>
                         <th>Allele 2</th>
-                        <th>Tần suất</th>
                         <th>PI</th>
                       </tr>
                     </thead>
@@ -192,7 +233,6 @@ const GetAllResult = () => {
                               {locus.fatherAllele1 ?? 'N/A'} -{' '}
                               {locus.fatherAllele1 ?? 'N/A'}
                             </td>
-                            <td>{locus.frequency?.toFixed(3)}</td>
                             <td>{locus.pi?.toFixed(2)}</td>
                           </tr>
                         )
@@ -221,6 +261,13 @@ const GetAllResult = () => {
                   )
                 )}
               </div>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => exportResultToPDF(item)}
+              >
+                Tải phiếu kết quả PDF
+              </Button>
             </div>
           </div>
         ))}

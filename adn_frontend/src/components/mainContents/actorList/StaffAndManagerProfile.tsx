@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-toastify';
-import { User, Edit3, Save, Mail, Phone, UserCircle, Shield, Eye, EyeOff } from 'lucide-react';
+import {
+  User,
+  Edit3,
+  Save,
+  Mail,
+  Phone,
+  UserCircle,
+  Shield,
+  Eye,
+  EyeOff,
+} from 'lucide-react';
 
 type OldProfile = {
   fullName: string;
@@ -10,7 +20,7 @@ type OldProfile = {
 };
 
 type Profile = {
-  role: 'MANAGER' | 'STAFF';
+  role: 'MANAGER' | 'STAFF' | 'CASHIER';
 };
 
 const NewProfile = ({ role }: Profile) => {
@@ -22,8 +32,10 @@ const NewProfile = ({ role }: Profile) => {
   });
   const [editableField, setEditableField] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'profile' | 'changePassword'>('profile');
-  
+  const [activeTab, setActiveTab] = useState<'profile' | 'changePassword'>(
+    'profile'
+  );
+
   // Password change states
   const [passwordStep, setPasswordStep] = useState<1 | 2>(1);
   const [oldPassword, setOldPassword] = useState('');
@@ -58,6 +70,7 @@ const NewProfile = ({ role }: Profile) => {
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const apiMap = {
+      CASHIER: 'http://localhost:8080/api/staff/update-staff',
       STAFF: 'http://localhost:8080/api/staff/update-staff',
       MANAGER: 'http://localhost:8080/api/manager/update-manager',
     };
@@ -96,6 +109,7 @@ const NewProfile = ({ role }: Profile) => {
 
     try {
       const apiMap = {
+        CASHIER: 'http://localhost:8080/api/staff/update-staff',
         STAFF: 'http://localhost:8080/api/staff/verify-password',
         MANAGER: 'http://localhost:8080/api/manager/verify-password',
       };
@@ -124,7 +138,7 @@ const NewProfile = ({ role }: Profile) => {
 
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!newPassword || !confirmPassword) {
       toast.error('❌ Vui lòng nhập đầy đủ thông tin');
       return;
@@ -142,6 +156,7 @@ const NewProfile = ({ role }: Profile) => {
 
     try {
       const apiMap = {
+        CASHIER: 'http://localhost:8080/api/staff/update-staff',
         STAFF: 'http://localhost:8080/api/staff/change-password',
         MANAGER: 'http://localhost:8080/api/manager/change-password',
       };
@@ -191,14 +206,42 @@ const NewProfile = ({ role }: Profile) => {
   }, [activeTab]);
 
   const tabConfig = [
-    { id: 'profile', label: 'Hồ sơ cá nhân', icon: User, color: 'bg-gradient-to-r from-blue-500 to-indigo-600' },
-    { id: 'changePassword', label: 'Đổi mật khẩu', icon: Shield, color: 'bg-gradient-to-r from-blue-500 to-indigo-600' }
+    {
+      id: 'profile',
+      label: 'Hồ sơ cá nhân',
+      icon: User,
+      color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
+    },
+    {
+      id: 'changePassword',
+      label: 'Đổi mật khẩu',
+      icon: Shield,
+      color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
+    },
   ] as const;
 
   const profileFields = [
-    { field: 'fullName', label: 'Họ và tên', icon: UserCircle, type: 'text', gradient: 'from-blue-400 to-indigo-500' },
-    { field: 'email', label: 'Email', icon: Mail, type: 'email', gradient: 'from-green-400 to-emerald-500' },
-    { field: 'phone', label: 'Số điện thoại', icon: Phone, type: 'tel', gradient: 'from-purple-400 to-pink-500' }
+    {
+      field: 'fullName',
+      label: 'Họ và tên',
+      icon: UserCircle,
+      type: 'text',
+      gradient: 'from-blue-400 to-indigo-500',
+    },
+    {
+      field: 'email',
+      label: 'Email',
+      icon: Mail,
+      type: 'email',
+      gradient: 'from-green-400 to-emerald-500',
+    },
+    {
+      field: 'phone',
+      label: 'Số điện thoại',
+      icon: Phone,
+      type: 'tel',
+      gradient: 'from-purple-400 to-pink-500',
+    },
   ] as const;
 
   const roleTitle = role === 'MANAGER' ? 'Quản lý' : 'Nhân viên';
@@ -212,7 +255,8 @@ const NewProfile = ({ role }: Profile) => {
             Quản lý tài khoản
           </h1>
           <p className="text-lg text-gray-600 mt-3 max-w-2xl mx-auto">
-            Cá nhân hóa trải nghiệm của bạn với các tùy chọn quản lý tài khoản toàn diện
+            Cá nhân hóa trải nghiệm của bạn với các tùy chọn quản lý tài khoản
+            toàn diện
           </p>
         </div>
 
@@ -227,12 +271,14 @@ const NewProfile = ({ role }: Profile) => {
                     <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 ring-4 ring-white/30">
                       <UserCircle className="w-8 h-8 text-white" />
                     </div>
-                    <h3 className="font-bold text-white text-lg mb-1">{profile?.fullName}</h3>
+                    <h3 className="font-bold text-white text-lg mb-1">
+                      {profile?.fullName}
+                    </h3>
                     <p className="text-blue-100 text-sm">{profile?.email}</p>
                   </div>
                 </div>
               )}
-              
+
               <nav className="p-3">
                 {tabConfig.map(({ id, label, icon: Icon, color }) => (
                   <button
@@ -244,10 +290,20 @@ const NewProfile = ({ role }: Profile) => {
                         : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 hover:shadow-md'
                     }`}
                   >
-                    <div className={`p-2 rounded-lg transition-all duration-300 ${
-                      activeTab === id ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-blue-100'
-                    }`}>
-                      <Icon className={`w-5 h-5 ${activeTab === id ? 'text-white' : 'text-gray-600 group-hover:text-blue-600'}`} />
+                    <div
+                      className={`p-2 rounded-lg transition-all duration-300 ${
+                        activeTab === id
+                          ? 'bg-white/20'
+                          : 'bg-gray-100 group-hover:bg-blue-100'
+                      }`}
+                    >
+                      <Icon
+                        className={`w-5 h-5 ${
+                          activeTab === id
+                            ? 'text-white'
+                            : 'text-gray-600 group-hover:text-blue-600'
+                        }`}
+                      />
                     </div>
                     <span className="font-medium">{label}</span>
                   </button>
@@ -279,8 +335,12 @@ const NewProfile = ({ role }: Profile) => {
                 <div className="relative px-8 py-6 bg-gradient-to-r from-blue-600 to-indigo-700">
                   <div className="absolute inset-0 bg-black/10"></div>
                   <div className="relative">
-                    <h2 className="text-2xl font-bold text-white">Hồ sơ {roleTitle}</h2>
-                    <p className="text-blue-100 mt-2">Cập nhật và quản lý thông tin cá nhân của bạn</p>
+                    <h2 className="text-2xl font-bold text-white">
+                      Hồ sơ {roleTitle}
+                    </h2>
+                    <p className="text-blue-100 mt-2">
+                      Cập nhật và quản lý thông tin cá nhân của bạn
+                    </p>
                   </div>
                 </div>
 
@@ -288,40 +348,46 @@ const NewProfile = ({ role }: Profile) => {
                   <form onSubmit={handleSave}>
                     {/* Compact single column layout for professional look */}
                     <div className="max-w-2xl mx-auto space-y-6">
-                      {profileFields.map(({ field, label, icon: Icon, type, gradient }) => (
-                        <div key={field} className="group">
-                          <div className="flex items-center space-x-3 mb-3">
-                            <div className={`p-2 rounded-lg bg-gradient-to-r ${gradient} shadow-md`}>
-                              <Icon className="w-5 h-5 text-white" />
-                            </div>
-                            <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{label}</span>
-                          </div>
-                          <div className="relative">
-                            <input
-                              type={type}
-                              name={field}
-                              value={updateProfile[field as keyof OldProfile]}
-                              onChange={handleInput}
-                              readOnly={editableField !== field}
-                              onClick={() => setEditableField(field)}
-                              onBlur={() => setEditableField(null)}
-                              className={`w-full px-4 py-4 border-2 rounded-xl transition-all duration-300 text-gray-800 font-medium ${
-                                editableField === field
-                                  ? 'border-blue-400 ring-4 ring-blue-100 bg-blue-50 shadow-lg transform scale-105'
-                                  : 'border-gray-200 hover:border-gray-300 bg-white/80 hover:shadow-md focus:border-blue-400 focus:ring-4 focus:ring-blue-100'
-                              } focus:outline-none`}
-                              placeholder={`Nhập ${label.toLowerCase()}`}
-                            />
-                            {editableField === field && (
-                              <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                                <div className="p-1 bg-blue-500 rounded-full animate-pulse">
-                                  <Edit3 className="w-4 h-4 text-white" />
-                                </div>
+                      {profileFields.map(
+                        ({ field, label, icon: Icon, type, gradient }) => (
+                          <div key={field} className="group">
+                            <div className="flex items-center space-x-3 mb-3">
+                              <div
+                                className={`p-2 rounded-lg bg-gradient-to-r ${gradient} shadow-md`}
+                              >
+                                <Icon className="w-5 h-5 text-white" />
                               </div>
-                            )}
+                              <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                                {label}
+                              </span>
+                            </div>
+                            <div className="relative">
+                              <input
+                                type={type}
+                                name={field}
+                                value={updateProfile[field as keyof OldProfile]}
+                                onChange={handleInput}
+                                readOnly={editableField !== field}
+                                onClick={() => setEditableField(field)}
+                                onBlur={() => setEditableField(null)}
+                                className={`w-full px-4 py-4 border-2 rounded-xl transition-all duration-300 text-gray-800 font-medium ${
+                                  editableField === field
+                                    ? 'border-blue-400 ring-4 ring-blue-100 bg-blue-50 shadow-lg transform scale-105'
+                                    : 'border-gray-200 hover:border-gray-300 bg-white/80 hover:shadow-md focus:border-blue-400 focus:ring-4 focus:ring-blue-100'
+                                } focus:outline-none`}
+                                placeholder={`Nhập ${label.toLowerCase()}`}
+                              />
+                              {editableField === field && (
+                                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                                  <div className="p-1 bg-blue-500 rounded-full animate-pulse">
+                                    <Edit3 className="w-4 h-4 text-white" />
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
 
                     <div className="mt-10 pt-6 border-t border-gray-200 text-center">
@@ -344,15 +410,22 @@ const NewProfile = ({ role }: Profile) => {
                 <div className="relative px-8 py-6 bg-gradient-to-r from-blue-500 to-indigo-600">
                   <div className="absolute inset-0 bg-black/10"></div>
                   <div className="relative">
-                    <h2 className="text-2xl font-bold text-white">Bảo mật tài khoản</h2>
-                    <p className="text-blue-100 mt-2">Thay đổi mật khẩu để tăng cường bảo mật</p>
+                    <h2 className="text-2xl font-bold text-white">
+                      Bảo mật tài khoản
+                    </h2>
+                    <p className="text-blue-100 mt-2">
+                      Thay đổi mật khẩu để tăng cường bảo mật
+                    </p>
                   </div>
                 </div>
                 <div className="p-8">
                   {/* Step 1: Verify Old Password */}
                   {passwordStep === 1 && (
                     <div className="max-w-md mx-auto">
-                      <form onSubmit={handleVerifyOldPassword} className="space-y-6">
+                      <form
+                        onSubmit={handleVerifyOldPassword}
+                        className="space-y-6"
+                      >
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Mật khẩu cũ
@@ -368,10 +441,16 @@ const NewProfile = ({ role }: Profile) => {
                             />
                             <button
                               type="button"
-                              onClick={() => setShowOldPassword(!showOldPassword)}
+                              onClick={() =>
+                                setShowOldPassword(!showOldPassword)
+                              }
                               className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                             >
-                              {showOldPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                              {showOldPassword ? (
+                                <EyeOff className="w-5 h-5" />
+                              ) : (
+                                <Eye className="w-5 h-5" />
+                              )}
                             </button>
                           </div>
                         </div>
@@ -388,7 +467,10 @@ const NewProfile = ({ role }: Profile) => {
                   {/* Step 2: Enter New Password */}
                   {passwordStep === 2 && (
                     <div className="max-w-md mx-auto">
-                      <form onSubmit={handleChangePassword} className="space-y-6">
+                      <form
+                        onSubmit={handleChangePassword}
+                        className="space-y-6"
+                      >
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Mật khẩu mới
@@ -404,10 +486,16 @@ const NewProfile = ({ role }: Profile) => {
                             />
                             <button
                               type="button"
-                              onClick={() => setShowNewPassword(!showNewPassword)}
+                              onClick={() =>
+                                setShowNewPassword(!showNewPassword)
+                              }
                               className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                             >
-                              {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                              {showNewPassword ? (
+                                <EyeOff className="w-5 h-5" />
+                              ) : (
+                                <Eye className="w-5 h-5" />
+                              )}
                             </button>
                           </div>
                         </div>
@@ -420,17 +508,25 @@ const NewProfile = ({ role }: Profile) => {
                             <input
                               type={showConfirmPassword ? 'text' : 'password'}
                               value={confirmPassword}
-                              onChange={(e) => setConfirmPassword(e.target.value)}
+                              onChange={(e) =>
+                                setConfirmPassword(e.target.value)
+                              }
                               placeholder="Nhập lại mật khẩu"
                               className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 text-gray-800 font-medium"
                               required
                             />
                             <button
                               type="button"
-                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                              onClick={() =>
+                                setShowConfirmPassword(!showConfirmPassword)
+                              }
                               className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                             >
-                              {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                              {showConfirmPassword ? (
+                                <EyeOff className="w-5 h-5" />
+                              ) : (
+                                <Eye className="w-5 h-5" />
+                              )}
                             </button>
                           </div>
                         </div>

@@ -37,6 +37,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
   const role = localStorage.getItem('role');
+  const subRole = localStorage.getItem('subRole');
 
   const navItems = [
     { label: 'Trang chủ', path: '/' },
@@ -319,6 +320,91 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       }}
                     >
                       Xem thông tin
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleCloseMenu();
+                        handleLogout();
+                      }}
+                      sx={{
+                        px: 3,
+                        py: 1.5,
+                        fontSize: 20,
+                        color: '#d32f2f',
+                        fontWeight: 400,
+                        '&:hover': { backgroundColor: '#ffebee' },
+                      }}
+                    >
+                      Đăng xuất
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : subRole === 'CASHIER' ? (
+                <>
+                  <Button
+                    onClick={(e) => handleOpenMenu(e, 'CASHIER')}
+                    endIcon={<ArrowDropDown />}
+                    sx={{
+                      textTransform: 'none',
+                      px: 2,
+                      py: 1,
+                      fontSize: 20,
+                      fontWeight: 500,
+                      color: '#333',
+                      minWidth: 'auto',
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    }}
+                  >
+                    {fullName}
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={menuOpen === 'CASHIER'}
+                    onClose={handleCloseMenu}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    PaperProps={{
+                      sx: {
+                        mt: 1,
+                        borderRadius: '8px',
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e0e0e0',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                      },
+                    }}
+                    MenuListProps={{ sx: { py: 1 } }}
+                  >
+                    <MenuItem
+                      component={NavLink}
+                      to="/s-m-profile"
+                      onClick={handleCloseMenu}
+                      sx={{
+                        px: 3,
+                        py: 1.5,
+                        fontSize: 20,
+                        color: '#333',
+                        fontWeight: 400,
+                        '&:hover': { backgroundColor: '#f5f5f5' },
+                      }}
+                    >
+                      Xem thông tin
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/manager-bill"
+                      onClick={handleCloseMenu}
+                      sx={{
+                        px: 3,
+                        py: 1.5,
+                        fontSize: 20,
+                        color: '#333',
+                        fontWeight: 400,
+                        '&:hover': { backgroundColor: '#f5f5f5' },
+                      }}
+                    >
+                      Quản lý hóa đơn
                     </MenuItem>
                     <MenuItem
                       onClick={() => {
