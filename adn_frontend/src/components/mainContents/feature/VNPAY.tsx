@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import styles from './VNPAY.module.css';
 
 type Invoice = {
   invoiceId: number;
@@ -52,55 +53,67 @@ const VNPayResult = () => {
 
   if (status === 'pending') {
     return (
-      <div className="text-center mt-5">
-        ⏳ Đang xử lý kết quả thanh toán...
+      <div className={styles.container}>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingSpinner}></div>
+          <div className={styles.loadingText}>
+            ⏳ Đang xử lý kết quả thanh toán...
+          </div>
+        </div>
       </div>
     );
   }
 
   if (status === 'fail') {
     return (
-      <div className="alert alert-danger text-center mt-5" role="alert">
-        ❌ Thanh toán thất bại hoặc không hợp lệ.
+      <div className={styles.container}>
+        <div className={styles.alertDanger} role="alert">
+          ❌ Thanh toán thất bại hoặc không hợp lệ.
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container mt-5">
-      <div className="alert alert-success text-center" role="alert">
+    <div className={styles.container}>
+      <div className={styles.alertSuccess} role="alert">
         ✅ Thanh toán thành công!
       </div>
 
       {invoice && (
-        <table className="table table-bordered bg-white mt-5">
-          <tbody>
-            <tr>
-              <th>Mã hóa đơn</th>
-              <td>{invoice.invoiceId}</td>
-            </tr>
-            <tr>
-              <th>Dịch vụ</th>
-              <td>{invoice.serviceName}</td>
-            </tr>
-            <tr>
-              <th>Khách hàng</th>
-              <td>{invoice.userFullName}</td>
-            </tr>
-            <tr>
-              <th>Số tiền</th>
-              <td>{invoice.amount.toLocaleString()} VNĐ</td>
-            </tr>
-            <tr>
-              <th>Ngày thanh toán</th>
-              <td>{new Date(invoice.createdDate).toLocaleString()}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div className={styles.invoiceCard}>
+          <div className={styles.invoiceHeader}>
+            Chi Tiết Hóa Đơn
+          </div>
+          <table className={styles.invoiceTable}>
+            <tbody>
+              <tr>
+                <th>Mã hóa đơn</th>
+                <td>{invoice.invoiceId}</td>
+              </tr>
+              <tr>
+                <th>Dịch vụ</th>
+                <td>{invoice.serviceName}</td>
+              </tr>
+              <tr>
+                <th>Khách hàng</th>
+                <td>{invoice.userFullName}</td>
+              </tr>
+              <tr>
+                <th>Số tiền</th>
+                <td className={styles.amount}>{invoice.amount.toLocaleString()} VNĐ</td>
+              </tr>
+              <tr>
+                <th>Ngày thanh toán</th>
+                <td>{new Date(invoice.createdDate).toLocaleString()}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       )}
 
-      <div className="text-center mt-4">
-        <a href="/" className="btn btn-primary">
+      <div className={styles.buttonContainer}>
+        <a href="/" className={styles.homeButton}>
           Quay về trang chủ
         </a>
       </div>

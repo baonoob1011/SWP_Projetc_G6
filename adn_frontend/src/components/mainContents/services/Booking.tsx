@@ -189,7 +189,7 @@ const Booking = () => {
                       {/* Thanh toán */}
                       {item.payments.length > 0 &&
                         (!item.payments[0].getPaymentStatus ||
-                          item.payments[0].getPaymentStatus === 'UNPAID') &&
+                          item.payments[0].getPaymentStatus === 'PENDING') &&
                         item.payments[0].paymentId &&
                         item.services.length > 0 &&
                         item.services[0].serviceId &&

@@ -1,0 +1,466 @@
+.container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #3932C8 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Order Tracking Timeline */
+.orderCard {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.orderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f2f5;
+}
+
+.orderInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.orderId {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1890ff;
+}
+
+.orderDate {
+  font-size: 0.9rem;
+  color: #8c8c8c;
+  font-family: 'Courier New', monospace;
+}
+
+.orderStatus {
+  background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Timeline Stepper */
+.timeline {
+  position: relative;
+  padding: 2rem 0;
+}
+
+.timelineStep {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.timelineStep:last-child {
+  margin-bottom: 0;
+}
+
+.timelineStep:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 24px;
+  top: 50px;
+  width: 2px;
+  height: calc(100% + 1rem);
+  background: #d9d9d9;
+  z-index: 0;
+}
+
+.timelineStep.completed:not(:last-child)::after {
+  background: linear-gradient(to bottom, #52c41a 0%, #389e0d 100%);
+}
+
+.timelineStep.active:not(:last-child)::after {
+  background: linear-gradient(to bottom, #1890ff 0%, #096dd9 100%);
+}
+
+.stepIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  margin-right: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.stepIcon.completed {
+  background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
+  color: white;
+}
+
+.stepIcon.active {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+.stepIcon.pending {
+  background: #f5f5f5;
+  color: #bfbfbf;
+  border: 2px solid #d9d9d9;
+}
+
+.stepIcon.failed {
+  background: linear-gradient(135deg, #ff4d4f 0%, #f5222d 100%);
+  color: white;
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(24, 144, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(24, 144, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(24, 144, 255, 0);
+  }
+}
+
+.stepContent {
+  flex: 1;
+  padding-top: 0.5rem;
+}
+
+.stepTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 0.5rem;
+}
+
+.stepTitle.completed {
+  color: #52c41a;
+}
+
+.stepTitle.active {
+  color: #1890ff;
+}
+
+.stepTitle.pending {
+  color: #8c8c8c;
+}
+
+.stepTitle.failed {
+  color: #ff4d4f;
+}
+
+.stepDescription {
+  font-size: 0.9rem;
+  color: #8c8c8c;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.stepTime {
+  font-size: 0.8rem;
+  color: #bfbfbf;
+  font-family: 'Courier New', monospace;
+}
+
+.stepTime.completed,
+.stepTime.active {
+  color: #595959;
+  font-weight: 500;
+}
+
+.stepTime.failed {
+  color: #ff4d4f;
+  font-weight: 500;
+}
+
+.table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  background: white;
+}
+
+.tableHeader {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.tableHeaderCell {
+  padding: 1.5rem 1rem;
+  font-weight: 700;
+  color: #495057;
+  text-align: center;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tableRow {
+  transition: all 0.3s ease;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tableRow:hover {
+  background: linear-gradient(135deg, #f8f9ff 0%, #fff5f5 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableCell {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: #495057;
+  font-weight: 500;
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
+.statusCell {
+  position: relative;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.statusBadge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Different status colors */
+.statusDelivered {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+}
+
+.statusPending {
+  background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+  color: white;
+}
+
+.statusShipping {
+  background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+  color: white;
+}
+
+.statusCanceled {
+  background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+  color: white;
+}
+
+.dateCell {
+  font-family: 'Courier New', monospace;
+  color: #6c757d;
+  font-weight: 600;
+}
+
+.noDataContainer {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.noDataIcon {
+  font-size: 4rem;
+  color: #adb5bd;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.noDataText {
+  font-size: 1.3rem;
+  color: #6c757d;
+  font-weight: 500;
+  margin: 0;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 15px;
+  color: white;
+}
+
+.loadingSpinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loadingText {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Stats cards */
+.statsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statsCard {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+}
+
+.statsCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.statsCard.total {
+  border-left-color: #667eea;
+}
+
+.statsCard.delivered {
+  border-left-color: #28a745;
+}
+
+.statsCard.pending {
+  border-left-color: #ffc107;
+}
+
+.statsCard.shipping {
+  border-left-color: #007bff;
+}
+
+.statsNumber {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.statsLabel {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem auto;
+    padding: 0 0.5rem;
+  }
+  
+  .header {
+    padding: 1.5rem;
+    font-size: 1.3rem;
+  }
+  
+  .tableHeaderCell,
+  .tableCell {
+    padding: 1rem 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .statusBadge {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  
+  .statsContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .statsCard {
+    padding: 1rem;
+  }
+  
+  .statsNumber {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .table {
+    font-size: 0.8rem;
+  }
+  
+  .tableHeaderCell,
+  .tableCell {
+    padding: 0.8rem 0.3rem;
+  }
+  
+  .header {
+    font-size: 1.1rem;
+    padding: 1rem;
+  }
+  
+  .statsContainer {
+    grid-template-columns: 1fr;
+  }
+} 
