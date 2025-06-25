@@ -18,6 +18,7 @@ import {
 import { Check } from '@mui/icons-material';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import styles from './CollectorSlot.module.css';
 
 export const CollectorSlots = () => {
   const [slots, setSlots] = useState<any[]>([]);
@@ -139,11 +140,20 @@ export const CollectorSlots = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className={styles.loading}>
+        <CircularProgress />
+        <p>Đang tải dữ liệu...</p>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ padding: 20 }}>
-      <Typography variant="h5" gutterBottom>
-        Danh sách Slot
-      </Typography>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Danh sách Slot & Lịch hẹn</h1>
+      </div>
 
       {/* Bảng thông tin khách tại nhà */}
       {/* ✅ Nếu có lịch tại nhà thì hiện bảng, ngược lại hiện slot */}
@@ -152,135 +162,144 @@ export const CollectorSlots = () => {
           a.showAppointmentResponse?.appointmentType === 'HOME' &&
           a.showAppointmentResponse?.appointmentStatus === 'CONFIRMED'
       ) ? (
-        <table className="table table-bordered table-striped table-hover text-center align-middle mt-4">
-          <thead className="table-dark">
-            <tr>
-              <th>Họ tên</th>
-              <th>Ngày sinh</th>
-              <th>Giới tính</th>
-              <th>Quan hệ</th>
-              <th>Ngày hẹn</th>
-              <th>Thu mẫu / Xem</th>
-              <th>Trạng thái</th>
-            </tr>
-          </thead>
-          <tbody>
-            {appointments.map((appointmentItem) => {
-              const appointmentId =
-                appointmentItem.showAppointmentResponse?.appointmentId;
-              const serviceId =
-                appointmentItem.serviceAppointmentResponses?.[0]?.serviceId;
-              const isHome =
-                appointmentItem.showAppointmentResponse?.appointmentType ===
-                'HOME';
-              const isConfirmed =
-                appointmentItem.showAppointmentResponse?.appointmentStatus ===
-                'CONFIRMED';
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead className={styles.tableHeader}>
+              <tr>
+                <th className={styles.tableHeaderCell}>Họ tên</th>
+                <th className={styles.tableHeaderCell}>Ngày sinh</th>
+                <th className={styles.tableHeaderCell}>Giới tính</th>
+                <th className={styles.tableHeaderCell}>Quan hệ</th>
+                <th className={styles.tableHeaderCell}>Ngày hẹn</th>
+                <th className={styles.tableHeaderCell}>Thu mẫu / Xem</th>
+                <th className={styles.tableHeaderCell}>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              {appointments.map((appointmentItem) => {
+                const appointmentId =
+                  appointmentItem.showAppointmentResponse?.appointmentId;
+                const serviceId =
+                  appointmentItem.serviceAppointmentResponses?.[0]?.serviceId;
+                const isHome =
+                  appointmentItem.showAppointmentResponse?.appointmentType ===
+                  'HOME';
+                const isConfirmed =
+                  appointmentItem.showAppointmentResponse?.appointmentStatus ===
+                  'CONFIRMED';
 
-              if (!isHome || !isConfirmed) return null;
+                if (!isHome || !isConfirmed) return null;
 
-              const patients = appointmentItem.patientAppointmentResponse;
+                const patients = appointmentItem.patientAppointmentResponse;
 
-              return patients.map((patient: any, index: number) => {
-                const key = `${appointmentId}_${patient.patientId}`;
-                const isFirstPatient = index === 0;
+                return patients.map((patient: any, index: number) => {
+                  const key = `${appointmentId}_${patient.patientId}`;
+                  const isFirstPatient = index === 0;
 
-                return (
-                  <tr key={key}>
-                    <td>{patient.fullName}</td>
-                    <td>{patient.dateOfBirth}</td>
-                    <td>{patient.gender}</td>
-                    <td>{patient.relationship}</td>
-                    <td>
-                      {appointmentItem.showAppointmentResponse?.appointmentDate}
-                    </td>
-                    <td>
-                      <div className="d-flex justify-content-center align-items-center gap-2">
-                        <input
-                          type="text"
-                          className="form-control form-control-sm"
-                          placeholder="Nhập vật mẫu"
-                          style={{ maxWidth: '150px' }}
-                          value={sampleType[key] || ''}
-                          onChange={(e) =>
-                            setSampleType((prev) => ({
-                              ...prev,
-                              [key]: e.target.value,
-                            }))
-                          }
-                        />
-                        <button
-                          className="btn btn-primary btn-sm"
-                          onClick={() =>
-                            handleSendSample(
-                              patient.patientId,
-                              serviceId,
-                              appointmentId,
-                              key
-                            )
-                          }
-                        >
-                          <Check fontSize="small" />
-                        </button>
-                        {isFirstPatient && (
-                          <NavLink
-                            to={`/s-page/get-appointment/${appointmentId}`}
-                            className="btn btn-outline-secondary btn-sm"
-                          >
-                            Xem
-                          </NavLink>
-                        )}
-                      </div>
-                    </td>
-
-                    {isFirstPatient && (
-                      <td rowSpan={patients.length}>
-                        <select
-                          className="form-select form-select-sm"
-                          value={selectedStatus[appointmentId] || 'PENDING'}
-                          onChange={(e) =>
-                            setSelectedStatus((prev) => ({
-                              ...prev,
-                              [appointmentId]: e.target.value,
-                            }))
-                          }
-                          onBlur={() => handleUpdateStatus(appointmentId)}
-                        >
-                          <option value="PENDING">PENDING</option>
-                          <option value="IN_PROGRESS">IN_PROGRESS</option>
-                          <option value="DELIVERED">DELIVERED</option>
-                          <option value="FAILED">FAILED</option>
-                          <option value="COMPLETED">COMPLETED</option>
-                          <option value="DONE">DONE</option>
-                        </select>
+                  return (
+                    <tr key={key} className={styles.tableRow}>
+                      <td className={styles.tableCell}>{patient.fullName}</td>
+                      <td className={styles.tableCell}>{patient.dateOfBirth}</td>
+                      <td className={styles.tableCell}>{patient.gender}</td>
+                      <td className={styles.tableCell}>{patient.relationship}</td>
+                      <td className={styles.tableCell}>
+                        {appointmentItem.showAppointmentResponse?.appointmentDate}
                       </td>
-                    )}
-                  </tr>
-                );
-              });
-            })}
-          </tbody>
-        </table>
+                      <td className={styles.tableCell}>
+                        <div className={styles.inputGroup}>
+                          <input
+                            type="text"
+                            className={styles.sampleInput}
+                            placeholder="Nhập vật mẫu"
+                            value={sampleType[key] || ''}
+                            onChange={(e) =>
+                              setSampleType((prev) => ({
+                                ...prev,
+                                [key]: e.target.value,
+                              }))
+                            }
+                          />
+                          <button
+                            className={styles.submitBtn}
+                            onClick={() =>
+                              handleSendSample(
+                                patient.patientId,
+                                serviceId,
+                                appointmentId,
+                                key
+                              )
+                            }
+                          >
+                            <Check fontSize="small" />
+                          </button>
+                          {isFirstPatient && (
+                            <NavLink
+                              to={`/s-page/get-appointment/${appointmentId}`}
+                              className={styles.viewBtn}
+                            >
+                              Xem
+                            </NavLink>
+                          )}
+                        </div>
+                      </td>
+
+                      {isFirstPatient && (
+                        <td className={styles.tableCell} rowSpan={patients.length}>
+                          <select
+                            className={styles.statusSelect}
+                            value={selectedStatus[appointmentId] || 'PENDING'}
+                            onChange={(e) =>
+                              setSelectedStatus((prev) => ({
+                                ...prev,
+                                [appointmentId]: e.target.value,
+                              }))
+                            }
+                            onBlur={() => handleUpdateStatus(appointmentId)}
+                          >
+                            <option value="PENDING">PENDING</option>
+                            <option value="IN_PROGRESS">IN_PROGRESS</option>
+                            <option value="DELIVERED">DELIVERED</option>
+                            <option value="FAILED">FAILED</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                            <option value="DONE">DONE</option>
+                          </select>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                });
+              })}
+            </tbody>
+          </table>
+        </div>
       ) : (
         // Không có lịch tại nhà thì hiện slot
-        <div className="mt-4">
-          {slots
-            .filter((slot) => slot.slotResponse.slotStatus === 'BOOKED')
-            .map((slot) => (
-              <Button
-                key={slot.slotResponse.slotId}
-                variant="outlined"
-                onClick={() =>
-                  navigate(
-                    `/s-page/checkAppointment/${slot.slotResponse.slotId}`
-                  )
-                }
-                style={{ margin: '5px' }}
-              >
-                Slot {slot.slotResponse.slotId} - {slot.slotResponse.startTime}{' '}
-                ~ {slot.slotResponse.endTime}
-              </Button>
-            ))}
+        <div className={styles.slotsContainer}>
+          {slots.filter((slot) => slot.slotResponse.slotStatus === 'BOOKED').length > 0 ? (
+            <div className={styles.slotsGrid}>
+              {slots
+                .filter((slot) => slot.slotResponse.slotStatus === 'BOOKED')
+                .map((slot) => (
+                  <button
+                    key={slot.slotResponse.slotId}
+                    className={styles.slotButton}
+                    onClick={() =>
+                      navigate(
+                        `/s-page/checkAppointment/${slot.slotResponse.slotId}`
+                      )
+                    }
+                  >
+                    <div>Slot {slot.slotResponse.slotId}</div>
+                    <div>{slot.slotResponse.startTime} ~ {slot.slotResponse.endTime}</div>
+                  </button>
+                ))}
+            </div>
+          ) : (
+            <div className={styles.emptyState}>
+              <h3>Không có slot nào được đặt</h3>
+              <p>Hiện tại chưa có slot nào trong trạng thái "BOOKED"</p>
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -10,6 +10,8 @@ import swp.project.adn_backend.dto.request.result.LocusRequest;
 import swp.project.adn_backend.dto.response.result.LocusResponse;
 import swp.project.adn_backend.entity.Locus;
 import swp.project.adn_backend.enums.AppointmentStatus;
+import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.LocusMapper;
 import swp.project.adn_backend.repository.LocusRepository;
 
@@ -31,6 +33,8 @@ public class LocusService {
 
     public LocusResponse createLocus(LocusRequest locusRequest) {
         Locus locus = locusMapper.toLocus(locusRequest);
+        locusRepository.findById(locus.getLocusId())
+                        .orElseThrow(()-> new AppException(ErrorCodeUser.LOCUS_EXISTED));
         locusRepository.save(locus);
         LocusResponse locusResponse = locusMapper.toLocusResponse(locus);
         return locusResponse;

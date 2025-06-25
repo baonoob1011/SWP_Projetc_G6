@@ -7,6 +7,9 @@ public class ResultLocusAppointmentResponse {
     private String sampleCode1;
     private String sampleCode2;
     String locusName;
+    private Double fatherAllele1;
+
+    private Double fatherAllele2;
     double allele1;
     double allele2;
     double frequency;
@@ -74,5 +77,21 @@ public class ResultLocusAppointmentResponse {
 
     public void setPi(double pi) {
         this.pi = pi;
+    }
+
+    public Double getFatherAllele1() {
+        return fatherAllele1;
+    }
+
+    public void setFatherAllele1(Double fatherAllele1) {
+        this.fatherAllele1 = fatherAllele1;
+    }
+
+    public Double getFatherAllele2() {
+        return fatherAllele2;
+    }
+
+    public void setFatherAllele2(Double fatherAllele2) {
+        this.fatherAllele2 = fatherAllele2;
     }
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import styles from './AppointmentSchedule.module.css';
 
 type Appointment = {
   appointmentId: string;
@@ -142,17 +143,28 @@ const AppointmentSchedule = () => {
 
   if (!auth) return null;
 
+  // Kiểm tra có dữ liệu không
+  const hasData = centerSchedule.length > 0 || homeSchedule.some((item) => item.note === 'Đã thanh toán');
+  const isLoading = loadingCenter || loadingHome;
+
   return (
-    <div className="container mt-4">
+    <div className={styles.container}>
+      <h1 className={styles.pageTitle}>Danh Sách Lịch Hẹn</h1>
+      
+      {/* Hiển thị thông báo trống khi không có dữ liệu và không đang loading */}
+      {!hasData && !isLoading && (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyStateIcon}>📋</div>
+          <div className={styles.emptyStateText}>Danh sách lịch hẹn trống</div>
+        </div>
+      )}
+      
       {/* Lịch Trung Tâm */}
       {loadingCenter || centerSchedule.length > 0 ? (
         <>
-          <h4 className="text-center text-primary mb-4">
-            Lịch Hẹn Tại Trung Tâm
-          </h4>
-          <div className="table-responsive mb-5">
-            <table className="table table-hover border shadow-sm">
-              <thead className="table-primary text-center">
+          <div className={styles.tableWrapper}>
+            <table className={`table ${styles.table}`}>
+              <thead className={styles.tableHeader}>
                 <tr>
                   <th>Ngày Hẹn</th>
                   <th>Trạng Thái</th>
@@ -160,19 +172,19 @@ const AppointmentSchedule = () => {
                   <th>Thao Tác</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className={styles.tableBody}>
                 {loadingCenter ? (
                   <tr>
-                    <td colSpan={4} className="text-center text-secondary">
+                    <td colSpan={4} className={styles.loadingText}>
                       Đang tải dữ liệu...
                     </td>
                   </tr>
                 ) : (
                   centerSchedule.map((item, index) => (
-                    <tr key={index} className="align-middle text-center">
+                    <tr key={index}>
                       <td>{item.appointmentDate}</td>
                       <td>
-                        <span className="bg-warning text-dark px-2 py-1 rounded">
+                        <span className={`${styles.statusBadge} ${styles.statusPending}`}>
                           {item.appointmentStatus}
                         </span>
                       </td>
@@ -188,7 +200,7 @@ const AppointmentSchedule = () => {
                               item.locationId!
                             )
                           }
-                          className="btn btn-outline-primary btn-sm"
+                          className={styles.confirmBtn}
                         >
                           Xác Nhận
                         </button>
@@ -206,10 +218,9 @@ const AppointmentSchedule = () => {
       {loadingHome ||
       homeSchedule.some((item) => item.note === 'Đã thanh toán') ? (
         <>
-          <h4 className="text-center text-success mb-4">Lịch Hẹn Tại Nhà</h4>
-          <div className="table-responsive">
-            <table className="table table-hover border shadow-sm">
-              <thead className="table-success text-center">
+          <div className={styles.tableWrapper}>
+            <table className={`table ${styles.table}`}>
+              <thead className={styles.tableHeader}>
                 <tr>
                   <th>Ngày Hẹn</th>
                   <th>Trạng Thái</th>
@@ -217,10 +228,10 @@ const AppointmentSchedule = () => {
                   <th>Thao Tác</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className={styles.tableBody}>
                 {loadingHome ? (
                   <tr>
-                    <td colSpan={4} className="text-center text-secondary">
+                    <td colSpan={4} className={styles.loadingText}>
                       Đang tải dữ liệu...
                     </td>
                   </tr>
@@ -228,10 +239,10 @@ const AppointmentSchedule = () => {
                   homeSchedule
                     .filter((item) => item.note === 'Đã thanh toán')
                     .map((item, index) => (
-                      <tr key={index} className="align-middle text-center">
+                      <tr key={index}>
                         <td>{item.appointmentDate}</td>
                         <td>
-                          <span className="bg-warning text-dark px-2 py-1 rounded">
+                          <span className={`${styles.statusBadge} ${styles.statusPending}`}>
                             {item.appointmentStatus}
                           </span>
                         </td>
@@ -245,7 +256,7 @@ const AppointmentSchedule = () => {
                                 item.userId
                               )
                             }
-                            className="btn btn-outline-success btn-sm"
+                            className={`${styles.confirmBtn} ${styles.confirmBtnHome}`}
                           >
                             Xác Nhận
                           </button>

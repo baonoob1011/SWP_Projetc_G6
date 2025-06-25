@@ -57,7 +57,6 @@ public class Slot {
     @JoinColumn(name = "room_id")
     Room room;
 
-
     @OneToMany(mappedBy = "slot", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH

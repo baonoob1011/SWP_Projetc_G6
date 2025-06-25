@@ -112,8 +112,9 @@ public class AppointmentController {
     }
 
     @GetMapping("/get-all-result")
-    public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResult(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getAllAppointmentsResult(authentication));
+    public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResult(Authentication authentication,
+                                                                               @RequestParam long appointmentId) {
+        return ResponseEntity.ok(appointmentService.getAllAppointmentsResult(authentication,appointmentId));
     }
 
     //thêm staff vào appointment at home

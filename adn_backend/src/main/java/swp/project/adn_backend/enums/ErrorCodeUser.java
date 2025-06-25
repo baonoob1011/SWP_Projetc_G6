@@ -37,6 +37,7 @@ public enum ErrorCodeUser {
     PASSWORD_BLANK(1025, "Mật khẩu không được để trống", HttpStatus.BAD_REQUEST),
     PASSWORD_TOO_SHORT(1026, "Mật khẩu phải có ít nhất 8 ký tự", HttpStatus.BAD_REQUEST),
     EMAIL_EXISTED(1027, "Email đã được đăng ký", HttpStatus.BAD_REQUEST),
+    LOCUS_EXISTED(1027, "Locus này đã được đăng ký", HttpStatus.BAD_REQUEST),
     PHONE_EXISTED(1028, "Số điện thoại đã được sử dụng", HttpStatus.BAD_REQUEST),
     ADDRESS_EXISTED(1029, "Địa chỉ đã được sử dụng", HttpStatus.BAD_REQUEST),
     INVALID_KEY(1030, "Mã xác minh không hợp lệ", HttpStatus.BAD_REQUEST),

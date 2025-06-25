@@ -51,6 +51,7 @@ public class SecurityConfig {
 
     private final String[] USER_ENDPOINTS = {
             "/api/appointment/book-appointment/**",
+            "/api/services/get-service-to-feedback/**",
             "/api/appointment/cancel-appointment/**",
             "/api/appointment/get-appointment/**",
             "/api/appointment/get-all-result/**",
@@ -74,6 +75,7 @@ public class SecurityConfig {
             "/api/staff/update-profile",
             "/api/kit/get-all-kit-staff",
             "/api/kit/update-kit/**",
+            "/api/blog/**",
             "/api/appointment/confirm-appointment-at-center/**",
             "/api/appointment/confirm-appointment-at-home/**",
             "/api/appointment/get-appointment-by-slot/**",
@@ -126,7 +128,7 @@ public class SecurityConfig {
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
 
                         // Quyền USER
-                        .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN","MANAGER")
 
                         // Quyền STAFF
                         .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")
