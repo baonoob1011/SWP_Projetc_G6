@@ -6,6 +6,7 @@ import styles from './AppointmentStatus.module.css';
 const GetKitDeliveryStatus = () => {
   const [kitStatus, setKitStatus] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [expandedOrders, setExpandedOrders] = useState<Set<number>>(new Set());
 
   // Define order tracking steps matching API statuses
   const trackingSteps = [
@@ -75,10 +76,23 @@ const GetKitDeliveryStatus = () => {
   };
 
   // Function to get step class
-  const getStepClass = (stepIndex: number, currentIndex: number, status: string) => {
+  const getStepClass = (stepIndex: number, currentIndex: number, status: string, step: any) => {
+    const upperStatus = status.toUpperCase();
+    
     // Special case for FAILED status
-    if (status.toUpperCase() === 'FAILED' && stepIndex === 5) {
-      return 'active';
+    if (upperStatus === 'FAILED') {
+      if (step.status === 'FAILED') {
+        return 'failed';
+      }
+      // For FAILED orders, mark previous steps as completed up to DELIVERED
+      if (stepIndex < 4) return 'completed'; // PENDING, IN_PROGRESS, COMPLETED, DELIVERED
+      return 'pending';
+    }
+    
+    // For DONE status, mark all normal flow steps as completed
+    if (upperStatus === 'DONE') {
+      if (stepIndex <= 4) return 'completed'; // All steps completed for DONE
+      return 'pending';
     }
     
     if (stepIndex < currentIndex) return 'completed';
@@ -146,6 +160,35 @@ const GetKitDeliveryStatus = () => {
     fetchKitStatus();
   };
 
+  // Toggle expand/collapse for specific order
+  const toggleOrderExpansion = (orderIndex: number) => {
+    const newExpandedOrders = new Set(expandedOrders);
+    if (newExpandedOrders.has(orderIndex)) {
+      newExpandedOrders.delete(orderIndex);
+    } else {
+      newExpandedOrders.add(orderIndex);
+    }
+    setExpandedOrders(newExpandedOrders);
+  };
+
+  // Get status color class
+  const getStatusColorClass = (status: string) => {
+    const upperStatus = status.toUpperCase();
+    switch (upperStatus) {
+      case 'PENDING':
+      case 'IN_PROGRESS':
+      case 'COMPLETED':
+      case 'DELIVERED':
+        return 'statusGray';
+      case 'FAILED':
+        return 'statusRed';
+      case 'DONE':
+        return 'statusGreen';
+      default:
+        return 'statusGray';
+    }
+  };
+
   if (isLoading && kitStatus.length === 0) {
     return (
       <div className={styles.container}>
@@ -190,9 +233,11 @@ const GetKitDeliveryStatus = () => {
         kitStatus.map((order: any, orderIndex: number) => {
           const currentStepIndex = getCurrentStepIndex(order.deliveryStatus);
           const relevantSteps = getRelevantSteps(order.deliveryStatus);
+          const isExpanded = expandedOrders.has(orderIndex);
+          const statusColorClass = getStatusColorClass(order.deliveryStatus);
           
           return (
-            <div key={orderIndex} className={styles.orderCard}>
+            <div key={orderIndex} className={`${styles.orderCard} ${styles[statusColorClass]}`}>
               {/* Order Header */}
               <div className={styles.orderHeader}>
                 <div className={styles.orderInfo}>
@@ -201,55 +246,54 @@ const GetKitDeliveryStatus = () => {
                   </div>
                   <div className={styles.orderDate}>
                     Ngày đặt: {new Date(order.createOrderDate).toLocaleDateString('vi-VN', {
-                      year: 'numeric',
-                      month: '2-digit',
                       day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit'
+                      month: '2-digit',
+                      year: 'numeric'
                     })}
                   </div>
                 </div>
-                <div className={styles.orderStatus}>
-                  {order.deliveryStatus}
+                <div className={styles.orderActions}>
+                  <div className={`${styles.orderStatus} ${styles[statusColorClass]}`}>
+                    {order.deliveryStatus}
+                  </div>
+                  <button 
+                    className={styles.toggleButton}
+                    onClick={() => toggleOrderExpansion(orderIndex)}
+                  >
+                    {isExpanded ? '🔼 Thu gọn' : '🔽 Xem chi tiết'}
+                  </button>
                 </div>
               </div>
 
-              {/* Timeline */}
-              <div className={styles.timeline}>
-                {relevantSteps.map((step, stepIndex) => {
-                  const stepClass = getStepClass(stepIndex, currentStepIndex, order.deliveryStatus);
+              {/* Timeline - Conditionally rendered */}
+              {isExpanded && (
+                <div className={styles.timeline}>
+                                  {relevantSteps.map((step, stepIndex) => {
+                  const stepClass = getStepClass(stepIndex, currentStepIndex, order.deliveryStatus, step);
                   return (
-                    <div key={step.id} className={`${styles.timelineStep} ${styles[stepClass]}`}>
-                      {/* Step Icon */}
+                      <div key={step.id} className={`${styles.timelineStep} ${styles[stepClass]}`}>
+                                              {/* Step Icon */}
                       <div className={`${styles.stepIcon} ${styles[stepClass]}`}>
-                        {stepClass === 'completed' ? '✓' : step.icon}
+                        {stepClass === 'completed' ? '✓' : stepClass === 'failed' ? '✗' : step.icon}
                       </div>
 
-                      {/* Step Content */}
-                      <div className={styles.stepContent}>
-                        <div className={`${styles.stepTitle} ${styles[stepClass]}`}>
-                          {step.title}
+                        {/* Step Content */}
+                        <div className={styles.stepContent}>
+                          <div className={`${styles.stepTitle} ${styles[stepClass]}`}>
+                            {step.title}
+                          </div>
+                          <div className={styles.stepDescription}>
+                            {step.description}
+                          </div>
+                                                  <div className={`${styles.stepTime} ${styles[stepClass]}`}>
+                          {stepClass === 'pending' ? 'Chưa thực hiện' : ''}
                         </div>
-                        <div className={styles.stepDescription}>
-                          {step.description}
-                        </div>
-                        <div className={`${styles.stepTime} ${styles[stepClass]}`}>
-                          {stepClass === 'completed' || stepClass === 'active' 
-                            ? new Date(order.createOrderDate).toLocaleDateString('vi-VN', {
-                                day: '2-digit',
-                                month: '2-digit', 
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })
-                            : 'Chưa thực hiện'
-                          }
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           );
         })
