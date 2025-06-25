@@ -128,7 +128,7 @@ export const CollectorSlots = () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
           body: JSON.stringify({
-            selectedStatus: selectedStatus[appointmentId],
+            deliveryStatus: selectedStatus[appointmentId],
           }),
         }
       );
