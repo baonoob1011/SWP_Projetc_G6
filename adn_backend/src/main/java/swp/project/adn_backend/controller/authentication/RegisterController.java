@@ -84,6 +84,24 @@ public class RegisterController {
         return ResponseEntity.ok(user);
     }
 
+    @PostMapping("/staff-cashier-account")
+    public ResponseEntity<?> registerStaffCollectorSampleAccount(
+            @RequestBody @Valid StaffRequest staffRequest,
+            BindingResult bindingResult,
+            Authentication authentication) {
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error ->
+                    errors.put(error.getField(), error.getDefaultMessage())
+            );
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        Users user = userService.registerCashierAccount(staffRequest, authentication);
+        return ResponseEntity.ok(user);
+    }
+
 
     @PostMapping("/staff-at-home-account")
     public ResponseEntity<?> registerStaffShippingAccount(

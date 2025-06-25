@@ -78,8 +78,10 @@ import PatientRequest from './components/mainContents/feature/PatientRequest';
 // Thanh toán
 import VNPayResult from './components/mainContents/feature/VNPAY';
 import GetStaffAtHome from './components/mainContents/actorList/staff/GetStaffAtHome';
-// import TotalUserChart from './components/mainContents/actorList/admin/GetDashBoard';
+import TotalUserChart from './components/mainContents/actorList/admin/GetDashBoard';
 import GetAllResult from './components/mainContents/feature/GetAllResult';
+import GetCashier from './components/mainContents/actorList/admin/GetAllCashier';
+import SignUpCashier from './components/mainContents/actorList/staff/SignUpCashier';
 
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
@@ -190,6 +192,14 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route
+                  path="cashier"
+                  element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <GetCashier />
+                    </ProtectedRoute>
+                  }
+                />
               </Route>
 
               <Route
@@ -285,6 +295,22 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <SignUpCollector />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup-cashier"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <SignUpCashier />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <TotalUserChart />
                   </ProtectedRoute>
                 }
               />

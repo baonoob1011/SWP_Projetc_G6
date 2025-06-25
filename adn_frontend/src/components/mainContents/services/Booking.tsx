@@ -9,9 +9,9 @@ const Booking = () => {
   const [bookingList, setBookingList] = useState<BookingHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedBooking, setSelectedBooking] =
-    useState<BookingHistoryItem | null>(null);
-  const [showModal, setShowModal] = useState(false);
+  // const [selectedBooking, setSelectedBooking] =
+  //   useState<BookingHistoryItem | null>(null);
+  // const [showModal, setShowModal] = useState(false);
   const translateAppointmentType = (type: string) => {
     if (type === 'CENTER') return 'Lấy mẫu tại cơ sở';
     if (type === 'HOME') return 'Lấy mẫu tại nhà';
@@ -162,7 +162,7 @@ const Booking = () => {
                       }}
                     >
                       {/* Xem thêm */}
-                      {item.show.appointmentStatus === 'COMPLETED' && (
+                      {/* {item.show.appointmentStatus === 'COMPLETED' && (
                         <button
                           className="btn btn-primary btn-sm d-flex align-items-center gap-1"
                           onClick={() => {
@@ -172,7 +172,7 @@ const Booking = () => {
                         >
                           <FaEye />
                         </button>
-                      )}
+                      )} */}
                       {/* Hủy */}
                       {item.show.appointmentStatus !== 'COMPLETED' && (
                         <button
@@ -210,14 +210,16 @@ const Booking = () => {
                     </div>
                   </td>
                   <td>
-                    <button
-                      className="btn btn-info btn-sm"
-                      onClick={() =>
-                        navigate(`/result/${item.show.appointmentId}`)
-                      }
-                    >
-                      <FaEye />
-                    </button>
+                    {item.show.appointmentStatus === 'COMPLETED' && (
+                      <button
+                        className="btn btn-info btn-sm"
+                        onClick={() =>
+                          navigate(`/result/${item.show.appointmentId}`)
+                        }
+                      >
+                        <FaEye />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -227,7 +229,7 @@ const Booking = () => {
       )}
 
       {/* Modal chi tiết */}
-      {showModal && selectedBooking && (
+      {/* {showModal && selectedBooking && (
         <div
           className="modal d-block"
           tabIndex={-1}
@@ -268,7 +270,6 @@ const Booking = () => {
                     .join(', ')}
                 </p>
 
-                {/* Hiển thị thông tin địa điểm, slot, room nếu là tại trung tâm */}
                 {selectedBooking.show.appointmentType === 'CENTER' && (
                   <>
                     <p>
@@ -290,8 +291,6 @@ const Booking = () => {
                     </p>
                   </>
                 )}
-
-                {/* Hiển thị thông tin kit nếu là tại nhà */}
                 {selectedBooking.show.appointmentType === 'HOME' &&
                   selectedBooking.kit && (
                     <>
@@ -337,7 +336,7 @@ const Booking = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

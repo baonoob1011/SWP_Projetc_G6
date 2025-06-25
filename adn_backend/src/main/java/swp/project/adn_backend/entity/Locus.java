@@ -15,7 +15,6 @@ public class Locus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long locusId;
-
     @Column(unique = true)
     private String locusName;
     @Column(columnDefinition = "nvarchar(255)")
