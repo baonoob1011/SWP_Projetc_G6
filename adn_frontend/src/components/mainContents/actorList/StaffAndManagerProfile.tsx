@@ -559,4 +559,5 @@ const NewProfile = ({ role }: Profile) => {
   );
 };
 
+
 export default NewProfile;
