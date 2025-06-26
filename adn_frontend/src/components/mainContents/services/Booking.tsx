@@ -10,9 +10,9 @@ const Booking = () => {
   const [bookingList, setBookingList] = useState<BookingHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedBooking, setSelectedBooking] =
-    useState<BookingHistoryItem | null>(null);
-  const [showModal, setShowModal] = useState(false);
+  // const [selectedBooking, setSelectedBooking] =
+  //   useState<BookingHistoryItem | null>(null);
+  // const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const translateAppointmentType = (type: string) => {
     if (type === 'CENTER') return 'Lấy mẫu tại cơ sở';
@@ -160,7 +160,7 @@ const Booking = () => {
                       }}
                     >
                       {/* Xem thêm */}
-                      <button
+                      {/* <button
                         className="btn btn-primary btn-sm d-flex align-items-center gap-1"
                         onClick={() => {
                           setSelectedBooking(item);
@@ -168,7 +168,7 @@ const Booking = () => {
                         }}
                       >
                         <FaEye />
-                      </button>
+                      </button> */}
 
                       {/* Hủy */}
                       {item.show.appointmentStatus !== 'COMPLETED' && (
