@@ -77,7 +77,7 @@ const SelectedCivilService = () => {
             {price?.map((item: any, idx: number) => (
               <div key={idx}>
                 <span>
-                  {item.time} – {item.price} VND
+                  {item.time} - {item.price} VND
                 </span>
               </div>
             ))}
