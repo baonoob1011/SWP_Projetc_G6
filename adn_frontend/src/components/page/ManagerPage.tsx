@@ -18,11 +18,15 @@ import {
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 
-import { ArrowBack, RoomService } from '@mui/icons-material';
+import {
+  ArrowBack,
+  LocationCity,
+  Room,
+  RoomService,
+} from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
-import { ArrowBack, LocationCity, Room, RoomService } from '@mui/icons-material';
-
+//import { ArrowBack, RoomService } from '@mui/icons-material';
 
 const ManagerPage = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -80,17 +84,17 @@ const ManagerPage = () => {
     { id: 'dashboard', icon: ArrowBack, label: 'Home', path: '' },
     { id: 'data', icon: List, label: 'Danh sách', path: 'manager/data' },
     {
-          id: 'location',
-          icon: LocationCity,
-          label: 'Tạo địa chỉ mới',
-          path: 'manager/location',
-        },
+      id: 'location',
+      icon: LocationCity,
+      label: 'Tạo địa chỉ mới',
+      path: 'manager/location',
+    },
     {
-          id: 'room',
-          icon: Room,
-          label: 'Tạo phòng',
-          path: 'manager/room',
-        },  
+      id: 'room',
+      icon: Room,
+      label: 'Tạo phòng',
+      path: 'manager/room',
+    },
     {
       id: 'services',
       icon: ShoppingBag,

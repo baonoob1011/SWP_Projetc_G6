@@ -361,7 +361,14 @@ const ServiceList = () => {
                             to={`/newPrice/${s.serviceRequest.serviceId}`}
                             className="btn btn-sm btn-outline-secondary"
                           >
-                            ➕ thêm giá
+                            thêm giá
+                          </Button>
+                          <Button
+                            component={NavLink}
+                            to={`/discount/${s.serviceRequest.serviceId}`}
+                            className="btn btn-sm btn-outline-secondary"
+                          >
+                            giảm giá
                           </Button>
                         </>
                       )}
