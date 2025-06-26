@@ -25,6 +25,7 @@ import CreateLocation from './components/mainContents/feature/CreateLocation';
 import CreateRoom from './components/mainContents/feature/CreateRoom';
 import CreateKit from './components/mainContents/feature/CreateKit';
 import CreateLocus from './components/mainContents/feature/CreateLocus';
+import Rating from './components/page/Rating';
 
 // Dữ liệu người dùng (User / Staff / Manager / Collector / Admin)
 import DataList, {
@@ -49,6 +50,7 @@ import SignUpStaffAtHome from './components/mainContents/actorList/staff/StaffAt
 // Quản lý lịch & Slot
 import StaffSlot from './components/mainContents/actorList/staff/GetStaffSchedule';
 import SignUpStaffSchedule from './components/mainContents/actorList/staff/SignUpStaffSchedule';
+
 import AppointmentSchedule from './components/mainContents/actorList/staff/AppointmentSchedule';
 
 // Quản lý cuộc hẹn
@@ -632,6 +634,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <VNPayResult />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/feedback/:serviceId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <Rating />
                 </ProtectedRoute>
               }
             />
