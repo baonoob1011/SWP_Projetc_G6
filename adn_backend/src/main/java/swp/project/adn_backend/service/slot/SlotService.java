@@ -33,6 +33,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -129,34 +130,44 @@ public class SlotService {
 
 
     public List<SlotInfoDTO> getAllUpcomingSlotsForUser() {
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+
+        // ✅ Lấy đủ 2 ngày tương lai hợp lệ (bỏ T7/CN)
+        List<LocalDate> validDates = getNextWeekdays(today.plusDays(1), 2);
+
+        if (validDates.size() < 2) return Collections.emptyList(); // Không đủ 2 ngày
+
+        // Không dùng BETWEEN nữa vì 2 ngày có thể không liên tiếp (ví dụ 27 và 30)
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
                 "s.slotId, s.slotDate, s.startTime, s.endTime, s.slotStatus) " +
                 "FROM Slot s " +
                 "WHERE s.slotStatus = :slotStatus " +
-                "AND s.slotDate BETWEEN :today AND :afterTwoDays";
-
-        LocalDate today = LocalDate.now();
-        LocalDate afterTwoDays = today.plusDays(2);
-        LocalTime now = LocalTime.now();
+                "AND s.slotDate IN :dates";
 
         TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
         query.setParameter("slotStatus", SlotStatus.AVAILABLE);
-        query.setParameter("today", today);
-        query.setParameter("afterTwoDays", afterTwoDays);
+        query.setParameter("dates", validDates); // dùng IN thay vì BETWEEN
 
-        List<SlotInfoDTO> filteredSlots = query.getResultList().stream()
-                .filter(slot -> {
-                    LocalDate slotDate = slot.getSlotDate();
-                    if (slotDate.isEqual(today)) {
-                        return slot.getEndTime().isAfter(now); // còn thời gian
-                    }
-                    return true; // ngày 24, 25 giữ nguyên
-                })
-                .collect(Collectors.toList());
-
-        return new ArrayList<>(filteredSlots);
+        return query.getResultList();
     }
 
+
+
+    private List<LocalDate> getNextWeekdays(LocalDate fromDate, int count) {
+        List<LocalDate> result = new ArrayList<>();
+        LocalDate current = fromDate;
+
+        while (result.size() < count) {
+            DayOfWeek dow = current.getDayOfWeek();
+            if (dow != DayOfWeek.SATURDAY && dow != DayOfWeek.SUNDAY) {
+                result.add(current);
+            }
+            current = current.plusDays(1);
+        }
+
+        return result;
+    }
 
 
     public List<GetFullSlotResponse> getAllSlot() {

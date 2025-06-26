@@ -103,7 +103,7 @@ public class AppointmentController {
 //    }
 
     @GetMapping("/get-appointment-at-home-by-staff")
-    public ResponseEntity<List<AppointmentAtHomeInfoDTO>> getAppointmentAtHome(Authentication authentication) {
+    public ResponseEntity<List<AllAppointmentAtHomeResponse>> getAppointmentAtHome(Authentication authentication) {
         return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
     }
 

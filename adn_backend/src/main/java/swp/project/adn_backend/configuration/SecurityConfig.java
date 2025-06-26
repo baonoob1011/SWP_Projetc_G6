@@ -48,6 +48,8 @@ public class SecurityConfig {
             "/api/jasperpdf/**",
             "/api/blog/get-all-blog",
             "/api/discount/get-discount-by-service",
+            "/api/services/get-service"
+
     };
     private final String[] CASHIER_ENDPOINTS = {
             "/api/cashier/**",

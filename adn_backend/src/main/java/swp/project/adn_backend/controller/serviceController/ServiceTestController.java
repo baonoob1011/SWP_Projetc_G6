@@ -65,7 +65,7 @@ public class ServiceTestController {
         return ResponseEntity.ok(serviceTestService.getAllService());
     }
 
-    @GetMapping("/get-service-to-feedback")
+    @GetMapping("/get-service")
     public ResponseEntity<List<ServiceFeedbackInfoDTO>> getAllService(@RequestParam long serviceId) {
         return ResponseEntity.ok(serviceTestService.getServiceById(serviceId));
     }
