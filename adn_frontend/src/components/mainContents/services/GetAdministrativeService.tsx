@@ -503,6 +503,7 @@ const AdministrativeServiceList = () => {
                           variant="contained"
                           component={NavLink}
                           to={`/order-administrative/${service.serviceRequest.serviceId}`}
+                          state={{ price: service.priceListRequest }}
                           sx={{
                             background:
                               'linear-gradient(45deg, #10b981 30%, #14b8a6 90%)',

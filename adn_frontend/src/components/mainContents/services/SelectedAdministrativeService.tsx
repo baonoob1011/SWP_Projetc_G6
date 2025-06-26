@@ -74,7 +74,7 @@ const SelectedAdministrativeService = () => {
 
             <div>{service.description}</div>
             <div>{service.serviceType}</div>
-            {price?.map((item: any, idx: number) => (
+            {price.map((item: any, idx: number) => (
               <div key={idx}>
                 <span>
                   {item.time} – {item.price} VND
