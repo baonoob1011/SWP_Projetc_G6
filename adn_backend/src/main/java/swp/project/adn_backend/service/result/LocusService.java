@@ -33,8 +33,6 @@ public class LocusService {
 
     public LocusResponse createLocus(LocusRequest locusRequest) {
         Locus locus = locusMapper.toLocus(locusRequest);
-        locusRepository.findById(locus.getLocusId())
-                        .orElseThrow(()-> new AppException(ErrorCodeUser.LOCUS_EXISTED));
         locusRepository.save(locus);
         LocusResponse locusResponse = locusMapper.toLocusResponse(locus);
         return locusResponse;

@@ -6,15 +6,16 @@ import { useEffect, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import jsPDF from 'jspdf';
-
+import styles from './GetAllResult.module.css';
+import Logo from '../../../image/Logo.png';
 const GetAllResult = () => {
-  const { appointmentId } = useParams(); // 👈 Lấy ID từ URL
+  const { appointmentId } = useParams();
   const [isResult, setIsResult] = useState<any[]>([]);
 
   const exportResultToPDF = (item: any) => {
     const doc = new jsPDF();
 
-    doc.setFont('Roboto'); // 👈 Dùng font hỗ trợ UTF-8
+    doc.setFont('Roboto');
     doc.setFontSize(16);
     doc.text('PHIẾU KẾT QUẢ XÉT NGHIỆM ADN', 70, 15, { maxWidth: 180 });
 
@@ -75,86 +76,100 @@ const GetAllResult = () => {
       toast.error('Lỗi hệ thống khi lấy dữ liệu');
     }
   };
+
   useEffect(() => {
-    if (appointmentId) fetchData(); // 👈 Gọi API khi có ID
+    if (appointmentId) fetchData();
   }, [appointmentId]);
+
   return (
-    <div
-      className="container"
-      style={{ maxWidth: 1000, margin: 120, padding: 20 }}
-    >
-      <Button component={NavLink} to="/u-profile">
-        <ArrowBack />
-      </Button>
+    <div className={styles.container}>
       {isResult
         .filter(
           (item) =>
             item.resultAppointmentResponse?.[0]?.resultStatus === 'COMPLETED'
         )
         .map((item, index) => (
-          <div key={index} className="card mb-4 shadow-sm">
-            <div className="card-body p-4">
-              <h6 className="card-title mb-3">
-                Hóa đơn #{item.showAppointmentResponse?.appointmentId}
-              </h6>
+          <div key={index} className={styles.reportCard}>
+            <Button component={NavLink} to="/u-profile" className={styles.backButton}>
+              <ArrowBack />
+              Quay lại
+            </Button>
+            {/* Header */}
+            <div className={styles.reportHeader}>
+              <div className={styles.headerTop}>
+                <div className={styles.logoSection}>
+                  <img src={Logo} alt="GENETIS Logo" className={styles.logo} />
+                </div>
+                <div className={styles.reportId}>
+                  <p className={styles.reportIdLabel}>No:</p>
+                  <p className={styles.reportIdValue}>
+                    KQ {item.showAppointmentResponse?.appointmentId}
+                  </p>
+                </div>
+              </div>
+              <h2 className={styles.reportTitle}>
+                PHIẾU KẾT QUẢ PHÂN TÍCH ADN
+              </h2>
+            </div>
 
-              {/* Thông tin cuộc hẹn */}
-              <div className="mb-3">
-                <p>
-                  <strong>Ngày hẹn:</strong>{' '}
-                  {item.showAppointmentResponse?.appointmentDate}
+            {/* Watermark */}
+            <div className={styles.watermark}>GENELINK</div>
+
+            {/* Body */}
+            <div className={styles.reportBody}>
+              {/* Phần giới thiệu */}
+              <div className={styles.introSection}>
+                <p className={styles.introText}>
+                  Căn cứ vào giấy đề nghị phân tích ADN số: <span className={styles.requestNumber}>HID15 5986</span>
                 </p>
-                <p>
-                  <strong>Trạng thái lịch hẹn:</strong>{' '}
-                  {item.showAppointmentResponse?.appointmentStatus}
+                <p className={styles.introText}>
+                  Của Ông (Bà): <span className={styles.applicantName}>Nguyễn Văn A</span>
                 </p>
-                <p>
-                  <strong>Ghi chú:</strong> {item.showAppointmentResponse?.note}
+                <p className={styles.introText}>
+                  Địa chỉ:
                 </p>
-                <p>
-                  <strong>Hình thức xét nghiệm:</strong>{' '}
-                  {item.showAppointmentResponse?.appointmentType}
+                <p className={styles.companyStatement}>
+                  Công ty Genelink tiến hành phân tích các mẫu ADN sau:
                 </p>
               </div>
 
-              <hr />
-
-              {/* Thông tin bệnh nhân */}
-              <h6 className="mb-3">Thông tin mẫu giám định</h6>
-              <div className="table-responsive">
-                <table className="table table-bordered text-center">
-                  <thead className="table-light">
+              {/* Thông tin mẫu giám định theo template */}
+              <div className={styles.section}>
+                <table className={styles.table}>
+                  <thead className={styles.tableHeader}>
                     <tr>
-                      <th>TT</th>
-                      <th>Họ tên</th>
-                      <th>Ngày sinh</th>
-                      <th>Quan hệ</th>
-                      <th>Loại mẫu</th>
-                      <th>Ngày thu mẫu</th>
-                      <th>Mã mẫu</th>
+                      <th className={styles.tableHeaderCell}>TT</th>
+                      <th className={styles.tableHeaderCell}>Họ tên</th>
+                      <th className={styles.tableHeaderCell}>Quan hệ</th>
+                      <th className={styles.tableHeaderCell}>Loại mẫu</th>
+                      <th className={styles.tableHeaderCell}>Ngày thu mẫu</th>
+                      <th className={styles.tableHeaderCell}>Ký hiệu mẫu</th>
                     </tr>
                   </thead>
                   <tbody>
                     {item.patientAppointmentResponse
                       ?.slice(0, 2)
                       .map((patient: any, i: number) => (
-                        <tr key={i}>
-                          <td>{i + 1}</td>
-                          <td>{patient.fullName}</td>
-                          <td>{patient.dateOfBirth}</td>
-                          <td>{patient.relationship}</td>
-                          <td>
+                        <tr key={i} className={styles.tableRow}>
+                          <td className={styles.tableCell}>{i + 1}</td>
+                          <td className={`${styles.tableCell} ${styles.patientName}`}>
+                            {patient.fullName}
+                          </td>
+                          <td className={styles.tableCell}>{patient.relationship}</td>
+                          <td className={styles.tableCell}>
                             {item.sampleAppointmentResponse?.[0].sampleType}
                           </td>
-                          <td>
+                          <td className={styles.tableCell}>
                             {item.showAppointmentResponse?.appointmentDate}
                           </td>
-                          <td>
-                            {i === 0
-                              ? item.resultLocusAppointmentResponse?.[0]
-                                  ?.sampleCode1 || '---'
-                              : item.resultLocusAppointmentResponse?.[0]
-                                  ?.sampleCode2 || '---'}
+                          <td className={styles.tableCell}>
+                            <span className={styles.sampleCode}>
+                              {i === 0
+                                ? item.resultLocusAppointmentResponse?.[0]
+                                    ?.sampleCode1 || '---'
+                                : item.resultLocusAppointmentResponse?.[0]
+                                    ?.sampleCode2 || '---'}
+                            </span>
                           </td>
                         </tr>
                       ))}
@@ -162,111 +177,87 @@ const GetAllResult = () => {
                 </table>
               </div>
 
-              <hr />
+              {/* Ghi chú về phân tích */}
+              <p className={styles.templateNote}>
+                Sau khi phân tích các mẫu ADN có ký hiệu trên bằng bộ kít Identifiler - Plus của hãng 
+                Appliedbiosystems - Mỹ chúng tôi có kết quả sau:
+              </p>
 
-              {/* Dịch vụ */}
-              <div className="mb-3">
-                <h6 className="mb-2">Dịch vụ</h6>
+              {/* Bảng Locus phức tạp theo template */}
+              <div className={styles.section}>
+                <table className={`${styles.table} ${styles.locusTableComplex}`}>
+                  <thead className={styles.tableHeader}>
+                    <tr>
+                      <th rowSpan={2} className={styles.tableHeaderCell}>Locus Gen</th>
+                      <th colSpan={2} className={styles.tableHeaderCell}>Kiểu gen</th>
+                      <th rowSpan={2} className={styles.tableHeaderCell}>PI</th>
+                    </tr>
+                    <tr className={styles.subHeader}>
+                      <th className={styles.tableHeaderCell}>
+                        {item.resultLocusAppointmentResponse?.[0]?.sampleCode1 || 'Mã mẫu 1'}
+                      </th>
+                      <th className={styles.tableHeaderCell}>
+                        {item.resultLocusAppointmentResponse?.[0]?.sampleCode2 || 'Mã mẫu 2'}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {item.resultLocusAppointmentResponse?.map(
+                      (locus: any, i: number) => (
+                        <tr key={i} className={styles.tableRow}>
+                          <td className={`${styles.tableCell} ${styles.locusName}`}>
+                            {locus.locusName}
+                          </td>
+                          <td className={`${styles.tableCell} ${styles.alleleCell}`}>
+                            {locus.allele1} - {locus.allele2}
+                          </td>
+                          <td className={`${styles.tableCell} ${styles.alleleCell}`}>
+                            {locus.fatherAllele1 ?? 'N/A'} - {locus.fatherAllele2 ?? 'N/A'}
+                          </td>
+                          <td className={`${styles.tableCell} ${styles.piValue}`}>
+                            {locus.pi?.toFixed(6)}
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Kết luận của hội đồng khoa học */}
+                             <div className={styles.companyDecision}>
+                 <h3 className={styles.decisionTitle}>
+                   Hội đồng khoa học công ty Genelink kết luận:
+                 </h3>
+                 <div className={styles.decisionContent}>
+                   <p>
+                     Người có mẫu ADN ký hiệu: <span className={styles.sampleCodes}>
+                       {item.resultLocusAppointmentResponse?.[0]?.sampleCode1}
+                     </span> và người có mẫu ADN ký hiệu: <span className={styles.sampleCodes}>
+                       {item.resultLocusAppointmentResponse?.[0]?.sampleCode2}
+                     </span>
+                   </p>
+                   <div className={styles.conclusionResult}>
+                     CÓ QUAN HỆ HUYẾT THỐNG CHA - CON
+                   </div>
+                 </div>
+               </div>
+
+              {/* Ghi chú miễn trách */}
+              <div className={styles.disclaimer}>
+                <div className={styles.disclaimerTitle}>Ghi chú:</div>
                 <p>
-                  - Mã dịch vụ: {item.serviceAppointmentResponses?.serviceId}
-                </p>
-                <p>
-                  - Tên dịch vụ: {item.serviceAppointmentResponses?.serviceName}
-                </p>
-                <p>
-                  - Ngày đăng ký:{' '}
-                  {item.serviceAppointmentResponses?.registerDate}
-                </p>
-                <p>- Mô tả: {item.serviceAppointmentResponses?.description}</p>
-                <p>
-                  - Loại dịch vụ:{' '}
-                  {item.serviceAppointmentResponses?.serviceType}
+                  Đây là xét nghiệm theo yêu cầu cá nhân, mẫu và tên mẫu do người đề nghị cung cấp, 
+                  nên không được sử dụng kết quả trong tố tụng.
                 </p>
               </div>
 
-              <hr />
-
-              {/* Kết quả */}
-              <div className="mb-3">
-                <h6 className="mb-2">Kết quả</h6>
-                <p>
-                  - Mã kết quả: {item.resultAppointmentResponse?.[0]?.result_id}
-                </p>
-                <p>
-                  - Ngày trả kết quả:{' '}
-                  {item.resultAppointmentResponse?.[0]?.resultDate}
-                </p>
-                <p>
-                  - Trạng thái:{' '}
-                  {item.resultAppointmentResponse?.[0]?.resultStatus}
-                </p>
-              </div>
-
-              <hr />
-
-              {/* Chi tiết locus */}
-              <div className="mb-3">
-                <h6 className="mb-2">Chi tiết các locus</h6>
-                <div className="table-responsive">
-                  <table className="table table-sm table-bordered text-center">
-                    <thead className="table-light">
-                      <tr>
-                        <th>Locus</th>
-                        <th>Sample 1</th>
-                        <th>Sample 2</th>
-                        <th>Allele 1</th>
-                        <th>Allele 2</th>
-                        <th>PI</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {item.resultLocusAppointmentResponse?.map(
-                        (locus: any, i: number) => (
-                          <tr key={i}>
-                            <td>{locus.locusName}</td>
-                            <td>{locus.sampleCode1}</td>
-                            <td>{locus.sampleCode2}</td>
-                            <td>
-                              {locus.allele1} - {locus.allele2}
-                            </td>
-                            <td>
-                              {locus.fatherAllele1 ?? 'N/A'} -{' '}
-                              {locus.fatherAllele1 ?? 'N/A'}
-                            </td>
-                            <td>{locus.pi?.toFixed(2)}</td>
-                          </tr>
-                        )
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <hr />
-
-              {/* Tổng kết */}
-              <div className="mb-3">
-                <h6 className="mb-2">Tổng kết</h6>
-                {item.resultDetailAppointmentResponse?.map(
-                  (detail: any, i: number) => (
-                    <div key={i}>
-                      <p>- Kết luận: {detail.conclusion}</p>
-                      <p>- Combined PI: {detail.combinedPaternityIndex}</p>
-                      <p>
-                        - Xác suất cha con:{' '}
-                        {detail.paternityProbability?.toFixed(4)}%
-                      </p>
-                      <p>- Tóm tắt: {detail.resultSummary}</p>
-                    </div>
-                  )
-                )}
-              </div>
               <Button
                 variant="outlined"
-                color="secondary"
+                className={styles.downloadButton}
                 onClick={() => exportResultToPDF(item)}
               >
-                Tải phiếu kết quả PDF
+                📄 Tải phiếu kết quả PDF
               </Button>
             </div>
           </div>

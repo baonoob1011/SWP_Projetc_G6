@@ -1,8 +1,11 @@
 package swp.project.adn_backend.service.result;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo;
 import swp.project.adn_backend.dto.request.result.AllelePairRequest;
 import swp.project.adn_backend.dto.request.result.ResultAlleleRequest;
 import swp.project.adn_backend.dto.request.result.ResultRequest;
@@ -15,10 +18,7 @@ import swp.project.adn_backend.enums.ResultStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.ResultAlleleMapper;
 import swp.project.adn_backend.mapper.ResultMapper;
-import swp.project.adn_backend.repository.LocusRepository;
-import swp.project.adn_backend.repository.ResultAlleleRepository;
-import swp.project.adn_backend.repository.ResultRepository;
-import swp.project.adn_backend.repository.SampleRepository;
+import swp.project.adn_backend.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,25 +29,29 @@ public class ResultAlleleService {
     private ResultAlleleMapper resultAlleleMapper;
     private SampleRepository sampleRepository;
     private LocusRepository locusRepository;
+    private StaffRepository staffRepository;
+    private EntityManager entityManager;
 
     @Autowired
-    public ResultAlleleService(ResultAlleleRepository resultAlleleRepository, ResultAlleleMapper resultAlleleMapper, SampleRepository sampleRepository, LocusRepository locusRepository) {
+    public ResultAlleleService(ResultAlleleRepository resultAlleleRepository, ResultAlleleMapper resultAlleleMapper, SampleRepository sampleRepository, LocusRepository locusRepository, StaffRepository staffRepository, EntityManager entityManager) {
         this.resultAlleleRepository = resultAlleleRepository;
         this.resultAlleleMapper = resultAlleleMapper;
         this.sampleRepository = sampleRepository;
         this.locusRepository = locusRepository;
+        this.staffRepository = staffRepository;
+        this.entityManager = entityManager;
     }
 
     @Transactional
     public List<ResultAlleleResponse> createAllelePair(AllelePairRequest request,
                                                        long sampleId,
-                                                       long locusId) {
+                                                       long locusId
+                                                        ) {
 
         Sample sample = sampleRepository.findById(sampleId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
         Locus locus = locusRepository.findById(locusId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.LOCUS_NOT_EXISTS));
-
         List<ResultAlleleResponse> responses = new ArrayList<>();
 
         ResultAllele allele1 = new ResultAllele();

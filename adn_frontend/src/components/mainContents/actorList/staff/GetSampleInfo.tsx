@@ -1,16 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Typography,
-  Paper,
-  Button,
-} from '@mui/material';
 import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import styles from './GetSampleInfo.module.css';
 
 // type Result = {
 //   locusName: string;
@@ -87,65 +78,120 @@ const GetSampleInfo = () => {
     fetchSamples();
   }, [appointmentId]);
 
+  // Helper function to get gender badge class
+  const getGenderClass = (gender: string) => {
+    const lowerGender = gender.toLowerCase();
+    if (lowerGender.includes('nam') || lowerGender.includes('male')) {
+      return `${styles.genderBadge} ${styles.genderMale}`;
+    }
+    return `${styles.genderBadge} ${styles.genderFemale}`;
+  };
+
   return (
-    <Paper
-      style={{ padding: 20, maxWidth: 1000, margin: 'auto', marginTop: 40 }}
-    >
-      <Typography variant="h6" gutterBottom>
-        Danh sách mẫu đã thu
-      </Typography>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        🧬 Danh Sách Mẫu Đã Thu
+      </div>
+
+      {/* Stats Cards */}
+      {samples.length > 0 && (
+        <div className={styles.statsContainer}>
+          <div className={styles.statsCard}>
+            <div className={styles.statsNumber}>{samples.length}</div>
+            <div className={styles.statsLabel}>Tổng mẫu</div>
+          </div>
+          <div className={styles.statsCard}>
+            <div className={styles.statsNumber}>
+              {new Set(samples.map(s => s.patientSampleResponse.fullName)).size}
+            </div>
+            <div className={styles.statsLabel}>Bệnh nhân</div>
+          </div>
+        </div>
+      )}
 
       {loading ? (
-        <Typography>Đang tải dữ liệu...</Typography>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingSpinner}></div>
+          <div className={styles.loadingText}>Đang tải dữ liệu mẫu...</div>
+        </div>
       ) : samples.length > 0 ? (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Họ tên bệnh nhân</TableCell>
-              <TableCell>Giới tính</TableCell>
-              <TableCell>Quan hệ</TableCell>
-              <TableCell>Loại mẫu</TableCell>
-              <TableCell>Mã mẫu</TableCell>
-              <TableCell>Ngày thu</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {samples.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell>{item.patientSampleResponse.fullName}</TableCell>
-                <TableCell>{item.patientSampleResponse.gender}</TableCell>
-                <TableCell>{item.patientSampleResponse.relationship}</TableCell>
-                <TableCell>{item.sampleResponse.sampleType}</TableCell>
-                <TableCell>{item.sampleResponse.sampleCode}</TableCell>
-                <TableCell>{item.sampleResponse.collectionDate}</TableCell>
-                <TableCell>{item.sampleResponse.collectionDate}</TableCell>
-                <Button
-                  component={NavLink}
-                  to={`/s-page/record-result/${item.sampleResponse.sampleId}`}
-                  state={{
-                    patientName: item.patientSampleResponse.fullName,
-                    sampleId: item.sampleResponse.sampleId,
-                    appointmentId: appointmentId,
-                  }}
-                >
-                  ghi kết quả
-                </Button>
-              </TableRow>
-            ))}
-          </TableBody>
-          <Button
-            type="button"
-            onClick={handleResult}
-            variant="contained"
-            color="primary"
-          >
-            Gửi kết quả
-          </Button>
-        </Table>
+        <>
+          <div className={styles.tableContainer}>
+            <table className={styles.table}>
+              <thead className={styles.tableHeader}>
+                <tr>
+                  <th className={styles.tableHeaderCell}>Họ tên bệnh nhân</th>
+                  <th className={styles.tableHeaderCell}>Giới tính</th>
+                  <th className={styles.tableHeaderCell}>Quan hệ</th>
+                  <th className={styles.tableHeaderCell}>Loại mẫu</th>
+                  <th className={styles.tableHeaderCell}>Mã mẫu</th>
+                  <th className={styles.tableHeaderCell}>Ngày thu</th>
+                  <th className={styles.tableHeaderCell}>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {samples.map((item, index) => (
+                  <tr key={index} className={styles.tableRow}>
+                    <td className={`${styles.tableCell} ${styles.patientName}`}>
+                      {item.patientSampleResponse.fullName}
+                    </td>
+                    <td className={styles.tableCell}>
+                      <span className={getGenderClass(item.patientSampleResponse.gender)}>
+                        {item.patientSampleResponse.gender}
+                      </span>
+                    </td>
+                    <td className={styles.tableCell}>
+                      <span className={styles.relationshipBadge}>
+                        {item.patientSampleResponse.relationship}
+                      </span>
+                    </td>
+                    <td className={styles.tableCell}>
+                      {item.sampleResponse.sampleType}
+                    </td>
+                    <td className={styles.tableCell}>
+                      <span className={styles.sampleCode}>
+                        {item.sampleResponse.sampleCode}
+                      </span>
+                    </td>
+                    <td className={styles.tableCell}>
+                      {new Date(item.sampleResponse.collectionDate).toLocaleDateString('vi-VN')}
+                    </td>
+                    <td className={styles.tableCell}>
+                      <NavLink
+                        className={styles.actionButton}
+                        to={`/s-page/record-result/${item.sampleResponse.sampleId}`}
+                        state={{
+                          patientName: item.patientSampleResponse.fullName,
+                          sampleId: item.sampleResponse.sampleId,
+                          appointmentId: appointmentId,
+                        }}
+                      >
+                        📝 Ghi kết quả
+                      </NavLink>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
+          <div className={styles.submitContainer}>
+            <button
+              type="button"
+              onClick={handleResult}
+              className={styles.submitButton}
+            >
+              🚀 Gửi kết quả
+            </button>
+          </div>
+        </>
       ) : (
-        <Typography>Không có mẫu nào được thu.</Typography>
+        <div className={styles.noDataContainer}>
+          <span className={styles.noDataIcon}>🔬</span>
+          <p className={styles.noDataText}>Không có mẫu nào được thu.</p>
+        </div>
       )}
-    </Paper>
+    </div>
   );
 };
 

@@ -24,6 +24,7 @@ public class LocusController {
             @RequestBody LocusRequest locusRequest) {
         return ResponseEntity.ok(locusService.createLocus(locusRequest));
     }
+
     @GetMapping("/get-all-locus")
     public ResponseEntity<List<LocusInfoDTO>>getAllLocus(){
         return ResponseEntity.ok(locusService.getAllLocus());
