@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import CustomSnackBar from '../userinfor/Snackbar';
@@ -15,11 +16,16 @@ const CreateBlog = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string>('');
   const [auth, setAuth] = useState(false);
-  const [form, setForm] = useState<Blog>({ blogId: 0, title: '', content: '', image: '' });
+  const [form, setForm] = useState<Blog>({
+    blogId: 0,
+    title: '',
+    content: '',
+    image: '',
+  });
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
-    severity: 'success' as 'success' | 'error'
+    severity: 'success' as 'success' | 'error',
   });
 
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -34,7 +40,7 @@ const CreateBlog = () => {
   const fetchData = async () => {
     try {
       const res = await fetch('http://localhost:8080/api/blog/get-all-blog', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       if (!res.ok) throw new Error();
       const data = await res.json();
@@ -60,7 +66,7 @@ const CreateBlog = () => {
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setForm(f => ({ ...f, [name]: value }));
+    setForm((f) => ({ ...f, [name]: value }));
   };
 
   // Handle submit (create blog)
@@ -107,11 +113,14 @@ const CreateBlog = () => {
     fd.append('file', file);
 
     try {
-      const res = await fetch(`http://localhost:8080/api/blog/update-blog/${form.blogId}`, {
-        method: 'PUT',
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        body: fd,
-      });
+      const res = await fetch(
+        `http://localhost:8080/api/blog/update-blog/${form.blogId}`,
+        {
+          method: 'PUT',
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          body: fd,
+        }
+      );
 
       if (!res.ok) {
         const ct = res.headers.get('content-type') || '';
@@ -144,10 +153,15 @@ const CreateBlog = () => {
 
     if (confirmation.isConfirmed) {
       try {
-        const res = await fetch(`http://localhost:8080/api/blog/delete-blog/${blogId}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
+        const res = await fetch(
+          `http://localhost:8080/api/blog/delete-blog/${blogId}`,
+          {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+        );
 
         if (!res.ok) {
           toast.error('Không thể xóa blog');
@@ -162,7 +176,6 @@ const CreateBlog = () => {
     }
   };
 
-
   if (!auth) return null;
 
   return (
@@ -172,7 +185,9 @@ const CreateBlog = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Quản Lý Blog</h1>
-            <p className="text-gray-600 mt-1">Quản lý và tổ chức nội dung blog một cách hiệu quả</p>
+            <p className="text-gray-600 mt-1">
+              Quản lý và tổ chức nội dung blog một cách hiệu quả
+            </p>
           </div>
           <button
             onClick={() => {
@@ -185,8 +200,18 @@ const CreateBlog = () => {
             }}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={showForm ? "M6 18L18 6M6 6l12 12" : "M12 4v16m8-8H4"} />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d={showForm ? 'M6 18L18 6M6 6l12 12' : 'M12 4v16m8-8H4'}
+              />
             </svg>
             {showForm ? 'Đóng Form' : 'Thêm Blog'}
           </button>
@@ -203,15 +228,27 @@ const CreateBlog = () => {
                   {form.blogId ? 'Cập Nhật Blog' : 'Tạo Blog Mới'}
                 </h2>
                 <p className="text-gray-600">
-                  {form.blogId ? 'Chỉnh sửa thông tin blog của bạn' : 'Tạo nội dung blog mới để chia sẻ với mọi người'}
+                  {form.blogId
+                    ? 'Chỉnh sửa thông tin blog của bạn'
+                    : 'Tạo nội dung blog mới để chia sẻ với mọi người'}
                 </p>
               </div>
               <button
                 onClick={() => setShowForm(false)}
                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-6 h-6 text-gray-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -222,8 +259,18 @@ const CreateBlog = () => {
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
                     <span className="flex items-center gap-2">
-                      <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                      <svg
+                        className="w-4 h-4 text-blue-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                        />
                       </svg>
                       Tiêu đề Blog
                     </span>
@@ -241,8 +288,18 @@ const CreateBlog = () => {
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
                     <span className="flex items-center gap-2">
-                      <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      <svg
+                        className="w-4 h-4 text-green-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
                       </svg>
                       Nội dung
                     </span>
@@ -261,8 +318,18 @@ const CreateBlog = () => {
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
                     <span className="flex items-center gap-2">
-                      <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      <svg
+                        className="w-4 h-4 text-purple-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
                       </svg>
                       Hình ảnh đại diện
                     </span>
@@ -284,9 +351,24 @@ const CreateBlog = () => {
                 <div className="sticky top-6">
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
                     <span className="flex items-center gap-2">
-                      <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      <svg
+                        className="w-4 h-4 text-orange-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
                       </svg>
                       Xem trước
                     </span>
@@ -299,14 +381,28 @@ const CreateBlog = () => {
                           alt="preview"
                           className="w-full h-48 object-cover rounded-lg shadow-sm"
                         />
-                        <p className="text-sm text-gray-600">Hình ảnh đã chọn</p>
+                        <p className="text-sm text-gray-600">
+                          Hình ảnh đã chọn
+                        </p>
                       </div>
                     ) : (
                       <div className="py-8">
-                        <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <svg
+                          className="w-12 h-12 text-gray-400 mx-auto mb-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
                         </svg>
-                        <p className="text-gray-500 text-sm">Chưa có hình ảnh</p>
+                        <p className="text-gray-500 text-sm">
+                          Chưa có hình ảnh
+                        </p>
                       </div>
                     )}
                   </div>
@@ -321,8 +417,18 @@ const CreateBlog = () => {
                 onClick={handleSubmit}
                 className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 {form.blogId ? 'Cập nhật Blog' : 'Tạo Blog'}
               </button>
@@ -332,8 +438,18 @@ const CreateBlog = () => {
                   onClick={handleUpdate}
                   className="sm:w-auto px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
                   </svg>
                   Cập nhật
                 </button>
@@ -348,8 +464,18 @@ const CreateBlog = () => {
                 }}
                 className="sm:w-auto px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
                 Hủy
               </button>
@@ -360,8 +486,12 @@ const CreateBlog = () => {
         {/* Blog List */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Danh Sách Blog</h3>
-            <p className="text-gray-600 text-sm mt-1">Tất cả các blog đã được tạo</p>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Danh Sách Blog
+            </h3>
+            <p className="text-gray-600 text-sm mt-1">
+              Tất cả các blog đã được tạo
+            </p>
           </div>
 
           {blogs.length > 0 ? (
@@ -382,12 +512,19 @@ const CreateBlog = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {blogs.map((blog) => (
-                    <tr key={blog.blogId} className="hover:bg-gray-50 transition-colors">
+                    <tr
+                      key={blog.blogId}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
                       <td className="px-6 py-4">
-                        <div className="font-medium text-gray-900">{blog.title}</div>
+                        <div className="font-medium text-gray-900">
+                          {blog.title}
+                        </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-gray-600 truncate max-w-md">{blog.content}</div>
+                        <div className="text-gray-600 truncate max-w-md">
+                          {blog.content}
+                        </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex justify-center gap-2">
@@ -399,8 +536,18 @@ const CreateBlog = () => {
                             }}
                             className="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                              />
                             </svg>
                             Sửa
                           </button>
@@ -408,8 +555,18 @@ const CreateBlog = () => {
                             onClick={() => handleDelete(blog.blogId)}
                             className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              />
                             </svg>
                             Xóa
                           </button>
@@ -423,12 +580,26 @@ const CreateBlog = () => {
           ) : (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <svg
+                  className="w-8 h-8 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Không tìm thấy blog nào</h3>
-              <p className="text-gray-600">Bắt đầu bằng cách tạo blog đầu tiên của bạn</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Không tìm thấy blog nào
+              </h3>
+              <p className="text-gray-600">
+                Bắt đầu bằng cách tạo blog đầu tiên của bạn
+              </p>
             </div>
           )}
         </div>
@@ -438,7 +609,7 @@ const CreateBlog = () => {
         open={snackbar.open}
         message={snackbar.message}
         severity={snackbar.severity}
-        onClose={() => setSnackbar(s => ({ ...s, open: false }))}
+        onClose={() => setSnackbar((s) => ({ ...s, open: false }))}
       />
     </div>
   );

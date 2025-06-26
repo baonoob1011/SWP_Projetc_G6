@@ -40,7 +40,9 @@ const SelectedCivilService = () => {
         const data = await res.json();
         setService(data);
       } else {
+
         toast.error('Dịch vụ không tồn tại, hãy tải lại trang');
+
       }
     } catch (error) {
       console.log(error);
