@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import styles from './AppointmentSchedule.module.css';
@@ -15,7 +16,7 @@ type Appointment = {
 };
 
 const AppointmentSchedule = () => {
-  const [centerSchedule, setCenterSchedule] = useState<Appointment[]>([]);
+  const [centerSchedule, setCenterSchedule] = useState<any[]>([]);
   const [homeSchedule, setHomeSchedule] = useState<Appointment[]>([]);
   const [loadingCenter, setLoadingCenter] = useState(false);
   const [loadingHome, setLoadingHome] = useState(false);
@@ -144,13 +145,15 @@ const AppointmentSchedule = () => {
   if (!auth) return null;
 
   // Kiểm tra có dữ liệu không
-  const hasData = centerSchedule.length > 0 || homeSchedule.some((item) => item.note === 'Đã thanh toán');
+  const hasData =
+    centerSchedule.length > 0 ||
+    homeSchedule.some((item) => item.note === 'Đã thanh toán');
   const isLoading = loadingCenter || loadingHome;
 
   return (
     <div className={styles.container}>
       <h1 className={styles.pageTitle}>Danh Sách Lịch Hẹn</h1>
-      
+
       {/* Hiển thị thông báo trống khi không có dữ liệu và không đang loading */}
       {!hasData && !isLoading && (
         <div className={styles.emptyState}>
@@ -158,7 +161,7 @@ const AppointmentSchedule = () => {
           <div className={styles.emptyStateText}>Danh sách lịch hẹn trống</div>
         </div>
       )}
-      
+
       {/* Lịch Trung Tâm */}
       {loadingCenter || centerSchedule.length > 0 ? (
         <>
@@ -168,7 +171,8 @@ const AppointmentSchedule = () => {
                 <tr>
                   <th>Ngày Hẹn</th>
                   <th>Trạng Thái</th>
-                  <th>Ghi Chú</th>
+                  <th>Dịch vụ</th>
+                  <th>Thời gian</th>
                   <th>Thao Tác</th>
                 </tr>
               </thead>
@@ -180,33 +184,55 @@ const AppointmentSchedule = () => {
                     </td>
                   </tr>
                 ) : (
-                  centerSchedule.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.appointmentDate}</td>
-                      <td>
-                        <span className={`${styles.statusBadge} ${styles.statusPending}`}>
-                          {item.appointmentStatus}
-                        </span>
-                      </td>
-                      <td>{item.note}</td>
-                      <td>
-                        <button
-                          onClick={() =>
-                            handleCheck(
-                              item.appointmentId,
-                              item.userId,
-                              item.slotId!,
-                              item.serviceId,
-                              item.locationId!
-                            )
-                          }
-                          className={styles.confirmBtn}
-                        >
-                          Xác Nhận
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+                  centerSchedule
+                    .filter(
+                      (item) =>
+                        item.showAppointmentResponse.appointmentStatus ===
+                        'PENDING'
+                    )
+                    .map((item, index: number) => (
+                      <tr key={index}>
+                        <td>{item.showAppointmentResponse.appointmentDate}</td>
+                        <td>
+                          <span
+                            className={`${styles.statusBadge} ${styles.statusPending}`}
+                          >
+                            {item.showAppointmentResponse.appointmentStatus}
+                          </span>
+                        </td>
+                        <td>
+                          {item.serviceAppointmentResponses
+                            .map((s: any) => s.serviceName)
+                            .join(', ')}
+                        </td>
+                        <td>
+                          {item.slotAppointmentResponse
+                            .map((s: any) => s.startTime)
+                            .join(', ')}
+                          {' - '}
+                          {item.slotAppointmentResponse
+                            .map((s: any) => s.endTime)
+                            .join(', ')}
+                        </td>
+
+                        <td>
+                          <button
+                            onClick={() =>
+                              handleCheck(
+                                item.showAppointmentResponse.appointmentId.toString(),
+                                item.userAppointmentResponses.userId.toString(),
+                                item.slotAppointmentResponse[0].slotId.toString(),
+                                item.serviceAppointmentResponses[0].serviceId.toString(),
+                                item.locationAppointmentResponses[0].locationId.toString()
+                              )
+                            }
+                            className={styles.confirmBtn}
+                          >
+                            Xác Nhận
+                          </button>
+                        </td>
+                      </tr>
+                    ))
                 )}
               </tbody>
             </table>
@@ -242,7 +268,9 @@ const AppointmentSchedule = () => {
                       <tr key={index}>
                         <td>{item.appointmentDate}</td>
                         <td>
-                          <span className={`${styles.statusBadge} ${styles.statusPending}`}>
+                          <span
+                            className={`${styles.statusBadge} ${styles.statusPending}`}
+                          >
                             {item.appointmentStatus}
                           </span>
                         </td>

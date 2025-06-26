@@ -84,6 +84,8 @@ import GetCashier from './components/mainContents/actorList/admin/GetAllCashier'
 import SignUpCashier from './components/mainContents/actorList/staff/SignUpCashier';
 import GetAllBill from './components/mainContents/actorList/staff/GetAllBill';
 import CreateDiscount from './components/mainContents/actorList/admin/CreateDiscount';
+import SelectedCivilService from './components/mainContents/services/SelectedCivilService';
+import SelectedAdministrativeService from './components/mainContents/services/SelectedAdministrativeService';
 
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
@@ -695,6 +697,14 @@ function App() {
             <Route
               path="/service/administrative"
               element={<AdministrativeServiceList />}
+            />
+            <Route
+              path="/order-civil/:serviceId"
+              element={<SelectedCivilService />}
+            />
+            <Route
+              path="/order-administrative/:serviceId"
+              element={<SelectedAdministrativeService />}
             />
             <Route path="/m-getAllService" element={<ServiceList />} />
           </Routes>
