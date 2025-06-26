@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import type { BookingHistoryItem } from '../type/BookingType';
 import { FaEye, FaMoneyBillWave, FaTimes } from 'react-icons/fa';
+import styles from './Booking.module.css';
+import { useNavigate } from 'react-router-dom';
 
 // ==== COMPONENT ====
 const Booking = () => {
@@ -11,6 +13,7 @@ const Booking = () => {
   const [selectedBooking, setSelectedBooking] =
     useState<BookingHistoryItem | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate()
   const translateAppointmentType = (type: string) => {
     if (type === 'CENTER') return 'Lấy mẫu tại cơ sở';
     if (type === 'HOME') return 'Lấy mẫu tại nhà';
@@ -203,8 +206,7 @@ const Booking = () => {
                         )}
                     </div>
                   </td>
-<<<<<<< Updated upstream
-=======
+
                   <td className={styles.tableCell}>
                     {item.show.appointmentStatus === 'COMPLETED' && (
                       <>
@@ -233,7 +235,6 @@ const Booking = () => {
                     )}
                   </td>
 
->>>>>>> Stashed changes
                 </tr>
               ))}
             </tbody>
@@ -241,8 +242,7 @@ const Booking = () => {
         </div>
       )}
 
-      {/* Modal chi tiết */}
-      {showModal && selectedBooking && (
+      {/* {showModal && selectedBooking && (
         <div
           className="modal d-block"
           tabIndex={-1}
@@ -283,7 +283,6 @@ const Booking = () => {
                     .join(', ')}
                 </p>
 
-                {/* Hiển thị thông tin địa điểm, slot, room nếu là tại trung tâm */}
                 {selectedBooking.show.appointmentType === 'CENTER' && (
                   <>
                     <p>
@@ -306,7 +305,6 @@ const Booking = () => {
                   </>
                 )}
 
-                {/* Hiển thị thông tin kit nếu là tại nhà */}
                 {selectedBooking.show.appointmentType === 'HOME' &&
                   selectedBooking.kit && (
                     <>
@@ -352,7 +350,7 @@ const Booking = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
