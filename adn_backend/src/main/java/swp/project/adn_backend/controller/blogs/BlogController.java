@@ -26,10 +26,10 @@ public class BlogController {
         return ResponseEntity.ok(blogService.getAllBlogs());
     }
     @PostMapping(value = "/create-blog", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Blog> createBlog(@RequestBody @Valid BlogRequest blogRequest,
-                                          Authentication authentication,
-                                          @RequestPart(value = "file", required = false) MultipartFile file
-                                          ) {
+    public ResponseEntity<Blog> createBlog( @RequestPart("blogRequest") @Valid BlogRequest blogRequest,
+                                            Authentication authentication,
+                                            @RequestPart(value = "file", required = false) MultipartFile file
+    ) {
         return ResponseEntity.ok(blogService.createBlog(blogRequest, authentication,file));
     }
 

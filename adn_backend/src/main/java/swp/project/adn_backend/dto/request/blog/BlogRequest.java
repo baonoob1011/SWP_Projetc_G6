@@ -15,8 +15,6 @@ public class BlogRequest {
     private String title;
 
     String image;
-    @NotBlank(message = "Content must not be blank")
-    @Size(max = 1000, message = "Content must be at most 1000 characters")
     private String content;
     LocalDate createdAt;
 
@@ -36,11 +34,11 @@ public class BlogRequest {
         this.image = image;
     }
 
-    public @NotBlank(message = "Content must not be blank") @Size(max = 1000, message = "Content must be at most 1000 characters") String getContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(@NotBlank(message = "Content must not be blank") @Size(max = 1000, message = "Content must be at most 1000 characters") String content) {
+    public void setContent(String content) {
         this.content = content;
     }
 

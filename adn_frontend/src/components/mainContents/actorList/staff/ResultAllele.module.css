@@ -1,0 +1,372 @@
+.container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.formCard {
+  background: white;
+  border-radius: 25px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.formCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.formCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.title {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  color: #6c757d;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.patientInfo {
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  border: 2px solid #b3d9ff;
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.patientInfo::before {
+  content: '👤';
+  position: absolute;
+  top: -10px;
+  left: 15px;
+  background: white;
+  padding: 0 0.5rem;
+  font-size: 1.2rem;
+}
+
+.formGroup {
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.label {
+  display: block;
+  font-weight: 700;
+  color: #495057;
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.label::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 30px;
+  height: 3px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
+}
+
+.inputField {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border: 2px solid #e9ecef;
+  border-radius: 15px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  transform: translateY(-2px);
+}
+
+.inputField:disabled {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #6c757d;
+  cursor: not-allowed;
+  border-color: #dee2e6;
+}
+
+.selectField {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border: 2px solid #e9ecef;
+  border-radius: 15px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+  cursor: pointer;
+}
+
+.selectField:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  transform: translateY(-2px);
+}
+
+.alleleGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.alleleField {
+  position: relative;
+}
+
+.alleleField .inputField {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffe6e6 100%);
+  border-color: #ffb3b3;
+}
+
+.alleleField .inputField:focus {
+  border-color: #ff4757;
+  box-shadow: 0 0 0 4px rgba(255, 71, 87, 0.1);
+}
+
+.alleleField::before {
+  content: '🧬';
+  position: absolute;
+  top: -8px;
+  right: 15px;
+  background: white;
+  padding: 0 0.3rem;
+  font-size: 1rem;
+  z-index: 2;
+}
+
+.statusSelect {
+  background: linear-gradient(135deg, #f0fff4 0%, #e6ffe6 100%);
+  border-color: #b3ffb3;
+}
+
+.statusSelect:focus {
+  border-color: #52c41a;
+  box-shadow: 0 0 0 4px rgba(82, 196, 26, 0.1);
+}
+
+.locusSelect {
+  background: linear-gradient(135deg, #f0f5ff 0%, #e6efff 100%);
+  border-color: #b3d9ff;
+}
+
+.locusSelect:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 4px rgba(24, 144, 255, 0.1);
+}
+
+.submitButton {
+  width: 100%;
+  padding: 1.2rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.submitButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.submitButton:hover::before {
+  left: 100%;
+}
+
+.submitButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+}
+
+.submitButton:active {
+  transform: translateY(-1px);
+}
+
+.submitButton:disabled {
+  background: linear-gradient(135deg, #adb5bd 0%, #6c757d 100%);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 15px rgba(173, 181, 189, 0.3);
+}
+
+.submitButton:disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 15px rgba(173, 181, 189, 0.3);
+}
+
+.fieldIcon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #667eea;
+  pointer-events: none;
+}
+
+.form {
+  position: relative;
+}
+
+.progressBar {
+  position: absolute;
+  top: -2px;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.validationMessage {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #dc3545;
+  font-weight: 500;
+}
+
+.successMessage {
+  color: #28a745;
+}
+
+/* Floating Labels Effect */
+.floatingLabel {
+  position: relative;
+}
+
+.floatingLabel .inputField,
+.floatingLabel .selectField {
+  padding-top: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.floatingLabel .label {
+  position: absolute;
+  top: 1rem;
+  left: 1.5rem;
+  background: white;
+  padding: 0 0.3rem;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.floatingLabel .inputField:focus + .label,
+.floatingLabel .inputField:not(:placeholder-shown) + .label,
+.floatingLabel .selectField:focus + .label,
+.floatingLabel .selectField:not([value=""]) + .label {
+  top: -8px;
+  font-size: 0.75rem;
+  color: #667eea;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem auto;
+    padding: 0 0.5rem;
+  }
+  
+  .formCard {
+    padding: 2rem;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .alleleGroup {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .inputField,
+  .selectField {
+    padding: 0.8rem 1rem;
+  }
+  
+  .submitButton {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .formCard {
+    padding: 1.5rem;
+    border-radius: 15px;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .label {
+    font-size: 0.9rem;
+  }
+  
+  .inputField,
+  .selectField {
+    font-size: 0.9rem;
+  }
+} 

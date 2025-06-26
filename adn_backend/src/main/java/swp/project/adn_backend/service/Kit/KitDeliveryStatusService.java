@@ -83,7 +83,7 @@ public class KitDeliveryStatusService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         KitDeliveryStatus kitDeliveryStatus = appointment.getKitDeliveryStatus();
-        if(kitDeliveryStatus.getDeliveryStatus().equals(DeliveryStatus.DONE)){
+        if(kitDeliveryStatusRequest.getDeliveryStatus().equals(DeliveryStatus.DONE)){
             kitDeliveryStatus.setReturnDate(LocalDate.now());
         }
         if (kitDeliveryStatusRequest.getDeliveryStatus() != null) {
