@@ -37,7 +37,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
   const role = localStorage.getItem('role');
-  const subRole = localStorage.getItem('subRole');
 
   const navItems = [
     { label: 'Trang chủ', path: '/' },
@@ -339,7 +338,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     </MenuItem>
                   </Menu>
                 </>
-              ) : subRole === 'CASHIER' ? (
+              ) : role === 'CASHIER' ? (
                 <>
                   <Button
                     onClick={(e) => handleOpenMenu(e, 'CASHIER')}

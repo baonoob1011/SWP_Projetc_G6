@@ -47,9 +47,9 @@ import SignUpStaff from './components/mainContents/feature/SignUpForStaff';
 import SignUpStaffAtHome from './components/mainContents/actorList/staff/StaffAtHome';
 
 // Quản lý lịch & Slot
-import StaffSlot from './components/mainContents/actorList/staff/GetStaffShedule';
+import StaffSlot from './components/mainContents/actorList/staff/GetStaffSchedule';
 import SignUpStaffSchedule from './components/mainContents/actorList/staff/SignUpStaffSchedule';
-import AppointmentSchedule from './components/mainContents/actorList/staff/AppoimentSchedule';
+import AppointmentSchedule from './components/mainContents/actorList/staff/AppointmentSchedule';
 
 // Quản lý cuộc hẹn
 import GetSampleInfo from './components/mainContents/actorList/staff/GetSampleInfo';
@@ -59,7 +59,7 @@ import GetAppointmentByAdmin from './components/mainContents/actorList/admin/Get
 import Services from './components/mainContents/services/CreateServices';
 import ServiceList from './components/mainContents/services/GetService';
 import CivilServiceList from './components/mainContents/services/GetCivilService';
-import AdministrativeServiceList from './components/mainContents/services/GetAdmintrativeService';
+import AdministrativeServiceList from './components/mainContents/services/GetAdministrativeService';
 import NewPrice from './components/mainContents/services/NewPrice';
 import CreateResultAllele from './components/mainContents/actorList/staff/ResultAllele';
 
@@ -70,7 +70,7 @@ import BookingAtHome from './components/mainContents/services/BookingAtHome';
 import CheckAppointment from './components/mainContents/actorList/staff/CheckAppointment';
 import { CollectorSlots } from './components/mainContents/actorList/staff/CollectorSlot';
 import GetCollector from './components/mainContents/actorList/GetCollector';
-import SignUpCollector from './components/mainContents/actorList/staff/SignUpColector';
+import SignUpCollector from './components/mainContents/actorList/staff/SignUpCollector';
 import CreateBlog from './components/mainContents/services/CreateBlog';
 
 import PatientRequest from './components/mainContents/feature/PatientRequest';
@@ -82,6 +82,8 @@ import TotalUserChart from './components/mainContents/actorList/admin/GetDashBoa
 import GetAllResult from './components/mainContents/feature/GetAllResult';
 import GetCashier from './components/mainContents/actorList/admin/GetAllCashier';
 import SignUpCashier from './components/mainContents/actorList/staff/SignUpCashier';
+import GetAllBill from './components/mainContents/actorList/staff/GetAllBill';
+import CreateDiscount from './components/mainContents/actorList/admin/CreateDiscount';
 
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
@@ -239,6 +241,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <CreateKit />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/discount/:serviceId"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <CreateDiscount />
                   </ProtectedRoute>
                 }
               />
@@ -631,6 +641,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/manager-bill"
+              element={
+                <ProtectedRoute allowedRoles={['CASHIER']}>
+                  <GetAllBill />
+                </ProtectedRoute>
+              }
+            />
 
             {/* MANAGER */}
 
@@ -664,8 +682,8 @@ function App() {
             <Route
               path="/s-m-profile"
               element={
-                <ProtectedRoute allowedRoles={['STAFF', 'MANAGER']}>
-                  <NewProfile role={role as 'STAFF' | 'MANAGER'} />
+                <ProtectedRoute allowedRoles={['STAFF', 'MANAGER', 'CASHIER']}>
+                  <NewProfile role={role as 'STAFF' | 'MANAGER' | 'CASHIER'} />
                 </ProtectedRoute>
               }
             />

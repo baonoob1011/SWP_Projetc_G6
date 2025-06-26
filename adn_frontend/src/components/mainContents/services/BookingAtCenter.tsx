@@ -532,7 +532,6 @@ const BookingAtCenter = () => {
                 >
                   <MenuItem value="VN_PAY">VN PAY</MenuItem>
                   <MenuItem value="CASH">Tiền mặt</MenuItem>
-                  <MenuItem value="BANK_TRANSFER">Chuyển khoản</MenuItem>
                 </Select>
               </FormControl>
             </Box>
