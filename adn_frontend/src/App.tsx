@@ -25,6 +25,7 @@ import CreateLocation from './components/mainContents/feature/CreateLocation';
 import CreateRoom from './components/mainContents/feature/CreateRoom';
 import CreateKit from './components/mainContents/feature/CreateKit';
 import CreateLocus from './components/mainContents/feature/CreateLocus';
+import Rating from './components/page/Rating';
 
 // Dữ liệu người dùng (User / Staff / Manager / Collector / Admin)
 import DataList, {
@@ -533,6 +534,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <VNPayResult />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/feedback/:serviceId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <Rating />
                 </ProtectedRoute>
               }
             />

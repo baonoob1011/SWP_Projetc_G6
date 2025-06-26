@@ -500,10 +500,15 @@ const AdministrativeServiceList = () => {
                       </div>
 
                       <div className="text-center">
-                        <Button
+                       <Button
                           variant="contained"
                           component={NavLink}
+<<<<<<< Updated upstream:adn_frontend/src/components/mainContents/services/GetAdmintrativeService.tsx
                           to={`/order/at-center/${service.serviceRequest.serviceId}`}
+=======
+                          to={`/order-administrative/${service.serviceRequest.serviceId}`}
+                          state={{ price: service.priceListRequest }}
+>>>>>>> Stashed changes:adn_frontend/src/components/mainContents/services/GetAdministrativeService.tsx
                           sx={{
                             background:
                               'linear-gradient(45deg, #10b981 30%, #14b8a6 90%)',

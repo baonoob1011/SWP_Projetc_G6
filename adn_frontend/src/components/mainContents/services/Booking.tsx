@@ -203,6 +203,37 @@ const Booking = () => {
                         )}
                     </div>
                   </td>
+<<<<<<< Updated upstream
+=======
+                  <td className={styles.tableCell}>
+                    {item.show.appointmentStatus === 'COMPLETED' && (
+                      <>
+                        {/* "Xem kết quả" Button */}
+                        <button
+                          className={`${styles.actionButton} ${styles.viewButton}`}
+                          onClick={() =>
+                            navigate(`/result/${item.show.appointmentId}`) // Navigate to results page
+                          }
+                          title="Xem kết quả"
+                        >
+                          <FaEye />
+                        </button>
+
+                        {/* "Đánh giá" Button */}
+                        <button
+                          className={`${styles.actionButton} ${styles.viewButton}`}
+                          onClick={() =>
+                            navigate(`/feedback/${item.services[0].serviceId}`) // Navigate to the feedback page
+                          }
+                          title="Đánh giá"
+                        >
+                          Đánh giá
+                        </button>
+                      </>
+                    )}
+                  </td>
+
+>>>>>>> Stashed changes
                 </tr>
               ))}
             </tbody>
