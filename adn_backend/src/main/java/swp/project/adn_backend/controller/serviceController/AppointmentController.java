@@ -87,21 +87,23 @@ public class AppointmentController {
     public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentAtHomeToGetSample(Authentication authentication) {
         return ResponseEntity.ok(appointmentService.getAppointmentAtHomeToGetSample(authentication));
     }
-    //staff lay appoint de thanh toan tien mat
-    @GetMapping("/get-appointment-of-user-by-phone")
-    public ResponseEntity<List<AllAppointmentAtCenterUserResponse>> getAppointmentOfUser(@RequestBody UserRequest userRequest) {
-        return ResponseEntity.ok(appointmentService.getAppointmentOfUser(userRequest));
-    }//staff lay appoint de thanh toan tien mat
+//    //staff lay appoint de thanh toan tien mat
+//    @GetMapping("/get-appointment-of-user-by-phone")
+//    public ResponseEntity<List<AllAppointmentAtCenterUserResponse>> getAppointmentOfUser(@RequestBody UserRequest userRequest,
+//                                                                                         Authentication authentication) {
+//        return ResponseEntity.ok(appointmentService.getAppointmentOfUser(authentication,userRequest));
+//    }
 
-    @PutMapping("/get-payment-at-center")
-    public ResponseEntity<String> getAppointmentOfUser(@RequestParam long paymentId,
-                                                       @RequestParam long appointmentId) {
-        appointmentService.payAppointment(paymentId,appointmentId);
-        return ResponseEntity.ok("thanh toán bằng tiền mặt thành công");
-    }
+    //thanh toán tiền tại cơ sở
+//    @PutMapping("/get-payment-at-center")
+//    public ResponseEntity<String> getAppointmentOfUser(@RequestParam long paymentId,
+//                                                       @RequestParam long appointmentId) {
+//        appointmentService.payAppointment(paymentId,appointmentId);
+//        return ResponseEntity.ok("thanh toán bằng tiền mặt thành công");
+//    }
 
     @GetMapping("/get-appointment-at-home-by-staff")
-    public ResponseEntity<List<AppointmentAtHomeInfoDTO>> getAppointmentAtHome(Authentication authentication) {
+    public ResponseEntity<List<AllAppointmentAtHomeResponse>> getAppointmentAtHome(Authentication authentication) {
         return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
     }
 
@@ -112,8 +114,9 @@ public class AppointmentController {
     }
 
     @GetMapping("/get-all-result")
-    public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResult(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getAllAppointmentsResult(authentication));
+    public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResult(Authentication authentication,
+                                                                               @RequestParam long appointmentId) {
+        return ResponseEntity.ok(appointmentService.getAllAppointmentsResult(authentication,appointmentId));
     }
 
     //thêm staff vào appointment at home

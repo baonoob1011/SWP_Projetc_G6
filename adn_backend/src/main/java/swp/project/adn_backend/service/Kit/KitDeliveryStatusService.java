@@ -24,6 +24,7 @@ import swp.project.adn_backend.repository.KitDeliveryStatusRepository;
 import swp.project.adn_backend.repository.StaffRepository;
 import swp.project.adn_backend.repository.UserRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -53,13 +54,12 @@ public class KitDeliveryStatusService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.KitDeliveryStatusInfoDTO(" +
                 "s.kitDeliveryStatusId, s.deliveryStatus, s.createOrderDate, s.returnDate) " +
-                "FROM KitDeliveryStatus s WHERE s.users.userId = :userId AND " +
-                "s.deliveryStatus <> :excludedStatus";
+                "FROM KitDeliveryStatus s WHERE s.users.userId = :userId";
+//                "s.deliveryStatus <> :excludedStatus";
 
         TypedQuery<KitDeliveryStatusInfoDTO> query = entityManager.createQuery(jpql, KitDeliveryStatusInfoDTO.class);
         query.setParameter("userId", userId);
-        query.setParameter("excludedStatus", DeliveryStatus.DONE); // hoặc chuỗi nếu dùng Enum/String
-
+//        query.setParameter("excludedStatus", DeliveryStatus.DONE); // hoặc chuỗi nếu dùng Enum/String
         return query.getResultList();
     }
 
@@ -83,6 +83,9 @@ public class KitDeliveryStatusService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         KitDeliveryStatus kitDeliveryStatus = appointment.getKitDeliveryStatus();
+        if(kitDeliveryStatusRequest.getDeliveryStatus().equals(DeliveryStatus.DONE)){
+            kitDeliveryStatus.setReturnDate(LocalDate.now());
+        }
         if (kitDeliveryStatusRequest.getDeliveryStatus() != null) {
             kitDeliveryStatus.setDeliveryStatus(kitDeliveryStatusRequest.getDeliveryStatus());
         }

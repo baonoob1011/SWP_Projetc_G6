@@ -13,7 +13,7 @@ import banner_video from '../../image/Banner_video.mp4';
 import { FaPhoneAlt } from 'react-icons/fa';
 import { FaFacebookMessenger } from 'react-icons/fa';
 import { SiZalo } from 'react-icons/si';
-import Notification from './Notification'; 
+import Notification from './Notification';
 import {
   ClipboardCheck,
   HomeIcon,
@@ -28,13 +28,11 @@ import {
   Linkedin,
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import { Box } from '@mui/material';
-import { ArrowForwardRounded } from '@mui/icons-material';
 
 export default function Home() {
   // ref đúng type SwiperRef
 
-const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát việc mở/đóng modal
+  const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát việc mở/đóng modal
 
   const handleOpenModal = () => {
     setIsModalOpen(true); // Mở modal
@@ -43,7 +41,6 @@ const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát vi�
   const handleCloseModal = () => {
     setIsModalOpen(false); // Đóng modal
   };
-
 
   const swiperRef = useRef<SwiperRef | null>(null);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
@@ -55,6 +52,7 @@ const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát vi�
   const handleNext = () => {
     swiperRef.current?.swiper.slideNext();
   };
+
   const imageData = [
     {
       src: QuangAnh,
@@ -142,25 +140,21 @@ const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát vi�
       title: 'Xét nghiệm hành chính',
       desc: 'Xét nghiệm ADN phục vụ các thủ tục hành chính và pháp lý như đăng ký khai sinh, nhập quốc tịch, xác định huyết thống cho các thủ tục nhận con nuôi hoặc giải quyết các tranh chấp pháp lý trong gia đình. Kết quả có giá trị pháp lý và được công nhận bởi các cơ quan chức năng.',
       icon: <ClipboardCheck className="w-7 h-7 text-blue-600" />,
-      link: '/service/administrative',
     },
     {
       title: 'Xét nghiệm dân sự',
       desc: 'Dịch vụ xét nghiệm dân sự giúp xác định mối quan hệ huyết thống trong gia đình như cha – con, mẹ – con, anh – em. Phù hợp khi bạn cần sự rõ ràng trong mối quan hệ huyết thống vì lý do cá nhân, tâm lý, hay giải quyết các mâu thuẫn nội bộ trong gia đình mà không cần giá trị pháp lý.',
       icon: <Users2 className="w-7 h-7 text-emerald-600" />,
-      link: '/service/civil',
     },
     {
       title: 'Xét nghiệm tại nhà',
       desc: 'Chúng tôi cung cấp dịch vụ lấy mẫu tận nơi trên toàn quốc. Nhân viên y tế được đào tạo chuyên nghiệp sẽ đến tận nhà để lấy mẫu sinh phẩm như niêm mạc miệng, tóc, móng,… Dịch vụ giúp tiết kiệm thời gian, đảm bảo sự riêng tư, và vẫn giữ nguyên độ chính xác của kết quả.',
       icon: <HomeIcon className="w-7 h-7 text-purple-600" />,
-      link: '/service/at-home',
     },
     {
       title: 'Xét nghiệm tại cơ sở',
       desc: 'Khách hàng có thể đến trực tiếp các chi nhánh hoặc phòng xét nghiệm liên kết của GeneLink để thực hiện lấy mẫu ADN. Cơ sở vật chất hiện đại, nhân viên hỗ trợ tận tình và quy trình chuẩn giúp đảm bảo mẫu thu được chất lượng tốt nhất cho phân tích, nghiên cứu.',
       icon: <Hospital className="w-7 h-7 text-pink-600" />,
-      link: '/service/at-center',
     },
   ];
 
@@ -226,7 +220,6 @@ const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát vi�
     },
   ];
 
-  
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 relative overflow-x-hidden">
       {/* 3 icon lơ lửng, giữ nguyên shape */}
@@ -312,13 +305,13 @@ const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát vi�
               </span>
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-             {/* Nút Đặt lịch ngay để mở modal */}
-            <button
-              onClick={handleOpenModal} // Khi click vào sẽ mở modal
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-full shadow-lg hover:shadow-blue-500/30 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-            >
-              Đặt lịch ngay
-            </button>
+              {/* Nút Đặt lịch ngay để mở modal */}
+              <button
+                onClick={handleOpenModal} // Khi click vào sẽ mở modal
+                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-full shadow-lg hover:shadow-blue-500/30 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+              >
+                Đặt lịch ngay
+              </button>
               <button className="px-8 py-4 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white font-bold rounded-full border border-white/30 hover:border-white/50 transition-all duration-300">
                 Tìm hiểu thêm
               </button>
@@ -600,7 +593,7 @@ const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát vi�
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
-          {services.map(({ title, desc, icon, link }, i) => (
+          {services.map(({ title, desc, icon }, i) => (
             <div
               key={i}
               className="group relative p-8 rounded-3xl bg-white text-gray-800 shadow-lg hover:shadow-2xl transform  hover:-translate-y-2 transition-all duration-500 border border-gray-100 flex flex-col overflow-hidden"

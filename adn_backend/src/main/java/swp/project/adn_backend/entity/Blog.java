@@ -23,7 +23,8 @@ public class Blog {
     @Column(columnDefinition = "nvarchar(255)")
     String title;
 
-    @Column(columnDefinition = "nvarchar(255)")
+    @Lob
+    @Column(columnDefinition = "nvarchar(max)")
     String content;
 
     @Column(name = "image", columnDefinition = "nvarchar(max)")

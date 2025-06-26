@@ -27,7 +27,7 @@ const CreateLocation = () => {
     severity: 'success' as 'success' | 'error',
   });
 const [isLocation, setIsLocation] = useState<Location[]>([
-   
+
 
 ]
 )

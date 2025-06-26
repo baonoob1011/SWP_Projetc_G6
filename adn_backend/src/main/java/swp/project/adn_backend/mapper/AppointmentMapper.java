@@ -6,6 +6,7 @@ import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.*;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultAppointmentResponse;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultDetailAppointmentResponse;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultLocusAppointmentResponse;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.SampleAppointmentResponse;
 import swp.project.adn_backend.dto.response.appointment.updateAppointmentStatus.UpdateAppointmentStatusResponse;
 import swp.project.adn_backend.dto.response.sample.AppointmentSampleResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
@@ -35,4 +36,6 @@ public interface AppointmentMapper {
     ResultAppointmentResponse toResultAppointmentResponse(Result result);
     ResultLocusAppointmentResponse toResultLocusAppointmentResponse(ResultLocus resultLocus);
     ResultDetailAppointmentResponse toResultDetailAppointmentResponse(ResultDetail resultDetail);
+    List<SampleAppointmentResponse> toSampleAppointmentResponse(List<Sample> sample);
+    List<UserAppointmentResponse> toUserAppointmentResponseList(List<Users> users);
 }

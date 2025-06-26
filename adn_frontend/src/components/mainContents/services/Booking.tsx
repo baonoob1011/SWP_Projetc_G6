@@ -13,7 +13,7 @@ const Booking = () => {
   const [selectedBooking, setSelectedBooking] =
     useState<BookingHistoryItem | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const translateAppointmentType = (type: string) => {
     if (type === 'CENTER') return 'Lấy mẫu tại cơ sở';
     if (type === 'HOME') return 'Lấy mẫu tại nhà';
@@ -213,8 +213,8 @@ const Booking = () => {
                         {/* "Xem kết quả" Button */}
                         <button
                           className={`${styles.actionButton} ${styles.viewButton}`}
-                          onClick={() =>
-                            navigate(`/result/${item.show.appointmentId}`) // Navigate to results page
+                          onClick={
+                            () => navigate(`/result/${item.show.appointmentId}`) // Navigate to results page
                           }
                           title="Xem kết quả"
                         >
@@ -224,8 +224,11 @@ const Booking = () => {
                         {/* "Đánh giá" Button */}
                         <button
                           className={`${styles.actionButton} ${styles.viewButton}`}
-                          onClick={() =>
-                            navigate(`/feedback/${item.services[0].serviceId}`) // Navigate to the feedback page
+                          onClick={
+                            () =>
+                              navigate(
+                                `/feedback/${item.services[0].serviceId}`
+                              ) // Navigate to the feedback page
                           }
                           title="Đánh giá"
                         >
@@ -234,7 +237,6 @@ const Booking = () => {
                       </>
                     )}
                   </td>
-
                 </tr>
               ))}
             </tbody>
@@ -244,7 +246,7 @@ const Booking = () => {
 
       {/* {showModal && selectedBooking && (
         <div
-          className="modal d-block"
+className="modal d-block"
           tabIndex={-1}
           role="dialog"
           style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
@@ -318,7 +320,7 @@ const Booking = () => {
                         <strong>Trạng thái:</strong>{' '}
                         {selectedBooking.kit.kitStatus}
                       </p>
-                      <p>
+<p>
                         <strong>Ngày giao:</strong>{' '}
                         {selectedBooking.kit.deliveryDate}
                       </p>

@@ -47,10 +47,17 @@ public class SecurityConfig {
             "/api/price/get-all-price/**",
             "/api/jasperpdf/**",
             "/api/blog/get-all-blog",
+            "/api/discount/get-discount-by-service",
+            "/api/services/get-service"
+
+    };
+    private final String[] CASHIER_ENDPOINTS = {
+            "/api/cashier/**",
     };
 
     private final String[] USER_ENDPOINTS = {
             "/api/appointment/book-appointment/**",
+            "/api/services/get-service-to-feedback/**",
             "/api/appointment/cancel-appointment/**",
             "/api/appointment/get-appointment/**",
             "/api/appointment/get-all-result/**",
@@ -74,6 +81,7 @@ public class SecurityConfig {
             "/api/staff/update-profile",
             "/api/kit/get-all-kit-staff",
             "/api/kit/update-kit/**",
+            "/api/blog/**",
             "/api/appointment/confirm-appointment-at-center/**",
             "/api/appointment/confirm-appointment-at-home/**",
             "/api/appointment/get-appointment-by-slot/**",
@@ -105,7 +113,8 @@ public class SecurityConfig {
             "/api/payment/**",
             "/api/appointment/**",
             "/api/kit/**",
-            "/api/staff/get-all-staff"
+            "/api/staff/get-all-staff",
+            "/api/discount/create-discount-service",
     };
 
     private final String[] ADMIN_ENDPOINTS = {
@@ -126,7 +135,8 @@ public class SecurityConfig {
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
 
                         // Quyền USER
-                        .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN", "MANAGER")
+                        .requestMatchers(CASHIER_ENDPOINTS).hasAnyRole("CASHIER", "ADMIN")
 
                         // Quyền STAFF
                         .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")

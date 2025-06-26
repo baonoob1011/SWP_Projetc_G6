@@ -48,12 +48,12 @@ import SignUpStaff from './components/mainContents/feature/SignUpForStaff';
 import SignUpStaffAtHome from './components/mainContents/actorList/staff/StaffAtHome';
 
 // Quản lý lịch & Slot
-import StaffSlot from './components/mainContents/actorList/staff/GetStaffShedule';
+import StaffSlot from './components/mainContents/actorList/staff/GetStaffSchedule';
 import SignUpStaffSchedule from './components/mainContents/actorList/staff/SignUpStaffSchedule';
-import AppointmentSchedule from './components/mainContents/actorList/staff/AppoimentSchedule';
+
+import AppointmentSchedule from './components/mainContents/actorList/staff/AppointmentSchedule';
 
 // Quản lý cuộc hẹn
-
 import GetSampleInfo from './components/mainContents/actorList/staff/GetSampleInfo';
 import GetAppointmentByAdmin from './components/mainContents/actorList/admin/GetAppointment';
 
@@ -61,7 +61,7 @@ import GetAppointmentByAdmin from './components/mainContents/actorList/admin/Get
 import Services from './components/mainContents/services/CreateServices';
 import ServiceList from './components/mainContents/services/GetService';
 import CivilServiceList from './components/mainContents/services/GetCivilService';
-import AdministrativeServiceList from './components/mainContents/services/GetAdmintrativeService';
+import AdministrativeServiceList from './components/mainContents/services/GetAdministrativeService';
 import NewPrice from './components/mainContents/services/NewPrice';
 import CreateResultAllele from './components/mainContents/actorList/staff/ResultAllele';
 
@@ -72,14 +72,22 @@ import BookingAtHome from './components/mainContents/services/BookingAtHome';
 import CheckAppointment from './components/mainContents/actorList/staff/CheckAppointment';
 import { CollectorSlots } from './components/mainContents/actorList/staff/CollectorSlot';
 import GetCollector from './components/mainContents/actorList/GetCollector';
-import SignUpCollector from './components/mainContents/actorList/staff/SignUpColector';
+import SignUpCollector from './components/mainContents/actorList/staff/SignUpCollector';
 import CreateBlog from './components/mainContents/services/CreateBlog';
 
 import PatientRequest from './components/mainContents/feature/PatientRequest';
 
 // Thanh toán
-import VNPayResult from './components/mainContents/services/VNPAY';
+import VNPayResult from './components/mainContents/feature/VNPAY';
 import GetStaffAtHome from './components/mainContents/actorList/staff/GetStaffAtHome';
+import GetAllResult from './components/mainContents/feature/GetAllResult';
+import GetCashier from './components/mainContents/actorList/admin/GetAllCashier';
+import SignUpCashier from './components/mainContents/actorList/staff/SignUpCashier';
+import GetAllBill from './components/mainContents/actorList/staff/GetAllBill';
+import CreateDiscount from './components/mainContents/actorList/admin/CreateDiscount';
+import SelectedCivilService from './components/mainContents/services/SelectedCivilService';
+import SelectedAdministrativeService from './components/mainContents/services/SelectedAdministrativeService';
+import { DashBoard } from './components/mainContents/actorList/admin/dashboard/Dashboard';
 
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
@@ -111,7 +119,13 @@ function App() {
     '/manager/staff',
     '/manager/user',
     '/manager/createKit',
+    '/manager/location',
+    '/manager/room',
+    '/manager/create-blog',
+    '/schedule',
     'slot/:staffId',
+    '/manager/create-locus',
+    '/newPrice/:serviceId',
     '/manager',
   ].some((path) => matchPath(path, location.pathname));
 
@@ -184,7 +198,16 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route
+                  path="cashier"
+                  element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <GetCashier />
+                    </ProtectedRoute>
+                  }
+                />
               </Route>
+
               <Route
                 path="/signup-manager"
                 element={
@@ -226,6 +249,14 @@ function App() {
                 }
               />
               <Route
+                path="/discount/:serviceId"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <CreateDiscount />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/services"
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
@@ -233,7 +264,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-               <Route
+              <Route
                 path="/create-blog"
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
@@ -278,6 +309,22 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <SignUpCollector />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup-cashier"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <SignUpCashier />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <DashBoard />
                   </ProtectedRoute>
                 }
               />
@@ -439,10 +486,50 @@ function App() {
                 />
               </Route>
               <Route
+                path="manager/location"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateLocation />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="manager/room"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateRoom />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/schedule"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <SignUpStaffSchedule />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="manager/services"
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
                     <ServiceList />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/newPrice/:serviceId"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <NewPrice />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="manager/create-blog"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateBlog />
                   </ProtectedRoute>
                 }
               />
@@ -467,6 +554,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
                     <SignUpStaffSchedule />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="manager/create-locus"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateLocus />
                   </ProtectedRoute>
                 }
               />
@@ -527,6 +622,14 @@ function App() {
               }
             />
             <Route
+              path="/result/:appointmentId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <GetAllResult />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="vnpay-payment/vnpay-payment"
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
@@ -547,6 +650,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['USER', 'MANAGER', 'STAFF']}>
                   <NewUserProfile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manager-bill"
+              element={
+                <ProtectedRoute allowedRoles={['CASHIER']}>
+                  <GetAllBill />
                 </ProtectedRoute>
               }
             />
@@ -583,8 +694,8 @@ function App() {
             <Route
               path="/s-m-profile"
               element={
-                <ProtectedRoute allowedRoles={['STAFF', 'MANAGER']}>
-                  <NewProfile role={role as 'STAFF' | 'MANAGER'} />
+                <ProtectedRoute allowedRoles={['STAFF', 'MANAGER', 'CASHIER']}>
+                  <NewProfile role={role as 'STAFF' | 'MANAGER' | 'CASHIER'} />
                 </ProtectedRoute>
               }
             />
@@ -596,6 +707,14 @@ function App() {
             <Route
               path="/service/administrative"
               element={<AdministrativeServiceList />}
+            />
+            <Route
+              path="/order-civil/:serviceId"
+              element={<SelectedCivilService />}
+            />
+            <Route
+              path="/order-administrative/:serviceId"
+              element={<SelectedAdministrativeService />}
             />
             <Route path="/m-getAllService" element={<ServiceList />} />
           </Routes>

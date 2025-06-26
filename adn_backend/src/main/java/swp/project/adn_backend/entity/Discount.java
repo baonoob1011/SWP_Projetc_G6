@@ -42,4 +42,60 @@ public class Discount {
     })
     @JoinColumn(name = "service_id", nullable = false)
     ServiceTest service;
+
+    public long getDiscountId() {
+        return discountId;
+    }
+
+    public void setDiscountId(long discountId) {
+        this.discountId = discountId;
+    }
+
+    public String getDiscountName() {
+        return discountName;
+    }
+
+    public void setDiscountName(String discountName) {
+        this.discountName = discountName;
+    }
+
+    public double getDiscountValue() {
+        return discountValue;
+    }
+
+    public void setDiscountValue(double discountValue) {
+        this.discountValue = discountValue;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public ServiceTest getService() {
+        return service;
+    }
+
+    public void setService(ServiceTest service) {
+        this.service = service;
+    }
 }

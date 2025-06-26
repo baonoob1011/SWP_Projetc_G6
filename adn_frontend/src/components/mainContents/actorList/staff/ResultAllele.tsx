@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import styles from './ResultAllele.module.css';
 
 type Locus = {
   allele1: string;
@@ -89,84 +90,94 @@ const CreateResultAllele = () => {
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: 600 }}>
-      <h4 className="mb-4">Ghi kết quả allele</h4>
-
-      {patientName && (
-        <div className="mb-3">
-          <label className="form-label">Tên bệnh nhân</label>
-          <input
-            type="text"
-            className="form-control"
-            value={patientName}
-            disabled
-          />
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Giá trị Allele</label>
-          <input
-            type="text"
-            className="form-control"
-            value={allele1}
-            onChange={(e) => setAllele1(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Giá trị Allele</label>
-          <input
-            type="text"
-            className="form-control"
-            value={allele2}
-            onChange={(e) => setAllele2(e.target.value)}
-            required
-          />
+    <div className={styles.container}>
+      <div className={styles.formCard}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>🧬 Ghi Kết Quả Allele</h1>
+          <p className={styles.subtitle}>Nhập thông tin allele cho mẫu DNA</p>
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Trạng thái Allele</label>
-          <select
-            className="form-select"
-            value={alleleStatus}
-            onChange={(e) => setAlleleStatus(e.target.value)}
-            required
+        {patientName && (
+          <div className={styles.patientInfo}>
+            <label className={styles.label}>Tên bệnh nhân</label>
+            <input
+              type="text"
+              className={styles.inputField}
+              value={patientName}
+              disabled
+            />
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.alleleGroup}>
+            <div className={`${styles.formGroup} ${styles.alleleField}`}>
+              <label className={styles.label}>Allele 1</label>
+              <input
+                type="text"
+                className={styles.inputField}
+                value={allele1}
+                onChange={(e) => setAllele1(e.target.value)}
+                placeholder="Nhập giá trị allele 1"
+                required
+              />
+            </div>
+            
+            <div className={`${styles.formGroup} ${styles.alleleField}`}>
+              <label className={styles.label}>Allele 2</label>
+              <input
+                type="text"
+                className={styles.inputField}
+                value={allele2}
+                onChange={(e) => setAllele2(e.target.value)}
+                placeholder="Nhập giá trị allele 2"
+                required
+              />
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Trạng thái Allele</label>
+            <select
+              className={`${styles.selectField} ${styles.statusSelect}`}
+              value={alleleStatus}
+              onChange={(e) => setAlleleStatus(e.target.value)}
+              required
+            >
+              <option value="ENTERED">✅ Đã nhập</option>
+              <option value="NOT_ENTERED">❌ Chưa nhập</option>
+              <option value="SUSPECT">🤔 Nghi ngờ</option>
+              <option value="VALID">✔️ Hợp lệ</option>
+              <option value="DONE">🎉 Hoàn thành</option>
+            </select>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Chọn Locus</label>
+            <select
+              className={`${styles.selectField} ${styles.locusSelect}`}
+              value={selectedLocus}
+              onChange={(e) => setSelectedLocus(e.target.value)}
+              required
+            >
+              <option value="">🔬 -- Chọn locus --</option>
+              {locusList.map((locus) => (
+                <option key={locus.locusId} value={locus.locusId}>
+                  📍 {locus.locusName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={!selectedLocus}
           >
-            <option value="ENTERED">Đã nhập</option>
-            <option value="NOT_ENTERED">Chưa nhập</option>
-            <option value="SUSPECT">Nghi ngờ</option>
-            <option value="VALID">Hợp lệ</option>
-            <option value="DONE">Hoàn thành</option>
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <label className="form-label">Chọn Locus</label>
-          <select
-            className="form-select"
-            value={selectedLocus}
-            onChange={(e) => setSelectedLocus(e.target.value)}
-            required
-          >
-            <option value="">-- Chọn locus --</option>
-            {locusList.map((locus) => (
-              <option key={locus.locusId} value={locus.locusId}>
-                {locus.locusName}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          className="btn btn-primary w-100 fw-bold"
-          disabled={!selectedLocus}
-        >
-          Ghi kết quả
-        </button>
-      </form>
+            🧬 Ghi kết quả
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

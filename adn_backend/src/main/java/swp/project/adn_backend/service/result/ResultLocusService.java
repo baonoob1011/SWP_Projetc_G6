@@ -104,7 +104,9 @@ public class ResultLocusService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
-
+        if(appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)){
+            throw new RuntimeException("Đơn đăng kí này đã có kết quả");
+        }
         Map<String, List<Double>> allele1Map = new HashMap<>();
         Map<String, List<Double>> allele2Map = new HashMap<>();
         Map<String, Long> locusIdMap = new HashMap<>();
@@ -178,6 +180,7 @@ public class ResultLocusService {
         result.setResultDate(LocalDate.now());
         result.setResultStatus(ResultStatus.COMPLETED);
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
+        appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
         resultRepository.save(result);
 
         resultDetail.setResult(result);
@@ -196,30 +199,33 @@ public class ResultLocusService {
     }
 
     // Tính PI chuẩn dựa trên quan hệ cha-con
+    // Tính PI chuẩn dựa trên quan hệ cha-con
     private double calculatePI(double father1, double father2, double child1, double child2) {
         if (Double.compare(child1, child2) == 0) {
+            // Con đồng hợp tử (ví dụ: 11 - 11)
             if (father1 == child1 || father2 == child1) {
                 double freq = lookupFrequency(child1);
                 return 1.0 / freq;
             }
         } else {
+            // Con dị hợp tử (ví dụ: 11 - 12)
             boolean hasChild1 = father1 == child1 || father2 == child1;
             boolean hasChild2 = father1 == child2 || father2 == child2;
 
-            if (hasChild1 && !hasChild2) {
-                double freq = lookupFrequency(child1);
-                return 1.0 / (2 * freq);
-            } else if (hasChild2 && !hasChild1) {
-                double freq = lookupFrequency(child2);
-                return 1.0 / (2 * freq);
-            } else if (hasChild1 && hasChild2) {
+            if (hasChild1 && hasChild2) {
+                // Cả 2 allele của con đều có trong cha
                 double freq1 = lookupFrequency(child1);
                 double freq2 = lookupFrequency(child2);
                 return 1.0 / (freq1 + freq2);
+            } else if (hasChild1 ^ hasChild2) {
+                // Chỉ 1 allele trùng cha
+                double freq = hasChild1 ? lookupFrequency(child1) : lookupFrequency(child2);
+                return 1.0 / (2 * freq); // ✅ Đây là phần đã sửa chuẩn
             }
         }
-        return 0; // Không phù hợp quan hệ cha-con
+        return 0.0; // Không có allele nào trùng
     }
+
 
 
     private double lookupFrequency(double allele) {

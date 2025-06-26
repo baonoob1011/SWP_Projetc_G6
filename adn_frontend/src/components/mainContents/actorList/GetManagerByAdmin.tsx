@@ -32,7 +32,6 @@ type Staff = {
 
 function GetManagerByAdmin() {
   const [account, setAccount] = useState<Staff[]>([]);
-  const [isAdmin, setIsAdmin] = useState(true);
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -57,10 +56,6 @@ function GetManagerByAdmin() {
       setError('Không thể lấy dữ liệu');
     }
   };
-
-  useEffect(() => {
-    setIsAdmin(localStorage.getItem('role') === 'ADMIN');
-  }, []);
 
   useEffect(() => {
     fetchData();
@@ -112,10 +107,6 @@ function GetManagerByAdmin() {
       setError('Mất kết nối với hệ thống');
     }
   };
-
-  if (!isAdmin) {
-    return;
-  }
 
   const searchByphone = account.filter((user) => user.phone.includes(search));
   return (

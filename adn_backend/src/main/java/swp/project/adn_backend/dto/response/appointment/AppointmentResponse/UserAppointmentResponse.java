@@ -22,8 +22,6 @@ public class UserAppointmentResponse {
 
     }
 
-
-
     public long getUserId() {
         return userId;
     }

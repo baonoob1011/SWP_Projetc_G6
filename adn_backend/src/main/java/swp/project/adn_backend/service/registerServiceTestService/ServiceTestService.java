@@ -2,21 +2,23 @@ package swp.project.adn_backend.service.registerServiceTestService;
 
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.ServiceFeedbackInfoDTO;
 import swp.project.adn_backend.dto.request.serviceRequest.PriceListRequest;
 import swp.project.adn_backend.dto.request.serviceRequest.ServiceRequest;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateServiceTestRequest;
 import swp.project.adn_backend.dto.response.serviceResponse.*;
 import swp.project.adn_backend.entity.*;
-import swp.project.adn_backend.enums.ErrorCodeUser;
-import swp.project.adn_backend.enums.SampleCollectionMethod;
-import swp.project.adn_backend.enums.ServiceType;
+import swp.project.adn_backend.enums.*;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.*;
 import swp.project.adn_backend.repository.*;
@@ -236,6 +238,16 @@ public class ServiceTestService {
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
         serviceTestRepository.delete(serviceTest);
+    }
+
+    public List<ServiceFeedbackInfoDTO> getServiceById(long serviceId) {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.ServiceFeedbackInfoDTO(" +
+                "s.serviceId, s.serviceName, s.description, s.serviceType, s.image) " +
+                "FROM ServiceTest s " +
+                "WHERE s.serviceId = :serviceId";
+        TypedQuery<ServiceFeedbackInfoDTO> query = entityManager.createQuery(jpql, ServiceFeedbackInfoDTO.class);
+        query.setParameter("serviceId", serviceId);
+        return query.getResultList();
     }
 
     @Transactional

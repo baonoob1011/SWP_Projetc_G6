@@ -10,7 +10,18 @@ public class AllAppointmentAtHomeResponse {
     private KitAppointmentResponse kitAppointmentResponse;
     private List<PriceAppointmentResponse> priceAppointmentResponse;
     private List<PaymentAppointmentResponse> paymentAppointmentResponses;
+
+    private UserAppointmentResponse userAppointmentResponses;
+
     public AllAppointmentAtHomeResponse() {
+    }
+
+    public UserAppointmentResponse getUserAppointmentResponses() {
+        return userAppointmentResponses;
+    }
+
+    public void setUserAppointmentResponses(UserAppointmentResponse userAppointmentResponses) {
+        this.userAppointmentResponses = userAppointmentResponses;
     }
 
     public AllAppointmentAtHomeResponse(List<PatientAppointmentResponse> patientAppointmentResponse, List<UserAppointmentResponse> userAppointmentResponse, ShowAppointmentResponse showAppointmentResponse, List<ServiceAppointmentResponse> serviceAppointmentResponses, KitAppointmentResponse kitAppointmentResponse, List<PriceAppointmentResponse> priceAppointmentResponse, List<PaymentAppointmentResponse> paymentAppointmentResponses) {

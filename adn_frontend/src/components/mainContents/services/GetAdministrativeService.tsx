@@ -60,8 +60,7 @@ const AdministrativeServiceList = () => {
     const fetchServices = async () => {
       try {
         const response = await fetch(
-          'http://localhost:8080/api/services/get-all-administrative-service',
-          { method: 'GET' }
+          'http://localhost:8080/api/services/get-all-administrative-service'
         );
         if (!response.ok) {
           setError('Không thể lấy dữ liệu dịch vụ');
@@ -500,15 +499,11 @@ const AdministrativeServiceList = () => {
                       </div>
 
                       <div className="text-center">
-                       <Button
+                        <Button
                           variant="contained"
                           component={NavLink}
-<<<<<<< Updated upstream:adn_frontend/src/components/mainContents/services/GetAdmintrativeService.tsx
-                          to={`/order/at-center/${service.serviceRequest.serviceId}`}
-=======
                           to={`/order-administrative/${service.serviceRequest.serviceId}`}
                           state={{ price: service.priceListRequest }}
->>>>>>> Stashed changes:adn_frontend/src/components/mainContents/services/GetAdministrativeService.tsx
                           sx={{
                             background:
                               'linear-gradient(45deg, #10b981 30%, #14b8a6 90%)',
@@ -530,7 +525,7 @@ const AdministrativeServiceList = () => {
                           }}
                         >
                           <Plus size={20} />
-                          Đặt lịch tại cơ sở
+                          Đặt lịch
                         </Button>
                       </div>
                     </div>

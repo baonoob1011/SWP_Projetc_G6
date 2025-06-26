@@ -436,7 +436,6 @@ const CivilServiceList = () => {
                         </div>
                       </div>
                       <div className="d-flex justify-content-between gap-3">
-
                         <div className="flex-fill text-center">
                           <Button
                             variant="contained"

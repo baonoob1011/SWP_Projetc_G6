@@ -13,17 +13,68 @@ import {
   List,
   ShoppingBag,
   BaggageClaim,
+  Newspaper,
 } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
-import { ArrowBack, RoomService } from '@mui/icons-material';
+
+import {
+  ArrowBack,
+  LocationCity,
+  Room,
+  RoomService,
+} from '@mui/icons-material';
+import { toast } from 'react-toastify';
+
+//import { ArrowBack, RoomService } from '@mui/icons-material';
 
 const ManagerPage = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeItem, setActiveItem] = useState('dashboard');
   const [notifications] = useState(0);
   const [fullName, setFullName] = useState<string>('');
+  const navigate = useNavigate();
+  const TimeLeftLogout = (exp: number) => {
+    const now = Date.now() / 1000;
+    const timeleft = (exp - now) * 1000;
+    if (timeleft > 0) {
+      setTimeout(() => {
+        toast.error('Hết thời gian đăng nhập');
+        localStorage.clear();
+        setFullName('');
+        navigate('/login');
+      }, timeleft);
+    }
+  };
 
+  function getTokenExp(): number | null {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    const payload = token.split('.')[1];
+    if (!payload) return null;
+
+    try {
+      const decoded = JSON.parse(atob(payload));
+      return decoded.exp || null;
+    } catch (err) {
+      console.error('Failed to decode token:', err);
+      return null;
+    }
+  }
+  useEffect(() => {
+    const storeName = localStorage.getItem('fullName') || '';
+    setFullName(storeName);
+
+    const exp = getTokenExp();
+    if (exp) {
+      TimeLeftLogout(exp);
+    }
+  }, []);
+  useEffect(() => {
+    const storeName = localStorage.getItem('fullName') || '';
+    setFullName(storeName);
+  }, []);
   useEffect(() => {
     const storeName = localStorage.getItem('fullName') || '';
     setFullName(storeName);
@@ -33,10 +84,28 @@ const ManagerPage = () => {
     { id: 'dashboard', icon: ArrowBack, label: 'Home', path: '' },
     { id: 'data', icon: List, label: 'Danh sách', path: 'manager/data' },
     {
+      id: 'location',
+      icon: LocationCity,
+      label: 'Tạo địa chỉ mới',
+      path: 'manager/location',
+    },
+    {
+      id: 'room',
+      icon: Room,
+      label: 'Tạo phòng',
+      path: 'manager/room',
+    },
+    {
       id: 'services',
       icon: ShoppingBag,
       label: 'Tất cả dịch vụ',
       path: 'manager/services',
+    },
+    {
+      id: 'blog',
+      icon: Newspaper,
+      label: 'Tạo Blog/Tin tức',
+      path: 'manager/create-blog',
     },
     {
       id: 'create-services',
@@ -49,6 +118,12 @@ const ManagerPage = () => {
       icon: BaggageClaim,
       label: 'Tạo kit',
       path: 'manager/createKit',
+    },
+    {
+      id: 'createLocus',
+      icon: ShoppingBag,
+      label: 'Tạo locus',
+      path: 'manager/create-locus',
     },
   ];
 

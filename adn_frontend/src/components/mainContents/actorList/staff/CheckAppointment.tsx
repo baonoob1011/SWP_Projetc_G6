@@ -1,20 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import {
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Typography,
-  Paper,
-  TextField,
-  Button,
-  Box,
-} from '@mui/material';
 import { toast } from 'react-toastify';
 import { NavLink, useParams } from 'react-router-dom';
 import { Check } from '@mui/icons-material';
+import styles from './CheckAppointment.module.css';
 
 const CheckAppointment = () => {
   const { slotId } = useParams();
@@ -95,124 +84,117 @@ const CheckAppointment = () => {
   const role = localStorage.getItem('role');
   if (role !== 'STAFF') {
     return (
-      <Typography variant="h6" color="error">
-        Bạn không có quyền truy cập trang này.
-      </Typography>
+      <div className={styles.errorContainer}>
+        <h2 className={styles.errorTitle}>Bạn không có quyền truy cập trang này.</h2>
+      </div>
     );
   }
 
   return (
-    <Paper
-      style={{
-        padding: '20px',
-        maxWidth: '1000px',
-        margin: 'auto',
-        marginTop: '40px',
-      }}
-    >
-      {loading ? (
-        <Typography>Đang tải dữ liệu...</Typography>
-      ) : appointments.length > 0 ? (
-        <Table style={{ marginTop: '20px' }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Họ tên</TableCell>
-              <TableCell>Ngày sinh</TableCell>
-              <TableCell>Giới tính</TableCell>
-              <TableCell>Quan hệ</TableCell>
-              <TableCell>Ngày hẹn</TableCell>
-              <TableCell>Ghi chú</TableCell>
-              <TableCell>Vật xét nghiệm</TableCell>
-              <TableCell>Hành động</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {appointments.map((appointmentItem) =>
-              appointmentItem.patientAppointmentResponse.map((patient: any) => {
-                const appointmentId =
-                  appointmentItem.showAppointmentResponse?.appointmentId;
-                const serviceId =
-                  appointmentItem.serviceAppointmentResponses?.[0]?.serviceId;
-                const key = `${appointmentId}_${patient.patientId}`;
-                const isPaid =
-                  appointmentItem.showAppointmentResponse?.note ===
-                  'Đã thanh toán';
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Kiểm tra lịch hẹn - Slot {slotId}</h1>
+      </div>
 
-                return (
-                  <TableRow key={key}>
-                    <TableCell>{patient.fullName}</TableCell>
-                    <TableCell>{patient.dateOfBirth}</TableCell>
-                    <TableCell>{patient.gender}</TableCell>
-                    <TableCell>{patient.relationship}</TableCell>
-                    <TableCell>
-                      {appointmentItem.showAppointmentResponse?.appointmentDate}
-                    </TableCell>
-                    <TableCell>
-                      {appointmentItem.showAppointmentResponse?.note}
-                    </TableCell>
-                    <TableCell>
-                      {isPaid ? (
-                        <Box display="flex" alignItems="center" gap={1}>
-                          <TextField
-                            size="small"
-                            placeholder="Nhập vật mẫu"
-                            value={sampleType[key] || ''}
-                            onChange={(e) =>
-                              setSampleType((prev) => ({
-                                ...prev,
-                                [key]: e.target.value,
-                              }))
-                            }
-                            style={{ minWidth: 150 }}
-                          />
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                            onClick={() =>
-                              handleSendSample(
-                                patient.patientId,
-                                serviceId,
-                                appointmentId,
-                                key
-                              )
-                            }
-                            style={{
-                              minWidth: 36,
-                              height: 36,
-                              padding: 0,
-                              minHeight: 36,
-                            }}
-                          >
-                            <Check fontSize="small" />
-                          </Button>
-                          <Button
-                            component={NavLink}
-                            to={`/s-page/get-appointment/${appointmentId}`}
-                            variant="outlined"
-                            size="small"
-                          >
-                            Xem thông tin
-                          </Button>
-                        </Box>
-                      ) : (
-                        <Typography color="textSecondary">
-                          Chưa thanh toán
-                        </Typography>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
+      {loading ? (
+        <div className={styles.loadingContainer}>
+          <span className={styles.loadingText}>Đang tải dữ liệu...</span>
+        </div>
+      ) : appointments.length > 0 ? (
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead className={styles.tableHeader}>
+              <tr>
+                <th className={styles.tableHeaderCell}>Họ tên</th>
+                <th className={styles.tableHeaderCell}>Ngày sinh</th>
+                <th className={styles.tableHeaderCell}>Giới tính</th>
+                <th className={styles.tableHeaderCell}>Quan hệ</th>
+                <th className={styles.tableHeaderCell}>Ngày hẹn</th>
+                <th className={styles.tableHeaderCell}>Ghi chú</th>
+                <th className={styles.tableHeaderCell}>Vật xét nghiệm</th>
+              </tr>
+            </thead>
+            <tbody>
+              {appointments.map((appointmentItem) =>
+                appointmentItem.patientAppointmentResponse.map((patient: any) => {
+                  const appointmentId =
+                    appointmentItem.showAppointmentResponse?.appointmentId;
+                  const serviceId =
+                    appointmentItem.serviceAppointmentResponses?.[0]?.serviceId;
+                  const key = `${appointmentId}_${patient.patientId}`;
+                  const isPaid =
+                    appointmentItem.showAppointmentResponse?.note ===
+                    'Đã thanh toán';
+
+                  return (
+                    <tr key={key} className={styles.tableRow}>
+                      <td className={styles.tableCell}>{patient.fullName}</td>
+                      <td className={styles.tableCell}>{patient.dateOfBirth}</td>
+                      <td className={styles.tableCell}>{patient.gender}</td>
+                      <td className={styles.tableCell}>{patient.relationship}</td>
+                      <td className={styles.tableCell}>
+                        {appointmentItem.showAppointmentResponse?.appointmentDate}
+                      </td>
+                      <td className={`${styles.tableCell} ${styles.noteCell}`}>
+                        <span className={isPaid ? styles.paidStatus : styles.unpaidStatus}>
+                          {appointmentItem.showAppointmentResponse?.note}
+                        </span>
+                      </td>
+                      <td className={styles.tableCell}>
+                        {isPaid ? (
+                          <div className={styles.actionsContainer}>
+                            <input
+                              type="text"
+                              className={styles.sampleInput}
+                              placeholder="Nhập vật mẫu"
+                              value={sampleType[key] || ''}
+                              onChange={(e) =>
+                                setSampleType((prev) => ({
+                                  ...prev,
+                                  [key]: e.target.value,
+                                }))
+                              }
+                            />
+                            <button
+                              className={styles.submitBtn}
+                              onClick={() =>
+                                handleSendSample(
+                                  patient.patientId,
+                                  serviceId,
+                                  appointmentId,
+                                  key
+                                )
+                              }
+                            >
+                              <Check fontSize="small" />
+                            </button>
+                            <NavLink
+                              to={`/s-page/get-appointment/${appointmentId}`}
+                              className={styles.viewBtn}
+                            >
+                              Xem thông tin
+                            </NavLink>
+                          </div>
+                        ) : (
+                          <span className={styles.unpaidStatus}>
+                            Chưa thanh toán
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        <Typography style={{ marginTop: '20px' }}>
-          Không có lịch hẹn nào.
-        </Typography>
+        <div className={styles.emptyState}>
+          <h3>Không có lịch hẹn nào</h3>
+          <p>Slot này hiện tại chưa có lịch hẹn nào được đặt.</p>
+        </div>
       )}
-    </Paper>
+    </div>
   );
 };
 
