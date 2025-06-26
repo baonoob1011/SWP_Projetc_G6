@@ -60,13 +60,7 @@ const AdministrativeServiceList = () => {
     const fetchServices = async () => {
       try {
         const response = await fetch(
-          'http://localhost:8080/api/services/get-all-administrative-service',
-          {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-          }
+          'http://localhost:8080/api/services/get-all-administrative-service'
         );
         if (!response.ok) {
           setError('Không thể lấy dữ liệu dịch vụ');
@@ -508,7 +502,7 @@ const AdministrativeServiceList = () => {
                         <Button
                           variant="contained"
                           component={NavLink}
-                          to={`/order/at-center/${service.serviceRequest.serviceId}`}
+                          to={`/order-administrative/${service.serviceRequest.serviceId}`}
                           sx={{
                             background:
                               'linear-gradient(45deg, #10b981 30%, #14b8a6 90%)',
@@ -530,7 +524,7 @@ const AdministrativeServiceList = () => {
                           }}
                         >
                           <Plus size={20} />
-                          Đặt lịch tại cơ sở
+                          Đặt lịch
                         </Button>
                       </div>
                     </div>

@@ -11,6 +11,7 @@ import {
   Award,
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import { Button } from '@mui/material';
 
 type PriceItem = {
   time: string;
@@ -436,22 +437,34 @@ const CivilServiceList = () => {
                       </div>
                       <div className="d-flex justify-content-between gap-3">
                         <div className="flex-fill text-center">
-                          <NavLink
-                            to={`/order/at-center/${service.serviceRequest.serviceId}`}
-                            className="btn btn-danger btn-sm text-white d-flex align-items-center justify-content-center"
+                          <Button
+                            variant="contained"
+                            component={NavLink}
+                            to={`/order-civil/${service.serviceRequest.serviceId}`}
+                            sx={{
+                              background:
+                                'linear-gradient(45deg, #10b981 30%, #14b8a6 90%)',
+                              color: 'white',
+                              padding: '12px 32px',
+                              borderRadius: '12px',
+                              fontWeight: 'bold',
+                              boxShadow: '0 8px 16px rgba(16, 185, 129, 0.3)',
+                              '&:hover': {
+                                background:
+                                  'linear-gradient(45deg, #059669 30%, #0d9488 90%)',
+                                transform: 'scale(1.05)',
+                                boxShadow:
+                                  '0 12px 24px rgba(16, 185, 129, 0.4)',
+                              },
+                              transition: 'all 0.3s ease',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                            }}
                           >
-                            <Plus size={14} className="me-2" />
-                            Đặt lịch tại cơ sở
-                          </NavLink>
-                        </div>
-                        <div className="flex-fill text-center">
-                          <NavLink
-                            to={`/order/at-home/${service.serviceRequest.serviceId}`}
-                            className="btn btn-danger btn-sm text-white d-flex align-items-center justify-content-center"
-                          >
-                            <Plus size={14} className="me-2" />
-                            Đặt lịch tại nhà
-                          </NavLink>
+                            <Plus size={20} />
+                            Đặt lịch
+                          </Button>
                         </div>
                       </div>
                     </div>

@@ -144,8 +144,8 @@ const Booking = () => {
   };
 
   const getTypeBadgeClass = (type: string) => {
-    return type === 'CENTER' 
-      ? `${styles.typeBadge} ${styles.typeCenter}` 
+    return type === 'CENTER'
+      ? `${styles.typeBadge} ${styles.typeCenter}`
       : `${styles.typeBadge} ${styles.typeHome}`;
   };
 
@@ -163,9 +163,7 @@ const Booking = () => {
   if (error) {
     return (
       <div className={styles.container}>
-        <div className={styles.errorMessage}>
-          {error}
-        </div>
+        <div className={styles.errorMessage}>{error}</div>
       </div>
     );
   }
@@ -177,14 +175,15 @@ const Booking = () => {
           <FaCalendarAlt className={styles.emptyIcon} />
           <div className={styles.emptyTitle}>Chưa có cuộc hẹn nào</div>
           <div className={styles.emptyDescription}>
-            Bạn chưa có cuộc hẹn nào được đặt. Hãy đặt lịch hẹn để sử dụng dịch vụ của chúng tôi.
+            Bạn chưa có cuộc hẹn nào được đặt. Hãy đặt lịch hẹn để sử dụng dịch
+            vụ của chúng tôi.
           </div>
         </div>
       </div>
     );
   }
 
-    return (
+  return (
     <div className={styles.container}>
       <div className={styles.tableContainer}>
         <table className={styles.table}>
@@ -200,78 +199,92 @@ const Booking = () => {
             </tr>
           </thead>
           <tbody className={styles.tableBody}>
-            {bookingList.map((item, idx) => (
-              <tr key={idx} className={styles.tableRow}>
-                <td className={`${styles.tableCell} ${styles.indexCell}`}>{idx + 1}</td>
-                <td className={`${styles.tableCell} ${styles.dateCell}`}>{item.show.appointmentDate}</td>
-                <td className={styles.tableCell}>
-                  <span className={getStatusBadgeClass(item.show.appointmentStatus)}>
-                    {getStatusText(item.show.appointmentStatus)}
-                  </span>
-                </td>
-                <td className={`${styles.tableCell} ${styles.serviceCell}`}>
-                  {item.services.map((s) => s.serviceName).join(', ')}
-                </td>
-                <td className={`${styles.tableCell} ${styles.typeCell}`}>
-                  <span className={getTypeBadgeClass(item.show.appointmentType)}>
-                    {translateAppointmentType(item.show.appointmentType)}
-                  </span>
-                </td>
-                <td className={`${styles.tableCell} ${styles.actionCell}`}>
-                  <div className={styles.actionButtons}>
-                    {/* Hủy */}
-                    {item.show.appointmentStatus !== 'COMPLETED' && (
+            {bookingList
+              .filter((item) => item.show.appointmentStatus !== 'CANCELLED')
+              .map((item, idx) => (
+                <tr key={idx} className={styles.tableRow}>
+                  <td className={`${styles.tableCell} ${styles.indexCell}`}>
+                    {idx + 1}
+                  </td>
+                  <td className={`${styles.tableCell} ${styles.dateCell}`}>
+                    {item.show.appointmentDate}
+                  </td>
+                  <td className={styles.tableCell}>
+                    <span
+                      className={getStatusBadgeClass(
+                        item.show.appointmentStatus
+                      )}
+                    >
+                      {getStatusText(item.show.appointmentStatus)}
+                    </span>
+                  </td>
+                  <td className={`${styles.tableCell} ${styles.serviceCell}`}>
+                    {item.services.map((s) => s.serviceName).join(', ')}
+                  </td>
+                  <td className={`${styles.tableCell} ${styles.typeCell}`}>
+                    <span
+                      className={getTypeBadgeClass(item.show.appointmentType)}
+                    >
+                      {translateAppointmentType(item.show.appointmentType)}
+                    </span>
+                  </td>
+                  <td className={`${styles.tableCell} ${styles.actionCell}`}>
+                    <div className={styles.actionButtons}>
+                      {/* Hủy */}
+                      {(!item.payments[0].getPaymentStatus ||
+                        item.payments[0].getPaymentStatus === 'PENDING') &&
+                        item.show.appointmentStatus !== 'COMPLETED' && (
+                          <button
+                            type="button"
+                            className={`${styles.actionButton} ${styles.cancelButton}`}
+                            onClick={() =>
+                              handleCanceled(item.show.appointmentId.toString())
+                            }
+                            title="Hủy cuộc hẹn"
+                          >
+                            <FaTimes />
+                          </button>
+                        )}
+
+                      {/* Thanh toán */}
+                      {item.payments.length > 0 &&
+                        (!item.payments[0].getPaymentStatus ||
+                          item.payments[0].getPaymentStatus === 'PENDING') &&
+                        item.payments[0].paymentId &&
+                        item.services.length > 0 &&
+                        item.services[0].serviceId &&
+                        (item.show.appointmentStatus === 'CONFIRMED' ||
+                          item.show.appointmentType === 'HOME') && (
+                          <button
+                            className={`${styles.actionButton} ${styles.paymentButton}`}
+                            onClick={() =>
+                              handlePayment(
+                                item.payments[0].paymentId,
+                                item.services[0].serviceId
+                              )
+                            }
+                            title="Thanh toán"
+                          >
+                            <FaMoneyBillWave />
+                          </button>
+                        )}
+                    </div>
+                  </td>
+                  <td className={styles.tableCell}>
+                    {item.show.appointmentStatus === 'COMPLETED' && (
                       <button
-                        type="button"
-                        className={`${styles.actionButton} ${styles.cancelButton}`}
+                        className={`${styles.actionButton} ${styles.viewButton}`}
                         onClick={() =>
-                          handleCanceled(item.show.appointmentId.toString())
+                          navigate(`/result/${item.show.appointmentId}`)
                         }
-                        title="Hủy cuộc hẹn"
+                        title="Xem kết quả"
                       >
-                        <FaTimes />
+                        <FaEye />
                       </button>
                     )}
-
-                    {/* Thanh toán */}
-                    {item.payments.length > 0 &&
-                      (!item.payments[0].getPaymentStatus ||
-                        item.payments[0].getPaymentStatus === 'PENDING') &&
-                      item.payments[0].paymentId &&
-                      item.services.length > 0 &&
-                      item.services[0].serviceId &&
-                      (item.show.appointmentStatus === 'CONFIRMED' ||
-                        item.show.appointmentType === 'HOME') && (
-                        <button
-                          className={`${styles.actionButton} ${styles.paymentButton}`}
-                          onClick={() =>
-                            handlePayment(
-                              item.payments[0].paymentId,
-                              item.services[0].serviceId
-                            )
-                          }
-                          title="Thanh toán"
-                        >
-                          <FaMoneyBillWave />
-                        </button>
-                      )}
-                  </div>
-                </td>
-                <td className={styles.tableCell}>
-                  {item.show.appointmentStatus === 'COMPLETED' && (
-                    <button
-                      className={`${styles.actionButton} ${styles.viewButton}`}
-                      onClick={() =>
-                        navigate(`/result/${item.show.appointmentId}`)
-                      }
-                      title="Xem kết quả"
-                    >
-                      <FaEye />
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
