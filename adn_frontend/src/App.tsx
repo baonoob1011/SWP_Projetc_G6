@@ -25,6 +25,7 @@ import CreateLocation from './components/mainContents/feature/CreateLocation';
 import CreateRoom from './components/mainContents/feature/CreateRoom';
 import CreateKit from './components/mainContents/feature/CreateKit';
 import CreateLocus from './components/mainContents/feature/CreateLocus';
+import Rating from './components/page/Rating';
 
 // Dữ liệu người dùng (User / Staff / Manager / Collector / Admin)
 import DataList, {
@@ -49,6 +50,7 @@ import SignUpStaffAtHome from './components/mainContents/actorList/staff/StaffAt
 // Quản lý lịch & Slot
 import StaffSlot from './components/mainContents/actorList/staff/GetStaffSchedule';
 import SignUpStaffSchedule from './components/mainContents/actorList/staff/SignUpStaffSchedule';
+
 import AppointmentSchedule from './components/mainContents/actorList/staff/AppointmentSchedule';
 
 // Quản lý cuộc hẹn
@@ -78,12 +80,14 @@ import PatientRequest from './components/mainContents/feature/PatientRequest';
 // Thanh toán
 import VNPayResult from './components/mainContents/feature/VNPAY';
 import GetStaffAtHome from './components/mainContents/actorList/staff/GetStaffAtHome';
-import TotalUserChart from './components/mainContents/actorList/admin/GetDashBoard';
 import GetAllResult from './components/mainContents/feature/GetAllResult';
 import GetCashier from './components/mainContents/actorList/admin/GetAllCashier';
 import SignUpCashier from './components/mainContents/actorList/staff/SignUpCashier';
 import GetAllBill from './components/mainContents/actorList/staff/GetAllBill';
 import CreateDiscount from './components/mainContents/actorList/admin/CreateDiscount';
+import SelectedCivilService from './components/mainContents/services/SelectedCivilService';
+import SelectedAdministrativeService from './components/mainContents/services/SelectedAdministrativeService';
+import { DashBoard } from './components/mainContents/actorList/admin/dashboard/Dashboard';
 
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
@@ -320,7 +324,7 @@ function App() {
                 path="/"
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
-                    <TotalUserChart />
+                    <DashBoard />
                   </ProtectedRoute>
                 }
               />
@@ -633,6 +637,22 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            {/* <Route
+              path="feedback/:serviceId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <VNPayResult />
+                </ProtectedRoute>
+              }
+            /> */}
+            <Route
+              path="/feedback/:serviceId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <Rating />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/u-profile"
               element={
@@ -695,6 +715,14 @@ function App() {
             <Route
               path="/service/administrative"
               element={<AdministrativeServiceList />}
+            />
+            <Route
+              path="/order-civil/:serviceId"
+              element={<SelectedCivilService />}
+            />
+            <Route
+              path="/order-administrative/:serviceId"
+              element={<SelectedAdministrativeService />}
             />
             <Route path="/m-getAllService" element={<ServiceList />} />
           </Routes>

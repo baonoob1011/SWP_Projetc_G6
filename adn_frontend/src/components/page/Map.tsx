@@ -42,7 +42,7 @@ export default function Map() {
           content: `
             <div style="max-width: 250px;">
               <h3 style="color: red;">Phòng khám Đa khoa Tân Bình</h3>
-              <p>123 Đường ABC, Quận Tân Bình, TP.HCM</p>
+              <p>22/14 Đ. Phan Văn Hớn, Tân Thới Nhất, Quận 12, Hồ Chí Minh 70000, Việt Nam</p>
               <p><strong>Giờ mở cửa:</strong> 8:00 - 17:00</p>
               <p><strong>Điện thoại:</strong> <a href="tel:0123456789">0123 456 789</a></p>
             </div>
