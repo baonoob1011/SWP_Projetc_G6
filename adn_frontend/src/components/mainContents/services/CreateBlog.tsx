@@ -15,7 +15,6 @@ const CreateBlog = () => {
   const [file, setFile] = useState<File | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string>('');
-  const [auth, setAuth] = useState(false);
   const [form, setForm] = useState<Blog>({
     blogId: 0,
     title: '',
@@ -31,16 +30,13 @@ const CreateBlog = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    const role = localStorage.getItem('role');
-    setAuth(['ADMIN', 'MANAGER', 'STAFF'].includes(role || ''));
-  }, []);
-
   // Fetch all blogs from the server
   const fetchData = async () => {
     try {
-      const res = await fetch('http://localhost:8080/api/blog/get-all-blog', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      const res = await fetch('http://localhost:8080/api/blog/get-all-blogs', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       });
       if (!res.ok) throw new Error();
       const data = await res.json();
@@ -51,8 +47,8 @@ const CreateBlog = () => {
   };
 
   useEffect(() => {
-    if (auth) fetchData();
-  }, [auth]);
+    fetchData();
+  }, []);
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sel = e.target.files?.[0] ?? null;
@@ -82,9 +78,13 @@ const CreateBlog = () => {
     try {
       const res = await fetch('http://localhost:8080/api/blog/create-blog', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        // ✅ KHÔNG set Content-Type
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
         body: fd,
       });
+
       if (!res.ok) {
         const ct = res.headers.get('content-type') || '';
         const msg = ct.includes('json')
@@ -175,8 +175,6 @@ const CreateBlog = () => {
       }
     }
   };
-
-  if (!auth) return null;
 
   return (
     <div className="min-h-screen bg-gray-50">

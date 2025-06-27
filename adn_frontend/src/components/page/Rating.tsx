@@ -13,12 +13,12 @@ import { toast } from 'react-toastify';
 const Feedback: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [rating, setRating] = useState<number | null>(null);
-  const [comment, setComment] = useState('');
+  const [feedbackText, setFeedbackText] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const { serviceId } = useParams<{ serviceId: string }>();
 
   const handleSubmit = async () => {
-    if (!rating || !comment.trim()) {
+    if (!rating || !feedbackText.trim()) {
       toast.error('Vui lòng chọn đánh giá và nhập bình luận');
       return;
     }
@@ -34,7 +34,11 @@ const Feedback: React.FC = () => {
             'Content-Type': 'application/json',
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
-          body: JSON.stringify({ serviceId: Number(serviceId), rating: mappedRating, comment }),
+          body: JSON.stringify({
+            serviceId: Number(serviceId),
+            rating: mappedRating,
+            feedbackText,
+          }),
         }
       );
       if (!res.ok) {
@@ -43,12 +47,13 @@ const Feedback: React.FC = () => {
       }
       toast.success('Gửi đánh giá thành công');
       setRating(null);
-      setComment('');
+      setFeedbackText('');
     } catch (err) {
       console.error(err);
       toast.error('Gửi đánh giá thất bại');
     } finally {
       setSubmitting(false);
+      setLoading(false);
     }
   };
 
@@ -69,16 +74,24 @@ const Feedback: React.FC = () => {
       {/* Form tạo đánh giá mới */}
       <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Typography>Chia sẻ trải nghiệm của bạn:</Typography>
-        <MuiRating value={rating} onChange={(_, value) => setRating(value)} size="large" />
+        <MuiRating
+          value={rating}
+          onChange={(_, value) => setRating(value)}
+          size="large"
+        />
         <TextField
           label="Bình luận"
           multiline
           rows={3}
           variant="outlined"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          value={feedbackText}
+          onChange={(e) => setFeedbackText(e.target.value)}
         />
-        <Button variant="contained" disabled={submitting} onClick={handleSubmit}>
+        <Button
+          variant="contained"
+          disabled={submitting}
+          onClick={handleSubmit}
+        >
           {submitting ? 'Đang gửi...' : 'Gửi đánh giá'}
         </Button>
       </Box>

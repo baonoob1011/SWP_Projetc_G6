@@ -248,6 +248,9 @@ const SignUpStaffSchedule = () => {
   const handleStaff2Change = (event: SelectChangeEvent<string>) => {
     setSelectedStaff2(event.target.value);
   };
+  const handleStaff3Change = (event: SelectChangeEvent<string>) => {
+    setSelectedStaff3(event.target.value);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -261,16 +264,32 @@ const SignUpStaffSchedule = () => {
       return;
     }
 
+    if (!selectedStaff1 && !selectedStaff2) {
+      setSnackbar({
+        open: true,
+        message: 'Vui lòng chọn ít nhất một nhân viên',
+        severity: 'error',
+      });
+      return;
+    }
+
+    const staffSlotRequest: { staffId: string }[] = [];
+
+    if (selectedStaff1) {
+      staffSlotRequest.push({ staffId: selectedStaff1 });
+    }
+
+    if (selectedStaff2) {
+      staffSlotRequest.push({ staffId: selectedStaff2 });
+    }
+
     const requestBody = {
       slotRequest: {
         slotDate: isSchedule.slotDate,
         startTime: isSchedule.startTime + ':00',
         endTime: isSchedule.endTime + ':00',
       },
-      staffSlotRequest: [
-        { staffId: selectedStaff1 },
-        { staffId: selectedStaff2 },
-      ],
+      staffSlotRequest,
     };
 
     try {
@@ -305,6 +324,7 @@ const SignUpStaffSchedule = () => {
           timer: 1500,
         });
         await fetchSlot();
+
         // Reset form
         setIsSchedule({
           staffId: '',
@@ -481,7 +501,7 @@ const SignUpStaffSchedule = () => {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    NHÂN VIÊN THU MẪU <span className="text-red-500">*</span>
+                    NHÂN VIÊN THU NGÂN <span className="text-red-500">*</span>
                   </label>
                   <FormControl fullWidth>
                     <Select
