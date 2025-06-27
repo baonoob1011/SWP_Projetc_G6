@@ -53,6 +53,7 @@ public class SecurityConfig {
     };
     private final String[] CASHIER_ENDPOINTS = {
             "/api/cashier/**",
+            "/api/slot/get-all-slot-of-staff/**",
     };
 
     private final String[] USER_ENDPOINTS = {
@@ -61,6 +62,7 @@ public class SecurityConfig {
             "/api/appointment/cancel-appointment/**",
             "/api/appointment/get-appointment/**",
             "/api/appointment/get-all-result/**",
+            "/api/appointment/get-history/**",
             "/api/appointment/get-appointment-history-user/**",
             "/api/slot/get-all-slot-user/**",
             "/api/patient/register-info",

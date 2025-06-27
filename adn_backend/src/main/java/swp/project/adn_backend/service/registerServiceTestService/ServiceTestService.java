@@ -16,6 +16,7 @@ import swp.project.adn_backend.dto.InfoDTO.ServiceFeedbackInfoDTO;
 import swp.project.adn_backend.dto.request.serviceRequest.PriceListRequest;
 import swp.project.adn_backend.dto.request.serviceRequest.ServiceRequest;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateServiceTestRequest;
+import swp.project.adn_backend.dto.response.discount.DiscountResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.*;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.*;
@@ -154,7 +155,7 @@ public class ServiceTestService {
         for (ServiceTest s : services) {
             // Convert service entity to DTO
             ServiceTestResponse serviceReq = serviceTestMapper.toServiceTestResponse(s);
-
+            List<DiscountResponse> discountResponse=serviceTestMapper.toDiscountResponses(s.getDiscounts());
             // Convert price list
             List<PriceListResponse> priceReqs = new ArrayList<>();
             if (s.getPriceLists() != null && !s.getPriceLists().isEmpty()) {
@@ -162,7 +163,13 @@ public class ServiceTestService {
                     PriceListResponse res = new PriceListResponse();
                     res.setPriceId(p.getPriceId());
                     res.setTime(p.getTime());
-                    res.setPrice(p.getPrice());
+                    for (Discount discount: s.getDiscounts()){
+                        if(discount.isActive()){
+                            res.setPriceTmp(p.getPrice());
+                            res.setPrice(p.getPrice() * (1 - discount.getDiscountValue() / 100.0));
+                        }
+                        res.setPrice(p.getPrice());
+                    }
                     priceReqs.add(res);
                 }
             }
@@ -184,7 +191,7 @@ public class ServiceTestService {
             fullResp.setServiceRequest(serviceReq);
             fullResp.setPriceListRequest(priceReqs);
             fullResp.setAdministrativeServiceRequest(administrativeServiceResponses);
-
+            fullResp.setDiscountResponses(discountResponse);
             responses.add(fullResp);
         }
 
@@ -198,6 +205,7 @@ public class ServiceTestService {
         for (ServiceTest s : services) {
             // Convert service entity to DTO
             ServiceTestResponse serviceReq = serviceTestMapper.toServiceTestResponse(s);
+            List<DiscountResponse> discountResponse=serviceTestMapper.toDiscountResponses(s.getDiscounts());
 
             // Convert price list
             List<PriceListResponse> priceReqs = new ArrayList<>();
@@ -205,18 +213,32 @@ public class ServiceTestService {
                 for (PriceList p : s.getPriceLists()) {
                     PriceListResponse res = new PriceListResponse();
                     res.setTime(p.getTime());
-                    res.setPrice(p.getPrice());
+                    // Default: original price
+                    double finalPrice = p.getPrice();
+
+                    // Apply the first active discount, if any
+                    if (s.getDiscounts() != null && !s.getDiscounts().isEmpty()) {
+                        for (Discount discount : s.getDiscounts()) {
+                            if (discount.isActive()) {
+                                res.setPriceTmp(p.getPrice());
+                                finalPrice = p.getPrice() * (1 - discount.getDiscountValue() / 100.0);
+                                break; // apply only one active discount
+                            }
+                        }
+                    }
+
+                    res.setPrice(finalPrice);
                     priceReqs.add(res);
                 }
             }
 
-            // Convert administrative services
+            // Convert civil services (administrative part)
             List<CivilServiceResponse> serviceResponses = new ArrayList<>();
             List<CivilService> civilServices = s.getCivilServices();
             if (civilServices != null && !civilServices.isEmpty()) {
                 for (CivilService civilService : civilServices) {
                     CivilServiceResponse response = new CivilServiceResponse();
-                    response.setSampleCollectionMethods(civilService.getSampleCollectionMethods()); // ✅ Truyền Set
+                    response.setSampleCollectionMethods(civilService.getSampleCollectionMethods());
                     serviceResponses.add(response);
                 }
             }
@@ -226,12 +248,13 @@ public class ServiceTestService {
             fullResp.setServiceRequest(serviceReq);
             fullResp.setPriceListRequest(priceReqs);
             fullResp.setServiceResponses(serviceResponses);
-
+            fullResp.setDiscountResponses(discountResponse);
             responses.add(fullResp);
         }
 
         return responses;
     }
+
 
 
     public void deleteServiceTest(long serviceId) {

@@ -1,11 +1,22 @@
 package swp.project.adn_backend.dto.response.serviceResponse;
 
+import swp.project.adn_backend.dto.response.discount.DiscountResponse;
+
 import java.util.List;
 
 public class FullCivilServiceResponse {
     private ServiceTestResponse serviceRequest;
     private List<PriceListResponse> priceListRequest; //
     private List<CivilServiceResponse> serviceResponses;
+    private List<DiscountResponse> discountResponses;
+
+    public List<DiscountResponse> getDiscountResponses() {
+        return discountResponses;
+    }
+
+    public void setDiscountResponses(List<DiscountResponse> discountResponses) {
+        this.discountResponses = discountResponses;
+    }
 
     public List<CivilServiceResponse> getServiceResponses() {
         return serviceResponses;
