@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-toastify';
@@ -88,6 +89,33 @@ const NewProfile = () => {
       toast.error('❌ Lỗi kết nối với hệ thống');
     }
   };
+  const fetchData = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/api/user/get-user-info', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        toast.error('❌ Cập nhật thất bại: ' + errorText);
+        return;
+      }
+
+      const updated = await res.json();
+      setProfile(updated);
+      setUpdateProfile(updated);
+    } catch (error) {
+      console.error(error);
+      toast.error('❌ Lỗi kết nối với hệ thống');
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const tabConfig = [
     {

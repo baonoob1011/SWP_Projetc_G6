@@ -637,14 +637,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            {/* <Route
+            <Route
               path="feedback/:serviceId"
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
-                  <VNPayResult />
+                  <Rating />
                 </ProtectedRoute>
               }
-            /> */}
+            />
             <Route
               path="/feedback/:serviceId"
               element={

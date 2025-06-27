@@ -103,7 +103,7 @@ const GetAllResult = () => {
             <div className={styles.reportHeader}>
               <div className={styles.headerTop}>
                 <div className={styles.logoSection}>
-                  <img src={Logo} alt="GENETIS Logo" className={styles.logo} />
+                  <img src={Logo} alt="GENELINK Logo" className={styles.logo} />
                 </div>
                 <div className={styles.reportId}>
                   <p className={styles.reportIdLabel}>No:</p>

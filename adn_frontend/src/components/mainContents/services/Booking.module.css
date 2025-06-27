@@ -259,33 +259,33 @@
     border-radius: 12px;
     margin: 0 -0.5rem;
   }
-  
+
   .table {
     font-size: 0.85rem;
   }
-  
+
   .tableHeaderCell,
   .tableCell {
     padding: 0.8rem 0.5rem;
   }
-  
+
   .actionButtons {
     flex-direction: column;
     gap: 0.3rem;
   }
-  
+
   .actionButton {
     width: 35px;
     height: 35px;
     font-size: 0.8rem;
   }
-  
+
   .statusBadge {
     min-width: 100px;
     padding: 0.4rem 0.8rem;
     font-size: 0.75rem;
   }
-  
+
   .serviceCell {
     max-width: 150px;
     font-size: 0.85rem;
@@ -298,13 +298,13 @@
     padding: 0.6rem 0.3rem;
     font-size: 0.8rem;
   }
-  
+
   .statusBadge {
     min-width: 80px;
     padding: 0.3rem 0.6rem;
     font-size: 0.7rem;
   }
-  
+
   .actionButton {
     width: 32px;
     height: 32px;
@@ -326,4 +326,26 @@
   background: linear-gradient(90deg, #f0f0f0 0px, #e0e0e0 40px, #f0f0f0 80px);
   background-size: 200px;
   animation: shimmer 1.5s infinite;
-} 
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  gap: 12px;
+}
+.paginationButton {
+  padding: 6px 12px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.paginationButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+.paginationInfo {
+  font-weight: bold;
+  align-self: center;
+}

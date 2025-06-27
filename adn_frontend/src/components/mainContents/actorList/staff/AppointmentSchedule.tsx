@@ -3,22 +3,10 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import styles from './AppointmentSchedule.module.css';
 
-type Appointment = {
-  appointmentId: string;
-  appointmentDate: string;
-  appointmentStatus: string;
-  note: string;
-  userId: string;
-  slotId?: string;
-  serviceId: string;
-  locationId?: string;
-  appointmentType: 'HOME' | 'CENTER';
-};
-
 const AppointmentSchedule = () => {
-  const [centerSchedule, setCenterSchedule] = useState<any[]>([]);
-  const [homeSchedule, setHomeSchedule] = useState<Appointment[]>([]);
-  const [loadingCenter, setLoadingCenter] = useState(false);
+  // const [centerSchedule, setCenterSchedule] = useState<any[]>([]);
+  const [homeSchedule, setHomeSchedule] = useState<any[]>([]);
+  // const [loadingCenter, setLoadingCenter] = useState(false);
   const [loadingHome, setLoadingHome] = useState(false);
   const [auth, setAuth] = useState(false);
 
@@ -26,30 +14,30 @@ const AppointmentSchedule = () => {
     setAuth(localStorage.getItem('role') === 'STAFF');
   }, []);
 
-  const fetchSchedule = async () => {
-    const token = localStorage.getItem('token');
-    setLoadingCenter(true);
-    try {
-      const res = await fetch(
-        'http://localhost:8080/api/staff/get-appointment-by-staff',
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const data = await res.json();
-      if (res.ok) {
-        setCenterSchedule(data);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingCenter(false);
-    }
-  };
+  // const fetchSchedule = async () => {
+  //   const token = localStorage.getItem('token');
+  //   setLoadingCenter(true);
+  //   try {
+  //     const res = await fetch(
+  //       'http://localhost:8080/api/staff/get-appointment-by-staff',
+  //       {
+  //         method: 'GET',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     const data = await res.json();
+  //     if (res.ok) {
+  //       setCenterSchedule(data);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoadingCenter(false);
+  //   }
+  // };
 
   const fetchScheduleAtHome = async () => {
     const token = localStorage.getItem('token');
@@ -67,10 +55,7 @@ const AppointmentSchedule = () => {
       );
       const data = await res.json();
       if (res.ok) {
-        const filteredData = data.filter(
-          (item: Appointment) => item.appointmentType === 'HOME'
-        );
-        setHomeSchedule(filteredData);
+        setHomeSchedule(data);
       }
     } catch (error) {
       console.log(error);
@@ -79,44 +64,44 @@ const AppointmentSchedule = () => {
     }
   };
 
-  const handleCheck = async (
-    appointmentId: string,
-    userId: string,
-    slotId: string,
-    serviceId: string,
-    locationId: string
-  ) => {
-    const token = localStorage.getItem('token');
-    try {
-      const res = await fetch(
-        `http://localhost:8080/api/appointment/confirm-appointment-at-center?appointmentId=${appointmentId}&userId=${userId}&slotId=${slotId}&serviceId=${serviceId}&locationId=${locationId}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  // const handleCheck = async (
+  //   appointmentId: string,
+  //   userId: string,
+  //   slotId: string,
+  //   serviceId: string,
+  //   locationId: string
+  // ) => {
+  //   const token = localStorage.getItem('token');
+  //   try {
+  //     const res = await fetch(
+  //       `http://localhost:8080/api/appointment/confirm-appointment-at-center?appointmentId=${appointmentId}&userId=${userId}&slotId=${slotId}&serviceId=${serviceId}&locationId=${locationId}`,
+  //       {
+  //         method: 'PUT',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
 
-      if (res.ok) {
-        toast.success('Xác nhận lịch tại trung tâm thành công');
-        fetchSchedule();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     if (res.ok) {
+  //       toast.success('Xác nhận lịch tại trung tâm thành công');
+  //       // fetchSchedule();
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleCheckAtHome = async (
     appointmentId: string,
     userId: string,
-    serviceId: string
+    serviceIds: string[]
   ) => {
     const token = localStorage.getItem('token');
     try {
       const res = await fetch(
-        `http://localhost:8080/api/appointment/confirm-appointment-at-home?appointmentId=${appointmentId}&userId=${userId}&serviceId=${serviceId}`,
+        `http://localhost:8080/api/appointment/confirm-appointment-at-home?appointmentId=${appointmentId}&userId=${userId}&serviceId=${serviceIds}`,
         {
           method: 'PUT',
           headers: {
@@ -135,9 +120,9 @@ const AppointmentSchedule = () => {
     }
   };
 
-  useEffect(() => {
-    fetchSchedule();
-  }, []);
+  // useEffect(() => {
+  //   fetchSchedule();
+  // }, []);
   useEffect(() => {
     fetchScheduleAtHome();
   }, []);
@@ -145,16 +130,16 @@ const AppointmentSchedule = () => {
   if (!auth) return null;
 
   // Kiểm tra có dữ liệu không
-  const hasData =
-    centerSchedule.length > 0 ||
-    homeSchedule.some((item) => item.note === 'Đã thanh toán');
-  const isLoading = loadingCenter || loadingHome;
+  // const hasData =
+  //   centerSchedule.length > 0 ||
+  //   homeSchedule.some((item) => item.note === 'Đã thanh toán');
+  // const isLoading = loadingCenter || loadingHome;
 
   return (
     <div className={styles.container}>
       <h1 className={styles.pageTitle}>Danh Sách Lịch Hẹn</h1>
 
-      {/* Hiển thị thông báo trống khi không có dữ liệu và không đang loading */}
+      {/* Hiển thị thông báo trống khi không có dữ liệu và không đang loading
       {!hasData && !isLoading && (
         <div className={styles.emptyState}>
           <div className={styles.emptyStateIcon}>📋</div>
@@ -162,7 +147,7 @@ const AppointmentSchedule = () => {
         </div>
       )}
 
-      {/* Lịch Trung Tâm */}
+      Lịch Trung Tâm
       {loadingCenter || centerSchedule.length > 0 ? (
         <>
           <div className={styles.tableWrapper}>
@@ -238,11 +223,13 @@ const AppointmentSchedule = () => {
             </table>
           </div>
         </>
-      ) : null}
+      ) : null} */}
 
       {/* Lịch Tại Nhà */}
       {loadingHome ||
-      homeSchedule.some((item) => item.note === 'Đã thanh toán') ? (
+      homeSchedule.filter(
+        (item) => item.showAppointmentResponse.note === 'Đã thanh toán'
+      ) ? (
         <>
           <div className={styles.tableWrapper}>
             <table className={`table ${styles.table}`}>
@@ -263,25 +250,30 @@ const AppointmentSchedule = () => {
                   </tr>
                 ) : (
                   homeSchedule
-                    .filter((item) => item.note === 'Đã thanh toán')
+                    .filter(
+                      (item) =>
+                        item.showAppointmentResponse.note === 'Đã thanh toán'
+                    )
                     .map((item, index) => (
                       <tr key={index}>
-                        <td>{item.appointmentDate}</td>
+                        <td>{item.showAppointmentResponse.appointmentDate}</td>
                         <td>
                           <span
                             className={`${styles.statusBadge} ${styles.statusPending}`}
                           >
-                            {item.appointmentStatus}
+                            {item.showAppointmentResponse.appointmentStatus}
                           </span>
                         </td>
-                        <td>{item.note}</td>
+                        <td>{item.showAppointmentResponse.note}</td>
                         <td>
                           <button
                             onClick={() =>
                               handleCheckAtHome(
-                                item.appointmentId,
-                                item.serviceId,
-                                item.userId
+                                item.showAppointmentResponse.appointmentId,
+                                item.userAppointmentResponses.userId,
+                                item.serviceAppointmentResponses.map(
+                                  (s: any) => s.serviceId
+                                )
                               )
                             }
                             className={`${styles.confirmBtn} ${styles.confirmBtnHome}`}
