@@ -73,16 +73,15 @@
 .reportId {
   text-align: right;
   font-family: 'Courier New', monospace;
+  font-size: 2rem;
 }
 
 .reportIdLabel {
-  font-size: 0.9rem;
   color: #6c757d;
   margin: 0;
 }
 
 .reportIdValue {
-  font-size: 1.1rem;
   font-weight: 700;
   color: #1890ff;
   margin: 0;
@@ -90,8 +89,8 @@
 
 .reportTitle {
   text-align: center;
-  font-size: 2.2rem;
-  font-weight: 800;
+  font-size: 2.5rem;
+  font-weight: 900;
   color: #2c3e50;
   margin: 1.5rem 0;
   text-transform: uppercase;
@@ -481,7 +480,8 @@
   }
   
   .watermark {
-  font-size: 4rem;
+    font-size: 4rem;
+  }
 }
 
 .templateNote {
@@ -497,12 +497,8 @@
 }
 
 .companyDecision {
-  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
-  border: 2px solid #1890ff;
-  border-radius: 12px;
   padding: 2.5rem;
   margin: 2.5rem 0;
-  box-shadow: 0 4px 15px rgba(24, 144, 255, 0.1);
 }
 
 .decisionTitle {
@@ -529,32 +525,23 @@
 .conclusionResult {
   font-size: 1.4rem;
   font-weight: 800;
-  color: #d32f2f;
-  margin: 1.5rem 0;
+  color: #1890FF;
   text-align: center;
-  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
   padding: 1rem;
-  border-radius: 8px;
-  border: 2px solid #f44336;
   letter-spacing: 1px;
 }
 
 .sampleCodes {
   font-family: 'Courier New', monospace;
   font-weight: 700;
-  color: #e91e63;
+  color: #1890FF;
 }
 
 .disclaimer {
-  background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
-  border: 2px solid #ffc107;
-  border-radius: 12px;
-  padding: 2rem;
   margin: 2rem 0;
-  font-size: 1.1rem;
-  color: #856404;
-  line-height: 1.8;
-  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+    font-size: 1.1rem;
+    color: black;
+    line-height: 1.8;
 }
 
 .disclaimerTitle {
@@ -581,15 +568,13 @@
 }
 
 .subHeader {
-  background: #e3f2fd;
-  font-weight: 600;
-  color: #0d47a1;
+  background: #1283F1;
+  font-weight: 700;
 }
 
 .alleleCell {
   font-family: 'Courier New', monospace;
   font-weight: 600;
-  color: #d32f2f;
+  color: #1890FF;
   font-size: 1rem;
 }
-} 
