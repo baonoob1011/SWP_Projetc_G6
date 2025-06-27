@@ -118,4 +118,8 @@ public class BlogService {
         }
         blogRepository.delete(blog);
     }
+    public Blog getBlogById(Long blogId) {
+        return blogRepository.findById(blogId)
+      .orElseThrow(() -> new AppException(ErrorCodeUser.BLOG_NOT_FOUND));
+        }
 }

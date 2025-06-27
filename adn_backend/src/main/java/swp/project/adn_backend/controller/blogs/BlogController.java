@@ -8,8 +8,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import swp.project.adn_backend.dto.request.blog.BlogRequest;
+import swp.project.adn_backend.dto.InfoDTO.BlogsInfoDTO;
 import swp.project.adn_backend.entity.Blog;
 import swp.project.adn_backend.service.blog.BlogService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/blog")
@@ -25,6 +28,16 @@ public class BlogController {
         return ResponseEntity.ok(blogService.createBlog(blogRequest, authentication,file));
     }
 
+    @GetMapping("/get-all-blogs")
+    public ResponseEntity<List<BlogsInfoDTO>> getAllBlogs() {
+        return ResponseEntity.ok(blogService.getAllBlogs());
+    }
+
+    @GetMapping("/get-blog/{id}")
+    public ResponseEntity<Blog> getBlogById(@PathVariable("id") Long blogId) {
+        return ResponseEntity.ok(blogService.getBlogById(blogId));
+    }
+
     @PutMapping(value = "/update-blog/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Blog> updateBlog(@PathVariable("id") Long blogId,
                                            @RequestPart("blogRequest") @Valid BlogRequest blogRequest,
@@ -38,4 +51,5 @@ public class BlogController {
         blogService.deleteBlog(blogId, authentication);
         return ResponseEntity.noContent().build();
     }
+    
 }

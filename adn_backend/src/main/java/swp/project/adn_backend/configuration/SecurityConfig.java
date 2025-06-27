@@ -102,7 +102,8 @@ public class SecurityConfig {
             "/api/payment/**",
             "/api/appointment/**",
             "/api/kit/**",
-            "/api/staff/get-all-staff"
+            "/api/staff/get-all-staff",
+            "/api/dashboard/**"
     };
 
     private final String[] ADMIN_ENDPOINTS = {

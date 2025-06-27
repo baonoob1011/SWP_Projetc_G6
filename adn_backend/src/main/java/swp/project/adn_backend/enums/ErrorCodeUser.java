@@ -72,6 +72,9 @@ public enum ErrorCodeUser {
     // Blog validation  
     BLOG_NOT_FOUND(1003, "Blog không tồn tại", HttpStatus.BAD_REQUEST),
 
+    // Feedback validation
+    FEEDBACK_NOT_FOUND(1044, "Feedback không tồn tại", HttpStatus.NOT_FOUND),
+
     //
 
     // Trường hợp đặc biệt
