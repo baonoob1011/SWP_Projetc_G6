@@ -115,6 +115,7 @@ public class SecurityConfig {
             "/api/kit/**",
             "/api/staff/get-all-staff",
             "/api/discount/create-discount-service",
+            "/api/dashboard/**"
     };
 
     private final String[] ADMIN_ENDPOINTS = {
