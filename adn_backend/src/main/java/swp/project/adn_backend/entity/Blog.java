@@ -23,12 +23,11 @@ public class Blog {
     @Column(columnDefinition = "nvarchar(255)")
     String title;
 
-    @Lob
+
     @Column(columnDefinition = "nvarchar(max)")
     String content;
 
     @Column(name = "image", columnDefinition = "nvarchar(max)")
-    @Lob
     private String image;
 
     @Column(name = "created_at")

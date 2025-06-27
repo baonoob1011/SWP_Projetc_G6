@@ -16,6 +16,7 @@ public class Invoice {
 
     private String txnRef; // Mã giao dịch VNPay (gửi sang VNPay)
 
+    @Column(columnDefinition = "nvarchar(255)")
     private String orderInfo; // Tên dịch vụ hoặc mô tả
 
     private Long amount; // Số tiền thanh toán (đơn vị VND)
