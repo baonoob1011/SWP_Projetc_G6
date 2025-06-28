@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation, useParams } from 'react-router-dom';
@@ -10,7 +11,6 @@ import {
   ListItemAvatar,
   Avatar,
   ListItemText,
-  CircularProgress,
   Container,
   Card,
   CardContent,
@@ -25,18 +25,15 @@ import {
   Skeleton,
 } from '@mui/material';
 import MuiRating from '@mui/material/Rating';
-import { 
-  Star, 
-  StarBorder, 
-  LocalOffer, 
-  Home, 
+import {
+  Star,
+  LocalOffer,
+  Home,
   Business,
   Schedule,
-  AttachMoney,
-  Person,
   DateRange,
   TrendingUp,
-  Verified
+  Verified,
 } from '@mui/icons-material';
 
 const SelectedAdministrativeService = () => {
@@ -138,7 +135,9 @@ const SelectedAdministrativeService = () => {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Card sx={{ mb: 4, overflow: 'hidden' }}>
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
+          <Box
+            sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}
+          >
             <Box sx={{ flex: { md: '0 0 400px' } }}>
               <Skeleton variant="rectangular" height={400} />
             </Box>
@@ -175,20 +174,27 @@ const SelectedAdministrativeService = () => {
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {service.map((svc) => (
         <Fade in={true} timeout={800} key={svc.serviceId}>
-          <Card 
-            sx={{ 
+          <Card
+            sx={{
               mt: 10,
-              mb: 4, 
+              mb: 4,
               overflow: 'hidden',
               boxShadow: '0 8px 32px rgba(46, 125, 50, 0.08)',
               borderRadius: 3,
               border: '1px solid rgba(46, 125, 50, 0.1)',
-              background: 'linear-gradient(145deg, #ffffff 0%, #f1f8e9 100%)'
+              background: 'linear-gradient(145deg, #ffffff 0%, #f1f8e9 100%)',
             }}
           >
-            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+              }}
+            >
               {/* Product Image */}
-              <Box sx={{ flex: { md: '0 0 450px' }, position: 'relative', mt: 7 }}>
+              <Box
+                sx={{ flex: { md: '0 0 450px' }, position: 'relative', mt: 7 }}
+              >
                 {svc.image && (
                   <CardMedia
                     component="img"
@@ -200,12 +206,12 @@ const SelectedAdministrativeService = () => {
                       borderRadius: { xs: 0, md: '12px 0 0 12px' },
                       transition: 'transform 0.3s ease',
                       '&:hover': {
-                        transform: 'scale(1.02)'
-                      }
+                        transform: 'scale(1.02)',
+                      },
                     }}
                   />
                 )}
-                
+
                 {/* Discount Badge */}
                 {activeDiscounts.length > 0 && (
                   <Zoom in={true} timeout={600}>
@@ -218,14 +224,15 @@ const SelectedAdministrativeService = () => {
                         right: 20,
                         fontWeight: 'bold',
                         fontSize: '1.1rem',
-                        background: 'linear-gradient(135deg, #f44336 0%, #d32f2f 100%)',
+                        background:
+                          'linear-gradient(135deg, #f44336 0%, #d32f2f 100%)',
                         color: 'white',
                         boxShadow: '0 4px 15px rgba(244, 67, 54, 0.3)',
                         '&:hover': {
                           transform: 'scale(1.05)',
                           boxShadow: '0 6px 20px rgba(244, 67, 54, 0.4)',
                         },
-                        transition: 'all 0.3s ease'
+                        transition: 'all 0.3s ease',
                       }}
                     />
                   </Zoom>
@@ -251,26 +258,27 @@ const SelectedAdministrativeService = () => {
               {/* Product Details */}
               <CardContent sx={{ flex: 1, p: 4 }}>
                 <Box sx={{ mb: 4 }}>
-                  <Typography 
-                    variant="h3" 
-                    component="h1" 
-                    sx={{ 
-                      mb: 2, 
+                  <Typography
+                    variant="h3"
+                    component="h1"
+                    sx={{
+                      mb: 2,
                       fontWeight: 'bold',
-                      background: 'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)',
+                      background:
+                        'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)',
                       backgroundClip: 'text',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
-                      lineHeight: 1.2
+                      lineHeight: 1.2,
                     }}
                   >
                     {svc.serviceName}
                   </Typography>
-                  
-                  <Chip 
-                    label={svc.serviceType} 
-                    variant="outlined" 
-                    sx={{ 
+
+                  <Chip
+                    label={svc.serviceType}
+                    variant="outlined"
+                    sx={{
                       mb: 3,
                       borderColor: '#4caf50',
                       color: '#4caf50',
@@ -280,71 +288,85 @@ const SelectedAdministrativeService = () => {
                         color: 'white',
                         transform: 'translateY(-2px)',
                       },
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.3s ease',
                     }}
                   />
 
                   {/* Rating Summary */}
-                  {averageRating && (
-                    <Paper 
+                  {averageRating ? (
+                    <Paper
                       elevation={0}
-                      sx={{ 
-                        p: 2, 
+                      sx={{
+                        p: 2,
                         mb: 3,
-                        background: 'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
+                        background:
+                          'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
                         border: '1px solid #4caf50',
-                        borderRadius: 2
+                        borderRadius: 2,
                       }}
                     >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Box
+                        sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
+                      >
                         <MuiRating
                           value={averageRating}
                           readOnly
                           precision={0.1}
-                          sx={{ 
+                          sx={{
                             '& .MuiRating-iconFilled': {
-                              color: '#ffc107'
-                            }
+                              color: '#ffc107',
+                            },
                           }}
                         />
-                        <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#2e7d32' }}>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: 'bold', color: '#2e7d32' }}
+                        >
                           {averageRating.toFixed(1)}/5
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                           ({feedbacks.length} đánh giá)
                         </Typography>
-                        <Chip 
+                        <Chip
                           icon={<TrendingUp />}
                           label="Được yêu thích"
                           size="small"
                           sx={{
                             backgroundColor: '#66bb6a',
                             color: 'white',
-                            '& .MuiChip-icon': { color: 'white !important' }
+                            '& .MuiChip-icon': { color: 'white !important' },
                           }}
                         />
                       </Box>
                     </Paper>
-                  )}
+                  ) : null}
                 </Box>
 
-                <Divider sx={{ my: 3, borderColor: 'rgba(76, 175, 80, 0.1)' }} />
+                <Divider
+                  sx={{ my: 3, borderColor: 'rgba(76, 175, 80, 0.1)' }}
+                />
 
                 {/* Description */}
-                <Paper 
+                <Paper
                   elevation={0}
-                  sx={{ 
-                    p: 3, 
+                  sx={{
+                    p: 3,
                     mb: 3,
                     background: 'rgba(76, 175, 80, 0.05)',
                     border: '1px solid rgba(76, 175, 80, 0.1)',
-                    borderRadius: 2
+                    borderRadius: 2,
                   }}
                 >
-                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#4caf50' }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ mb: 2, fontWeight: 'bold', color: '#4caf50' }}
+                  >
                     Mô tả dịch vụ
                   </Typography>
-                  <Typography variant="body1" sx={{ lineHeight: 1.8, color: 'text.primary' }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.8, color: 'text.primary' }}
+                  >
                     {svc.description}
                   </Typography>
                 </Paper>
@@ -359,21 +381,34 @@ const SelectedAdministrativeService = () => {
                           elevation={0}
                           sx={{
                             p: 3,
-                            background: 'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
+                            background:
+                              'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
                             border: '1px solid #4caf50',
                             borderRadius: 2,
                             display: 'flex',
                             justifyContent: 'space-between',
-                            alignItems: 'center'
+                            alignItems: 'center',
                           }}
                         >
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 2,
+                            }}
+                          >
                             <Schedule sx={{ color: '#F72009' }} />
-                            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#F72009' }}>
+                            <Typography
+                              variant="h6"
+                              sx={{ fontWeight: 'bold', color: '#F72009' }}
+                            >
                               Thời gian: {item.time}
                             </Typography>
                           </Box>
-                          <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#F72009' }}>
+                          <Typography
+                            variant="h5"
+                            sx={{ fontWeight: 'bold', color: '#F72009' }}
+                          >
                             {item.price} VND
                           </Typography>
                         </Paper>
@@ -385,12 +420,12 @@ const SelectedAdministrativeService = () => {
                 {/* Active Discounts */}
                 {activeDiscounts.length > 0 && (
                   <Box sx={{ mb: 4 }}>
-                    <Typography 
-                      variant="h6" 
-                      sx={{ 
-                        mb: 2, 
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        mb: 2,
                         fontWeight: 'bold',
-                        color: '#f44336'
+                        color: '#f44336',
                       }}
                     >
                       🎉 Khuyến mãi đang áp dụng
@@ -402,12 +437,16 @@ const SelectedAdministrativeService = () => {
                         sx={{
                           p: 2,
                           mb: 2,
-                          background: 'linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%)',
+                          background:
+                            'linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%)',
                           border: '1px solid #f44336',
-                          borderRadius: 2
+                          borderRadius: 2,
                         }}
                       >
-                        <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#c62828' }}>
+                        <Typography
+                          variant="body1"
+                          sx={{ fontWeight: 'bold', color: '#c62828' }}
+                        >
                           Giảm {d.discountValue}% khi sử dụng dịch vụ!
                         </Typography>
                       </Paper>
@@ -415,42 +454,19 @@ const SelectedAdministrativeService = () => {
                   </Box>
                 )}
 
-                <Divider sx={{ my: 4, borderColor: 'rgba(76, 175, 80, 0.1)' }} />
+                <Divider
+                  sx={{ my: 4, borderColor: 'rgba(76, 175, 80, 0.1)' }}
+                />
 
                 {/* Action Buttons */}
                 <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-                  <Button
-                    component={NavLink}
-                    to={`/order/at-home/${svc.serviceId}`}
-                    variant="contained"
-                    size="large"
-                    startIcon={<Home />}
-                    sx={{ 
-                      flex: { xs: '1 1 100%', sm: '1 1 auto' },
-                      background: 'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)',
-                      py: 2,
-                      px: 4,
-                      borderRadius: 3,
-                      fontWeight: 'bold',
-                      fontSize: '1.1rem',
-                      boxShadow: '0 6px 20px rgba(76, 175, 80, 0.3)',
-                      '&:hover': {
-                        background: 'linear-gradient(135deg, #388e3c 0%, #2e7d32 100%)',
-                        transform: 'translateY(-3px)',
-                        boxShadow: '0 8px 25px rgba(76, 175, 80, 0.4)',
-                      },
-                      transition: 'all 0.3s ease'
-                    }}
-                  >
-                    Đặt lịch tại nhà
-                  </Button>
                   <Button
                     component={NavLink}
                     to={`/order/at-center/${svc.serviceId}`}
                     variant="outlined"
                     size="large"
                     startIcon={<Business />}
-                    sx={{ 
+                    sx={{
                       flex: { xs: '1 1 100%', sm: '1 1 auto' },
                       py: 2,
                       px: 4,
@@ -465,7 +481,7 @@ const SelectedAdministrativeService = () => {
                         backgroundColor: 'rgba(76, 175, 80, 0.04)',
                         transform: 'translateY(-3px)',
                       },
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.3s ease',
                     }}
                   >
                     Đặt lịch tại cơ sở
@@ -479,26 +495,29 @@ const SelectedAdministrativeService = () => {
 
       {/* Reviews Section */}
       <Fade in={true} timeout={1000}>
-        <Card 
-          sx={{ 
+        <Card
+          sx={{
             mt: 4,
             boxShadow: '0 8px 32px rgba(76, 175, 80, 0.08)',
             borderRadius: 3,
             border: '1px solid rgba(76, 175, 80, 0.1)',
             background: 'linear-gradient(145deg, #ffffff 0%, #f1f8e9 100%)',
-            overflow: 'hidden'
+            overflow: 'hidden',
           }}
         >
           <CardContent sx={{ p: 0 }}>
             {/* Header */}
-            <Box 
-              sx={{ 
+            <Box
+              sx={{
                 p: 4,
                 background: 'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)',
-                color: 'white'
+                color: 'white',
               }}
             >
-              <Typography variant="h4" sx={{ fontWeight: 'bold', textAlign: 'center' }}>
+              <Typography
+                variant="h4"
+                sx={{ fontWeight: 'bold', textAlign: 'center' }}
+              >
                 Danh sách đánh giá
               </Typography>
             </Box>
@@ -506,37 +525,43 @@ const SelectedAdministrativeService = () => {
             <Box sx={{ p: 4 }}>
               {/* Rating Statistics */}
               {feedbackData && (
-                <Paper 
+                <Paper
                   elevation={0}
-                  sx={{ 
-                    p: 4, 
+                  sx={{
+                    p: 4,
                     mb: 4,
-                    background: 'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
+                    background:
+                      'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
                     border: '1px solid #4caf50',
-                    borderRadius: 3
+                    borderRadius: 3,
                   }}
                 >
-                  <Box sx={{ 
-                    display: 'flex', 
-                    flexDirection: { xs: 'column', md: 'row' },
-                    alignItems: 'center',
-                    gap: 4
-                  }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: { xs: 'column', md: 'row' },
+                      alignItems: 'center',
+                      gap: 4,
+                    }}
+                  >
                     {/* Rating Overview - Left side */}
-                    <Box sx={{ 
-                      flex: { md: '0 0 33.333333%' },
-                      width: { xs: '100%', md: 'auto' }
-                    }}>
+                    <Box
+                      sx={{
+                        flex: { md: '0 0 33.333333%' },
+                        width: { xs: '100%', md: 'auto' },
+                      }}
+                    >
                       <Box sx={{ textAlign: 'center' }}>
-                        <Typography 
-                          variant="h2" 
-                          sx={{ 
-                            fontWeight: 'bold', 
-                            background: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)',
+                        <Typography
+                          variant="h2"
+                          sx={{
+                            fontWeight: 'bold',
+                            background:
+                              'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)',
                             backgroundClip: 'text',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
-                            mb: 1
+                            mb: 1,
                           }}
                         >
                           {averageRating ? averageRating.toFixed(2) : '0.00'}
@@ -546,25 +571,34 @@ const SelectedAdministrativeService = () => {
                           readOnly
                           precision={0.1}
                           size="large"
-                          sx={{ 
+                          sx={{
                             mb: 2,
                             '& .MuiRating-iconFilled': {
-                              color: '#ffc107'
-                            }
+                              color: '#ffc107',
+                            },
                           }}
                         />
-                        <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 'medium' }}>
+                        <Typography
+                          variant="h6"
+                          color="text.secondary"
+                          sx={{ fontWeight: 'medium' }}
+                        >
                           {feedbacks.length} đánh giá
                         </Typography>
                       </Box>
                     </Box>
 
                     {/* Rating Distribution - Right side */}
-                    <Box sx={{ 
-                      flex: { md: '0 0 66.666667%' },
-                      width: { xs: '100%', md: 'auto' }
-                    }}>
-                      <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold', color: '#4caf50' }}>
+                    <Box
+                      sx={{
+                        flex: { md: '0 0 66.666667%' },
+                        width: { xs: '100%', md: 'auto' },
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        sx={{ mb: 3, fontWeight: 'bold', color: '#4caf50' }}
+                      >
                         📊 Tỷ lệ đánh giá
                       </Typography>
                       {[
@@ -572,17 +606,38 @@ const SelectedAdministrativeService = () => {
                         { stars: 4, key: 'FOUR_STAR' },
                         { stars: 3, key: 'THREE_STAR' },
                         { stars: 2, key: 'TWO_STAR' },
-                        { stars: 1, key: 'ONE_STAR' }
+                        { stars: 1, key: 'ONE_STAR' },
                       ].map(({ stars, key }) => {
-                        const percentage = ratingPercentage?.[key as keyof typeof ratingPercentage] || 0;
-                        
+                        const percentage =
+                          ratingPercentage?.[
+                            key as keyof typeof ratingPercentage
+                          ] || 0;
+
                         return (
-                          <Box key={stars} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', minWidth: '80px' }}>
-                              <Typography variant="body1" sx={{ mr: 1, fontWeight: 'medium' }}>
+                          <Box
+                            key={stars}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              mb: 2,
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                minWidth: '80px',
+                              }}
+                            >
+                              <Typography
+                                variant="body1"
+                                sx={{ mr: 1, fontWeight: 'medium' }}
+                              >
                                 {stars}
                               </Typography>
-                              <Star sx={{ color: '#ffc107', fontSize: '1.2rem' }} />
+                              <Star
+                                sx={{ color: '#ffc107', fontSize: '1.2rem' }}
+                              />
                             </Box>
                             <Box
                               sx={{
@@ -591,20 +646,28 @@ const SelectedAdministrativeService = () => {
                                 bgcolor: 'rgba(76, 175, 80, 0.1)',
                                 borderRadius: 2,
                                 mx: 3,
-                                overflow: 'hidden'
+                                overflow: 'hidden',
                               }}
                             >
                               <Box
                                 sx={{
                                   width: `${percentage}%`,
                                   height: '100%',
-                                  background: 'linear-gradient(90deg, #4caf50 0%, #388e3c 100%)',
+                                  background:
+                                    'linear-gradient(90deg, #4caf50 0%, #388e3c 100%)',
                                   borderRadius: 2,
-                                  transition: 'width 0.8s ease'
+                                  transition: 'width 0.8s ease',
                                 }}
                               />
                             </Box>
-                            <Typography variant="body1" sx={{ minWidth: '60px', fontWeight: 'bold', color: '#4caf50' }}>
+                            <Typography
+                              variant="body1"
+                              sx={{
+                                minWidth: '60px',
+                                fontWeight: 'bold',
+                                color: '#4caf50',
+                              }}
+                            >
                               {percentage.toFixed(2)}%
                             </Typography>
                           </Box>
@@ -617,16 +680,21 @@ const SelectedAdministrativeService = () => {
 
               {/* Individual Reviews */}
               {feedbacks.length === 0 ? (
-                <Box 
-                  sx={{ 
-                    textAlign: 'center', 
+                <Box
+                  sx={{
+                    textAlign: 'center',
                     py: 8,
-                    background: 'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
+                    background:
+                      'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
                     borderRadius: 3,
-                    border: '2px dashed rgba(76, 175, 80, 0.2)'
+                    border: '2px dashed rgba(76, 175, 80, 0.2)',
                   }}
                 >
-                  <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
+                  <Typography
+                    variant="h6"
+                    color="text.secondary"
+                    sx={{ mb: 1 }}
+                  >
                     😊 Chưa có đánh giá nào
                   </Typography>
                   <Typography variant="body1" color="text.secondary">
@@ -638,56 +706,81 @@ const SelectedAdministrativeService = () => {
                   {feedbacks.map((fb: any, index: number) => (
                     <React.Fragment key={fb.feedbackResponse.feedbackId}>
                       <Fade in={true} timeout={600 + index * 100}>
-                        <ListItem 
-                          alignItems="flex-start" 
-                          sx={{ 
+                        <ListItem
+                          alignItems="flex-start"
+                          sx={{
                             py: 3,
                             '&:hover': {
                               backgroundColor: 'rgba(76, 175, 80, 0.03)',
                               borderRadius: 2,
                             },
-                            transition: 'all 0.3s ease'
+                            transition: 'all 0.3s ease',
                           }}
                         >
                           <ListItemAvatar>
-                            <Avatar 
+                            <Avatar
                               sx={{
-                                background: 'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)',
+                                background:
+                                  'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)',
                                 width: 56,
                                 height: 56,
                                 fontSize: '1.5rem',
-                                fontWeight: 'bold'
+                                fontWeight: 'bold',
                               }}
                             >
-                              {fb.userFeedbackResponse?.fullName?.charAt(0) || '👤'}
+                              {fb.userFeedbackResponse?.fullName?.charAt(0) ||
+                                '👤'}
                             </Avatar>
                           </ListItemAvatar>
                           <ListItemText
                             primary={
                               <Box sx={{ mb: 2 }}>
-                                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1, color: '#191A1C', ml: 2 }}>
+                                <Typography
+                                  variant="h6"
+                                  sx={{
+                                    fontWeight: 'bold',
+                                    mb: 1,
+                                    color: '#191A1C',
+                                    ml: 2,
+                                  }}
+                                >
                                   {fb.userFeedbackResponse?.fullName || 'Khách'}
                                 </Typography>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 2,
+                                    flexWrap: 'wrap',
+                                  }}
+                                >
                                   <MuiRating
-                                    value={mapRatingTextToNumber(fb.feedbackResponse?.rating)}
+                                    value={mapRatingTextToNumber(
+                                      fb.feedbackResponse?.rating
+                                    )}
                                     readOnly
                                     size="small"
                                     sx={{
                                       '& .MuiRating-iconFilled': {
-                                        color: '#ffc107'
-                                      }
+                                        color: '#ffc107',
+                                      },
                                     }}
                                   />
                                   <Chip
                                     icon={<DateRange />}
-                                    label={new Date(fb.feedbackResponse?.dateSubmitted).toLocaleDateString() || 'N/A'}
+                                    label={
+                                      new Date(
+                                        fb.feedbackResponse?.dateSubmitted
+                                      ).toLocaleDateString() || 'N/A'
+                                    }
                                     size="small"
                                     variant="outlined"
                                     sx={{
                                       borderColor: '#4caf50',
                                       color: '#4caf50',
-                                      '& .MuiChip-icon': { color: '#4caf50 !important' }
+                                      '& .MuiChip-icon': {
+                                        color: '#4caf50 !important',
+                                      },
                                     }}
                                   />
                                 </Box>
@@ -699,14 +792,21 @@ const SelectedAdministrativeService = () => {
                                 sx={{
                                   p: 3,
                                   mt: 2,
-                                  background: 'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
+                                  background:
+                                    'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
                                   border: '1px solid rgba(76, 175, 80, 0.15)',
                                   borderRadius: 2,
-                                  borderLeft: '4px solid #4caf50'
+                                  borderLeft: '4px solid #4caf50',
                                 }}
                               >
-                                <Typography variant="body1" sx={{ lineHeight: 1.7, fontStyle: 'italic' }}>
-                                  "{fb.feedbackResponse?.feedbackText || 'Không có nhận xét'}"
+                                <Typography
+                                  variant="body1"
+                                  sx={{ lineHeight: 1.7, fontStyle: 'italic' }}
+                                >
+                                  "
+                                  {fb.feedbackResponse?.feedbackText ||
+                                    'Không có nhận xét'}
+                                  "
                                 </Typography>
                               </Paper>
                             }
@@ -714,7 +814,11 @@ const SelectedAdministrativeService = () => {
                         </ListItem>
                       </Fade>
                       {index < feedbacks.length - 1 && (
-                        <Divider variant="inset" component="li" sx={{ borderColor: 'rgba(76, 175, 80, 0.1)' }} />
+                        <Divider
+                          variant="inset"
+                          component="li"
+                          sx={{ borderColor: 'rgba(76, 175, 80, 0.1)' }}
+                        />
                       )}
                     </React.Fragment>
                   ))}
