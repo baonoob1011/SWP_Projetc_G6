@@ -13,11 +13,13 @@ import {
   Shield,
   Calendar,
   PackageSearch,
+  History,
 } from 'lucide-react';
 import OldPassWord from '../feature/OldPassword';
 import Booking from '../services/Booking';
 // import GetAllResult from '../feature/GetAllResult';
 import GetKitDeliveryStatus from '../feature/AppointmentStatus';
+import BookingHistory from '../services/BookingHistory';
 
 type OldProfile = {
   fullName: string;
@@ -37,7 +39,7 @@ const NewProfile = () => {
   const [editableField, setEditableField] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<
-    'profile' | 'changePassword' | 'appointment' | 'follow'
+    'profile' | 'changePassword' | 'appointment' | 'follow' | 'history'
   >('appointment');
 
   useEffect(() => {
@@ -140,6 +142,12 @@ const NewProfile = () => {
       id: 'follow',
       label: 'Theo dõi đơn hàng',
       icon: PackageSearch,
+      color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
+    },
+    {
+      id: 'history',
+      label: 'Lịch sử đơn hàng',
+      icon: History,
       color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
     },
   ];
@@ -264,9 +272,6 @@ const NewProfile = () => {
                   <div className="absolute inset-0 bg-black/10"></div>
                   <div className="relative">
                     <h2 className="text-2xl font-bold text-white">Cuộc hẹn</h2>
-                    <p className="text-purple-100 mt-2">
-                      Theo dõi các giao dịch và hoạt động trước đây
-                    </p>
                   </div>
                 </div>
                 <div className="p-8">
@@ -374,8 +379,36 @@ const NewProfile = () => {
                 </div>
               </div>
             )}
-            {activeTab === 'follow' && <GetKitDeliveryStatus />}
-
+            {activeTab === 'follow' && (
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl overflow-hidden">
+                <div className="relative px-8 py-6 bg-gradient-to-r from-blue-500 to-indigo-600">
+                  <div className="absolute inset-0 bg-black/10"></div>
+                  <div className="relative">
+                    <h2 className="text-2xl font-bold text-white">Đơn hàng</h2>
+                  </div>
+                </div>
+                <div className="p-8">
+                  {' '}
+                  <GetKitDeliveryStatus />
+                </div>
+              </div>
+            )}
+            {activeTab === 'history' && (
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl overflow-hidden">
+                <div className="relative px-8 py-6 bg-gradient-to-r from-blue-500 to-indigo-600">
+                  <div className="absolute inset-0 bg-black/10"></div>
+                  <div className="relative">
+                    <h2 className="text-2xl font-bold text-white">Lịch sử</h2>
+                    <p className="text-purple-100 mt-2">
+                      Theo dõi các giao dịch và hoạt động trước đây
+                    </p>
+                  </div>
+                </div>
+                <div className="p-8">
+                  <BookingHistory />
+                </div>
+              </div>
+            )}
             {/* Enhanced History Tab */}
           </div>
         </div>

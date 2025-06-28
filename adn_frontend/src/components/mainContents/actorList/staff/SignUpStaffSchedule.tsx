@@ -248,9 +248,6 @@ const SignUpStaffSchedule = () => {
   const handleStaff2Change = (event: SelectChangeEvent<string>) => {
     setSelectedStaff2(event.target.value);
   };
-  const handleStaff3Change = (event: SelectChangeEvent<string>) => {
-    setSelectedStaff3(event.target.value);
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

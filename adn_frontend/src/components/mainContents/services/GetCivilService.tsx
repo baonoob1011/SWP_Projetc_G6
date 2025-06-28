@@ -383,7 +383,7 @@ const CivilServiceList = () => {
                       </div>
                     )}
                     <div className="p-8">
-                      <h3 className="text-xl font-bold text-sky-600 mb-4 text-center">
+                      <h3 className="text-xl font-bold text-emerald-600 mb-4 text-center">
                         {service.serviceRequest.serviceName}
                       </h3>
 
@@ -392,7 +392,7 @@ const CivilServiceList = () => {
                           <span className="text-sm font-medium text-gray-600">
                             Loại dịch vụ:
                           </span>
-                          <span className="text-sm font-bold text-gray-800 bg-sky-100 px-3 py-1 rounded-full">
+                          <span className="text-sm font-bold text-gray-800 bg-emerald-100 px-3 py-1 rounded-full">
                             {translateServiceType(
                               service.serviceRequest.serviceType
                             )}
@@ -411,21 +411,21 @@ const CivilServiceList = () => {
 
                       <div className="mb-6">
                         <h4 className="text-sm font-bold text-gray-800 mb-3 flex items-center">
-                          <div className="w-4 h-4 bg-sky-400 rounded-full mr-2"></div>
+                          <div className="w-4 h-4 bg-emerald-400 rounded-full mr-2"></div>
                           Bảng giá dịch vụ
                         </h4>
                         <div className="space-y-2">
                           {service.priceListRequest.map((item, idx) => (
                             <div
                               key={idx}
-                              className="bg-gradient-to-r from-sky-50 to-cyan-50 p-4 rounded-xl border border-sky-100"
+                              className="bg-gradient-to-r from-emerald-50 to-teal-50 p-4 rounded-xl border border-emerald-100"
                             >
                               <div className="flex justify-between items-center">
                                 <div>
                                   <div className="font-medium text-gray-700">
                                     ⏱️ {item.time}
                                   </div>
-                                  <div className="text-2xl font-bold text-sky-600">
+                                  <div className="text-2xl font-bold text-emerald-600">
                                     {item.price.toLocaleString()}{' '}
                                     <span className="text-sm">VNĐ</span>
                                   </div>
@@ -435,38 +435,36 @@ const CivilServiceList = () => {
                           ))}
                         </div>
                       </div>
-                      <div className="d-flex justify-content-between gap-3">
-                        <div className="flex-fill text-center">
-                          <Button
-                            variant="contained"
-                            component={NavLink}
-                            to={`/order-civil/${service.serviceRequest.serviceId}`}
-                            state={{ price: service.priceListRequest }}
-                            sx={{
+
+                      <div className="text-center">
+                        <Button
+                          variant="contained"
+                          component={NavLink}
+                          to={`/order-civil/${service.serviceRequest.serviceId}`}
+                          state={{ price: service.priceListRequest }}
+                          sx={{
+                            background:
+                              'linear-gradient(45deg, #10b981 30%, #14b8a6 90%)',
+                            color: 'white',
+                            padding: '12px 32px',
+                            borderRadius: '12px',
+                            fontWeight: 'bold',
+                            boxShadow: '0 8px 16px rgba(16, 185, 129, 0.3)',
+                            '&:hover': {
                               background:
-                                'linear-gradient(45deg, #10b981 30%, #14b8a6 90%)',
-                              color: 'white',
-                              padding: '12px 32px',
-                              borderRadius: '12px',
-                              fontWeight: 'bold',
-                              boxShadow: '0 8px 16px rgba(16, 185, 129, 0.3)',
-                              '&:hover': {
-                                background:
-                                  'linear-gradient(45deg, #059669 30%, #0d9488 90%)',
-                                transform: 'scale(1.05)',
-                                boxShadow:
-                                  '0 12px 24px rgba(16, 185, 129, 0.4)',
-                              },
-                              transition: 'all 0.3s ease',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '8px',
-                            }}
-                          >
-                            <Plus size={20} />
-                            Đặt lịch
-                          </Button>
-                        </div>
+                                'linear-gradient(45deg, #059669 30%, #0d9488 90%)',
+                              transform: 'scale(1.05)',
+                              boxShadow: '0 12px 24px rgba(16, 185, 129, 0.4)',
+                            },
+                            transition: 'all 0.3s ease',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                          }}
+                        >
+                          <Plus size={20} />
+                          Đặt lịch
+                        </Button>
                       </div>
                     </div>
                   </div>
