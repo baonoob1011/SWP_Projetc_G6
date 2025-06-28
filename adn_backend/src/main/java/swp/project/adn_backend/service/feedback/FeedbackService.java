@@ -148,5 +148,36 @@ public class FeedbackService {
 
         return statistics;
     }
-//thuc lam update ,xoa
+
+    public Feedback updateFeedback(Long feedbackId, FeedbackRequest feedbackRequest, Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+
+        Feedback feedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.FEEDBACK_NOT_FOUND));
+
+        if (!Objects.equals(feedback.getUsers().getUserId(), userId)) {
+            throw new AppException(ErrorCodeUser.UNAUTHORIZED);
+        }
+
+        feedback.setRating(feedbackRequest.getRating());
+        feedback.setFeedbackText(feedbackRequest.getFeedbackText());
+        feedback.setDateSubmitted(LocalDate.now());
+
+        return feedbackRepository.save(feedback);
+    }
+
+    public void deleteFeedback(Long feedbackId, Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+
+        Feedback feedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.FEEDBACK_NOT_FOUND));
+
+        if (!Objects.equals(feedback.getUsers().getUserId(), userId)) {
+            throw new AppException(ErrorCodeUser.UNAUTHORIZED);
+        }
+
+        feedbackRepository.delete(feedback);
+    }
 }

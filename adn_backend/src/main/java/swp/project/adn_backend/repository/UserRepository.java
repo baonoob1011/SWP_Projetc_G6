@@ -1,6 +1,7 @@
 package swp.project.adn_backend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import swp.project.adn_backend.entity.Users;
 
@@ -20,5 +21,22 @@ public interface UserRepository extends JpaRepository<Users,Long> {
 
     boolean existsByIdCard(String idCard);
 
-
+    // JPQL queries for dashboard statistics
+    @Query("SELECT COUNT(u) FROM Users u WHERE u.enabled = true")
+    long countActiveUsers();
+    
+    @Query("SELECT COUNT(u) FROM Users u WHERE u.enabled = false OR u.enabled IS NULL")
+    long countInactiveUsers();
+    
+    @Query("SELECT COUNT(u) FROM Users u WHERE 'PATIENT' MEMBER OF u.roles")
+    long countUsersByPatientRole();
+    
+    @Query("SELECT COUNT(u) FROM Users u WHERE 'STAFF' MEMBER OF u.roles")
+    long countUsersByStaffRole();
+    
+    @Query("SELECT COUNT(u) FROM Users u WHERE 'MANAGER' MEMBER OF u.roles")
+    long countUsersByManagerRole();
+    
+    @Query("SELECT COUNT(u) FROM Users u WHERE 'ADMIN' MEMBER OF u.roles")
+    long countUsersByAdminRole();
 }

@@ -38,7 +38,7 @@ public class Staff {
     @Column(columnDefinition = "nvarchar(255)")
     String address;
     String phone;
-
+    StaffStatus staffStatus;
 
     @Column(name = "day_of_birth")
     LocalDate dateOfBirth;
@@ -72,6 +72,13 @@ public class Staff {
     })
     private List<Slot> slots;
 
+    public StaffStatus getStaffStatus() {
+        return staffStatus;
+    }
+
+    public void setStaffStatus(StaffStatus staffStatus) {
+        this.staffStatus = staffStatus;
+    }
 
     public List<Slot> getSlots() {
         return slots;

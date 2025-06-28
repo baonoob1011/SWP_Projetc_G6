@@ -4,6 +4,7 @@ public class PriceListResponse {
     private long priceId;
     private String time;
     private double price;
+    private double priceTmp;
 
     public PriceListResponse() {
     }
@@ -12,6 +13,14 @@ public class PriceListResponse {
         this.priceId = priceId;
         this.time = time;
         this.price = price;
+    }
+
+    public double getPriceTmp() {
+        return priceTmp;
+    }
+
+    public void setPriceTmp(double priceTmp) {
+        this.priceTmp = priceTmp;
     }
 
     public long getPriceId() {

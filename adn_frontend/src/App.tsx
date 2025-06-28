@@ -638,6 +638,14 @@ function App() {
               }
             />
             <Route
+              path="feedback/:serviceId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <Rating />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/feedback/:serviceId"
               element={
                 <ProtectedRoute allowedRoles={['USER']}>

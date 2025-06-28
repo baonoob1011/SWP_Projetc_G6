@@ -1,20 +1,11 @@
-package swp.project.adn_backend.entity;
+package swp.project.adn_backend.dto.response.registerConsultation;
 
-import jakarta.annotation.Generated;
-import jakarta.persistence.*;
 import swp.project.adn_backend.enums.ConsultationStatus;
 
-@Entity
-@Table(name = "register_for_consultation")
-public class RegisterForConsultation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class RegisterConsultationResponse {
     private long registerForConsultationId;
-    @Column(columnDefinition = "NVARCHAR(100)")
     private String name;
     private String phone;
-    @Column(name = "consultation_status")
-    @Enumerated(EnumType.STRING)
     private ConsultationStatus consultationStatus;
 
     public long getRegisterForConsultationId() {
