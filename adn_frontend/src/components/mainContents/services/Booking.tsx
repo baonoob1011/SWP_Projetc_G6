@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import type { BookingHistoryItem } from '../type/BookingType';
-import { FaEye, FaMoneyBillWave, FaTimes } from 'react-icons/fa';
-import styles from './Booking.module.css';
+import { FaEye, FaMoneyBillWave, FaTimes, FaCalendarAlt, FaStethoscope, FaMapMarkerAlt, FaUser, FaStar } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 // ==== COMPONENT ====
@@ -10,14 +9,38 @@ const Booking = () => {
   const [bookingList, setBookingList] = useState<BookingHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // const [selectedBooking, setSelectedBooking] =
-  //   useState<BookingHistoryItem | null>(null);
-  // const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+
   const translateAppointmentType = (type: string) => {
     if (type === 'CENTER') return 'Lấy mẫu tại cơ sở';
     if (type === 'HOME') return 'Lấy mẫu tại nhà';
     return 'Không xác định';
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'CONFIRMED':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'COMPLETED':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'CANCELLED':
+        return 'bg-red-100 text-red-800 border-red-200';
+      default:
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'CONFIRMED':
+        return 'Đã xác nhận';
+      case 'COMPLETED':
+        return 'Hoàn thành';
+      case 'CANCELLED':
+        return 'Đã hủy';
+      default:
+        return 'Chờ xác nhận';
+    }
   };
 
   const fetchData = () => {
@@ -63,7 +86,6 @@ const Booking = () => {
           setBookingList(fullList);
         }
       })
-
       .catch((err) => {
         setError(err.message);
         setLoading(false);
@@ -121,238 +143,198 @@ const Booking = () => {
       console.log(error);
     }
   };
-  return (
-    <div className="container mb-4">
-      {loading && <p>Đang tải dữ liệu...</p>}
-      {error && <p className="text-danger">{error}</p>}
 
-      {!loading && !error && (
-        <div className="table-responsive">
-          <table className="table table-bordered">
-            <thead className="table-light">
-              <tr>
-                <th>Số</th>
-                <th>Ngày</th>
-                <th>Trạng thái</th>
-                <th>Dịch vụ</th>
-                <th>Hình thức</th>
-                <th>Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookingList.map((item, idx) => (
-                <tr key={idx}>
-                  <td>{idx + 1}</td>
-                  <td>{item.show.appointmentDate}</td>
-                  <td>
-                    {item.show.appointmentStatus === 'CONFIRMED'
-                      ? 'Đã xác nhận'
-                      : 'Chưa xác nhận'}
-                  </td>
-                  <td>{item.services.map((s) => s.serviceName).join(', ')}</td>
-                  <td>{translateAppointmentType(item.show.appointmentType)}</td>
-                  <td>
-                    <div
-                      style={{
-                        display: 'inline-flex',
-                        gap: '8px',
-                        flexWrap: 'wrap',
-                      }}
-                    >
-                      {/* Xem thêm */}
-                      {/* <button
-                        className="btn btn-primary btn-sm d-flex align-items-center gap-1"
-                        onClick={() => {
-                          setSelectedBooking(item);
-                          setShowModal(true);
-                        }}
-                      >
-                        <FaEye />
-                      </button> */}
-
-                      {/* Hủy */}
-                      {item.show.appointmentStatus !== 'COMPLETED' && (
-                        <button
-                          type="button"
-                          className="btn btn-danger btn-sm d-flex align-items-center gap-1"
-                          onClick={() =>
-                            handleCanceled(item.show.appointmentId.toString())
-                          }
-                        >
-                          <FaTimes />
-                        </button>
-                      )}
-
-                      {/* Thanh toán */}
-                      {item.payments.length > 0 &&
-                        (!item.payments[0].getPaymentStatus ||
-                          item.payments[0].getPaymentStatus === 'UNPAID') &&
-                        item.payments[0].paymentId &&
-                        item.services.length > 0 &&
-                        item.services[0].serviceId &&
-                        (item.show.appointmentStatus === 'CONFIRMED' ||
-                          item.show.appointmentType === 'HOME') && (
-                          <button
-                            className="btn btn-success btn-sm d-flex align-items-center gap-1"
-                            onClick={() =>
-                              handlePayment(
-                                item.payments[0].paymentId,
-                                item.services[0].serviceId
-                              )
-                            }
-                          >
-                            <FaMoneyBillWave />
-                          </button>
-                        )}
-                    </div>
-                  </td>
-
-                  <td className={styles.tableCell}>
-                    {item.show.appointmentStatus === 'COMPLETED' && (
-                      <>
-                        {/* "Xem kết quả" Button */}
-                        <button
-                          className={`${styles.actionButton} ${styles.viewButton}`}
-                          onClick={
-                            () => navigate(`/result/${item.show.appointmentId}`) // Navigate to results page
-                          }
-                          title="Xem kết quả"
-                        >
-                          <FaEye />
-                        </button>
-
-                        {/* "Đánh giá" Button */}
-                        <button
-                          className={`${styles.actionButton} ${styles.viewButton}`}
-                          onClick={
-                            () =>
-                              navigate(
-                                `/feedback/${item.services[0].serviceId}`
-                              ) // Navigate to the feedback page
-                          }
-                          title="Đánh giá"
-                        >
-                          Đánh giá
-                        </button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+          <p className="text-gray-600 text-lg">Đang tải dữ liệu...</p>
         </div>
-      )}
+      </div>
+    );
+  }
 
-      {/* {showModal && selectedBooking && (
-        <div
-className="modal d-block"
-          tabIndex={-1}
-          role="dialog"
-          style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
-        >
-          <div className="modal-dialog modal-lg" role="document">
-            <div className="modal-content" style={{ marginTop: 120 }}>
-              <div className="modal-header">
-                <h5 className="modal-title">
-                  Chi tiết cuộc hẹn {selectedBooking.show.appointmentId}
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setShowModal(false)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <p>
-                  <strong>Ngày hẹn:</strong>{' '}
-                  {selectedBooking.show.appointmentDate}
-                </p>
-                <p>
-                  <strong>Trạng thái:</strong>{' '}
-                  {selectedBooking.show.appointmentStatus === 'CONFIRMED'
-                    ? 'Đã xác nhận'
-                    : 'Chưa xác nhận'}
-                </p>
-                <p>
-                  <strong>Ghi chú:</strong>{' '}
-                  {selectedBooking.show.note || 'Không có'}
-                </p>
-                <p>
-                  <strong>Dịch vụ:</strong>{' '}
-                  {selectedBooking.services
-                    .map((s) => s.serviceName)
-                    .join(', ')}
-                </p>
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center bg-white p-8 rounded-lg shadow-lg">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Có lỗi xảy ra</h2>
+          <p className="text-red-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
-                {selectedBooking.show.appointmentType === 'CENTER' && (
-                  <>
-                    <p>
-                      <strong>Phòng:</strong>{' '}
-                      {selectedBooking.room?.roomName || 'Không xác định'}
-                    </p>
-                    <p>
-                      <strong>Slot:</strong> {selectedBooking.slot[0]?.slotDate}{' '}
-                      | {selectedBooking.slot[0]?.startTime} -{' '}
-                      {selectedBooking.slot[0]?.endTime}
-                    </p>
-                    <p>
-                      <strong>Địa điểm:</strong>{' '}
-                      {selectedBooking.location
-                        .map(
-                          (l) => `${l.addressLine}, ${l.district}, ${l.city}`
-                        )
-                        .join('; ') || 'Không xác định'}
-                    </p>
-                  </>
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Lịch sử đặt khám</h1>
+          <p className="text-gray-600">Quản lý và theo dõi các cuộc hẹn khám bệnh của bạn</p>
+        </div>
+
+        {/* Booking Cards */}
+        <div className="space-y-6">
+          {bookingList.map((item, idx) => (
+            <div key={idx} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+              <div className="p-6">
+                {/* Header Row */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-blue-600 font-bold text-sm">#{idx + 1}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        Cuộc hẹn #{item.show.appointmentId}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        Mã đặt khám: {item.show.appointmentId}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(item.show.appointmentStatus)}`}>
+                    {getStatusText(item.show.appointmentStatus)}
+                  </span>
+                </div>
+
+                {/* Info Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                  <div className="flex items-center space-x-3">
+                    <FaCalendarAlt className="text-gray-400 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm text-gray-500">Ngày khám</p>
+                      <p className="font-medium text-gray-900">{item.show.appointmentDate}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-3">
+                    <FaStethoscope className="text-gray-400 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm text-gray-500">Dịch vụ</p>
+                      <p className="font-medium text-gray-900 line-clamp-1">
+                        {item.services.map((s) => s.serviceName).join(', ')}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-3">
+                    <FaMapMarkerAlt className="text-gray-400 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm text-gray-500">Hình thức</p>
+                      <p className="font-medium text-gray-900">
+                        {translateAppointmentType(item.show.appointmentType)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Payment Info */}
+                {item.payments.length > 0 && (
+                  <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-500">Thanh toán</p>
+                        <p className="font-medium text-gray-900">
+                          {item.payments[0].amount?.toLocaleString('vi-VN')} VNĐ
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-gray-500">Trạng thái</p>
+                        <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                          item.payments[0].getPaymentStatus === 'PAID' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {item.payments[0].getPaymentStatus === 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 )}
 
-                {selectedBooking.show.appointmentType === 'HOME' &&
-                  selectedBooking.kit && (
-                    <>
-                      <p>
-                        <strong>Mã Kit:</strong> {selectedBooking.kit.kitCode}
-                      </p>
-                      <p>
-                        <strong>Tên Kit:</strong> {selectedBooking.kit.kitName}
-                      </p>
-                      <p>
-                        <strong>Trạng thái:</strong>{' '}
-                        {selectedBooking.kit.kitStatus}
-                      </p>
-<p>
-                        <strong>Ngày giao:</strong>{' '}
-                        {selectedBooking.kit.deliveryDate}
-                      </p>
-                      <p>
-                        <strong>Ngày hoàn:</strong>{' '}
-                        {selectedBooking.kit.returnDate || 'Chưa hoàn'}
-                      </p>
-                    </>
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-3">
+                  {/* Cancel Button */}
+                  {item.show.appointmentStatus !== 'COMPLETED' && (
+                    <button
+                      type="button"
+                      className="inline-flex items-center px-4 py-2 border border-red-300 text-red-700 bg-white rounded-lg hover:bg-red-50 transition-colors duration-200 text-sm font-medium"
+                      onClick={() => handleCanceled(item.show.appointmentId.toString())}
+                    >
+                      <FaTimes className="mr-2" />
+                      Hủy cuộc hẹn
+                    </button>
                   )}
 
-                <hr />
-                <p>
-                  <strong>Thanh toán:</strong>{' '}
-                  {selectedBooking.payments.length > 0
-                    ? selectedBooking.payments[0].getPaymentStatus === 'PAID'
-                      ? `${selectedBooking.payments[0].amount} (Đã thanh toán)`
-                      : `${selectedBooking.payments[0].amount} (Chưa thanh toán)`
-                    : 'Chưa thanh toán'}
-                </p>
-              </div>
-              <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => setShowModal(false)}
-                >
-                  Đóng
-                </button>
+                  {/* Payment Button */}
+                  {item.payments.length > 0 &&
+                    (!item.payments[0].getPaymentStatus ||
+                      item.payments[0].getPaymentStatus === 'UNPAID') &&
+                    item.payments[0].paymentId &&
+                    item.services.length > 0 &&
+                    item.services[0].serviceId &&
+                    (item.show.appointmentStatus === 'CONFIRMED' ||
+                      item.show.appointmentType === 'HOME') && (
+                      <button
+                        className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
+                        onClick={() =>
+                          handlePayment(
+                            item.payments[0].paymentId,
+                            item.services[0].serviceId
+                          )
+                        }
+                      >
+                        <FaMoneyBillWave className="mr-2" />
+                        Thanh toán
+                      </button>
+                    )}
+
+                  {/* View Results Button */}
+                  {item.show.appointmentStatus === 'COMPLETED' && (
+                    <button
+                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
+                      onClick={() => navigate(`/result/${item.show.appointmentId}`)}
+                    >
+                      <FaEye className="mr-2" />
+                      Xem kết quả
+                    </button>
+                  )}
+
+                  {/* Review Button */}
+                  {item.show.appointmentStatus === 'COMPLETED' && (
+                    <button
+                      className="inline-flex items-center px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors duration-200 text-sm font-medium"
+                      onClick={() => navigate(`/feedback/${item.services[0].serviceId}`)}
+                    >
+                      <FaStar className="mr-2" />
+                      Đánh giá
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
-      )} */}
+
+        {/* Empty State */}
+        {bookingList.length === 0 && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+            <div className="text-gray-400 text-6xl mb-4">📅</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Chưa có cuộc hẹn nào</h3>
+            <p className="text-gray-600 mb-6">Bạn chưa có cuộc hẹn khám bệnh nào. Hãy đặt lịch khám để bắt đầu chăm sóc sức khỏe.</p>
+            <button className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
+              Đặt lịch khám ngay
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

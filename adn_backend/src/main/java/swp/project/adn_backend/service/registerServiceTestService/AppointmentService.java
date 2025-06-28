@@ -679,6 +679,71 @@ public class AppointmentService {
         List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
 
         for (Appointment appointment : appointmentList) {
+<<<<<<< Updated upstream
+=======
+            if (appointment.getAppointmentStatus().equals(AppointmentStatus.PENDING) ||
+                    appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED) ||
+            appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
+                if (appointment.getAppointmentType().equals(AppointmentType.CENTER)) {
+                    ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
+                    List<StaffAppointmentResponse> staff = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
+                    List<SlotAppointmentResponse> slot = List.of(appointmentMapper.toSlotAppointmentResponse(appointment.getSlot()));
+                    List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
+                    List<LocationAppointmentResponse> locations = List.of(appointmentMapper.toLocationAppointmentResponse(appointment.getLocation()));
+                    List<PaymentAppointmentResponse> payments = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
+
+
+                    RoomAppointmentResponse room = new RoomAppointmentResponse();
+                    room.setRoomName(appointment.getSlot().getRoom().getRoomName());
+
+                    AllAppointmentAtCenterResponse centerResponse = new AllAppointmentAtCenterResponse();
+                    centerResponse.setShowAppointmentResponse(show);
+                    centerResponse.setStaffAppointmentResponse(staff);
+                    centerResponse.setSlotAppointmentResponse(slot);
+                    centerResponse.setServiceAppointmentResponses(services);
+                    centerResponse.setLocationAppointmentResponses(locations);
+                    centerResponse.setRoomAppointmentResponse(room);
+                    centerResponse.setPaymentAppointmentResponse(payments);
+
+                    centerList.add(centerResponse);
+
+                } else if (
+                        appointment.getAppointmentType() == AppointmentType.HOME &&
+                                appointment.getServices().getServiceType() == ServiceType.CIVIL) {
+
+                    ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
+                    List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
+                    KitAppointmentResponse kit = appointmentMapper.toKitAppointmentResponse(appointment.getServices().getKit());
+                    List<PaymentAppointmentResponse> payments = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
+
+                    AllAppointmentAtHomeResponse homeResponse = new AllAppointmentAtHomeResponse();
+                    homeResponse.setShowAppointmentResponse(show);
+                    homeResponse.setServiceAppointmentResponses(services);
+                    homeResponse.setKitAppointmentResponse(kit);
+                    homeResponse.setPaymentAppointmentResponses(payments);
+
+                    homeList.add(homeResponse);
+                }
+            }
+        }
+
+        return new AllAppointmentResponse(centerList, homeList);
+    }
+
+    public AllAppointmentResponse getHistory(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+
+        Users userRegister = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+        List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
+
+        List<AllAppointmentAtCenterResponse> centerList = new ArrayList<>();
+        List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
+
+        for (Appointment appointment : appointmentList) {
+>>>>>>> Stashed changes
             if (appointment.getAppointmentType().equals(AppointmentType.CENTER)) {
 
                 ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
