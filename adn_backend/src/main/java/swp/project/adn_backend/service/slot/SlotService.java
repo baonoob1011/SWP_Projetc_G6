@@ -223,6 +223,7 @@ public class SlotService {
         }
         return fullSlotResponses;
     }
+
     @Transactional
     public List<GetFullSlotResponse> getAllSlotOfStaff(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -233,26 +234,21 @@ public class SlotService {
 
         List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();
 
-        // Đếm số lượng slot BOOKED
-        List<Slot> bookedSlots = staff.getSlots().stream()
-                .filter(slot -> slot.getSlotStatus() == SlotStatus.BOOKED)
-                .toList();
+        for (Slot slot : staff.getSlots()) {
+            if (slot.getSlotStatus().equals(SlotStatus.BOOKED)) {
+                SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
+                RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
+                roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
+                roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
+                roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
+                roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
 
-        // Xử lý từng slot BOOKED
-        for (Slot slot : bookedSlots) {
-            SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
+                GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
+                getFullSlotResponse.setSlotResponse(slotResponse);
+                getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
 
-            RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
-            roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
-            roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
-            roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
-            roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
-
-            GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
-            getFullSlotResponse.setSlotResponse(slotResponse);
-            getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
-
-            fullSlotResponses.add(getFullSlotResponse);
+                fullSlotResponses.add(getFullSlotResponse);
+            }
         }
 
         return fullSlotResponses;

@@ -47,7 +47,7 @@ public class SecurityConfig {
             "/api/services/get-all-civil-service",
             "/api/price/get-all-price/**",
             "/api/jasperpdf/**",
-            "/api/api/register-for-consultation/register-consultation/**",
+            "/api/register-for-consultation/register-consultation/**",
             "/api/blog/get-all-blog",
             "/api/discount/get-discount-by-service",
             "/api/services/get-service",
@@ -58,7 +58,6 @@ public class SecurityConfig {
     };
     private final String[] CASHIER_ENDPOINTS = {
             "/api/cashier/**",
-            "/api/slot/get-all-slot-of-staff/**",
     };
 
     private final String[] USER_ENDPOINTS = {
@@ -83,7 +82,11 @@ public class SecurityConfig {
             "/api/feedback/create-feedback/**",
             "/api/feedback/get-all-feedback-of-service/**",
     };
+    private final String[] STAFF_PUBLIC = {
+            "/api/sample/get-all-sample/**",
+            "/api/notification/get-notification/**",
 
+    };
     private final String[] STAFF_ENDPOINTS = {
             "/api/staff/update-profile",
             "/api/kit/get-all-kit-staff",
@@ -94,23 +97,25 @@ public class SecurityConfig {
             "/api/appointment/get-appointment-by-slot/**",
             "/api/appointment/get-appointment-of-user-by-phone/**",
             "/api/appointment/get-payment-at-center/**",
-            "/api/sample/collect-sample-patient/**",
-            "/api/sample/get-all-sample/**",
             "/api/slot/get-all-slot-of-staff/**",
-            "/api/result-locus/create-result-locus/**",
-            "/api/result-detail/create-result-detail/**",
+            "/api/slot/get-all-slot/**",
             "/api/kit-delivery-status/update-kit-status/**",
-            "/api/result-allele/create-result-allele",
-            "/api/locus/create-locus",
-            "/api/locus/get-all-locus",
             "/api/feedback/response-feedback",
             "/api/appointment/get-appointment-at-home-by-staff",
             "/api/kit-delivery-status/get-kit-status-staff-by-appointment/**",
-            "/api/appointment/get-appointment-at-home-to-get-sample",
-            "/api/notification/get-notification/**",
+            "/api/sample/collect-sample-patient/**",
             "/api/staff/**"
     };
 
+    private final String[] LAB_TECHNICIAN = {
+            "/api/appointment/get-appointment-at-home-to-get-sample",
+            "/api/result-allele/create-result-allele",
+            "/api/result-locus/create-result-locus/**",
+            "/api/result-detail/create-result-detail/**",
+            "/api/locus/create-locus",
+            "/api/locus/get-all-locus",
+
+    };
     private final String[] MANAGER_ENDPOINTS = {
             "/api/manager/update-profile",
             "/api/manager/**",
@@ -147,6 +152,8 @@ public class SecurityConfig {
                         // Quyền USER
                         .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN", "MANAGER")
                         .requestMatchers(CASHIER_ENDPOINTS).hasAnyRole("CASHIER", "ADMIN")
+                        .requestMatchers(LAB_TECHNICIAN).hasAnyRole("LAB_TECHNICIAN", "ADMIN")
+                        .requestMatchers(STAFF_PUBLIC).hasAnyRole("STAFF", "LAB_TECHNICIAN","CASHIER")
 
                         // Quyền STAFF
                         .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")

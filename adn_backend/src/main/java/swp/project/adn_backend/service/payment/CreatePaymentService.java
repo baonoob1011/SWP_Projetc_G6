@@ -3,6 +3,7 @@ package swp.project.adn_backend.service.payment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
+import swp.project.adn_backend.entity.Appointment;
 import swp.project.adn_backend.entity.Invoice;
 import swp.project.adn_backend.entity.Payment;
 import swp.project.adn_backend.entity.ServiceTest;
@@ -14,6 +15,7 @@ import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.repository.InvoiceRepository;
 import swp.project.adn_backend.repository.PaymentRepository;
 import swp.project.adn_backend.repository.ServiceTestRepository;
+import swp.project.adn_backend.service.registerServiceTestService.AppointmentService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,14 +28,14 @@ public class CreatePaymentService {
     private final PaymentRepository paymentRepository;
     private final ServiceTestRepository serviceTestRepository;
     private final InvoiceRepository invoiceRepository;
+    private AppointmentService appointmentService;
 
     @Autowired
-    public CreatePaymentService(PaymentRepository paymentRepository,
-                                ServiceTestRepository serviceTestRepository,
-                                InvoiceRepository invoiceRepository) {
+    public CreatePaymentService(PaymentRepository paymentRepository, ServiceTestRepository serviceTestRepository, InvoiceRepository invoiceRepository, AppointmentService appointmentService) {
         this.paymentRepository = paymentRepository;
         this.serviceTestRepository = serviceTestRepository;
         this.invoiceRepository = invoiceRepository;
+        this.appointmentService = appointmentService;
     }
 
     public CreatePaymentRequest createPayment(long paymentId, long serviceId) {
@@ -101,6 +103,8 @@ public class CreatePaymentService {
             payment.setPaymentStatus(PaymentStatus.PAID);
             payment.setTransitionDate(LocalDate.now());
             payment.getAppointment().setNote("Đã thanh toán");
+            appointmentService.increaseStaffNotification(payment.getAppointment().getStaff());
+
         }
         invoiceRepository.save(invoice1);
         System.out.println("✅ Invoice updated.");

@@ -135,8 +135,6 @@ public class AppointmentService {
         appointment.setAppointmentDate(slot.getSlotDate());
         appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
         appointment.setAppointmentType(AppointmentType.CENTER);
-        appointment.setNote("Vui lòng đến quầy thu ngân để thanh toán dịch vụ. " +
-                "Bạn chỉ cần cung cấp số điện thoại đã đăng ký để nhân viên hỗ trợ thanh toán nhanh chóng.");
         for (Staff staff : slot.getStaff()) {
             if (staff.getRole().equals("SAMPLE_COLLECTOR")) {
                 appointment.setStaff(staff);
@@ -178,7 +176,10 @@ public class AppointmentService {
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         paymentRepository.save(payment);
 
-
+        if(payment.getPaymentMethod().equals(PaymentMethod.CASH)){
+            appointment.setNote("Vui lòng đến quầy thu ngân để thanh toán dịch vụ. " +
+                    "Bạn chỉ cần cung cấp số điện thoại đã đăng ký để nhân viên hỗ trợ thanh toán nhanh chóng.");
+        }
         //nguoi dat hen
         userBookAppointment.setAppointments(new ArrayList<>(List.of(appointment)));
         Appointment saved = appointmentRepository.save(appointment);
@@ -207,15 +208,40 @@ public class AppointmentService {
 
 
         AllAppointmentAtCenterResponse allAppointmentAtCenterResponse = new AllAppointmentAtCenterResponse();
+
         allAppointmentAtCenterResponse.setShowAppointmentResponse(showAppointmentResponse);
-        allAppointmentAtCenterResponse.setUserAppointmentResponse(List.of(userAppointmentResponse));
-        allAppointmentAtCenterResponse.setStaffAppointmentResponse(staffAppointmentResponses);
-        allAppointmentAtCenterResponse.setSlotAppointmentResponse(List.of(slotAppointmentResponse));
-        allAppointmentAtCenterResponse.setRoomAppointmentResponse(roomAppointmentResponse);
-        allAppointmentAtCenterResponse.setServiceAppointmentResponses(List.of(serviceAppointmentResponse));
-        allAppointmentAtCenterResponse.setPatientAppointmentResponse(patientAppointmentResponses);
-        allAppointmentAtCenterResponse.setLocationAppointmentResponses(List.of(locationAppointmentResponse));
-        allAppointmentAtCenterResponse.setPriceAppointmentResponse(priceAppointmentResponse);
+
+        allAppointmentAtCenterResponse.setUserAppointmentResponse(
+                userAppointmentResponse != null ? List.of(userAppointmentResponse) : Collections.emptyList()
+        );
+
+        allAppointmentAtCenterResponse.setStaffAppointmentResponse(
+                staffAppointmentResponses != null ? staffAppointmentResponses : Collections.emptyList()
+        );
+
+        allAppointmentAtCenterResponse.setSlotAppointmentResponse(
+                slotAppointmentResponse != null ? List.of(slotAppointmentResponse) : Collections.emptyList()
+        );
+
+        allAppointmentAtCenterResponse.setRoomAppointmentResponse(
+                roomAppointmentResponse != null ? roomAppointmentResponse : new RoomAppointmentResponse()
+        );
+
+        allAppointmentAtCenterResponse.setServiceAppointmentResponses(
+                serviceAppointmentResponse != null ? List.of(serviceAppointmentResponse) : Collections.emptyList()
+        );
+
+        allAppointmentAtCenterResponse.setPatientAppointmentResponse(
+                patientAppointmentResponses != null ? patientAppointmentResponses : Collections.emptyList()
+        );
+
+        allAppointmentAtCenterResponse.setLocationAppointmentResponses(
+                locationAppointmentResponse != null ? List.of(locationAppointmentResponse) : Collections.emptyList()
+        );
+
+        allAppointmentAtCenterResponse.setPriceAppointmentResponse(
+                priceAppointmentResponse != null ? priceAppointmentResponse : Collections.emptyList()
+        );
 
         emailService.sendAppointmentAtCenterDetailsEmail(userBookAppointment.getEmail(), allAppointmentAtCenterResponse);
 
@@ -224,7 +250,7 @@ public class AppointmentService {
         return allAppointmentAtCenterResponse;
     }
     @Transactional
-    private void increaseStaffNotification(Staff staff) {
+    public void increaseStaffNotification(Staff staff) {
         Notification notification = staff.getNotification();
         if (notification == null) {
             notification = new Notification();

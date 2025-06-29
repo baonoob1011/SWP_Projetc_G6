@@ -5,6 +5,9 @@ import swp.project.adn_backend.enums.PaymentMethod;
 public class PaymentRequest {
     private PaymentMethod paymentMethod;
 
+    public PaymentRequest() {
+    }
+
     public PaymentRequest(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }

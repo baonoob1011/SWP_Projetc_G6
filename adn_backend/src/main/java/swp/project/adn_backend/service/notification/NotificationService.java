@@ -22,6 +22,13 @@ public class NotificationService {
     private EntityManager entityManager;
     private StaffRepository staffRepository;
 
+    @Autowired
+    public NotificationService(NotificationRepository notificationRepository, EntityManager entityManager, StaffRepository staffRepository) {
+        this.notificationRepository = notificationRepository;
+        this.entityManager = entityManager;
+        this.staffRepository = staffRepository;
+    }
+
     public NotificationResponse getNotification(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long staffId = jwt.getClaim("id");

@@ -13,8 +13,8 @@ import java.io.IOException;
 @Service
 public class GeminiChatService {
 
-    @Value("${gemini.api.key}")
-    private String apiKey;
+
+     String apiKey="AIzaSyD8gLg0uzrHc9fqOdA7izy3k1CbEyhyubY";
 
     private final OkHttpClient client = new OkHttpClient();
 
