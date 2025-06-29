@@ -161,15 +161,22 @@ public class ServiceTestService {
             if (s.getPriceLists() != null && !s.getPriceLists().isEmpty()) {
                 for (PriceList p : s.getPriceLists()) {
                     PriceListResponse res = new PriceListResponse();
-                    res.setPriceId(p.getPriceId());
                     res.setTime(p.getTime());
-                    for (Discount discount: s.getDiscounts()){
-                        if(discount.isActive()){
-                            res.setPriceTmp(p.getPrice());
-                            res.setPrice(p.getPrice() * (1 - discount.getDiscountValue() / 100.0));
+                    // Default: original price
+                    double finalPrice = p.getPrice();
+
+                    // Apply the first active discount, if any
+                    if (s.getDiscounts() != null && !s.getDiscounts().isEmpty()) {
+                        for (Discount discount : s.getDiscounts()) {
+                            if (discount.isActive()) {
+                                res.setPriceTmp(p.getPrice());
+                                finalPrice = p.getPrice() * (1 - discount.getDiscountValue() / 100.0);
+                                break; // apply only one active discount
+                            }
                         }
-                        res.setPrice(p.getPrice());
                     }
+
+                    res.setPrice(finalPrice);
                     priceReqs.add(res);
                 }
             }

@@ -30,7 +30,6 @@ public class Invoice {
 
     private LocalDateTime payDate; // Ngày giờ thanh toán
 
-    private String status; // PENDING | SUCCESS | FAILED
 
     private LocalDateTime createdDate; // Lưu thời điểm tạo invoice
 
@@ -135,13 +134,7 @@ public class Invoice {
         this.payDate = payDate;
     }
 
-    public String getStatus() {
-        return status;
-    }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public LocalDateTime getCreatedDate() {
         return createdDate;

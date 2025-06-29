@@ -22,8 +22,8 @@ public class Feedback {
     @Enumerated(EnumType.STRING) // lưu dưới dạng chuỗi: "ONE_STAR", "TWO_STAR", ...
     @Column(name = "rating", nullable = false)
     private Rating rating;
-
-    @Column(name = "feedback_text")
+    String feedbackResponse;
+    @Column(name = "feedback_text",columnDefinition = "nvarchar(255)")
     String feedbackText;
 
     @Column(name = "date_submitted")
@@ -75,6 +75,14 @@ public class Feedback {
 
     public void setRating(Rating rating) {
         this.rating = rating;
+    }
+
+    public String getFeedbackResponse() {
+        return feedbackResponse;
+    }
+
+    public void setFeedbackResponse(String feedbackResponse) {
+        this.feedbackResponse = feedbackResponse;
     }
 
     public long getFeedbackId() {

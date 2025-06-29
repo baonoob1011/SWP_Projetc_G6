@@ -72,6 +72,21 @@ public class Staff {
     })
     private List<Slot> slots;
 
+
+    @OneToOne(mappedBy = "staff", cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    }) // trỏ đến tên biến bên Notification
+    private Notification notification;
+
+    public Notification getNotification() {
+        return notification;
+    }
+
+    public void setNotification(Notification notification) {
+        this.notification = notification;
+    }
+
     public StaffStatus getStaffStatus() {
         return staffStatus;
     }
@@ -127,7 +142,6 @@ public class Staff {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
 
     public boolean isEnabled() {

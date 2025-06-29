@@ -57,9 +57,10 @@ public class AppointmentService {
     KitDeliveryStatusRepository kitDeliveryStatusRepository;
     InvoiceRepository invoiceRepository;
     StaffAssignmentTracker staffAssignmentTracker;
+    NotificationRepository notificationRepository;
 
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService, PatientService patientService, PriceListRepository priceListRepository, PaymentRepository paymentRepository, KitRepository kitRepository, PatientRepository patientRepository, KitDeliveryStatusRepository kitDeliveryStatusRepository, InvoiceRepository invoiceRepository, StaffAssignmentTracker staffAssignmentTracker) {
+    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService, PatientService patientService, PriceListRepository priceListRepository, PaymentRepository paymentRepository, KitRepository kitRepository, PatientRepository patientRepository, KitDeliveryStatusRepository kitDeliveryStatusRepository, InvoiceRepository invoiceRepository, StaffAssignmentTracker staffAssignmentTracker, NotificationRepository notificationRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentMapper = appointmentMapper;
         this.userRepository = userRepository;
@@ -78,6 +79,7 @@ public class AppointmentService {
         this.kitDeliveryStatusRepository = kitDeliveryStatusRepository;
         this.invoiceRepository = invoiceRepository;
         this.staffAssignmentTracker = staffAssignmentTracker;
+        this.notificationRepository = notificationRepository;
     }
 
     @Transactional
@@ -196,6 +198,7 @@ public class AppointmentService {
                 staffAppointmentResponses.add(response);
             }
         }
+        increaseStaffNotification(appointment.getStaff());
         SlotAppointmentResponse slotAppointmentResponse = appointmentMapper.toSlotAppointmentResponse(slot);
         ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(serviceTest);
         List<PatientAppointmentResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentService(appointment.getPatients());
@@ -219,6 +222,19 @@ public class AppointmentService {
 
         appointmentMapper.toAppointmentResponse(saved);
         return allAppointmentAtCenterResponse;
+    }
+    @Transactional
+    private void increaseStaffNotification(Staff staff) {
+        Notification notification = staff.getNotification();
+        if (notification == null) {
+            notification = new Notification();
+            notification.setStaff(staff);
+            notification.setNumOfNotification(1);
+            staff.setNotification(notification);
+            notificationRepository.save(notification);
+        } else {
+            notification.setNumOfNotification(notification.getNumOfNotification() + 1);
+        }
     }
 
     @Transactional
@@ -711,13 +727,21 @@ public class AppointmentService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
         List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
-
+        appointmentList.sort(Comparator.comparingInt(a -> {
+            return switch (a.getAppointmentStatus()) {
+                case PENDING -> 0;
+                case CONFIRMED -> 1;
+                case COMPLETED -> 2;
+                default -> 3;
+            };
+        }));
         List<AllAppointmentAtCenterResponse> centerList = new ArrayList<>();
         List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
 
         for (Appointment appointment : appointmentList) {
             if (appointment.getAppointmentStatus().equals(AppointmentStatus.PENDING) ||
-                    appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
+                    appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED) ||
+                    appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
                 if (appointment.getAppointmentType().equals(AppointmentType.CENTER)) {
                     ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
                     List<StaffAppointmentResponse> staff = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
@@ -778,7 +802,6 @@ public class AppointmentService {
 
         for (Appointment appointment : appointmentList) {
             if (appointment.getAppointmentType().equals(AppointmentType.CENTER)) {
-
                 ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
                 List<StaffAppointmentResponse> staff = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
                 List<SlotAppointmentResponse> slot = List.of(appointmentMapper.toSlotAppointmentResponse(appointment.getSlot()));

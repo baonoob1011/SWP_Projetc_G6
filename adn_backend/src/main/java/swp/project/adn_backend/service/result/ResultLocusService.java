@@ -104,7 +104,7 @@ public class ResultLocusService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
-        if(appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)){
+        if (appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
             throw new RuntimeException("Đơn đăng kí này đã có kết quả");
         }
         Map<String, List<Double>> allele1Map = new HashMap<>();
@@ -174,17 +174,47 @@ public class ResultLocusService {
         resultDetail.setConclusion(paternityProbability > 99.0 ? "Tr\u00f9ng kh\u1edbp quan h\u1ec7 cha \u2013 con sinh h\u1ecdc" : "Kh\u00f4ng tr\u00f9ng kh\u1edbp");
         resultDetail.setAppointment(appointment);
 
+        // Tạo kết quả mới
         Result result = new Result();
         result.setCollectionDate(sample1.getCollectionDate());
         result.setAppointment(appointment);
         result.setResultDate(LocalDate.now());
         result.setResultStatus(ResultStatus.COMPLETED);
+
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
-        appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+        Notification notification = appointment.getStaff().getNotification();
+        if (notification != null && notification.getNumOfNotification() > 0) {
+            notification.setNumOfNotification(notification.getNumOfNotification() - 1);
+        }        ServiceTest service = appointment.getServices();
+        if (service != null && service.getServiceType() != null) {
+
+            ServiceType type = service.getServiceType();
+
+            if (type.equals(ServiceType.CIVIL)) {
+                List<CivilService> civilServices = service.getCivilServices();
+                if (civilServices != null) {
+                    for (CivilService civilService : civilServices) {
+                        if (civilService.getSampleCollectionMethods().equals(SampleCollectionMethod.AT_CLINIC)) {
+                            if (appointment.getSlot() != null) {
+                                appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+                            }
+                            break; // nếu 1 cái là AT_CLINIC thì dừng
+                        }
+                    }
+                }
+
+            } else if (type.equals(ServiceType.ADMINISTRATIVE)) {
+                if (appointment.getSlot() != null) {
+                    appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+                }
+            }
+        }
+
         resultRepository.save(result);
 
         resultDetail.setResult(result);
         resultDetailRepository.save(resultDetail);
+
 
         for (ResultLocus rl : resultLocusList) {
             rl.setResultDetail(resultDetail);
@@ -225,7 +255,6 @@ public class ResultLocusService {
         }
         return 0.0; // Không có allele nào trùng
     }
-
 
 
     private double lookupFrequency(double allele) {

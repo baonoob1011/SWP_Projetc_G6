@@ -9,6 +9,15 @@ public class FeedbackResponse {
     private String feedbackText;
     private LocalDate dateSubmitted;
     private Rating rating;
+    private String feedbackResponse;
+
+    public String getFeedbackResponse() {
+        return feedbackResponse;
+    }
+
+    public void setFeedbackResponse(String feedbackResponse) {
+        this.feedbackResponse = feedbackResponse;
+    }
 
     public Rating getRating() {
         return rating;

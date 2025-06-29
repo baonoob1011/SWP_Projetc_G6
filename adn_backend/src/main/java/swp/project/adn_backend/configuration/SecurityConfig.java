@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
 
@@ -46,10 +47,14 @@ public class SecurityConfig {
             "/api/services/get-all-civil-service",
             "/api/price/get-all-price/**",
             "/api/jasperpdf/**",
+            "/api/api/register-for-consultation/register-consultation/**",
             "/api/blog/get-all-blog",
             "/api/discount/get-discount-by-service",
-            "/api/services/get-service"
-
+            "/api/services/get-service",
+            "/ws/**",                     // Cho phép WebSocket endpoint nếu dùng STOMP
+            "/topic/**",
+            "/app/**",
+            "/api/chat/**"
     };
     private final String[] CASHIER_ENDPOINTS = {
             "/api/cashier/**",
@@ -98,9 +103,11 @@ public class SecurityConfig {
             "/api/result-allele/create-result-allele",
             "/api/locus/create-locus",
             "/api/locus/get-all-locus",
+            "/api/feedback/response-feedback",
             "/api/appointment/get-appointment-at-home-by-staff",
             "/api/kit-delivery-status/get-kit-status-staff-by-appointment/**",
             "/api/appointment/get-appointment-at-home-to-get-sample",
+            "/api/notification/get-notification/**",
             "/api/staff/**"
     };
 

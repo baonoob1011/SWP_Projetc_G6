@@ -57,57 +57,58 @@ public class ServiceTest {
 //    @JoinColumn(name = "manager_id", nullable = false)
 //    Manager manager;
 
-    @OneToMany(mappedBy = "services", fetch = FetchType.EAGER, cascade = {
+    @OneToMany(mappedBy = "services", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Appointment> appointments;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<CivilService> civilServices;
 
-    @OneToMany(mappedBy = "serviceTest", fetch = FetchType.EAGER, cascade = {
+    @OneToMany(mappedBy = "serviceTest", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Invoice> invoices;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<AdministrativeService> administrativeService;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Feedback> feedbacks;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<PriceList> priceLists;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER, cascade = {
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Discount> discounts;
 
-    @ManyToOne(cascade = {
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     @JoinColumn(name = "kit_id")
     Kit kit;
 
     @OneToMany(mappedBy = "serviceTest", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Patient> patients;
+
 
     public ServiceTest() {
     }
