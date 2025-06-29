@@ -88,7 +88,7 @@ import CreateDiscount from './components/mainContents/actorList/admin/CreateDisc
 import SelectedCivilService from './components/mainContents/services/SelectedCivilService';
 import SelectedAdministrativeService from './components/mainContents/services/SelectedAdministrativeService';
 import { DashBoard } from './components/mainContents/actorList/admin/dashboard/Dashboard';
-import ChatComponent from './components/page/Messenger';
+// import ChatComponent from './components/page/Messenger';
 
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
@@ -654,14 +654,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/messenger"
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <ChatComponent />
                 </ProtectedRoute>
               }
-            />
+            /> */}
             <Route
               path="/u-profile"
               element={

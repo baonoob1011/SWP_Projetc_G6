@@ -184,14 +184,14 @@ const SelectedCivilService = () => {
             >
               {/* Product Image */}
               <Box
-                sx={{ flex: { md: '0 0 450px' }, position: 'relative', mt: 7 }}
+                sx={{ flex: { md: '0 0 450px' }, position: 'relative' }}
               >
                 {svc.image && (
                   <CardMedia
                     component="img"
                     image={`data:image/*;base64,${svc.image}`}
                     alt={svc.serviceName}
-                    sx={{
+                    sx={{ 
                       height: { xs: 700, md: 700 },
                       objectFit: 'cover',
                       borderRadius: { xs: 0, md: '12px 0 0 12px' },
@@ -441,7 +441,6 @@ const SelectedCivilService = () => {
                     </Stack>
                   </Box>
                 )}
-
                 {/* Active Discounts */}
                 {activeDiscounts.length > 0 && (
                   <Box sx={{ mb: 4 }}>
@@ -478,7 +477,6 @@ const SelectedCivilService = () => {
                     ))}
                   </Box>
                 )}
-
                 <Divider
                   sx={{ my: 4, borderColor: 'rgba(25, 118, 210, 0.1)' }}
                 />

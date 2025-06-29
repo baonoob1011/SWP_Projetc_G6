@@ -9,6 +9,8 @@ import {
   FaStethoscope,
   FaMapMarkerAlt,
   FaStar,
+  FaChevronLeft,
+  FaChevronRight,
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,6 +19,8 @@ const Booking = () => {
   const [bookingList, setBookingList] = useState<BookingHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 2;
   const navigate = useNavigate();
 
   const translateAppointmentType = (type: string) => {
@@ -92,6 +96,11 @@ const Booking = () => {
           setError('Không có dữ liệu cuộc hẹn.');
         } else {
           setBookingList(fullList);
+          // Reset to page 1 if current page is out of bounds
+          const totalPages = Math.ceil(fullList.length / itemsPerPage);
+          if (currentPage > totalPages) {
+            setCurrentPage(1);
+          }
         }
       })
       .catch((err) => {
@@ -152,6 +161,18 @@ const Booking = () => {
     }
   };
 
+  // Pagination logic
+  const totalPages = Math.ceil(bookingList.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentItems = bookingList.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -182,19 +203,21 @@ const Booking = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Lịch sử đặt khám
-          </h1>
           <p className="text-gray-600">
             Quản lý và theo dõi các cuộc hẹn khám bệnh của bạn
           </p>
+          {bookingList.length > 0 && (
+            <p className="text-sm text-gray-500 mt-2">
+              Hiển thị {startIndex + 1}-{Math.min(endIndex, bookingList.length)} trong tổng số {bookingList.length} cuộc hẹn
+            </p>
+          )}
         </div>
 
         {/* Booking Cards */}
         <div className="space-y-6">
-          {bookingList.map((item, idx) => (
+          {currentItems.map((item, idx) => (
             <div
-              key={idx}
+              key={startIndex + idx}
               className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
             >
               <div className="p-6">
@@ -204,7 +227,7 @@ const Booking = () => {
                     <div className="flex-shrink-0">
                       <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                         <span className="text-blue-600 font-bold text-sm">
-                          #{idx + 1}
+                          #{startIndex + idx + 1}
                         </span>
                       </div>
                     </div>
@@ -358,6 +381,53 @@ const Booking = () => {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        {bookingList.length > itemsPerPage && (
+          <div className="mt-8 flex items-center justify-center space-x-4">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
+                currentPage === 1
+                  ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              <FaChevronLeft className="mr-2" />
+              Trang trước
+            </button>
+
+            <div className="flex items-center space-x-2">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
+                    currentPage === page
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
+                currentPage === totalPages
+                  ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              Trang sau
+              <FaChevronRight className="ml-2" />
+            </button>
+          </div>
+        )}
 
         {/* Empty State */}
         {bookingList.length === 0 && (
