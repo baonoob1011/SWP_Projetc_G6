@@ -261,24 +261,19 @@ const SignUpStaffSchedule = () => {
       return;
     }
 
-    if (!selectedStaff1 && !selectedStaff2) {
+    if (!selectedStaff1 || !selectedStaff2) {
       setSnackbar({
         open: true,
-        message: 'Vui lòng chọn ít nhất một nhân viên',
+        message: 'Vui lòng chọn đủ 2 nhân viên',
         severity: 'error',
       });
       return;
     }
 
-    const staffSlotRequest: { staffId: string }[] = [];
-
-    if (selectedStaff1) {
-      staffSlotRequest.push({ staffId: selectedStaff1 });
-    }
-
-    if (selectedStaff2) {
-      staffSlotRequest.push({ staffId: selectedStaff2 });
-    }
+    const staffSlotRequest: { staffId: string }[] = [
+      { staffId: selectedStaff1 },
+      { staffId: selectedStaff2 },
+    ];
 
     const requestBody = {
       slotRequest: {
@@ -286,7 +281,7 @@ const SignUpStaffSchedule = () => {
         startTime: isSchedule.startTime + ':00',
         endTime: isSchedule.endTime + ':00',
       },
-      staffSlotRequest,
+      staffSlotRequest: staffSlotRequest,
     };
 
     try {
@@ -461,7 +456,7 @@ const SignUpStaffSchedule = () => {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    NHÂN VIÊN CHÍNH <span className="text-red-500">*</span>
+                    NHÂN VIÊN PHỤ <span className="text-red-500">*</span>
                   </label>
                   <FormControl fullWidth>
                     <Select
@@ -498,7 +493,7 @@ const SignUpStaffSchedule = () => {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    NHÂN VIÊN THU NGÂN <span className="text-red-500">*</span>
+                    NHÂN VIÊN THU MẪU <span className="text-red-500">*</span>
                   </label>
                   <FormControl fullWidth>
                     <Select
@@ -521,7 +516,7 @@ const SignUpStaffSchedule = () => {
                     >
                       <MenuItem value="">
                         <em style={{ color: '#9ca3af' }}>
-                          ----Chọn Thu Ngân----
+                          ----Chọn NHÂN VIÊN THU MẪU----
                         </em>
                       </MenuItem>
                       {isCollector.map((staff) => (
