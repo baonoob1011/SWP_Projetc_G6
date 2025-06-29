@@ -12,9 +12,8 @@ import {
 import { Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
+import { showErrorSnackbar, showSuccessAlert } from '../utils/notifications';
 import Swal from 'sweetalert2';
-import './styles/swal-custom.css';
 
 type Staff = {
   idCard: string;
@@ -30,19 +29,21 @@ type Staff = {
   createAt: string;
 };
 
-function GetStaffByAdmin() {
+function GetStaffTechnical() {
   const [account, setAccount] = useState<Staff[]>([]);
-  const [isAdmin, setIsAdmin] = useState(true);
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = async () => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:8080/api/staff/get-all-staff', {
-        method: 'GET',
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        'http://localhost:8080/api/staff/get-all-lab-technician',
+        {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (!res.ok) {
         setError('Không thể lấy dữ liệu');
         return;
@@ -54,10 +55,6 @@ function GetStaffByAdmin() {
       setError('Không thể lấy dữ liệu');
     }
   };
-
-  useEffect(() => {
-    setIsAdmin(localStorage.getItem('role') === 'ADMIN');
-  }, []);
 
   useEffect(() => {
     fetchData();
@@ -109,10 +106,6 @@ function GetStaffByAdmin() {
       setError('Mất kết nối với hệ thống');
     }
   };
-
-  if (!isAdmin) {
-    return;
-  }
 
   const searchByphone = account.filter((user) => user.phone.includes(search));
   return (
@@ -198,16 +191,6 @@ function GetStaffByAdmin() {
                   >
                     <Trash2 size={10} />
                   </Button>
-                  <Button
-                    variant="contained"
-                    component={NavLink}
-                    to={`/s-slot/${user.staffId}`}
-                    color="error"
-                    size="small"
-                    sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}
-                  >
-                    <Plus size={10} />
-                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -217,7 +200,7 @@ function GetStaffByAdmin() {
       </TableContainer>
       <Button
         component={NavLink}
-        to="/signup-staff"
+        to="/signup-staff-technical"
         className="normal-case"
         style={{ textDecoration: 'none' }}
       >
@@ -227,4 +210,4 @@ function GetStaffByAdmin() {
   );
 }
 
-export default GetStaffByAdmin;
+export default GetStaffTechnical;
