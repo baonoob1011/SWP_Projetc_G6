@@ -26,11 +26,19 @@ public class FeedbackController {
                 serviceId));
     }
 
+    @PostMapping("/response-feedback")
+    public ResponseEntity<String> feedbackResponse(@RequestBody FeedbackRequest feedbackRequest,
+                                                   @RequestParam long feedbackId) {
+        feedbackService.feedbackResponse(feedbackRequest,
+                feedbackId);
+        return ResponseEntity.ok("Response successful");
+    }
+
     @GetMapping("/get-all-feedback-of-service")
     public ResponseEntity<FeedbackStatisticsResponse> getFeedbackOfService(@RequestParam long serviceId) {
         return ResponseEntity.ok(feedbackService.getFeedbackOfService(serviceId));
     }
-    
+
     @PutMapping("/update-feedback/{id}")
     public ResponseEntity<Feedback> updateFeedback(@PathVariable("id") Long feedbackId,
                                                    @RequestBody @Valid FeedbackRequest feedbackRequest,

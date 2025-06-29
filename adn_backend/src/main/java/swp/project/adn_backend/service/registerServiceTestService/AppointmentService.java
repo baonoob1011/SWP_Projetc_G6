@@ -57,9 +57,10 @@ public class AppointmentService {
     KitDeliveryStatusRepository kitDeliveryStatusRepository;
     InvoiceRepository invoiceRepository;
     StaffAssignmentTracker staffAssignmentTracker;
+    NotificationRepository notificationRepository;
 
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService, PatientService patientService, PriceListRepository priceListRepository, PaymentRepository paymentRepository, KitRepository kitRepository, PatientRepository patientRepository, KitDeliveryStatusRepository kitDeliveryStatusRepository, InvoiceRepository invoiceRepository, StaffAssignmentTracker staffAssignmentTracker) {
+    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService, PatientService patientService, PriceListRepository priceListRepository, PaymentRepository paymentRepository, KitRepository kitRepository, PatientRepository patientRepository, KitDeliveryStatusRepository kitDeliveryStatusRepository, InvoiceRepository invoiceRepository, StaffAssignmentTracker staffAssignmentTracker, NotificationRepository notificationRepository) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentMapper = appointmentMapper;
         this.userRepository = userRepository;
@@ -78,6 +79,7 @@ public class AppointmentService {
         this.kitDeliveryStatusRepository = kitDeliveryStatusRepository;
         this.invoiceRepository = invoiceRepository;
         this.staffAssignmentTracker = staffAssignmentTracker;
+        this.notificationRepository = notificationRepository;
     }
 
     @Transactional
@@ -133,8 +135,6 @@ public class AppointmentService {
         appointment.setAppointmentDate(slot.getSlotDate());
         appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
         appointment.setAppointmentType(AppointmentType.CENTER);
-        appointment.setNote("Vui lòng đến quầy thu ngân để thanh toán dịch vụ. " +
-                "Bạn chỉ cần cung cấp số điện thoại đã đăng ký để nhân viên hỗ trợ thanh toán nhanh chóng.");
         for (Staff staff : slot.getStaff()) {
             if (staff.getRole().equals("SAMPLE_COLLECTOR")) {
                 appointment.setStaff(staff);
@@ -176,7 +176,10 @@ public class AppointmentService {
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         paymentRepository.save(payment);
 
-
+        if(payment.getPaymentMethod().equals(PaymentMethod.CASH)){
+            appointment.setNote("Vui lòng đến quầy thu ngân để thanh toán dịch vụ. " +
+                    "Bạn chỉ cần cung cấp số điện thoại đã đăng ký để nhân viên hỗ trợ thanh toán nhanh chóng.");
+        }
         //nguoi dat hen
         userBookAppointment.setAppointments(new ArrayList<>(List.of(appointment)));
         Appointment saved = appointmentRepository.save(appointment);
@@ -196,6 +199,7 @@ public class AppointmentService {
                 staffAppointmentResponses.add(response);
             }
         }
+        increaseStaffNotification(appointment.getStaff());
         SlotAppointmentResponse slotAppointmentResponse = appointmentMapper.toSlotAppointmentResponse(slot);
         ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(serviceTest);
         List<PatientAppointmentResponse> patientAppointmentResponses = appointmentMapper.toPatientAppointmentService(appointment.getPatients());
@@ -204,21 +208,59 @@ public class AppointmentService {
 
 
         AllAppointmentAtCenterResponse allAppointmentAtCenterResponse = new AllAppointmentAtCenterResponse();
+
         allAppointmentAtCenterResponse.setShowAppointmentResponse(showAppointmentResponse);
-        allAppointmentAtCenterResponse.setUserAppointmentResponse(List.of(userAppointmentResponse));
-        allAppointmentAtCenterResponse.setStaffAppointmentResponse(staffAppointmentResponses);
-        allAppointmentAtCenterResponse.setSlotAppointmentResponse(List.of(slotAppointmentResponse));
-        allAppointmentAtCenterResponse.setRoomAppointmentResponse(roomAppointmentResponse);
-        allAppointmentAtCenterResponse.setServiceAppointmentResponses(List.of(serviceAppointmentResponse));
-        allAppointmentAtCenterResponse.setPatientAppointmentResponse(patientAppointmentResponses);
-        allAppointmentAtCenterResponse.setLocationAppointmentResponses(List.of(locationAppointmentResponse));
-        allAppointmentAtCenterResponse.setPriceAppointmentResponse(priceAppointmentResponse);
+
+        allAppointmentAtCenterResponse.setUserAppointmentResponse(
+                userAppointmentResponse != null ? List.of(userAppointmentResponse) : Collections.emptyList()
+        );
+
+        allAppointmentAtCenterResponse.setStaffAppointmentResponse(
+                staffAppointmentResponses != null ? staffAppointmentResponses : Collections.emptyList()
+        );
+
+        allAppointmentAtCenterResponse.setSlotAppointmentResponse(
+                slotAppointmentResponse != null ? List.of(slotAppointmentResponse) : Collections.emptyList()
+        );
+
+        allAppointmentAtCenterResponse.setRoomAppointmentResponse(
+                roomAppointmentResponse != null ? roomAppointmentResponse : new RoomAppointmentResponse()
+        );
+
+        allAppointmentAtCenterResponse.setServiceAppointmentResponses(
+                serviceAppointmentResponse != null ? List.of(serviceAppointmentResponse) : Collections.emptyList()
+        );
+
+        allAppointmentAtCenterResponse.setPatientAppointmentResponse(
+                patientAppointmentResponses != null ? patientAppointmentResponses : Collections.emptyList()
+        );
+
+        allAppointmentAtCenterResponse.setLocationAppointmentResponses(
+                locationAppointmentResponse != null ? List.of(locationAppointmentResponse) : Collections.emptyList()
+        );
+
+        allAppointmentAtCenterResponse.setPriceAppointmentResponse(
+                priceAppointmentResponse != null ? priceAppointmentResponse : Collections.emptyList()
+        );
 
         emailService.sendAppointmentAtCenterDetailsEmail(userBookAppointment.getEmail(), allAppointmentAtCenterResponse);
 
 
         appointmentMapper.toAppointmentResponse(saved);
         return allAppointmentAtCenterResponse;
+    }
+    @Transactional
+    public void increaseStaffNotification(Staff staff) {
+        Notification notification = staff.getNotification();
+        if (notification == null) {
+            notification = new Notification();
+            notification.setStaff(staff);
+            notification.setNumOfNotification(1);
+            staff.setNotification(notification);
+            notificationRepository.save(notification);
+        } else {
+            notification.setNumOfNotification(notification.getNumOfNotification() + 1);
+        }
     }
 
     @Transactional
@@ -711,13 +753,21 @@ public class AppointmentService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
         List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
-
+        appointmentList.sort(Comparator.comparingInt(a -> {
+            return switch (a.getAppointmentStatus()) {
+                case PENDING -> 0;
+                case CONFIRMED -> 1;
+                case COMPLETED -> 2;
+                default -> 3;
+            };
+        }));
         List<AllAppointmentAtCenterResponse> centerList = new ArrayList<>();
         List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
 
         for (Appointment appointment : appointmentList) {
             if (appointment.getAppointmentStatus().equals(AppointmentStatus.PENDING) ||
-                    appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
+                    appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED) ||
+                    appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
                 if (appointment.getAppointmentType().equals(AppointmentType.CENTER)) {
                     ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
                     List<StaffAppointmentResponse> staff = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
@@ -778,7 +828,6 @@ public class AppointmentService {
 
         for (Appointment appointment : appointmentList) {
             if (appointment.getAppointmentType().equals(AppointmentType.CENTER)) {
-
                 ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
                 List<StaffAppointmentResponse> staff = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
                 List<SlotAppointmentResponse> slot = List.of(appointmentMapper.toSlotAppointmentResponse(appointment.getSlot()));

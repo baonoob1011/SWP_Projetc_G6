@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO;
 import swp.project.adn_backend.dto.request.discount.DiscountRequest;
 import swp.project.adn_backend.dto.response.discount.DiscountResponse;
@@ -66,5 +67,12 @@ public class DiscountService {
         TypedQuery<DiscountResponse> query = entityManager.createQuery(jpql, DiscountResponse.class);
         query.setParameter("serviceId", serviceId);
         return query.getResultList();
+    }
+
+    @Transactional
+    public void deleteDiscount(long discountId) {
+        Discount discount = discountRepository.findById(discountId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.DISCOUNT_NOT_EXISTS));
+        discount.setActive(false);
     }
 }

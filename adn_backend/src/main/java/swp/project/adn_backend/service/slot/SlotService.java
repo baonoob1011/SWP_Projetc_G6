@@ -17,18 +17,12 @@ import swp.project.adn_backend.dto.response.slot.GetFullSlotResponse;
 import swp.project.adn_backend.dto.response.slot.RoomSlotResponse;
 import swp.project.adn_backend.dto.response.slot.SlotResponse;
 import swp.project.adn_backend.dto.response.slot.StaffSlotResponse;
-import swp.project.adn_backend.entity.Room;
-import swp.project.adn_backend.entity.Slot;
-import swp.project.adn_backend.entity.Staff;
-import swp.project.adn_backend.entity.Users;
+import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.SlotStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.SlotMapper;
-import swp.project.adn_backend.repository.RoomRepository;
-import swp.project.adn_backend.repository.SlotRepository;
-import swp.project.adn_backend.repository.StaffRepository;
-import swp.project.adn_backend.repository.UserRepository;
+import swp.project.adn_backend.repository.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -47,15 +41,17 @@ public class SlotService {
     StaffRepository staffRepository;
     EntityManager entityManager;
     RoomRepository roomRepository;
+    NotificationRepository notificationRepository;
 
     @Autowired
-    public SlotService(SlotMapper slotMapper, SlotRepository slotRepository, UserRepository userRepository, StaffRepository staffRepository, EntityManager entityManager, RoomRepository roomRepository) {
+    public SlotService(SlotMapper slotMapper, SlotRepository slotRepository, UserRepository userRepository, StaffRepository staffRepository, EntityManager entityManager, RoomRepository roomRepository, NotificationRepository notificationRepository) {
         this.slotMapper = slotMapper;
         this.slotRepository = slotRepository;
         this.userRepository = userRepository;
         this.staffRepository = staffRepository;
         this.entityManager = entityManager;
         this.roomRepository = roomRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     public List<SlotResponse> createSlot(SlotRequest slotRequest, long roomId, List<StaffSlotRequest> staffSlotRequests) {
@@ -119,18 +115,7 @@ public class SlotService {
             slot.setSlotDate(currentDate);
             slot.setRoom(room);
             slot.setStaff(staffList); // set staff trước khi xử lý role
-
-             // Mặc định là AVAILABLE
             slot.setSlotStatus(SlotStatus.AVAILABLE);
-
-            // Nếu có staff là CASHIER → set BOOKED
-            for (Staff staff : staffList) {
-                if ("CASHIER".equals(staff.getRole())) {
-                    slot.setSlotStatus(SlotStatus.BOOKED);
-                    break;
-                }
-            }
-
             createdSlots.add(slotRepository.save(slot));
             currentDate = currentDate.plusDays(1);
         }
@@ -239,39 +224,36 @@ public class SlotService {
         return fullSlotResponses;
     }
 
+    @Transactional
     public List<GetFullSlotResponse> getAllSlotOfStaff(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
 
         Staff staff = staffRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+
         List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();
-        List<Slot> slotList = staff.getSlots();
-        GetFullSlotResponse getAllServiceResponse = null;
-        for (Slot slot : slotList) {
-//            if (slot.getSlotStatus().equals(SlotStatus.BOOKED)) {
-            SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
 
-            //lay room
-            RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
-            roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
-            roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
-            roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
-            roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
+        for (Slot slot : staff.getSlots()) {
+            if (slot.getSlotStatus().equals(SlotStatus.BOOKED)) {
+                SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
+                RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
+                roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
+                roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
+                roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
+                roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
 
+                GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
+                getFullSlotResponse.setSlotResponse(slotResponse);
+                getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
 
-            GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
-            getFullSlotResponse.setSlotResponse(slotResponse);
-            getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
-
-
-            //lay full response
-            fullSlotResponses.add(getFullSlotResponse);
-
-//            }
+                fullSlotResponses.add(getFullSlotResponse);
+            }
         }
+
         return fullSlotResponses;
     }
+
 
     public void deleteSlot(long slotId) {
         Slot slot = slotRepository.findById(slotId)

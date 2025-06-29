@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.request.feedback.FeedbackRequest;
 import swp.project.adn_backend.dto.request.feedback.FeedbackStatisticsRequest;
 import swp.project.adn_backend.dto.response.feedback.*;
@@ -41,6 +42,14 @@ public class FeedbackService {
         this.userRepository = userRepository;
         this.feedbackMapper = feedbackMapper;
         this.feedbackRepository = feedbackRepository;
+    }
+
+    @Transactional
+    public void feedbackResponse(FeedbackRequest feedbackRequest,
+                                             long feedbackId) {
+        Feedback feedback = feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.FEEDBACK_NOT_FOUND));
+        feedback.setFeedbackResponse(feedbackRequest.getFeedbackResponse());
     }
 
     public FeedbackResponse createFeedback(Authentication authentication,

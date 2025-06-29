@@ -23,9 +23,11 @@ import swp.project.adn_backend.repository.AppointmentRepository;
 import swp.project.adn_backend.repository.KitDeliveryStatusRepository;
 import swp.project.adn_backend.repository.StaffRepository;
 import swp.project.adn_backend.repository.UserRepository;
+import swp.project.adn_backend.service.slot.StaffAssignmentTracker;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class KitDeliveryStatusService {
@@ -35,15 +37,18 @@ public class KitDeliveryStatusService {
     private AppointmentRepository appointmentRepository;
     private KitDeliveryStatusMapper kitDeliveryStatusMapper;
     private StaffRepository staffRepository;
+    private StaffAssignmentTracker staffAssignmentTracker;
+
 
     @Autowired
-    public KitDeliveryStatusService(KitDeliveryStatusRepository kitDeliveryStatusRepository, UserRepository userRepository, EntityManager entityManager, AppointmentRepository appointmentRepository, KitDeliveryStatusMapper kitDeliveryStatusMapper, StaffRepository staffRepository) {
+    public KitDeliveryStatusService(KitDeliveryStatusRepository kitDeliveryStatusRepository, UserRepository userRepository, EntityManager entityManager, AppointmentRepository appointmentRepository, KitDeliveryStatusMapper kitDeliveryStatusMapper, StaffRepository staffRepository, StaffAssignmentTracker staffAssignmentTracker) {
         this.kitDeliveryStatusRepository = kitDeliveryStatusRepository;
         this.userRepository = userRepository;
         this.entityManager = entityManager;
         this.appointmentRepository = appointmentRepository;
         this.kitDeliveryStatusMapper = kitDeliveryStatusMapper;
         this.staffRepository = staffRepository;
+        this.staffAssignmentTracker = staffAssignmentTracker;
     }
 
     public List<KitDeliveryStatusInfoDTO> getKitDeliveryStatus(Authentication authentication) {
@@ -82,9 +87,23 @@ public class KitDeliveryStatusService {
                                                              long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        List<Staff> labTechnician = staffRepository.findAll();
         KitDeliveryStatus kitDeliveryStatus = appointment.getKitDeliveryStatus();
-        if(kitDeliveryStatusRequest.getDeliveryStatus().equals(DeliveryStatus.DONE)){
+        if (kitDeliveryStatusRequest.getDeliveryStatus().equals(DeliveryStatus.DONE)) {
             kitDeliveryStatus.setReturnDate(LocalDate.now());
+            // Lọc ra danh sách nhân viên tại nhà còn hoạt động
+            List<Staff> labTechnician1 = labTechnician.stream()
+                    .filter(staff -> "LAB_TECHNICIAN".equals(staff.getRole()))
+                    .collect(Collectors.toList());
+
+            if (labTechnician1.isEmpty()) {
+                throw new RuntimeException("Không có nhân viên lab");
+            }
+
+            // Chọn nhân viên tiếp theo theo round-robin
+            int selectedIndex = staffAssignmentTracker.getNextIndex(labTechnician1.size());
+            Staff selectedStaff = labTechnician1.get(selectedIndex);
+            appointment.setStaff(selectedStaff);
         }
         if (kitDeliveryStatusRequest.getDeliveryStatus() != null) {
             kitDeliveryStatus.setDeliveryStatus(kitDeliveryStatusRequest.getDeliveryStatus());
@@ -92,7 +111,7 @@ public class KitDeliveryStatusService {
         if (kitDeliveryStatusRequest.getReturnDate() != null) {
             kitDeliveryStatus.setReturnDate(kitDeliveryStatusRequest.getReturnDate());
         }
-        KitDeliveryStatusResponse kitDeliveryStatusResponse=kitDeliveryStatusMapper.toKitDeliveryStatusResponse(kitDeliveryStatus);
+        KitDeliveryStatusResponse kitDeliveryStatusResponse = kitDeliveryStatusMapper.toKitDeliveryStatusResponse(kitDeliveryStatus);
         return kitDeliveryStatusResponse;
     }
 }

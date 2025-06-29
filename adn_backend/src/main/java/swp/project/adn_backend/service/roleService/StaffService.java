@@ -80,6 +80,15 @@ public class StaffService {
         return query.getResultList();
     }
 
+    public List<StaffBasicInfo> getAllLabTechnicianBasicInfo() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo(" +
+                "s.staffId, s.fullName, s.phone, s.email) FROM Staff s " +
+                "Where s.role=:role";
+        TypedQuery<StaffBasicInfo> query = entityManager.createQuery(jpql, StaffBasicInfo.class);
+        query.setParameter("role", "LAB_TECHNICIAN");
+        return query.getResultList();
+    }
+
     public List<StaffBasicInfo> getAllStaffBasicInfo() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo(" +
                 "s.staffId, s.fullName, s.phone, s.email) FROM Staff s " +

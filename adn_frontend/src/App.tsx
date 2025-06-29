@@ -88,8 +88,11 @@ import CreateDiscount from './components/mainContents/actorList/admin/CreateDisc
 import SelectedCivilService from './components/mainContents/services/SelectedCivilService';
 import SelectedAdministrativeService from './components/mainContents/services/SelectedAdministrativeService';
 import { DashBoard } from './components/mainContents/actorList/admin/dashboard/Dashboard';
+
 // import ChatComponent from './components/page/Messenger';
 
+import GetStaffTechnical from './components/mainContents/actorList/staff/GetStaffTechnical';
+import SignUpStaffTechnical from './components/mainContents/actorList/staff/SignUpStaffTechnical';
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
@@ -184,6 +187,14 @@ function App() {
                   }
                 />
                 <Route
+                  path="technical"
+                  element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <GetStaffTechnical />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="appointment"
                   element={
                     <ProtectedRoute allowedRoles={['ADMIN']}>
@@ -222,6 +233,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <SignUpStaff />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup-staff-technical"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <SignUpStaffTechnical />
                   </ProtectedRoute>
                 }
               />

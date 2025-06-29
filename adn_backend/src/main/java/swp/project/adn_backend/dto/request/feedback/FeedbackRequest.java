@@ -3,6 +3,7 @@ package swp.project.adn_backend.dto.request.feedback;
 import swp.project.adn_backend.enums.Rating;
 
 public class FeedbackRequest {
+    String feedbackResponse;
 
     String feedbackText;
 
@@ -24,6 +25,11 @@ public class FeedbackRequest {
         this.feedbackText = feedbackText;
     }
 
+    public String getFeedbackResponse() {
+        return feedbackResponse;
+    }
 
-
+    public void setFeedbackResponse(String feedbackResponse) {
+        this.feedbackResponse = feedbackResponse;
+    }
 }

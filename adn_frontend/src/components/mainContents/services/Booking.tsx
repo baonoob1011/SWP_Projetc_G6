@@ -22,7 +22,6 @@ const Booking = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 2;
   const navigate = useNavigate();
-
   const translateAppointmentType = (type: string) => {
     if (type === 'CENTER') return 'Lấy mẫu tại cơ sở';
     if (type === 'HOME') return 'Lấy mẫu tại nhà';
@@ -73,24 +72,26 @@ const Booking = () => {
         const centerList = data.allAppointmentAtCenterResponse || [];
         const homeList = data.allAppointmentAtHomeResponse || [];
 
-        const fullList: BookingHistoryItem[] = [...centerList, ...homeList].map(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (res: any) => ({
-            show: res.showAppointmentResponse,
-            patients: res.patientAppointmentResponse || [],
-            staff: res.staffAppointmentResponse || [],
-            user: res.userAppointmentResponse || [],
-            slot: res.slotAppointmentResponse || [],
-            services: res.serviceAppointmentResponses || [],
-            location: res.locationAppointmentResponses || [],
-            room: res.roomAppointmentResponse || null,
-            payments:
-              res.paymentAppointmentResponse ||
-              res.paymentAppointmentResponses || // <- dành cho atHome
-              [],
-            kit: res.kitAppointmentResponse || null, // <- nếu có ở lịch hẹn tại nhà
-          })
-        );
+        const fullList: BookingHistoryItem[] = [...centerList, ...homeList]
+          .map(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (res: any) => ({
+              show: res.showAppointmentResponse,
+              patients: res.patientAppointmentResponse || [],
+              staff: res.staffAppointmentResponse || [],
+              user: res.userAppointmentResponse || [],
+              slot: res.slotAppointmentResponse || [],
+              services: res.serviceAppointmentResponses || [],
+              location: res.locationAppointmentResponses || [],
+              room: res.roomAppointmentResponse || null,
+              payments:
+                res.paymentAppointmentResponse ||
+                res.paymentAppointmentResponses || // <- dành cho atHome
+                [],
+              kit: res.kitAppointmentResponse || null, // <- nếu có ở lịch hẹn tại nhà
+            })
+          )
+          .sort((a, b) => b.show.appointmentId - a.show.appointmentId);
 
         if (fullList.length === 0) {
           setError('Không có dữ liệu cuộc hẹn.');
@@ -198,7 +199,7 @@ const Booking = () => {
     );
   }
 
-  return (
+return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}

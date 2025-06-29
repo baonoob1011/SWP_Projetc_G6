@@ -19,11 +19,14 @@ import swp.project.adn_backend.mapper.AppointmentMapper;
 import swp.project.adn_backend.mapper.SampleMapper;
 import swp.project.adn_backend.mapper.StaffMapper;
 import swp.project.adn_backend.repository.*;
+import swp.project.adn_backend.service.registerServiceTestService.AppointmentService;
+import swp.project.adn_backend.service.slot.StaffAssignmentTracker;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -37,9 +40,11 @@ public class SampleService {
     StaffMapper staffMapper;
     AllSampleResponseMapper allSampleResponseMapper;
     AppointmentMapper appointmentMapper;
+    private StaffAssignmentTracker staffAssignmentTracker;
+    AppointmentService appointmentService;
 
     @Autowired
-    public SampleService(SampleRepository sampleRepository, SampleMapper sampleMapper, PatientRepository patientRepository, StaffRepository staffRepository, ServiceTestRepository serviceTestRepository, AppointmentRepository appointmentRepository, StaffMapper staffMapper, AllSampleResponseMapper allSampleResponseMapper, AppointmentMapper appointmentMapper) {
+    public SampleService(SampleRepository sampleRepository, SampleMapper sampleMapper, PatientRepository patientRepository, StaffRepository staffRepository, ServiceTestRepository serviceTestRepository, AppointmentRepository appointmentRepository, StaffMapper staffMapper, AllSampleResponseMapper allSampleResponseMapper, AppointmentMapper appointmentMapper, StaffAssignmentTracker staffAssignmentTracker) {
         this.sampleRepository = sampleRepository;
         this.sampleMapper = sampleMapper;
         this.patientRepository = patientRepository;
@@ -49,6 +54,7 @@ public class SampleService {
         this.staffMapper = staffMapper;
         this.allSampleResponseMapper = allSampleResponseMapper;
         this.appointmentMapper = appointmentMapper;
+        this.staffAssignmentTracker = staffAssignmentTracker;
     }
 
     public SampleResponse collectSample(long patientId,
@@ -61,7 +67,7 @@ public class SampleService {
         Long staffId = jwt.getClaim("id");
         Staff staff = staffRepository.findById(staffId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-
+        List<Staff> labTechnician = staffRepository.findAll();
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PATIENT_INFO_NOT_EXISTS));
 
@@ -79,6 +85,20 @@ public class SampleService {
         sample.setKit(serviceTest.getKit());
         sample.setAppointment(appointment);
         patient.setPatientStatus(PatientStatus.SAMPLE_COLLECTED);
+        // Lọc ra danh sách nhân viên tại nhà còn hoạt động
+        List<Staff> labTechnician1 = labTechnician.stream()
+                .filter(lab -> "LAB_TECHNICIAN".equals(lab.getRole()))
+                .collect(Collectors.toList());
+
+        if (labTechnician1.isEmpty()) {
+            throw new RuntimeException("Không có nhân viên lab");
+        }
+
+        // Chọn nhân viên tiếp theo theo round-robin
+        int selectedIndex = staffAssignmentTracker.getNextIndex(labTechnician1.size());
+        Staff selectedStaff = labTechnician1.get(selectedIndex);
+        appointmentService.increaseStaffNotification(selectedStaff);
+        appointment.setStaff(selectedStaff);
         SampleResponse response = sampleMapper.toSampleResponse(sampleRepository.save(sample));
         return response;
     }

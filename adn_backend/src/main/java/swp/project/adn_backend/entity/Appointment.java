@@ -18,6 +18,7 @@ import java.util.List;
 @Table(name = "Appointment")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Appointment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "appointment_id")
@@ -36,71 +37,67 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     AppointmentType appointmentType;
 
-    @ManyToOne(cascade = {
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     @JoinColumn(name = "user_id")
     Users users;
 
-    @ManyToOne(cascade = {
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     @JoinColumn(name = "staff_id")
     Staff staff;
 
-    @OneToMany(mappedBy = "appointment", fetch = FetchType.EAGER, cascade = {
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Invoice> invoices;
 
-    @OneToMany(mappedBy = "appointment", fetch = FetchType.EAGER, cascade = {
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Patient> patients;
-    @OneToMany(mappedBy = "appointment", fetch = FetchType.EAGER, cascade = {
+
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Result> results;
-    @OneToMany(mappedBy = "appointment", fetch = FetchType.EAGER, cascade = {
+
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     List<Sample> sampleList;
 
-    @ManyToOne(cascade = {
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     @JoinColumn(name = "slot_id")
     Slot slot;
 
-    @ManyToOne(cascade = {
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     @JoinColumn(name = "service_id")
     ServiceTest services;
 
-    //    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = {
-//            CascadeType.PERSIST, CascadeType.MERGE,
-//            CascadeType.DETACH, CascadeType.REFRESH
-//    })
-//    List<Patient> patients;
-    @ManyToOne(cascade = {
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH,
+            CascadeType.DETACH, CascadeType.REFRESH
     })
     @JoinColumn(name = "location_id")
     Location location;
 
-    @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)
-    private KitDeliveryStatus kitDeliveryStatus;
-
+    @OneToOne(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    KitDeliveryStatus kitDeliveryStatus;
 
     @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Payment> payments;

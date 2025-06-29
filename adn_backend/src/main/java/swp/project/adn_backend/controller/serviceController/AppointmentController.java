@@ -76,10 +76,10 @@ public class AppointmentController {
 //        return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
 //    }
 
-    @GetMapping("/get-appointment-history-user")
-    public ResponseEntity<AllAppointmentResponse> getHistoryAppointmentUser(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getHistoryAppointmentUser(authentication));
-    }
+//    @GetMapping("/get-appointment-history-user")
+//    public ResponseEntity<AllAppointmentResponse> getHistoryAppointmentUser(Authentication authentication) {
+//        return ResponseEntity.ok(appointmentService.getHistoryAppointmentUser(authentication));
+//    }
 
     @GetMapping("/get-appointment-by-slot/{slotId}")
     public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentBySlot(@PathVariable("slotId") long slotId) {
