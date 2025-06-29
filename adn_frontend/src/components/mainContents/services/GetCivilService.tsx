@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { Button } from '@mui/material';
-
+import { useLocation } from 'react-router-dom';
 type PriceItem = {
   time: string;
   price: number;
@@ -51,7 +51,16 @@ const CivilServiceList = () => {
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 2;
+const { hash } = useLocation();
 
+  useEffect(() => {
+    if (hash === "#civil-service-list") {
+      const el = document.getElementById("civil-service-list");
+      el?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [hash]);
   useEffect(() => {
     const fetchServices = async () => {
       try {
@@ -74,26 +83,26 @@ const CivilServiceList = () => {
     fetchServices();
   }, []);
 
-  if (loading)
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-cyan-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-xl p-8 flex items-center space-x-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
-          <div className="text-lg font-medium text-gray-700">
-            Đang tải danh sách dịch vụ...
-          </div>
-        </div>
-      </div>
-    );
+  // if (loading)
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-cyan-50 flex items-center justify-center">
+  //       <div className="bg-white rounded-2xl shadow-xl p-8 flex items-center space-x-4">
+  //         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
+  //         <div className="text-lg font-medium text-gray-700">
+  //           Đang tải danh sách dịch vụ...
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
 
-  if (error)
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-xl p-8 border-l-4 border-red-500">
-          <div className="text-red-700 font-medium">Lỗi: {error}</div>
-        </div>
-      </div>
-    );
+  // if (error)
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-50 flex items-center justify-center">
+  //       <div className="bg-white rounded-2xl shadow-xl p-8 border-l-4 border-red-500">
+  //         <div className="text-red-700 font-medium">Lỗi: {error}</div>
+  //       </div>
+  //     </div>
+  //   );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-cyan-100">
@@ -341,134 +350,198 @@ const CivilServiceList = () => {
           </div>
         </div>
 
-        {/* Service List Section */}
-        <div className="bg-gradient-to-r from-slate-700 via-gray-700 to-slate-800 rounded-3xl shadow-2xl p-12 relative overflow-hidden">
+        {/* Service List Section - REDESIGNED */}
+        <div className="bg-gradient-to-r from-blue-700 via-blue-600 to-blue-800 rounded-3xl shadow-2xl p-12 relative overflow-hidden">
           {/* Background decoration */}
-          <div className="absolute inset-0 bg-gradient-to-r from-sky-500/10 to-cyan-500/10"></div>
-          <div className="absolute top-0 right-0 w-64 h-64 bg-sky-400/5 rounded-full translate-x-32 -translate-y-32"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10"></div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-400/5 rounded-full translate-x-32 -translate-y-32"></div>
 
           <div className="relative z-10">
-            <div className="text-center mb-12">
+           {/* Thêm id ở đây */}
+    <div id="civil-service-list" className="text-center mb-12">
               <h2 className="text-4xl font-bold text-white mb-4">
                 Danh sách dịch vụ dân sự
               </h2>
-              <p className="text-gray-300 text-lg">
+              <p className="text-gray-200 text-lg">
                 Chọn dịch vụ phù hợp với nhu cầu của bạn
               </p>
-              <div className="w-32 h-1 bg-gradient-to-r from-sky-300 to-cyan-300 mx-auto mt-4 rounded-full"></div>
+              <div className="w-32 h-1 bg-gradient-to-r from-blue-300 to-cyan-300 mx-auto mt-4 rounded-full"></div>
             </div>
 
             {services.length === 0 ? (
               <div className="text-center py-16">
-                <div className="w-24 h-24 bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <TestTube className="w-12 h-12 text-gray-400" />
+                <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <TestTube className="w-12 h-12 text-blue-200" />
                 </div>
-                <p className="text-gray-400 text-lg">Không có dịch vụ nào.</p>
+                <p className="text-gray-200 text-lg">Không có dịch vụ nào.</p>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {services.map((service, index) => (
-                  <div
-                    key={index}
-                    className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group"
-                  >
-                    {service.serviceRequest.image && (
-                      <div className="relative overflow-hidden">
-                        <img
-                          src={`data:image/*;base64,${service.serviceRequest.image}`}
-                          className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
-                          alt={service.serviceRequest.serviceName}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-                      </div>
-                    )}
-                    <div className="p-8">
-                      <h3 className="text-xl font-bold text-emerald-600 mb-4 text-center">
-                        {service.serviceRequest.serviceName}
-                      </h3>
+              <div>
+                {/* Services Display */}
+                <div className="space-y-8 mb-12">
+                  {services
+                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                    .map((service, index) => (
+                      <div
+                        key={index}
+                        className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group"
+                      >
+                        <div className="flex flex-col lg:flex-row">
+                          {/* Image Section - Vertical on mobile, side on desktop */}
+                          {service.serviceRequest.image && (
+                            <div className="lg:w-80 lg:flex-shrink-0 relative overflow-hidden">
+                              <img
+                                src={`data:image/*;base64,${service.serviceRequest.image}`}
+                                className="w-full h-64 lg:h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                alt={service.serviceRequest.serviceName}
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-black/10 to-transparent"></div>
+                            </div>
+                          )}
 
-                      <div className="space-y-3 mb-6">
-                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <span className="text-sm font-medium text-gray-600">
-                            Loại dịch vụ:
-                          </span>
-                          <span className="text-sm font-bold text-gray-800 bg-emerald-100 px-3 py-1 rounded-full">
-                            {translateServiceType(
-                              service.serviceRequest.serviceType
-                            )}
-                          </span>
-                        </div>
-                        <div className="p-3 bg-gray-50 rounded-lg">
-                          <span className="text-sm font-medium text-gray-600 block mb-2">
-                            Mô tả:
-                          </span>
-                          <span className="text-sm text-gray-800 leading-relaxed">
-                            {service.serviceRequest.description ||
-                              'Không có mô tả'}
-                          </span>
-                        </div>
-                      </div>
+                          {/* Content Section */}
+                          <div className="flex-1 p-8 lg:p-10">
+                            <div className="flex flex-col h-full">
+                              {/* Header */}
+                              <div className="mb-6">
+                                <h3 className="text-2xl lg:text-3xl font-bold text-blue-600 mb-4">
+                                  {service.serviceRequest.serviceName}
+                                </h3>
+                                
+                                <div className="flex flex-wrap items-center gap-4 mb-4">
+                                  <div className="flex items-center bg-blue-100 px-4 py-2 rounded-full">
+                                    <span className="text-sm font-medium text-gray-600 mr-2">
+                                      Loại dịch vụ:
+                                    </span>
+                                    <span className="text-sm font-bold text-blue-700">
+                                      {translateServiceType(
+                                        service.serviceRequest.serviceType
+                                      )}
+                                    </span>
+                                  </div>
+                                </div>
 
-                      <div className="mb-6">
-                        <h4 className="text-sm font-bold text-gray-800 mb-3 flex items-center">
-                          <div className="w-4 h-4 bg-emerald-400 rounded-full mr-2"></div>
-                          Bảng giá dịch vụ
-                        </h4>
-                        <div className="space-y-2">
-                          {service.priceListRequest.map((item, idx) => (
-                            <div
-                              key={idx}
-                              className="bg-gradient-to-r from-emerald-50 to-teal-50 p-4 rounded-xl border border-emerald-100"
-                            >
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <div className="font-medium text-gray-700">
-                                    ⏱️ {item.time}
+                                <div className="bg-gray-50 rounded-xl p-4">
+                                  <h4 className="text-sm font-bold text-gray-700 mb-2">
+                                    Mô tả dịch vụ:
+                                  </h4>
+                                  <p className="text-gray-600 leading-relaxed">
+                                    {service.serviceRequest.description ||
+                                      'Không có mô tả'}
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* Pricing and Action Section */}
+                              <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mt-auto">
+                                {/* Pricing */}
+                                <div className="flex-1">
+                                  <h4 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                                    <div className="w-5 h-5 bg-blue-400 rounded-full mr-3"></div>
+                                    Bảng giá dịch vụ
+                                  </h4>
+                                  <div className="grid gap-3">
+                                    {service.priceListRequest.map((item, idx) => (
+                                      <div
+                                        key={idx}
+                                        className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border-l-4 border-blue-400"
+                                      >
+                                        <div className="flex justify-between items-center">
+                                          <div className="flex items-center space-x-2">
+                                            <span className="text-sm font-medium text-gray-600">
+                                              ⏱️ {item.time}
+                                            </span>
+                                          </div>
+                                          <div className="text-right">
+                                            <div className="text-2xl font-bold text-blue-600">
+                                              {item.price.toLocaleString()}{' '}
+                                              <span className="text-sm text-gray-500">VNĐ</span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ))}
                                   </div>
-                                  <div className="text-2xl font-bold text-emerald-600">
-                                    {item.price.toLocaleString()}{' '}
-                                    <span className="text-sm">VNĐ</span>
-                                  </div>
+                                </div>
+
+                                {/* Action Button */}
+                                <div className="flex-shrink-0">
+                                  <Button
+                                    variant="contained"
+                                    component={NavLink}
+                                    to={`/order-civil/${service.serviceRequest.serviceId}`}
+                                    state={{ price: service.priceListRequest }}
+                                    sx={{
+                                      background:
+                                        'linear-gradient(45deg, #2563eb 30%, #3b82f6 90%)',
+                                      color: 'white',
+                                      padding: '16px 40px',
+                                      borderRadius: '16px',
+                                      fontWeight: 'bold',
+                                      fontSize: '1.1rem',
+                                      boxShadow: '0 8px 24px rgba(37, 99, 235, 0.3)',
+                                      '&:hover': {
+                                        background:
+                                          'linear-gradient(45deg, #1d4ed8 30%, #2563eb 90%)',
+                                        transform: 'scale(1.05)',
+                                        boxShadow: '0 12px 32px rgba(37, 99, 235, 0.4)',
+                                      },
+                                      transition: 'all 0.3s ease',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '12px',
+                                      minWidth: '200px',
+                                      justifyContent: 'center',
+                                    }}
+                                  >
+                                    <Plus size={24} />
+                                    Đặt lịch ngay
+                                  </Button>
                                 </div>
                               </div>
                             </div>
-                          ))}
+                          </div>
                         </div>
                       </div>
+                    ))}
+                </div>
 
-                      <div className="text-center">
-                        <Button
-                          variant="contained"
-                          component={NavLink}
-                          to={`/order-civil/${service.serviceRequest.serviceId}`}
-                          state={{ price: service.priceListRequest }}
-                          sx={{
-                            background:
-                              'linear-gradient(45deg, #10b981 30%, #14b8a6 90%)',
-                            color: 'white',
-                            padding: '12px 32px',
-                            borderRadius: '12px',
-                            fontWeight: 'bold',
-                            boxShadow: '0 8px 16px rgba(16, 185, 129, 0.3)',
-                            '&:hover': {
-                              background:
-                                'linear-gradient(45deg, #059669 30%, #0d9488 90%)',
-                              transform: 'scale(1.05)',
-                              boxShadow: '0 12px 24px rgba(16, 185, 129, 0.4)',
-                            },
-                            transition: 'all 0.3s ease',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                          }}
+                {/* Pagination */}
+                {services.length > itemsPerPage && (
+                  <div className="flex justify-center items-center space-x-4">
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                      className="px-6 py-3 bg-white/20 text-white rounded-xl hover:bg-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 backdrop-blur-sm"
+                    >
+                      ← Trang trước
+                    </button>
+                    
+                    <div className="flex space-x-2">
+                      {Array.from({ length: Math.ceil(services.length / itemsPerPage) }, (_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setCurrentPage(i + 1)}
+                          className={`w-12 h-12 rounded-xl font-bold transition-all duration-200 ${
+                            currentPage === i + 1
+                              ? 'bg-white text-blue-600 shadow-lg'
+                              : 'bg-white/20 text-white hover:bg-white/30'
+                          }`}
                         >
-                          <Plus size={20} />
-                          Đặt lịch
-                        </Button>
-                      </div>
+                          {i + 1}
+                        </button>
+                      ))}
                     </div>
+
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(services.length / itemsPerPage)))}
+                      disabled={currentPage === Math.ceil(services.length / itemsPerPage)}
+                      className="px-6 py-3 bg-white/20 text-white rounded-xl hover:bg-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 backdrop-blur-sm"
+                    >
+                      Trang sau →
+                    </button>
                   </div>
-                ))}
+                )}
               </div>
             )}
           </div>
