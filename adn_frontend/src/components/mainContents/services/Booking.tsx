@@ -18,7 +18,6 @@ const Booking = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-
   const translateAppointmentType = (type: string) => {
     if (type === 'CENTER') return 'Lấy mẫu tại cơ sở';
     if (type === 'HOME') return 'Lấy mẫu tại nhà';
@@ -69,24 +68,26 @@ const Booking = () => {
         const centerList = data.allAppointmentAtCenterResponse || [];
         const homeList = data.allAppointmentAtHomeResponse || [];
 
-        const fullList: BookingHistoryItem[] = [...centerList, ...homeList].map(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (res: any) => ({
-            show: res.showAppointmentResponse,
-            patients: res.patientAppointmentResponse || [],
-            staff: res.staffAppointmentResponse || [],
-            user: res.userAppointmentResponse || [],
-            slot: res.slotAppointmentResponse || [],
-            services: res.serviceAppointmentResponses || [],
-            location: res.locationAppointmentResponses || [],
-            room: res.roomAppointmentResponse || null,
-            payments:
-              res.paymentAppointmentResponse ||
-              res.paymentAppointmentResponses || // <- dành cho atHome
-              [],
-            kit: res.kitAppointmentResponse || null, // <- nếu có ở lịch hẹn tại nhà
-          })
-        );
+        const fullList: BookingHistoryItem[] = [...centerList, ...homeList]
+          .map(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (res: any) => ({
+              show: res.showAppointmentResponse,
+              patients: res.patientAppointmentResponse || [],
+              staff: res.staffAppointmentResponse || [],
+              user: res.userAppointmentResponse || [],
+              slot: res.slotAppointmentResponse || [],
+              services: res.serviceAppointmentResponses || [],
+              location: res.locationAppointmentResponses || [],
+              room: res.roomAppointmentResponse || null,
+              payments:
+                res.paymentAppointmentResponse ||
+                res.paymentAppointmentResponses || // <- dành cho atHome
+                [],
+              kit: res.kitAppointmentResponse || null, // <- nếu có ở lịch hẹn tại nhà
+            })
+          )
+          .sort((a, b) => b.show.appointmentId - a.show.appointmentId);
 
         if (fullList.length === 0) {
           setError('Không có dữ liệu cuộc hẹn.');
@@ -191,173 +192,176 @@ const Booking = () => {
         </div>
 
         {/* Booking Cards */}
-        <div className="space-y-6">
-          {bookingList.map((item, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
-            >
-              <div className="p-6">
-                {/* Header Row */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-blue-600 font-bold text-sm">
-                          #{idx + 1}
-                        </span>
+        {
+          <div className="space-y-6">
+            {bookingList.map((item, idx) => (
+              <div
+                key={idx}
+                className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
+              >
+                <div className="p-6">
+                  {/* Header Row */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex-shrink-0">
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                          <span className="text-blue-600 font-bold text-sm">
+                            #{idx + 1}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        Cuộc hẹn #{item.show.appointmentId}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        Mã đặt khám: {item.show.appointmentId}
-                      </p>
-                    </div>
-                  </div>
-
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
-                      item.show.appointmentStatus
-                    )}`}
-                  >
-                    {getStatusText(item.show.appointmentStatus)}
-                  </span>
-                </div>
-
-                {/* Info Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                  <div className="flex items-center space-x-3">
-                    <FaCalendarAlt className="text-gray-400 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-500">Ngày khám</p>
-                      <p className="font-medium text-gray-900">
-                        {item.show.appointmentDate}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-3">
-                    <FaStethoscope className="text-gray-400 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-500">Dịch vụ</p>
-                      <p className="font-medium text-gray-900 line-clamp-1">
-                        {item.services.map((s) => s.serviceName).join(', ')}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-3">
-                    <FaMapMarkerAlt className="text-gray-400 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-500">Hình thức</p>
-                      <p className="font-medium text-gray-900">
-                        {translateAppointmentType(item.show.appointmentType)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Payment Info */}
-                {item.payments.length > 0 && (
-                  <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                    <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-500">Thanh toán</p>
-                        <p className="font-medium text-gray-900">
-                          {item.payments[0].amount?.toLocaleString('vi-VN')} VNĐ
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          Cuộc hẹn #{item.show.appointmentId}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          Mã đặt khám: {item.show.appointmentId}
                         </p>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm text-gray-500">Trạng thái</p>
-                        <span
-                          className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                            item.payments[0].getPaymentStatus === 'PAID'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}
-                        >
-                          {item.payments[0].getPaymentStatus === 'PAID'
-                            ? 'Đã thanh toán'
-                            : 'Chưa thanh toán'}
-                        </span>
+                    </div>
+
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
+                        item.show.appointmentStatus
+                      )}`}
+                    >
+                      {getStatusText(item.show.appointmentStatus)}
+                    </span>
+                  </div>
+
+                  {/* Info Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                    <div className="flex items-center space-x-3">
+                      <FaCalendarAlt className="text-gray-400 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm text-gray-500">Ngày khám</p>
+                        <p className="font-medium text-gray-900">
+                          {item.show.appointmentDate}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-3">
+                      <FaStethoscope className="text-gray-400 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm text-gray-500">Dịch vụ</p>
+                        <p className="font-medium text-gray-900 line-clamp-1">
+                          {item.services.map((s) => s.serviceName).join(', ')}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-3">
+                      <FaMapMarkerAlt className="text-gray-400 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm text-gray-500">Hình thức</p>
+                        <p className="font-medium text-gray-900">
+                          {translateAppointmentType(item.show.appointmentType)}
+                        </p>
                       </div>
                     </div>
                   </div>
-                )}
 
-                {/* Action Buttons */}
-                <div className="flex flex-wrap gap-3">
-                  {/* Cancel Button */}
-                  {item.show.appointmentStatus !== 'COMPLETED' &&
-                    item.payments[0].getPaymentStatus !== 'PAID' && (
+                  {/* Payment Info */}
+                  {item.payments.length > 0 && (
+                    <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-500">Thanh toán</p>
+                          <p className="font-medium text-gray-900">
+                            {item.payments[0].amount?.toLocaleString('vi-VN')}{' '}
+                            VNĐ
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm text-gray-500">Trạng thái</p>
+                          <span
+                            className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                              item.payments[0].getPaymentStatus === 'PAID'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-yellow-100 text-yellow-800'
+                            }`}
+                          >
+                            {item.payments[0].getPaymentStatus === 'PAID'
+                              ? 'Đã thanh toán'
+                              : 'Chưa thanh toán'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap gap-3">
+                    {/* Cancel Button */}
+                    {item.show.appointmentStatus !== 'COMPLETED' &&
+                      item.payments[0].getPaymentStatus !== 'PAID' && (
+                        <button
+                          type="button"
+                          className="inline-flex items-center px-4 py-2 border border-red-300 text-red-700 bg-white rounded-lg hover:bg-red-50 transition-colors duration-200 text-sm font-medium"
+                          onClick={() =>
+                            handleCanceled(item.show.appointmentId.toString())
+                          }
+                        >
+                          <FaTimes className="mr-2" />
+                          Hủy cuộc hẹn
+                        </button>
+                      )}
+
+                    {/* Payment Button */}
+                    {item.payments.length > 0 &&
+                      (!item.payments[0].getPaymentStatus ||
+                        item.payments[0].getPaymentStatus === 'PENDING') &&
+                      item.payments[0].paymentId &&
+                      item.services.length > 0 &&
+                      item.services[0].serviceId &&
+                      (item.show.appointmentStatus === 'CONFIRMED' ||
+                        item.show.appointmentType === 'HOME') && (
+                        <button
+                          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
+                          onClick={() =>
+                            handlePayment(
+                              item.payments[0].paymentId,
+                              item.services[0].serviceId
+                            )
+                          }
+                        >
+                          <FaMoneyBillWave className="mr-2" />
+                          Thanh toán
+                        </button>
+                      )}
+
+                    {/* View Results Button */}
+                    {item.show.appointmentStatus === 'COMPLETED' && (
                       <button
-                        type="button"
-                        className="inline-flex items-center px-4 py-2 border border-red-300 text-red-700 bg-white rounded-lg hover:bg-red-50 transition-colors duration-200 text-sm font-medium"
+                        className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
                         onClick={() =>
-                          handleCanceled(item.show.appointmentId.toString())
+                          navigate(`/result/${item.show.appointmentId}`)
                         }
                       >
-                        <FaTimes className="mr-2" />
-                        Hủy cuộc hẹn
+                        <FaEye className="mr-2" />
+                        Xem kết quả
                       </button>
                     )}
 
-                  {/* Payment Button */}
-                  {item.payments.length > 0 &&
-                    (!item.payments[0].getPaymentStatus ||
-                      item.payments[0].getPaymentStatus === 'PENDING') &&
-                    item.payments[0].paymentId &&
-                    item.services.length > 0 &&
-                    item.services[0].serviceId &&
-                    (item.show.appointmentStatus === 'CONFIRMED' ||
-                      item.show.appointmentType === 'HOME') && (
+                    {/* Review Button */}
+                    {item.show.appointmentStatus === 'COMPLETED' && (
                       <button
-                        className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
+                        className="inline-flex items-center px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors duration-200 text-sm font-medium"
                         onClick={() =>
-                          handlePayment(
-                            item.payments[0].paymentId,
-                            item.services[0].serviceId
-                          )
+                          navigate(`/feedback/${item.services[0].serviceId}`)
                         }
                       >
-                        <FaMoneyBillWave className="mr-2" />
-                        Thanh toán
+                        <FaStar className="mr-2" />
+                        Đánh giá
                       </button>
                     )}
-
-                  {/* View Results Button */}
-                  {item.show.appointmentStatus === 'COMPLETED' && (
-                    <button
-                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
-                      onClick={() =>
-                        navigate(`/result/${item.show.appointmentId}`)
-                      }
-                    >
-                      <FaEye className="mr-2" />
-                      Xem kết quả
-                    </button>
-                  )}
-
-                  {/* Review Button */}
-                  {item.show.appointmentStatus === 'COMPLETED' && (
-                    <button
-                      className="inline-flex items-center px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors duration-200 text-sm font-medium"
-                      onClick={() =>
-                        navigate(`/feedback/${item.services[0].serviceId}`)
-                      }
-                    >
-                      <FaStar className="mr-2" />
-                      Đánh giá
-                    </button>
-                  )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        }
 
         {/* Empty State */}
         {bookingList.length === 0 && (

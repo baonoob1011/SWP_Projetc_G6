@@ -7,6 +7,7 @@ type Invoice = {
   createdDate: string;
   serviceName: string;
   userFullName: string;
+  bankCode: string;
 };
 
 const VNPayResult = () => {
@@ -82,14 +83,12 @@ const VNPayResult = () => {
 
       {invoice && (
         <div className={styles.invoiceCard}>
-          <div className={styles.invoiceHeader}>
-            Chi Tiết Hóa Đơn
-          </div>
+          <div className={styles.invoiceHeader}>Chi Tiết Hóa Đơn</div>
           <table className={styles.invoiceTable}>
             <tbody>
               <tr>
                 <th>Mã hóa đơn</th>
-                <td>{invoice.invoiceId}</td>
+                <td>{invoice.bankCode}</td>
               </tr>
               <tr>
                 <th>Dịch vụ</th>
@@ -101,7 +100,9 @@ const VNPayResult = () => {
               </tr>
               <tr>
                 <th>Số tiền</th>
-                <td className={styles.amount}>{invoice.amount.toLocaleString()} VNĐ</td>
+                <td className={styles.amount}>
+                  {invoice.amount.toLocaleString()} VNĐ
+                </td>
               </tr>
               <tr>
                 <th>Ngày thanh toán</th>

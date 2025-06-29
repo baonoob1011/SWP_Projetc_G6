@@ -216,7 +216,7 @@ const StaffPage = () => {
         {/* Bottom Section */}
         <div className="border-t border-gray-200 p-4 space-y-2">
           {/* Notifications */}
-          {/* <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">
+          <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">
             <div className="relative">
               <Bell className="h-5 w-5" />
               {notifications > 0 && (
@@ -226,13 +226,13 @@ const StaffPage = () => {
               )}
             </div>
             <span className="font-medium">Thông báo</span>
-          </button> */}
+          </button>
 
           {/* Settings
           <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">
             <Settings className="h-5 w-5" />
             <span className="font-medium">Cài đặt</span>
-          </button> */}
+          </button>
 
           {/* User Profile */}
           <div className="flex items-center space-x-3 px-3 py-3 rounded-lg bg-gray-50">
