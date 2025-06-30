@@ -5,53 +5,13 @@ import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import jsPDF from 'jspdf';
 import styles from './GetAllResult.module.css';
 import Logo from '../../../image/Logo.png';
 import Sign from '../../../image/Sign.png';
+import ExportResultPDF from './PrintPDF';
 const GetAllResult = () => {
   const { appointmentId } = useParams();
   const [isResult, setIsResult] = useState<any[]>([]);
-
-  const exportResultToPDF = (item: any) => {
-    const doc = new jsPDF();
-
-    doc.setFont('Roboto');
-    doc.setFontSize(16);
-    doc.text('PHIẾU KẾT QUẢ XÉT NGHIỆM ADN', 70, 15, { maxWidth: 180 });
-
-    doc.setFontSize(12);
-    let y = 30;
-
-    const addLine = (text: string) => {
-      doc.text(text, 10, y, { maxWidth: 180 });
-      y += 8;
-    };
-
-    addLine(`Mã cuộc hẹn: ${item.showAppointmentResponse?.appointmentId}`);
-    addLine(`Ngày hẹn: ${item.showAppointmentResponse?.appointmentDate}`);
-    addLine(`Trạng thái: ${item.showAppointmentResponse?.appointmentStatus}`);
-    addLine(`Hình thức: ${item.showAppointmentResponse?.appointmentType}`);
-    y += 8;
-    addLine(`--- KẾT QUẢ ---`);
-    addLine(`Mã kết quả: ${item.resultAppointmentResponse?.[0]?.result_id}`);
-    addLine(`Ngày trả: ${item.resultAppointmentResponse?.[0]?.resultDate}`);
-    addLine(`Trạng thái: ${item.resultAppointmentResponse?.[0]?.resultStatus}`);
-
-    if (item.resultDetailAppointmentResponse?.length > 0) {
-      const detail = item.resultDetailAppointmentResponse[0];
-      y += 8;
-      addLine(`--- TỔNG KẾT ---`);
-      addLine(`Kết luận: ${detail.conclusion}`);
-      addLine(`Combined PI: ${detail.combinedPaternityIndex}`);
-      addLine(`Xác suất cha con: ${detail.paternityProbability?.toFixed(4)}%`);
-      addLine(`Tóm tắt: ${detail.resultSummary}`);
-    }
-
-    doc.save(
-      `phieu-ket-qua-${item.showAppointmentResponse?.appointmentId}.pdf`
-    );
-  };
 
   const fetchData = async () => {
     try {
@@ -186,11 +146,8 @@ const GetAllResult = () => {
                           </td>
                           <td className={styles.tableCell}>
                             <span className={styles.sampleCode}>
-                              {i === 0
-                                ? item.resultLocusAppointmentResponse?.[0]
-                                    ?.sampleCode1 || '---'
-                                : item.resultLocusAppointmentResponse?.[0]
-                                    ?.sampleCode2 || '---'}
+                              {item.sampleAppointmentResponse?.[i]
+                                ?.sampleCode || '---'}
                             </span>
                           </td>
                         </tr>
@@ -263,6 +220,26 @@ const GetAllResult = () => {
                       )
                     )}
                   </tbody>
+                  <tfoot>
+                    <tr>
+                      <td
+                        colSpan={3}
+                        className={styles.tableCell}
+                        style={{ fontWeight: 'bold', textAlign: 'left' }}
+                      >
+                        Xác suất huyết thống:
+                      </td>
+                      <td
+                        className={styles.tableCell}
+                        style={{ fontWeight: 'bold', color: '#c0392b' }}
+                      >
+                        {item.resultDetailAppointmentResponse?.[0]?.paternityProbability?.toFixed(
+                          4
+                        )}
+                        %
+                      </td>
+                    </tr>
+                  </tfoot>
                 </table>
               </div>
 
@@ -283,7 +260,10 @@ const GetAllResult = () => {
                     </span>
                   </p>
                   <div className={styles.conclusionResult}>
-                    CÓ QUAN HỆ HUYẾT THỐNG CHA - CON
+                    {item.resultDetailAppointmentResponse?.[0]
+                      ?.paternityProbability >= 99
+                      ? 'CÓ QUAN HỆ HUYẾT THỐNG '
+                      : 'KHÔNG CÓ QUAN HỆ HUYẾT THỐNG'}
                   </div>
                 </div>
               </div>
@@ -291,8 +271,14 @@ const GetAllResult = () => {
               {/* Ghi chú miễn trách */}
               <div className={styles.disclaimer}>
                 <div className={styles.disclaimerTitle}>Ghi chú:</div>
-                <p>{item.showAppointmentResponse.note}</p>
+                <p>
+                  {item.serviceAppointmentResponses?.serviceType ===
+                  'ADMINISTRATIVE'
+                    ? 'Kết quả xét nghiệm này được sử dụng cho mục đích hành chính, có thể làm căn cứ pháp lý trong các thủ tục như xác nhận cha con, khai sinh, hoặc các vấn đề pháp lý liên quan.'
+                    : 'Kết quả xét nghiệm này được sử dụng cho mục đích dân sự, chỉ mang tính tham khảo cá nhân và không có giá trị pháp lý.'}
+                </p>
               </div>
+
               <div
                 className={styles.disclaimer}
                 style={{ display: 'flex', justifyContent: 'flex-start' }}
@@ -313,14 +299,8 @@ const GetAllResult = () => {
           (item) =>
             item.resultAppointmentResponse?.[0]?.resultStatus === 'COMPLETED'
         )
-        .map((item) => (
-          <Button
-            variant="outlined"
-            className={styles.downloadButton}
-            onClick={() => exportResultToPDF(item)}
-          >
-            📄 Tải phiếu kết quả PDF
-          </Button>
+        .map((item, index) => (
+          <ExportResultPDF key={index} item={item} />
         ))}
     </div>
   );

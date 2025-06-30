@@ -199,7 +199,7 @@ const Booking = () => {
     );
   }
 
-return (
+  return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -209,7 +209,8 @@ return (
           </p>
           {bookingList.length > 0 && (
             <p className="text-sm text-gray-500 mt-2">
-              Hiển thị {startIndex + 1}-{Math.min(endIndex, bookingList.length)} trong tổng số {bookingList.length} cuộc hẹn
+              Hiển thị {startIndex + 1}-{Math.min(endIndex, bookingList.length)}{' '}
+              trong tổng số {bookingList.length} cuộc hẹn
             </p>
           )}
         </div>
@@ -332,7 +333,8 @@ return (
                   {/* Payment Button */}
                   {item.payments.length > 0 &&
                     (!item.payments[0].getPaymentStatus ||
-                      item.payments[0].getPaymentStatus === 'PENDING') &&
+                      (item.payments[0].getPaymentStatus === 'PENDING' &&
+                        item.payments[0].paymentMethod !== 'CASH')) &&
                     item.payments[0].paymentId &&
                     item.services.length > 0 &&
                     item.services[0].serviceId &&
@@ -400,19 +402,21 @@ return (
             </button>
 
             <div className="flex items-center space-x-2">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => handlePageChange(page)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
-                    currentPage === page
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
+                      currentPage === page
+                        ? 'bg-blue-600 text-white border-blue-600'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
             </div>
 
             <button

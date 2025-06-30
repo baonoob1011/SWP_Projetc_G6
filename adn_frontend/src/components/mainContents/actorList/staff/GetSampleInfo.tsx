@@ -89,9 +89,7 @@ const GetSampleInfo = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        🧬 Danh Sách Mẫu Đã Thu
-      </div>
+      <div className={styles.header}>🧬 Danh Sách Mẫu Đã Thu</div>
 
       {/* Stats Cards */}
       {samples.length > 0 && (
@@ -102,7 +100,10 @@ const GetSampleInfo = () => {
           </div>
           <div className={styles.statsCard}>
             <div className={styles.statsNumber}>
-              {new Set(samples.map(s => s.patientSampleResponse.fullName)).size}
+              {
+                new Set(samples.map((s) => s.patientSampleResponse?.patientId))
+                  .size
+              }
             </div>
             <div className={styles.statsLabel}>Bệnh nhân</div>
           </div>
@@ -136,7 +137,11 @@ const GetSampleInfo = () => {
                       {item.patientSampleResponse.fullName}
                     </td>
                     <td className={styles.tableCell}>
-                      <span className={getGenderClass(item.patientSampleResponse.gender)}>
+                      <span
+                        className={getGenderClass(
+                          item.patientSampleResponse.gender
+                        )}
+                      >
                         {item.patientSampleResponse.gender}
                       </span>
                     </td>
@@ -154,7 +159,9 @@ const GetSampleInfo = () => {
                       </span>
                     </td>
                     <td className={styles.tableCell}>
-                      {new Date(item.sampleResponse.collectionDate).toLocaleDateString('vi-VN')}
+                      {new Date(
+                        item.sampleResponse.collectionDate
+                      ).toLocaleDateString('vi-VN')}
                     </td>
                     <td className={styles.tableCell}>
                       <NavLink
@@ -174,7 +181,7 @@ const GetSampleInfo = () => {
               </tbody>
             </table>
           </div>
-          
+
           <div className={styles.submitContainer}>
             <button
               type="button"

@@ -954,6 +954,22 @@ export default function Home() {
                     Xét nghiệm dân sự
                   </NavLink>
                 </li>
+                <li>
+                  <NavLink
+                    to="/service/at-home"
+                    className="hover:opacity-75 transition-opacity no-underline text-white block"
+                  >
+                    Xét nghiệm tại nhà
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/service/at-center"
+                    className="hover:opacity-75 transition-opacity no-underline text-white block"
+                  >
+                    Xét nghiệm tại cơ sở
+                  </NavLink>
+                </li>
               </ul>
             </div>
 
