@@ -1,20 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import {
-  Typography,
-  CircularProgress,
-  Button,
-  TextField,
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { Check } from '@mui/icons-material';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -199,11 +186,18 @@ export const CollectorSlots = () => {
                   return (
                     <tr key={key} className={styles.tableRow}>
                       <td className={styles.tableCell}>{patient.fullName}</td>
-                      <td className={styles.tableCell}>{patient.dateOfBirth}</td>
-                      <td className={styles.tableCell}>{patient.gender}</td>
-                      <td className={styles.tableCell}>{patient.relationship}</td>
                       <td className={styles.tableCell}>
-                        {appointmentItem.showAppointmentResponse?.appointmentDate}
+                        {patient.dateOfBirth}
+                      </td>
+                      <td className={styles.tableCell}>{patient.gender}</td>
+                      <td className={styles.tableCell}>
+                        {patient.relationship}
+                      </td>
+                      <td className={styles.tableCell}>
+                        {
+                          appointmentItem.showAppointmentResponse
+                            ?.appointmentDate
+                        }
                       </td>
                       <td className={styles.tableCell}>
                         <div className={styles.inputGroup}>
@@ -232,19 +226,14 @@ export const CollectorSlots = () => {
                           >
                             <Check fontSize="small" />
                           </button>
-                          {isFirstPatient && (
-                            <NavLink
-                              to={`/s-page/get-appointment/${appointmentId}`}
-                              className={styles.viewBtn}
-                            >
-                              Xem
-                            </NavLink>
-                          )}
                         </div>
                       </td>
 
                       {isFirstPatient && (
-                        <td className={styles.tableCell} rowSpan={patients.length}>
+                        <td
+                          className={styles.tableCell}
+                          rowSpan={patients.length}
+                        >
                           <select
                             className={styles.statusSelect}
                             value={selectedStatus[appointmentId] || 'PENDING'}
@@ -275,7 +264,8 @@ export const CollectorSlots = () => {
       ) : (
         // Không có lịch tại nhà thì hiện slot
         <div className={styles.slotsContainer}>
-          {slots.filter((slot) => slot.slotResponse.slotStatus === 'BOOKED').length > 0 ? (
+          {slots.filter((slot) => slot.slotResponse.slotStatus === 'BOOKED')
+            .length > 0 ? (
             <div className={styles.slotsGrid}>
               {slots
                 .filter((slot) => slot.slotResponse.slotStatus === 'BOOKED')
@@ -290,14 +280,16 @@ export const CollectorSlots = () => {
                     }
                   >
                     <div>Slot {slot.slotResponse.slotId}</div>
-                    <div>{slot.slotResponse.startTime} ~ {slot.slotResponse.endTime}</div>
+                    <div>
+                      {slot.slotResponse.startTime} ~{' '}
+                      {slot.slotResponse.endTime}
+                    </div>
                   </button>
                 ))}
             </div>
           ) : (
             <div className={styles.emptyState}>
-              <h3>Không có slot nào được đặt</h3>
-              <p>Hiện tại chưa có slot nào trong trạng thái "BOOKED"</p>
+              <p>Chưa có lịch hẹn nào</p>
             </div>
           )}
         </div>

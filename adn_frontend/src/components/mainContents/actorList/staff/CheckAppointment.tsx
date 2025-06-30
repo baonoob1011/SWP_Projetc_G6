@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { NavLink, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Check } from '@mui/icons-material';
 import styles from './CheckAppointment.module.css';
 
@@ -11,7 +11,6 @@ const CheckAppointment = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [sampleType, setSampleType] = useState<Record<string, string>>({});
-
   const fetchAppointment = async () => {
     if (!slotId) return;
 
@@ -81,15 +80,6 @@ const CheckAppointment = () => {
     }
   };
 
-  const role = localStorage.getItem('role');
-  if (role !== 'STAFF') {
-    return (
-      <div className={styles.errorContainer}>
-        <h2 className={styles.errorTitle}>Bạn không có quyền truy cập trang này.</h2>
-      </div>
-    );
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -116,74 +106,84 @@ const CheckAppointment = () => {
             </thead>
             <tbody>
               {appointments.map((appointmentItem) =>
-                appointmentItem.patientAppointmentResponse.map((patient: any) => {
-                  const appointmentId =
-                    appointmentItem.showAppointmentResponse?.appointmentId;
-                  const serviceId =
-                    appointmentItem.serviceAppointmentResponses?.[0]?.serviceId;
-                  const key = `${appointmentId}_${patient.patientId}`;
-                  const isPaid =
-                    appointmentItem.showAppointmentResponse?.note ===
-                    'Đã thanh toán';
+                appointmentItem.patientAppointmentResponse.map(
+                  (patient: any) => {
+                    const appointmentId =
+                      appointmentItem.showAppointmentResponse?.appointmentId;
+                    const serviceId =
+                      appointmentItem.serviceAppointmentResponses?.[0]
+                        ?.serviceId;
+                    const key = `${appointmentId}_${patient.patientId}`;
+                    const isPaid =
+                      appointmentItem.showAppointmentResponse?.note ===
+                      'Đã thanh toán';
 
-                  return (
-                    <tr key={key} className={styles.tableRow}>
-                      <td className={styles.tableCell}>{patient.fullName}</td>
-                      <td className={styles.tableCell}>{patient.dateOfBirth}</td>
-                      <td className={styles.tableCell}>{patient.gender}</td>
-                      <td className={styles.tableCell}>{patient.relationship}</td>
-                      <td className={styles.tableCell}>
-                        {appointmentItem.showAppointmentResponse?.appointmentDate}
-                      </td>
-                      <td className={`${styles.tableCell} ${styles.noteCell}`}>
-                        <span className={isPaid ? styles.paidStatus : styles.unpaidStatus}>
-                          {appointmentItem.showAppointmentResponse?.note}
-                        </span>
-                      </td>
-                      <td className={styles.tableCell}>
-                        {isPaid ? (
-                          <div className={styles.actionsContainer}>
-                            <input
-                              type="text"
-                              className={styles.sampleInput}
-                              placeholder="Nhập vật mẫu"
-                              value={sampleType[key] || ''}
-                              onChange={(e) =>
-                                setSampleType((prev) => ({
-                                  ...prev,
-                                  [key]: e.target.value,
-                                }))
-                              }
-                            />
-                            <button
-                              className={styles.submitBtn}
-                              onClick={() =>
-                                handleSendSample(
-                                  patient.patientId,
-                                  serviceId,
-                                  appointmentId,
-                                  key
-                                )
-                              }
-                            >
-                              <Check fontSize="small" />
-                            </button>
-                            <NavLink
-                              to={`/s-page/get-appointment/${appointmentId}`}
-                              className={styles.viewBtn}
-                            >
-                              Xem thông tin
-                            </NavLink>
-                          </div>
-                        ) : (
-                          <span className={styles.unpaidStatus}>
-                            Chưa thanh toán
+                    return (
+                      <tr key={key} className={styles.tableRow}>
+                        <td className={styles.tableCell}>{patient.fullName}</td>
+                        <td className={styles.tableCell}>
+                          {patient.dateOfBirth}
+                        </td>
+                        <td className={styles.tableCell}>{patient.gender}</td>
+                        <td className={styles.tableCell}>
+                          {patient.relationship}
+                        </td>
+                        <td className={styles.tableCell}>
+                          {
+                            appointmentItem.showAppointmentResponse
+                              ?.appointmentDate
+                          }
+                        </td>
+                        <td
+                          className={`${styles.tableCell} ${styles.noteCell}`}
+                        >
+                          <span
+                            className={
+                              isPaid ? styles.paidStatus : styles.unpaidStatus
+                            }
+                          >
+                            {appointmentItem.showAppointmentResponse?.note}
                           </span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })
+                        </td>
+                        <td className={styles.tableCell}>
+                          {isPaid ? (
+                            <div className={styles.actionsContainer}>
+                              <input
+                                type="text"
+                                className={styles.sampleInput}
+                                placeholder="Nhập vật mẫu"
+                                value={sampleType[key] || ''}
+                                onChange={(e) =>
+                                  setSampleType((prev) => ({
+                                    ...prev,
+                                    [key]: e.target.value,
+                                  }))
+                                }
+                              />
+                              <button
+                                className={styles.submitBtn}
+                                onClick={() =>
+                                  handleSendSample(
+                                    patient.patientId,
+                                    serviceId,
+                                    appointmentId,
+                                    key
+                                  )
+                                }
+                              >
+                                <Check fontSize="small" />
+                              </button>
+                            </div>
+                          ) : (
+                            <span className={styles.unpaidStatus}>
+                              Chưa thanh toán
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  }
+                )
               )}
             </tbody>
           </table>

@@ -423,6 +423,76 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                     </MenuItem>
                   </Menu>
                 </>
+              ) : role === 'LAB_TECHNICIAN' ? (
+                <>
+                  <Button
+                    onClick={(e) => handleOpenMenu(e, 'LAB_TECHNICIAN')}
+                    endIcon={<ArrowDropDown />}
+                    sx={{
+                      textTransform: 'none',
+                      px: 2,
+                      py: 1,
+                      fontSize: 20,
+                      fontWeight: 500,
+                      color: '#333',
+                      minWidth: 'auto',
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    }}
+                  >
+                    {fullName}
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={menuOpen === 'LAB_TECHNICIAN'}
+                    onClose={handleCloseMenu}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    PaperProps={{
+                      sx: {
+                        mt: 1,
+                        borderRadius: '8px',
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e0e0e0',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                      },
+                    }}
+                    MenuListProps={{ sx: { py: 1 } }}
+                  >
+                    <MenuItem
+                      component={NavLink}
+                      to="/s-page"
+                      onClick={handleCloseMenu}
+                      sx={{
+                        px: 3,
+                        py: 1.5,
+                        fontSize: 20,
+                        color: '#333',
+                        fontWeight: 400,
+                        '&:hover': { backgroundColor: '#f5f5f5' },
+                      }}
+                    >
+                      Trang làm việc
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleCloseMenu();
+                        handleLogout();
+                      }}
+                      sx={{
+                        px: 3,
+                        py: 1.5,
+                        fontSize: 20,
+                        color: '#d32f2f',
+                        fontWeight: 400,
+                        '&:hover': { backgroundColor: '#ffebee' },
+                      }}
+                    >
+                      Đăng xuất
+                    </MenuItem>
+                  </Menu>
+                </>
               ) : role === 'STAFF' ? (
                 <>
                   <Button

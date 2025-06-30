@@ -46,7 +46,7 @@ const translateServiceType = (type: string): string => {
       return 'Pháp lý';
     case 'IMMIGRATION':
       return 'Di trú';
-    case'ADMINISTRATIVE':
+    case 'ADMINISTRATIVE':
       return 'Hành chính';
     default:
       return type;
@@ -85,26 +85,26 @@ const AdministrativeServiceList = () => {
     fetchServices();
   }, []);
 
-  // if (loading)
-  //   return (
-  //     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center">
-  //       <div className="bg-white rounded-2xl shadow-xl p-8 flex items-center space-x-4">
-  //         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
-  //         <div className="text-lg font-medium text-gray-700">
-  //           Đang tải danh sách dịch vụ...
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
+  if (loading)
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-xl p-8 flex items-center space-x-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+          <div className="text-lg font-medium text-gray-700">
+            Đang tải danh sách dịch vụ...
+          </div>
+        </div>
+      </div>
+    );
 
-  // if (error)
-  //   return (
-  //     <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-50 flex items-center justify-center">
-  //       <div className="bg-white rounded-2xl shadow-xl p-8 border-l-4 border-red-500">
-  //         <div className="text-red-700 font-medium">Lỗi: {error}</div>
-  //       </div>
-  //     </div>
-  //   );
+  if (error)
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-50 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-xl p-8 border-l-4 border-red-500">
+          <div className="text-red-700 font-medium">Lỗi: {error}</div>
+        </div>
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-100">
@@ -436,7 +436,10 @@ const AdministrativeServiceList = () => {
                 {/* Services Display */}
                 <div className="space-y-8 mb-12">
                   {services
-                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                    .slice(
+                      (currentPage - 1) * itemsPerPage,
+                      currentPage * itemsPerPage
+                    )
                     .map((service, index) => (
                       <div
                         key={index}
@@ -463,7 +466,7 @@ const AdministrativeServiceList = () => {
                                 <h3 className="text-2xl lg:text-3xl font-bold text-green-600 mb-4">
                                   {service.serviceRequest.serviceName}
                                 </h3>
-                                
+
                                 <div className="flex flex-wrap items-center gap-4 mb-4">
                                   <div className="flex items-center bg-green-100 px-4 py-2 rounded-full">
                                     <span className="text-sm font-medium text-gray-600 mr-2">
@@ -497,26 +500,30 @@ const AdministrativeServiceList = () => {
                                     Bảng giá dịch vụ
                                   </h4>
                                   <div className="grid gap-3">
-                                    {service.priceListRequest.map((item, idx) => (
-                                      <div
-                                        key={idx}
-                                        className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border-l-4 border-green-400"
-                                      >
-                                        <div className="flex justify-between items-center">
-                                          <div className="flex items-center space-x-2">
-                                            <span className="text-sm font-medium text-gray-600">
-                                              ⏱️ {item.time}
-                                            </span>
-                                          </div>
-                                          <div className="text-right">
-                                            <div className="text-2xl font-bold text-green-600">
-                                              {item.price.toLocaleString()}{' '}
-                                              <span className="text-sm text-gray-500">VNĐ</span>
+                                    {service.priceListRequest.map(
+                                      (item, idx) => (
+                                        <div
+                                          key={idx}
+                                          className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border-l-4 border-green-400"
+                                        >
+                                          <div className="flex justify-between items-center">
+                                            <div className="flex items-center space-x-2">
+                                              <span className="text-sm font-medium text-gray-600">
+                                                ⏱️ {item.time}
+                                              </span>
+                                            </div>
+                                            <div className="text-right">
+                                              <div className="text-2xl font-bold text-green-600">
+                                                {item.price.toLocaleString()}{' '}
+                                                <span className="text-sm text-gray-500">
+                                                  VNĐ
+                                                </span>
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    ))}
+                                      )
+                                    )}
                                   </div>
                                 </div>
 
@@ -535,12 +542,14 @@ const AdministrativeServiceList = () => {
                                       borderRadius: '16px',
                                       fontWeight: 'bold',
                                       fontSize: '1.1rem',
-                                      boxShadow: '0 8px 24px rgba(22, 163, 74, 0.3)',
+                                      boxShadow:
+                                        '0 8px 24px rgba(22, 163, 74, 0.3)',
                                       '&:hover': {
                                         background:
                                           'linear-gradient(45deg, #15803d 30%, #047857 90%)',
                                         transform: 'scale(1.05)',
-                                        boxShadow: '0 12px 32px rgba(22, 163, 74, 0.4)',
+                                        boxShadow:
+                                          '0 12px 32px rgba(22, 163, 74, 0.4)',
                                       },
                                       transition: 'all 0.3s ease',
                                       display: 'flex',
@@ -566,32 +575,47 @@ const AdministrativeServiceList = () => {
                 {services.length > itemsPerPage && (
                   <div className="flex justify-center items-center space-x-4">
                     <button
-                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
                       disabled={currentPage === 1}
                       className="px-6 py-3 bg-white/20 text-white rounded-xl hover:bg-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 backdrop-blur-sm"
                     >
                       ← Trang trước
                     </button>
-                    
+
                     <div className="flex space-x-2">
-                      {Array.from({ length: Math.ceil(services.length / itemsPerPage) }, (_, i) => (
-                        <button
-                          key={i}
-                          onClick={() => setCurrentPage(i + 1)}
-                          className={`w-12 h-12 rounded-xl font-bold transition-all duration-200 ${
-                            currentPage === i + 1
-                              ? 'bg-white text-green-600 shadow-lg'
-                              : 'bg-white/20 text-white hover:bg-white/30'
-                          }`}
-                        >
-                          {i + 1}
-                        </button>
-                      ))}
+                      {Array.from(
+                        { length: Math.ceil(services.length / itemsPerPage) },
+                        (_, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setCurrentPage(i + 1)}
+                            className={`w-12 h-12 rounded-xl font-bold transition-all duration-200 ${
+                              currentPage === i + 1
+                                ? 'bg-white text-green-600 shadow-lg'
+                                : 'bg-white/20 text-white hover:bg-white/30'
+                            }`}
+                          >
+                            {i + 1}
+                          </button>
+                        )
+                      )}
                     </div>
 
-                     <button
-                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(services.length / itemsPerPage)))}
-                      disabled={currentPage === Math.ceil(services.length / itemsPerPage)}
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) =>
+                          Math.min(
+                            prev + 1,
+                            Math.ceil(services.length / itemsPerPage)
+                          )
+                        )
+                      }
+                      disabled={
+                        currentPage ===
+                        Math.ceil(services.length / itemsPerPage)
+                      }
                       className="px-6 py-3 bg-white/20 text-white rounded-xl hover:bg-white/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 backdrop-blur-sm"
                     >
                       Trang sau →
