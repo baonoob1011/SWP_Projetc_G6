@@ -269,11 +269,12 @@ const BlogList: React.FC = () => {
               </div>
 
               {/* Blog Content */}
-              <div className="prose prose-xl max-w-none text-gray-800 leading-relaxed text-justify  ">
-                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-8 border-l-4 border-blue-500">
-                  {selectedBlog.content}
-                </div>
+              <div
+                className="prose prose-xl max-w-none text-gray-800 leading-relaxed whitespace-pre-line"
+              >
+                {selectedBlog.content}
               </div>
+
             </div>
           </div>
         ) : (
