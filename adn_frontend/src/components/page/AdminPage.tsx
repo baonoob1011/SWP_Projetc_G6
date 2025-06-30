@@ -98,12 +98,6 @@ const AdminSidebar = () => {
       path: 'create-blog',
     },
     {
-      id: 'servicesInfo',
-      icon: ShoppingBag,
-      label: 'Tất cả dịch vụ',
-      path: 'a-getAllService',
-    },
-    {
       id: 'createLocus',
       icon: ShoppingBag,
       label: 'Tạo locus',

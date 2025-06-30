@@ -1,453 +1,141 @@
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import type { BookingHistoryItem } from '../type/BookingType';
-import {
-  FaEye,
-  FaMoneyBillWave,
-  FaTimes,
-  FaCalendarAlt,
-  FaStethoscope,
-  FaMapMarkerAlt,
-  FaStar,
-  FaChevronLeft,
-  FaChevronRight,
-} from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 
-// ==== COMPONENT ====
-const Booking = () => {
-  const [bookingList, setBookingList] = useState<BookingHistoryItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 2;
-  const navigate = useNavigate();
+interface NotificationProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  message: string;
+}
 
-  const translateAppointmentType = (type: string) => {
-    if (type === 'CENTER') return 'Lấy mẫu tại cơ sở';
-    if (type === 'HOME') return 'Lấy mẫu tại nhà';
-    return 'Không xác định';
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'CONFIRMED':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'COMPLETED':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'CANCELLED':
-        return 'bg-red-100 text-red-800 border-red-200';
-      default:
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'CONFIRMED':
-        return 'Đã xác nhận';
-      case 'COMPLETED':
-        return 'Hoàn thành';
-      case 'CANCELLED':
-        return 'Đã hủy';
-      default:
-        return 'Chờ xác nhận';
-    }
-  };
-
-  const fetchData = () => {
-    const token = localStorage.getItem('token');
-    fetch('http://localhost:8080/api/appointment/get-appointment', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('Lỗi khi gọi API');
-        return res.json();
-      })
-      .then((data) => {
-        setLoading(false);
-        const centerList = data.allAppointmentAtCenterResponse || [];
-        const homeList = data.allAppointmentAtHomeResponse || [];
-
-        const fullList: BookingHistoryItem[] = [...centerList, ...homeList].map(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (res: any) => ({
-            show: res.showAppointmentResponse,
-            patients: res.patientAppointmentResponse || [],
-            staff: res.staffAppointmentResponse || [],
-            user: res.userAppointmentResponse || [],
-            slot: res.slotAppointmentResponse || [],
-            services: res.serviceAppointmentResponses || [],
-            location: res.locationAppointmentResponses || [],
-            room: res.roomAppointmentResponse || null,
-            payments:
-              res.paymentAppointmentResponse ||
-              res.paymentAppointmentResponses || // <- dành cho atHome
-              [],
-            kit: res.kitAppointmentResponse || null, // <- nếu có ở lịch hẹn tại nhà
-          })
-        );
-
-        if (fullList.length === 0) {
-          setError('Không có dữ liệu cuộc hẹn.');
-        } else {
-          setBookingList(fullList);
-          // Reset to page 1 if current page is out of bounds
-          const totalPages = Math.ceil(fullList.length / itemsPerPage);
-          if (currentPage > totalPages) {
-            setCurrentPage(1);
-          }
-        }
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const handleCanceled = async (appointmentId: string) => {
-    try {
-      const res = await fetch(
-        `http://localhost:8080/api/appointment/cancel-appointment/${appointmentId}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
-
-      if (res.ok) {
-        toast.success('Đã hủy cuộc hẹn thành công');
-        fetchData();
-      } else {
-        toast.error('Hủy cuộc hẹn thất bại');
-      }
-    } catch (error) {
-      console.log('❌ Lỗi hệ thống khi gửi request:', error);
-      toast.error('Lỗi hệ thống');
-    }
-  };
-
-  const handlePayment = async (paymentId: number, serviceId: number) => {
-    try {
-      const res = await fetch(
-        `http://localhost:8080/api/payment/create?paymentId=${paymentId}&serviceId=${serviceId}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
-      const redirectUrl = await res.text();
-      if (res.ok) {
-        window.location.href = redirectUrl;
-      } else {
-        toast.error('bị lỗi');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // Pagination logic
-  const totalPages = Math.ceil(bookingList.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentItems = bookingList.slice(startIndex, endIndex);
-
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-          <p className="text-gray-600 text-lg">Đang tải dữ liệu...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center bg-white p-8 rounded-lg shadow-lg">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            Có lỗi xảy ra
-          </h2>
-          <p className="text-red-600">{error}</p>
-        </div>
-      </div>
-    );
-  }
+const Notification: React.FC<NotificationProps> = ({
+  isOpen,
+  onClose,
+  title,
+  message,
+}) => {
+  if (!isOpen) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <p className="text-gray-600">
-            Quản lý và theo dõi các cuộc hẹn khám bệnh của bạn
-          </p>
-          {bookingList.length > 0 && (
-            <p className="text-sm text-gray-500 mt-2">
-              Hiển thị {startIndex + 1}-{Math.min(endIndex, bookingList.length)} trong tổng số {bookingList.length} cuộc hẹn
-            </p>
-          )}
+    <div className="fixed inset-0 flex justify-center items-center z-50">
+      {/* Lớp phủ mờ phía sau modal với hiệu ứng backdrop blur */}
+      <div
+        className="absolute inset-0 bg-gradient-to-br from-black/60 via-gray-900/50 to-black/60 backdrop-blur-sm z-40 animate-pulse"
+        onClick={onClose}
+      ></div>
+
+      {/* Modal với hiệu ứng glassmorphism và animation */}
+      <div className="relative bg-white/95 backdrop-blur-xl p-12 rounded-[2rem] shadow-2xl border border-white/20 w-[28rem] z-50 transform transition-all duration-700 ease-out animate-in slide-in-from-bottom-4 fade-in-0">
+        {/* Gradient background overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-white/30 to-cyan-50/50 rounded-[2rem] -z-10"></div>
+
+        {/* Decorative elements */}
+        <div className="absolute -top-2 -right-2 w-16 h-16 bg-gradient-to-br from-violet-400/20 to-pink-400/20 rounded-full blur-xl"></div>
+        <div className="absolute -bottom-2 -left-2 w-20 h-20 bg-gradient-to-br from-blue-400/20 to-emerald-400/20 rounded-full blur-xl"></div>
+
+        {/* Header với icon */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl shadow-lg mb-4">
+            <svg
+              className="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-3">
+            {title}
+          </h2>
+          <div className="w-12 h-1 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full mx-auto"></div>
         </div>
 
-        {/* Booking Cards */}
-        <div className="space-y-6">
-          {currentItems.map((item, idx) => (
-            <div
-              key={startIndex + idx}
-              className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
-            >
-              <div className="p-6">
-                {/* Header Row */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-blue-600 font-bold text-sm">
-                          #{startIndex + idx + 1}
-                        </span>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        Cuộc hẹn #{item.show.appointmentId}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        Mã đặt khám: {item.show.appointmentId}
-                      </p>
-                    </div>
-                  </div>
+        <p className="text-gray-600 text-center mb-8 text-lg leading-relaxed font-medium">
+          {message}
+        </p>
 
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
-                      item.show.appointmentStatus
-                    )}`}
-                  >
-                    {getStatusText(item.show.appointmentStatus)}
-                  </span>
-                </div>
+        <div className="flex justify-center gap-4">
+          {/* Nút Hành Chính với hiệu ứng nâng cao */}
+          <NavLink
+            to="/service/administrative"
+            className="group relative px-8 py-4 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 w-full text-center overflow-hidden"
+            onClick={onClose}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+            <span className="relative z-10 flex items-center justify-center gap-2">
+              <svg
+                className="w-5 h-5 transition-transform group-hover:rotate-12"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              Hành Chính
+            </span>
+          </NavLink>
 
-                {/* Info Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                  <div className="flex items-center space-x-3">
-                    <FaCalendarAlt className="text-gray-400 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-500">Ngày khám</p>
-                      <p className="font-medium text-gray-900">
-                        {item.show.appointmentDate}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-3">
-                    <FaStethoscope className="text-gray-400 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-500">Dịch vụ</p>
-                      <p className="font-medium text-gray-900 line-clamp-1">
-                        {item.services.map((s) => s.serviceName).join(', ')}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-3">
-                    <FaMapMarkerAlt className="text-gray-400 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-500">Hình thức</p>
-                      <p className="font-medium text-gray-900">
-                        {translateAppointmentType(item.show.appointmentType)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Payment Info */}
-                {item.payments.length > 0 && (
-                  <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-gray-500">Thanh toán</p>
-                        <p className="font-medium text-gray-900">
-                          {item.payments[0].amount?.toLocaleString('vi-VN')} VNĐ
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm text-gray-500">Trạng thái</p>
-                        <span
-                          className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                            item.payments[0].getPaymentStatus === 'PAID'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}
-                        >
-                          {item.payments[0].getPaymentStatus === 'PAID'
-                            ? 'Đã thanh toán'
-                            : 'Chưa thanh toán'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Action Buttons */}
-                <div className="flex flex-wrap gap-3">
-                  {/* Cancel Button */}
-                  {item.show.appointmentStatus !== 'COMPLETED' &&
-                    item.payments[0].getPaymentStatus !== 'PAID' && (
-                      <button
-                        type="button"
-                        className="inline-flex items-center px-4 py-2 border border-red-300 text-red-700 bg-white rounded-lg hover:bg-red-50 transition-colors duration-200 text-sm font-medium"
-                        onClick={() =>
-                          handleCanceled(item.show.appointmentId.toString())
-                        }
-                      >
-                        <FaTimes className="mr-2" />
-                        Hủy cuộc hẹn
-                      </button>
-                    )}
-
-                  {/* Payment Button */}
-                  {item.payments.length > 0 &&
-                    (!item.payments[0].getPaymentStatus ||
-                      item.payments[0].getPaymentStatus === 'PENDING') &&
-                    item.payments[0].paymentId &&
-                    item.services.length > 0 &&
-                    item.services[0].serviceId &&
-                    (item.show.appointmentStatus === 'CONFIRMED' ||
-                      item.show.appointmentType === 'HOME') && (
-                      <button
-                        className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
-                        onClick={() =>
-                          handlePayment(
-                            item.payments[0].paymentId,
-                            item.services[0].serviceId
-                          )
-                        }
-                      >
-                        <FaMoneyBillWave className="mr-2" />
-                        Thanh toán
-                      </button>
-                    )}
-
-                  {/* View Results Button */}
-                  {item.show.appointmentStatus === 'COMPLETED' && (
-                    <button
-                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
-                      onClick={() =>
-                        navigate(`/result/${item.show.appointmentId}`)
-                      }
-                    >
-                      <FaEye className="mr-2" />
-                      Xem kết quả
-                    </button>
-                  )}
-
-                  {/* Review Button */}
-                  {item.show.appointmentStatus === 'COMPLETED' && (
-                    <button
-                      className="inline-flex items-center px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors duration-200 text-sm font-medium"
-                      onClick={() =>
-                        navigate(`/feedback/${item.services[0].serviceId}`)
-                      }
-                    >
-                      <FaStar className="mr-2" />
-                      Đánh giá
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+          {/* Nút Dân Sự với hiệu ứng nâng cao */}
+          <NavLink
+            to="/service/civil"
+            className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 w-full text-center overflow-hidden"
+            onClick={onClose}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+            <span className="relative z-10 flex items-center justify-center gap-2">
+              <svg
+                className="w-5 h-5 transition-transform group-hover:rotate-12"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+              Dân Sự
+            </span>
+          </NavLink>
         </div>
 
-        {/* Pagination */}
-        {bookingList.length > itemsPerPage && (
-          <div className="mt-8 flex items-center justify-center space-x-4">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
-                currentPage === 1
-                  ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              <FaChevronLeft className="mr-2" />
-              Trang trước
-            </button>
-
-            <div className="flex items-center space-x-2">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => handlePageChange(page)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
-                    currentPage === page
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-            </div>
-
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
-                currentPage === totalPages
-                  ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              Trang sau
-              <FaChevronRight className="ml-2" />
-            </button>
-          </div>
-        )}
-
-        {/* Empty State */}
-        {bookingList.length === 0 && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-            <div className="text-gray-400 text-6xl mb-4">📅</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Chưa có cuộc hẹn nào
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Bạn chưa có cuộc hẹn khám bệnh nào. Hãy đặt lịch khám để bắt đầu
-              chăm sóc sức khỏe.
-            </p>
-            <button className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
-              Đặt lịch khám ngay
-            </button>
-          </div>
-        )}
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-all duration-300 hover:rotate-90 group"
+        >
+          <svg
+            className="w-5 h-5 text-gray-500 group-hover:text-gray-700"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   );
 };
 
-export default Booking;
+export default Notification;

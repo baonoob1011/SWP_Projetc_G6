@@ -66,27 +66,47 @@ const StaffPage = () => {
     setFullName(storeName);
   }, []);
 
+  const role = localStorage.getItem('role');
+
   const menuItems = [
     { id: 'dashboard', icon: ArrowBack, label: 'Home', path: '' },
-    { id: 'data', icon: List, label: 'Danh sách', path: 's-page/s-userData' },
-    {
-      id: 'schedule',
-      icon: Schedule,
-      label: 'Lịch làm',
-      path: 's-page/s-slot',
-    },
-    {
-      id: 'appointment',
-      icon: BookImageIcon,
-      label: 'Lịch hẹn',
-      path: 's-page/checkBooking',
-    },
-    {
-      id: 'checkAppointment',
-      icon: AppRegistration,
-      label: 'Đơn đăng ký',
-      path: 's-page/selectorSlot',
-    },
+    ...(role === 'STAFF'
+      ? [
+          {
+            id: 'data',
+            icon: List,
+            label: 'Danh sách',
+            path: 's-page/s-userData',
+          },
+          {
+            id: 'schedule',
+            icon: Schedule,
+            label: 'Lịch làm',
+            path: 's-page/s-slot',
+          },
+          {
+            id: 'appointment',
+            icon: BookImageIcon,
+            label: 'Lịch hẹn',
+            path: 's-page/checkBooking',
+          },
+          {
+            id: 'checkAppointment',
+            icon: AppRegistration,
+            label: 'Đơn đăng ký',
+            path: 's-page/selectorSlot',
+          },
+        ]
+      : role === 'LAB_TECHNICIAN'
+      ? [
+          {
+            id: 'checkAppointment',
+            icon: AppRegistration,
+            label: 'Đơn đăng ký',
+            path: 's-page/labCheckSample',
+          },
+        ]
+      : []),
   ];
 
   const handleLogout = async () => {

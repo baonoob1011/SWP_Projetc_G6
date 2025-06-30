@@ -93,6 +93,8 @@ import { DashBoard } from './components/mainContents/actorList/admin/dashboard/D
 
 import GetStaffTechnical from './components/mainContents/actorList/staff/GetStaffTechnical';
 import SignUpStaffTechnical from './components/mainContents/actorList/staff/SignUpStaffTechnical';
+import GetBlogById from './components/mainContents/actorList/user/GetBlogById';
+import { LabCheckSample } from './components/mainContents/actorList/staff/LabCheckSample';
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
@@ -112,6 +114,7 @@ function App() {
     '/s-page/checkAppointment/:slotId',
     '/s-page/get-appointment/:appointmentId',
     '/s-page/selectorSlot',
+    '/s-page/labCheckSample',
     '/s-page/record-result/:sampleId',
     '/s-page',
   ].some((path) => matchPath(path, location.pathname));
@@ -376,7 +379,7 @@ function App() {
               zIndex: 1000,
             }}
           >
-            <ProtectedRoute allowedRoles={['STAFF']}>
+            <ProtectedRoute allowedRoles={['STAFF', 'LAB_TECHNICIAN']}>
               <StaffPage />
             </ProtectedRoute>
           </Box>
@@ -420,7 +423,7 @@ function App() {
               <Route
                 path="/s-page/record-result/:sampleId"
                 element={
-                  <ProtectedRoute allowedRoles={['STAFF']}>
+                  <ProtectedRoute allowedRoles={['LAB_TECHNICIAN', 'STAFF']}>
                     <CreateResultAllele />
                   </ProtectedRoute>
                 }
@@ -428,7 +431,7 @@ function App() {
               <Route
                 path="/s-page/checkAppointment/:slotId"
                 element={
-                  <ProtectedRoute allowedRoles={['STAFF']}>
+                  <ProtectedRoute allowedRoles={['STAFF', 'STAFF']}>
                     <CheckAppointment />
                   </ProtectedRoute>
                 }
@@ -436,7 +439,7 @@ function App() {
               <Route
                 path="/s-page/get-appointment/:appointmentId"
                 element={
-                  <ProtectedRoute allowedRoles={['STAFF']}>
+                  <ProtectedRoute allowedRoles={['LAB_TECHNICIAN', 'STAFF']}>
                     <GetSampleInfo />
                   </ProtectedRoute>
                 }
@@ -446,6 +449,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['STAFF']}>
                     <CollectorSlots />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/s-page/labCheckSample"
+                element={
+                  <ProtectedRoute allowedRoles={['LAB_TECHNICIAN']}>
+                    <LabCheckSample />
                   </ProtectedRoute>
                 }
               />
@@ -638,6 +649,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <PatientRequest />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/blog-detail/:blogId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <GetBlogById />
                 </ProtectedRoute>
               }
             />
