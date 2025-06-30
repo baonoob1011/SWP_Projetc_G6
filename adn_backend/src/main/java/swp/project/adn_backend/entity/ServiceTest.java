@@ -44,18 +44,6 @@ public class ServiceTest {
     @Lob
     private String image;
 
-//    @OneToOne(mappedBy = "services",cascade = {
-//            CascadeType.PERSIST, CascadeType.MERGE,
-//            CascadeType.DETACH, CascadeType.REFRESH
-//    })
-//    List<Users> users;
-
-//    @ManyToOne(cascade = {
-//            CascadeType.PERSIST, CascadeType.MERGE,
-//            CascadeType.DETACH, CascadeType.REFRESH
-//    })
-//    @JoinColumn(name = "manager_id", nullable = false)
-//    Manager manager;
 
     @OneToMany(mappedBy = "services", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,

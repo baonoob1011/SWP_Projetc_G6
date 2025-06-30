@@ -308,7 +308,7 @@ public class AppointmentServiceTest {
         when(appointmentMapper.toPriceAppointmentResponse(anyList())).thenReturn(List.of(new PriceAppointmentResponse()));
 
         // Call service
-        List<AllAppointmentAtCenterResponse> result = appointmentService.getAppointmentAtHomeToGetSample(auth);
+        List<AllAppointmentAtCenterResponse> result = appointmentService.getAppointmentAtHomeToRecordResult(auth);
 
         // Verify
         assertNotNull(result);

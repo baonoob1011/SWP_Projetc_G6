@@ -87,10 +87,10 @@ public class AppointmentController {
     }
 
 
-    //staff lấy đo dk tại nhà ra nhập mẫu
+    //lab lấy mẫu ra dể ghi kết quả
     @GetMapping("/get-appointment-at-home-to-get-sample")
     public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentAtHomeToGetSample(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeToGetSample(authentication));
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeToRecordResult(authentication));
     }
 //    //staff lay appoint de thanh toan tien mat
 //    @GetMapping("/get-appointment-of-user-by-phone")

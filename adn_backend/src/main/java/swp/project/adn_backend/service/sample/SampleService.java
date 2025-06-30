@@ -86,17 +86,23 @@ public class SampleService {
         sample.setKit(serviceTest.getKit());
         sample.setAppointment(appointment);
         patient.setPatientStatus(PatientStatus.SAMPLE_COLLECTED);
-        // Lọc ra danh sách nhân viên tại nhà còn hoạt động
+        if (serviceTest.getKit().getQuantity() == 0) {
+            throw new RuntimeException("Cơ sở đã hết số lượng kit");
+        }
+        if (serviceTest.getKit().getQuantity() > 0) {
+            serviceTest.getKit().setQuantity(serviceTest.getKit().getQuantity() - 2);
+        }
         List<Staff> labTechnician1 = labTechnician.stream()
-                .filter(lab -> "STAFF_AT_HOME".equals(lab.getRole()))
+                .filter(lab -> "LAB_TECHNICIAN".equals(lab.getRole()))
                 .collect(Collectors.toList());
 
         if (labTechnician1.isEmpty()) {
-            throw new RuntimeException("Không có nhân viên thu mẫu");
+            throw new RuntimeException("Không có nhân viên phòng lab");
         }
 
-        // Chọn nhân viên tiếp theo theo round-robin
+// Đảm bảo index luôn nằm trong giới hạn danh sách
         int selectedIndex = staffAssignmentTracker.getNextIndex(labTechnician1.size());
+        selectedIndex = selectedIndex % labTechnician1.size(); // fix an toàn
         Staff selectedStaff = labTechnician1.get(selectedIndex);
 //        appointmentService.increaseStaffNotification(selectedStaff);
         appointment.setStaff(selectedStaff);
@@ -104,6 +110,7 @@ public class SampleService {
         SampleResponse response = sampleMapper.toSampleResponse(sampleRepository.save(sample));
         return response;
     }
+
 
     public String generateSampleCode() {
         char firstChar = (char) ('A' + new Random().nextInt(26));
@@ -150,10 +157,9 @@ public class SampleService {
         if (sampleRequest.getSampleStatus().equals(SampleStatus.DAMAGED)) {
             appointment.setNote("Mẫu của bạn bị hỏng trong quá trình xử lý. Chúng tôi sẽ gửi lại bộ kit đến địa chỉ của bạn để tiến hành thu mẫu lần nữa.");
             appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.PENDING);
-
-            // Cập nhật số lượng kit đã sử dụng
-            int currentQuantity = appointment.getServices().getKit().getQuantity();
-            appointment.getServices().getKit().setQuantity(currentQuantity - 1);
+        } if (sampleRequest.getSampleStatus().equals(SampleStatus.REJECTED)) {
+            appointment.setNote("Mẫu của bạn không đạt yêu cầu trong quá trình xử lý. Chúng tôi sẽ gửi lại bộ kit đến địa chỉ của bạn để tiến hành thu mẫu lại trong thời gian sớm nhất.");
+            appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.PENDING);
         }
 
         switch (sampleRequest.getSampleStatus()) {
@@ -172,8 +178,6 @@ public class SampleService {
             case REJECTED:
                 appointment.setNote("Mẫu bị từ chối");
                 break;
-            default:
-                appointment.setNote("Trạng thái mẫu không xác định");
         }
 
     }

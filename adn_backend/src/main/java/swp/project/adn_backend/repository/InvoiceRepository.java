@@ -20,13 +20,11 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     @Query("SELECT SUM(i.amount) FROM Invoice i WHERE i.transactionStatus = 'SUCCESS'")
     Long sumSuccessfulAmount();
 
-    @Query("SELECT SUM(i.amount) FROM Invoice i WHERE i.transactionStatus = 'SUCCESS' AND i.payDate BETWEEN :startDate AND :endDate")
-    Long sumSuccessfulAmountBetween(LocalDateTime startDate, LocalDateTime endDate);
 
     @Query(
       value = "SELECT CONVERT(date, pay_date) as payDate, SUM(amount) " +
               "FROM invoices " +
-              "WHERE status = 'SUCCESS' AND pay_date BETWEEN :startDate AND :endDate " +
+              "WHERE pay_date BETWEEN :startDate AND :endDate " +
               "GROUP BY CONVERT(date, pay_date) " +
               "ORDER BY CONVERT(date, pay_date)",
       nativeQuery = true
@@ -34,5 +32,10 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     List<Object[]> findDailyRevenueBetween(
         @Param("startDate") LocalDateTime startDate,
         @Param("endDate") LocalDateTime endDate
+    );
+    @Query("SELECT SUM(i.amount) FROM Invoice i WHERE i.transactionStatus = 'SUCCESS' AND i.payDate BETWEEN :startDate AND :endDate")
+    Long sumSuccessfulAmountBetween(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
     );
 }

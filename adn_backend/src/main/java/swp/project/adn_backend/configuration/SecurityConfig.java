@@ -82,11 +82,14 @@ public class SecurityConfig {
             "/api/kit-delivery-status/get-kit-status-user/**",
             "/api/feedback/create-feedback/**",
             "/api/feedback/get-all-feedback-of-service/**",
+
     };
     private final String[] STAFF_PUBLIC = {
             "/api/sample/get-all-sample/**",
             "/api/notification/get-notification/**",
-            "/api/appointment/get-appointment-at-home-to-get-sample"
+            "/api/appointment/get-appointment-at-home-to-get-sample",
+            "/api/staff/**",
+
 
     };
     private final String[] STAFF_ENDPOINTS = {
@@ -106,7 +109,8 @@ public class SecurityConfig {
             "/api/appointment/get-appointment-at-home-by-staff",
             "/api/kit-delivery-status/get-kit-status-staff-by-appointment/**",
             "/api/sample/collect-sample-patient/**",
-            "/api/staff/**"
+            "/api/sample/collect-sample-patient-at-center",
+
     };
 
     private final String[] LAB_TECHNICIAN = {
@@ -116,6 +120,7 @@ public class SecurityConfig {
             "/api/locus/create-locus",
             "/api/locus/get-all-locus",
             "/api/appointment/update-note",
+            "/api/sample/update-status-sample",
 
     };
     private final String[] MANAGER_ENDPOINTS = {

@@ -1,5 +1,6 @@
 package swp.project.adn_backend.dto.response.appointment.AppointmentResponse;
 
+import swp.project.adn_backend.entity.Sample;
 import swp.project.adn_backend.enums.PatientStatus;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ public class PatientAppointmentResponse {
     String gender;
     String relationship;
     PatientStatus patientStatus;
+
 
     public PatientAppointmentResponse() {
     }

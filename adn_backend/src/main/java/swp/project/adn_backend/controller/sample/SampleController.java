@@ -34,6 +34,8 @@ public class SampleController {
 
     }
 
+
+
     @GetMapping("/get-all-sample")
     public ResponseEntity<List<AllSampleResponse>> getAllSample(Authentication authentication,
                                                                 @RequestParam long appointmentId) {

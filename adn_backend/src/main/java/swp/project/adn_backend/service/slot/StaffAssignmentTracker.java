@@ -2,13 +2,16 @@ package swp.project.adn_backend.service.slot;
 
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Component
 public class StaffAssignmentTracker {
-    private int currentIndex = 0;
 
-    public synchronized int getNextIndex(int staffListSize) {
-        int indexToUse = currentIndex;
-        currentIndex = (currentIndex + 1) % staffListSize;
-        return indexToUse;
+    private AtomicInteger currentIndex = new AtomicInteger(0);
+
+    public int getNextIndex(int totalStaff) {
+        if (totalStaff == 0) return 0;
+        // Auto reset về 0 nếu vượt quá size
+        return currentIndex.getAndUpdate(index -> (index + 1) % totalStaff);
     }
 }

@@ -122,8 +122,7 @@ public class KitDeliveryStatusService {
             case COMPLETED:
                 appointment.setNote("Hoàn tất quá trình giao kit");
                 break;
-            default:
-                appointment.setNote("Trạng thái giao kit không xác định");
+
         }
 
         if (kitDeliveryStatusRequest.getDeliveryStatus() != null) {
