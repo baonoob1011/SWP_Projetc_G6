@@ -49,6 +49,7 @@ public class SecurityConfig {
             "/api/jasperpdf/**",
             "/api/register-for-consultation/register-consultation/**",
             "/api/blog/get-all-blog",
+            "/api/blog/get-blog",
             "/api/discount/get-discount-by-service",
             "/api/services/get-service",
             "/ws/**",                     // Cho phép WebSocket endpoint nếu dùng STOMP
@@ -85,6 +86,7 @@ public class SecurityConfig {
     private final String[] STAFF_PUBLIC = {
             "/api/sample/get-all-sample/**",
             "/api/notification/get-notification/**",
+            "/api/appointment/get-appointment-at-home-to-get-sample"
 
     };
     private final String[] STAFF_ENDPOINTS = {
@@ -108,12 +110,12 @@ public class SecurityConfig {
     };
 
     private final String[] LAB_TECHNICIAN = {
-            "/api/appointment/get-appointment-at-home-to-get-sample",
             "/api/result-allele/create-result-allele",
             "/api/result-locus/create-result-locus/**",
             "/api/result-detail/create-result-detail/**",
             "/api/locus/create-locus",
             "/api/locus/get-all-locus",
+            "/api/appointment/update-note",
 
     };
     private final String[] MANAGER_ENDPOINTS = {

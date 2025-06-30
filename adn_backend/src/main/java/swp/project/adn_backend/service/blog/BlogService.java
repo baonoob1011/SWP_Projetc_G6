@@ -1,6 +1,5 @@
 package swp.project.adn_backend.service.blog;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +7,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.BlogsInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo;
 import swp.project.adn_backend.dto.request.blog.BlogRequest;
+import swp.project.adn_backend.dto.InfoDTO.BlogResponse;
 import swp.project.adn_backend.entity.Blog;
 import swp.project.adn_backend.entity.Users;
-import swp.project.adn_backend.enums.AppointmentStatus;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.BlogMapper;
@@ -63,11 +62,10 @@ public class BlogService {
         return blogRepository.save(blog);
     }
 
-    public List<BlogsInfoDTO> getAllBlogs() {
-        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.BlogsInfoDTO(" +
-                "s.blogId, s.title, s.content, s.image) " +
-                "FROM Blog s";
-        TypedQuery<BlogsInfoDTO> query = entityManager.createQuery(jpql, BlogsInfoDTO.class);
+    public List<BlogResponse> getAllBlogs() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.BlogResponse(" +
+                "s.blogId, s.title, s.image, s.content, s.createdAt) FROM Blog s";
+        TypedQuery<BlogResponse> query = entityManager.createQuery(jpql, BlogResponse.class);
         return query.getResultList();
     }
 
@@ -118,8 +116,13 @@ public class BlogService {
         }
         blogRepository.delete(blog);
     }
-    public Blog getBlogById(Long blogId) {
-        return blogRepository.findById(blogId)
-      .orElseThrow(() -> new AppException(ErrorCodeUser.BLOG_NOT_FOUND));
-        }
+
+    public BlogResponse getBlogById(Long blogId) {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.BlogResponse(" +
+                "s.blogId, s.title, s.image, s.content, s.createdAt) FROM Blog s " +
+                "Where s.blogId=:blogId";
+        TypedQuery<BlogResponse> query = entityManager.createQuery(jpql, BlogResponse.class);
+        query.setParameter("blogId", blogId);
+        return query.getSingleResult();
+    }
 }

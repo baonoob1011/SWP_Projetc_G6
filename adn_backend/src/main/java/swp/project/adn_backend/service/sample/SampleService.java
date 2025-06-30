@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.request.sample.SampleRequest;
 import swp.project.adn_backend.dto.response.sample.*;
 import swp.project.adn_backend.entity.*;
+import swp.project.adn_backend.enums.DeliveryStatus;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.PatientStatus;
 import swp.project.adn_backend.enums.SampleStatus;
@@ -87,18 +88,19 @@ public class SampleService {
         patient.setPatientStatus(PatientStatus.SAMPLE_COLLECTED);
         // Lọc ra danh sách nhân viên tại nhà còn hoạt động
         List<Staff> labTechnician1 = labTechnician.stream()
-                .filter(lab -> "LAB_TECHNICIAN".equals(lab.getRole()))
+                .filter(lab -> "STAFF_AT_HOME".equals(lab.getRole()))
                 .collect(Collectors.toList());
 
         if (labTechnician1.isEmpty()) {
-            throw new RuntimeException("Không có nhân viên lab");
+            throw new RuntimeException("Không có nhân viên thu mẫu");
         }
 
         // Chọn nhân viên tiếp theo theo round-robin
         int selectedIndex = staffAssignmentTracker.getNextIndex(labTechnician1.size());
         Staff selectedStaff = labTechnician1.get(selectedIndex);
-        appointmentService.increaseStaffNotification(selectedStaff);
+//        appointmentService.increaseStaffNotification(selectedStaff);
         appointment.setStaff(selectedStaff);
+        appointment.setNote("Đã lấy mẫu thành công");
         SampleResponse response = sampleMapper.toSampleResponse(sampleRepository.save(sample));
         return response;
     }
@@ -109,7 +111,6 @@ public class SampleService {
         char lastChar = (char) ('A' + new Random().nextInt(26));
         return String.format("%c%04d%c", firstChar, numberPart, lastChar);
     }
-
 
     public List<AllSampleResponse> getAllSampleOfPatient(Authentication authentication,
                                                          long appointmentId) {
@@ -136,12 +137,47 @@ public class SampleService {
         return allSampleResponseList;
     }
 
+    //check sample có hợp lệ không nếu không chuyển trạng thái
     @Transactional
-    public void updateSampleStatus(long sampleId, SampleRequest sampleRequest) {
+    public void updateSampleStatus(long sampleId,
+                                   long appointmentId,
+                                   SampleRequest sampleRequest) {
         Sample sample = sampleRepository.findById(sampleId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         sample.setSampleStatus(sampleRequest.getSampleStatus());
+        if (sampleRequest.getSampleStatus().equals(SampleStatus.DAMAGED)) {
+            appointment.setNote("Mẫu của bạn bị hỏng trong quá trình xử lý. Chúng tôi sẽ gửi lại bộ kit đến địa chỉ của bạn để tiến hành thu mẫu lần nữa.");
+            appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.PENDING);
+
+            // Cập nhật số lượng kit đã sử dụng
+            int currentQuantity = appointment.getServices().getKit().getQuantity();
+            appointment.getServices().getKit().setQuantity(currentQuantity - 1);
+        }
+
+        switch (sampleRequest.getSampleStatus()) {
+            case IN_TRANSIT:
+                appointment.setNote("Đang vận chuyển đến phòng xét nghiệm");
+                break;
+            case RECEIVED:
+                appointment.setNote("Phòng xét nghiệm đã nhận mẫu");
+                break;
+            case TESTING:
+                appointment.setNote("Mẫu đang được xét nghiệm");
+                break;
+            case COMPLETED:
+                appointment.setNote("Đã xét nghiệm xong");
+                break;
+            case REJECTED:
+                appointment.setNote("Mẫu bị từ chối");
+                break;
+            default:
+                appointment.setNote("Trạng thái mẫu không xác định");
+        }
+
     }
+
     @Transactional
     public void deleteSample(long sampleId) {
         Sample sample = sampleRepository.findById(sampleId)

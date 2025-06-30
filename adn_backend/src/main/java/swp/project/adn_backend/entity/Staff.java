@@ -73,10 +73,8 @@ public class Staff {
     private List<Slot> slots;
 
 
-    @OneToOne(mappedBy = "staff", cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    }) // trỏ đến tên biến bên Notification
+    @OneToOne(mappedBy = "staff", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    // trỏ đến tên biến bên Notification
     private Notification notification;
 
     public Notification getNotification() {

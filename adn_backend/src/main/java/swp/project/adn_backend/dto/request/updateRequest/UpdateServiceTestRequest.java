@@ -22,6 +22,9 @@ public class UpdateServiceTestRequest {
         this.image = image;
     }
 
+    public UpdateServiceTestRequest() {
+    }
+
     public String getServiceName() {
         return serviceName;
     }

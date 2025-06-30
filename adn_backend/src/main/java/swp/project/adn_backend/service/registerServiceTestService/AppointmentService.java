@@ -176,7 +176,7 @@ public class AppointmentService {
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         paymentRepository.save(payment);
 
-        if(payment.getPaymentMethod().equals(PaymentMethod.CASH)){
+        if (payment.getPaymentMethod().equals(PaymentMethod.CASH)) {
             appointment.setNote("Vui lòng đến quầy thu ngân để thanh toán dịch vụ. " +
                     "Bạn chỉ cần cung cấp số điện thoại đã đăng ký để nhân viên hỗ trợ thanh toán nhanh chóng.");
         }
@@ -249,6 +249,7 @@ public class AppointmentService {
         appointmentMapper.toAppointmentResponse(saved);
         return allAppointmentAtCenterResponse;
     }
+
     @Transactional
     public void increaseStaffNotification(Staff staff) {
         Notification notification = staff.getNotification();
@@ -472,8 +473,9 @@ public class AppointmentService {
 
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
-
-
+        if (serviceTest.getKit().getQuantity() > 0) {
+            serviceTest.getKit().setQuantity(serviceTest.getKit().getQuantity() - 1);
+        }
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
@@ -591,6 +593,12 @@ public class AppointmentService {
         }
         appointment.setStaff(staff);
     }
+    @Transactional
+    public void updateNote(AppointmentRequest appointmentRequest, long appointmentId){
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        appointment.setNote(appointmentRequest.getNote());
+    }
 
     //staff xem ds cuar slot ddos va lay mau
     // thiếu update
@@ -667,9 +675,6 @@ public class AppointmentService {
 
         Staff staff = staffRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-        if (!staff.getRole().equals("STAFF_AT_HOME")) {
-            throw new RuntimeException("staff at home not exist");
-        }
 
         List<Appointment> appointmentList = staff.getAppointments();
         List<AllAppointmentAtCenterResponse> responses = new ArrayList<>();
@@ -678,9 +683,10 @@ public class AppointmentService {
             if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
 
                 // Lọc bệnh nhân có trạng thái REGISTERED
-                List<Patient> registeredPatients = appointment.getPatients().stream()
-                        .filter(p -> p.getPatientStatus() == PatientStatus.REGISTERED)
-                        .collect(Collectors.toList());
+                List<Patient> registeredPatients = appointment.getPatients();
+//                        stream()
+//                        .filter(p -> p.getPatientStatus() == PatientStatus.REGISTERED)
+//                        .collect(Collectors.toList());
 
                 // Map các thông tin liên quan
                 List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
@@ -932,62 +938,6 @@ public class AppointmentService {
         return results;
     }
 
-
-    public AllAppointmentResponse getHistoryAppointmentUser(Authentication authentication) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        Long userId = jwt.getClaim("id");
-
-        Users userRegister = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
-
-        List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
-
-        List<AllAppointmentAtCenterResponse> centerList = new ArrayList<>();
-        List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
-
-        for (Appointment appointment : appointmentList) {
-            if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED) &&
-                    appointment.getServices().getServiceType().equals(ServiceType.ADMINISTRATIVE)) {
-
-                List<UserAppointmentResponse> users = List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()));
-                List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
-
-                PriceList firstPrice = appointment.getServices().getPriceLists().get(0);
-                List<PriceAppointmentResponse> priceAppointmentResponse =
-                        appointmentMapper.toPriceAppointmentResponse(List.of(firstPrice));
-
-                AllAppointmentAtCenterResponse centerResponse = new AllAppointmentAtCenterResponse();
-                centerResponse.setUserAppointmentResponse(users);
-                centerResponse.setServiceAppointmentResponses(services);
-                centerResponse.setPriceAppointmentResponse(priceAppointmentResponse);
-
-                centerList.add(centerResponse);
-
-            } else if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED) &&
-                    appointment.getServices().getServiceType().equals(ServiceType.CIVIL)) {
-
-                ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
-
-                List<UserAppointmentResponse> users = List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()));
-                List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
-                PriceList firstPrice = appointment.getServices().getPriceLists().get(0);
-                List<PriceAppointmentResponse> priceAppointmentResponse =
-                        appointmentMapper.toPriceAppointmentResponse(List.of(firstPrice));
-
-                AllAppointmentAtHomeResponse homeResponse = new AllAppointmentAtHomeResponse();
-                homeResponse.setUserAppointmentResponse(users);
-                homeResponse.setServiceAppointmentResponses(services);
-                homeResponse.setPriceAppointmentResponse(priceAppointmentResponse);
-                homeList.add(homeResponse);
-            }
-        }
-
-        AllAppointmentResponse finalResponse = new AllAppointmentResponse();
-        finalResponse.setAllAppointmentAtCenterResponse(centerList);
-        finalResponse.setAllAppointmentAtHomeResponse(homeList);
-        return finalResponse;
-    }
-
     @Transactional
     public void cancelledAppointment(long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
@@ -999,22 +949,6 @@ public class AppointmentService {
         appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
     }
 
-    public List<AllAppointmentAtHomeManagerResponse> getAppointmentAtHomeForAdmin() {
-        List<Appointment> appointments = appointmentRepository.findAll();
-        List<AllAppointmentAtHomeManagerResponse> resultList = new ArrayList<>();
-
-        for (Appointment appointment : appointments) {
-            // Chỉ lấy những appointment tại nhà
-            if (appointment.getAppointmentType() == AppointmentType.HOME) {
-                AllAppointmentAtHomeManagerResponse response = new AllAppointmentAtHomeManagerResponse();
-                response.setAppointmentResponse(appointmentMapper.toShowAppointmentResponse(appointment));
-                response.setStaffAppointmentResponse(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
-                resultList.add(response);
-            }
-        }
-
-        return resultList;
-    }
 
     //staff lay ra de thanh toan bang tien mat
     public List<AllAppointmentAtCenterUserResponse> getAppointmentOfUser(Authentication authentication, UserPhoneRequest userRequest) {
@@ -1121,68 +1055,5 @@ public class AppointmentService {
         }
         return result.toString();
     }
+
 }
-//    public List<AppointmentAtHomeInfoDTO> getAppointmentAtHomeForAdmin() {
-//        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO(" +
-//                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note, s.appointmentType, s.staff.staffId, s.services.serviceId, s.users.userId) " +
-//                "FROM Appointment s WHERE " +
-//                "s.appointmentDate >= CURRENT_DATE " +
-//                "AND s.appointmentType=:appointmentType";
-//
-//        TypedQuery<AppointmentAtHomeInfoDTO> query = entityManager.createQuery(jpql, AppointmentAtHomeInfoDTO.class);
-//        query.setParameter("appointmentType", AppointmentType.HOME);
-//        return query.getResultList();
-//    }
-
-//    public AllAppointmentAtHomeResponse getAppointmentAtHomeForAdmin() {
-//        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO(" +
-//                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note, s.appointmentType, s.staff.staffId, s.services.serviceId, s.users.userId) " +
-//                "FROM Appointment s WHERE " +
-//                "s.appointmentDate >= CURRENT_DATE " +
-//                "AND s.appointmentType=:appointmentType";
-//
-//        TypedQuery<AppointmentAtHomeInfoDTO> query = entityManager.createQuery(jpql, AppointmentAtHomeInfoDTO.class);
-//        query.setParameter("appointmentType", AppointmentType.HOME);
-//        return query.getResultList();
-//    }
-
-
-//    public List<AllAppointmentAtCenterResponse> getAppointmentAtCenter(Authentication authentication) {
-//        Jwt jwt = (Jwt) authentication.getPrincipal();
-//        Long userId = jwt.getClaim("id");
-//
-//        Users userRegister = userRepository.findById(userId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
-//
-//        List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
-//        List<AllAppointmentAtCenterResponse> centerList = new ArrayList<>();
-//
-//        for (Appointment appointment : appointmentList) {
-//            if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
-//
-//                ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
-//                List<StaffAppointmentResponse> staff = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
-//                List<SlotAppointmentResponse> slot = List.of(appointmentMapper.toSlotAppointmentResponse(appointment.getSlot()));
-//                List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
-//                List<LocationAppointmentResponse> locations = List.of(appointmentMapper.toLocationAppointmentResponse(appointment.getLocation()));
-//                List<PaymentAppointmentResponse> payments = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
-//
-//                RoomAppointmentResponse room = new RoomAppointmentResponse();
-//                room.setRoomName(appointment.getSlot().getRoom().getRoomName());
-//
-//                AllAppointmentAtCenterResponse centerResponse = new AllAppointmentAtCenterResponse();
-//                centerResponse.setShowAppointmentResponse(show);
-//                centerResponse.setStaffAppointmentResponse(staff);
-//                centerResponse.setSlotAppointmentResponse(slot);
-//                centerResponse.setServiceAppointmentResponses(services);
-//                centerResponse.setLocationAppointmentResponses(locations);
-//                centerResponse.setRoomAppointmentResponse(room);
-//                centerResponse.setPaymentAppointmentResponse(payments);
-//
-//                centerList.add(centerResponse);
-//            }
-//        }
-//
-//        return centerList;
-//    }
-//

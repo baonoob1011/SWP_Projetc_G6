@@ -42,8 +42,9 @@ public class SampleController {
 
     @PutMapping("/update-status-sample")
     public ResponseEntity<String> updateSampleStatus(@RequestBody SampleRequest sampleRequest,
-                                                     @RequestParam long sampleId) {
-        sampleService.updateSampleStatus(sampleId, sampleRequest);
+                                                     @RequestParam long sampleId,
+                                                     @RequestParam long appointmentId) {
+        sampleService.updateSampleStatus(sampleId, appointmentId, sampleRequest);
         return ResponseEntity.ok("Update successful");
     }
 

@@ -16,6 +16,9 @@ public class SlotAppointmentResponse {
     LocalTime  endTime;
     SlotStatus slotStatus;
 
+    public SlotAppointmentResponse() {
+    }
+
     public SlotAppointmentResponse(long slotId, LocalDate slotDate, LocalTime startTime, LocalTime endTime) {
         this.slotId = slotId;
         this.slotDate = slotDate;

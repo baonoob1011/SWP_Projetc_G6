@@ -95,6 +95,7 @@ public class KitDeliveryStatusService {
             List<Staff> labTechnician1 = labTechnician.stream()
                     .filter(staff -> "LAB_TECHNICIAN".equals(staff.getRole()))
                     .collect(Collectors.toList());
+            appointment.setNote("Đã nhận lại bộ kit");
 
             if (labTechnician1.isEmpty()) {
                 throw new RuntimeException("Không có nhân viên lab");
@@ -105,6 +106,26 @@ public class KitDeliveryStatusService {
             Staff selectedStaff = labTechnician1.get(selectedIndex);
             appointment.setStaff(selectedStaff);
         }
+        switch (kitDeliveryStatusRequest.getDeliveryStatus()) {
+            case PENDING:
+                appointment.setNote("Đang chờ giao bộ kit");
+                break;
+            case IN_PROGRESS:
+                appointment.setNote("Đang giao bộ kit");
+                break;
+            case DELIVERED:
+                appointment.setNote("Đã giao bộ kit thành công");
+                break;
+            case FAILED:
+                appointment.setNote("Giao bộ kit thất bại");
+                break;
+            case COMPLETED:
+                appointment.setNote("Hoàn tất quá trình giao kit");
+                break;
+            default:
+                appointment.setNote("Trạng thái giao kit không xác định");
+        }
+
         if (kitDeliveryStatusRequest.getDeliveryStatus() != null) {
             kitDeliveryStatus.setDeliveryStatus(kitDeliveryStatusRequest.getDeliveryStatus());
         }

@@ -112,16 +112,11 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
     }
 
-    //admin lấy ra để add staff dô
-    @GetMapping("/get-appointment-at-home-by-admin")
-    public ResponseEntity<List<AllAppointmentAtHomeManagerResponse>> getAppointmentAtHomeForAdmin() {
-        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeForAdmin());
-    }
 
     @GetMapping("/get-all-result")
     public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResult(Authentication authentication,
                                                                                @RequestParam long appointmentId) {
-        return ResponseEntity.ok(appointmentService.getAllAppointmentsResult(authentication,appointmentId));
+        return ResponseEntity.ok(appointmentService.getAllAppointmentsResult(authentication, appointmentId));
     }
 
     //thêm staff vào appointment at home
@@ -130,6 +125,14 @@ public class AppointmentController {
                                                         @RequestParam long appointmentId) {
         appointmentService.addStaffToAppointment(staffId, appointmentId);
         return ResponseEntity.ok("add staff to appointment successful");
+    }
+
+    //thong bao sample bi loi
+    @PutMapping("/update-note")
+    public ResponseEntity<String> updateNote(@RequestBody AppointmentRequest appointmentRequest,
+                                             @RequestParam long appointmentId) {
+        appointmentService.updateNote(appointmentRequest, appointmentId);
+        return ResponseEntity.ok("update note appointment successful");
     }
 
     @PostMapping("/cancel-appointment/{appointmentId}")

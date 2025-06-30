@@ -12,6 +12,9 @@ public class PatientAppointmentResponse {
     String relationship;
     PatientStatus patientStatus;
 
+    public PatientAppointmentResponse() {
+    }
+
     public PatientAppointmentResponse(long patientId, String fullName, LocalDate dateOfBirth, String gender, String relationship, PatientStatus patientStatus) {
         this.patientId = patientId;
         this.fullName = fullName;

@@ -14,6 +14,9 @@ public class ServiceAppointmentResponse {
     String description;
     private ServiceType serviceType;
 
+    public ServiceAppointmentResponse() {
+    }
+
     public ServiceAppointmentResponse(long serviceId, String serviceName, LocalDate registerDate, String description, ServiceType serviceType) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
