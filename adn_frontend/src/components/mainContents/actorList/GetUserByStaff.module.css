@@ -1,0 +1,248 @@
+.container {
+  padding: 20px;
+  background: linear-gradient(135deg, #e3f2fd 0%, #f8f9fa 100%);
+  min-height: 100vh;
+}
+
+.searchCard {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(25, 118, 210, 0.1);
+}
+
+.searchField {
+  min-width: 300px;
+}
+
+.searchField .MuiOutlinedInput-root {
+  background-color: white;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.searchField .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+  border-color: #1976d2;
+}
+
+.searchField .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #1976d2;
+}
+
+.searchField .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #1976d2;
+  border-width: 2px;
+}
+
+.searchField .MuiInputLabel-root {
+  color: #1976d2;
+}
+
+.searchField .MuiInputLabel-root.Mui-focused {
+  color: #1976d2;
+}
+
+.header {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  border-radius: 12px 12px 0 0;
+  padding: 25px 30px;
+  color: white;
+  box-shadow: 0 4px 20px rgba(25, 118, 210, 0.3);
+}
+
+.title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 28px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tableCard {
+  background: white;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(25, 118, 210, 0.1);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHead {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+}
+
+.headerCell {
+  padding: 15px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.headerCell:last-child {
+  border-right: none;
+}
+
+.bodyRow {
+  border-bottom: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.bodyRow:hover {
+  background-color: #f0f7ff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.1);
+}
+
+.bodyRow:nth-child(even) {
+  background-color: #fafbfc;
+}
+
+.bodyRow:nth-child(even):hover {
+  background-color: #f0f7ff;
+}
+
+.indexCell {
+  padding: 20px;
+  text-align: center;
+  border-right: 1px solid #e5e7eb;
+  background-color: #f8fafc;
+}
+
+.indexNumber {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.bodyCell {
+  padding: 20px;
+  text-align: center;
+  border-right: 1px solid #e5e7eb;
+  font-weight: 500;
+  color: #374151;
+}
+
+.bodyCell:last-child {
+  border-right: none;
+}
+
+.noData {
+  padding: 40px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.errorMessage {
+  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+  color: #c62828;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 20px 0;
+  text-align: center;
+  border: 1px solid #e57373;
+  font-weight: 500;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: #1976d2;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.searchButton {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%) !important;
+  color: white !important;
+  margin-left: 12px !important;
+  height: 40px !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  padding: 0 20px !important;
+}
+
+.searchButton:hover {
+  background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4) !important;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.instructionText {
+  color: #666;
+  font-size: 14px;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  .header {
+    padding: 20px 15px;
+  }
+  
+  .title {
+    font-size: 24px;
+  }
+  
+  .searchCard {
+    padding: 15px;
+  }
+  
+  .searchField {
+    min-width: 250px;
+  }
+  
+  .headerCell,
+  .bodyCell {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+  
+  .indexCell {
+    padding: 12px 8px;
+  }
+  
+  .indexNumber {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+  
+  .searchContainer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .searchButton {
+    margin-left: 0 !important;
+    margin-top: 12px !important;
+  }
+} 
