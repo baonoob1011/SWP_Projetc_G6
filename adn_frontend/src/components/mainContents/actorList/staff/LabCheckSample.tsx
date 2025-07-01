@@ -87,7 +87,7 @@ export const LabCheckSample = () => {
             <th>Giới tính</th>
             <th>Quan hệ</th>
             <th>Ngày hẹn</th>
-            <th>Loại lịch</th>
+            <th>Loại dịch vụ</th>
             <th>Thao tác</th>
           </tr>
         </thead>
@@ -95,8 +95,6 @@ export const LabCheckSample = () => {
           {appointments.map((appointmentItem: any) => {
             const appointment = appointmentItem.showAppointmentResponse;
             const appointmentId = appointment?.appointmentId;
-            const serviceId =
-              appointmentItem.serviceAppointmentResponses?.[0]?.serviceId;
             const patients = appointmentItem.patientAppointmentResponse;
 
             if (!appointment || appointment.appointmentStatus !== 'CONFIRMED')
@@ -140,28 +138,14 @@ export const LabCheckSample = () => {
                   <td>{appointment?.appointmentDate}</td>
                   <td>{appointment?.appointmentType}</td>
                   <td>
-                    <div className={styles.inputGroup}>
-                      <input
-                        type="text"
-                        placeholder="Nhập vật mẫu"
-                        className={styles.sampleInput}
-                        value={sampleType[key] || ''}
-                        onChange={(e) =>
-                          setSampleType((prev) => ({
-                            ...prev,
-                            [key]: e.target.value,
-                          }))
-                        }
-                      />
-                      {isFirst && (
-                        <NavLink
-                          to={`/s-page/get-appointment/${appointmentId}`}
-                          className={styles.viewBtn}
-                        >
-                          Xem
-                        </NavLink>
-                      )}
-                    </div>
+                    {isFirst && (
+                      <NavLink
+                        to={`/s-page/get-appointment/${appointmentId}`}
+                        className={styles.viewBtn}
+                      >
+                        Xem
+                      </NavLink>
+                    )}
                   </td>
                 </tr>
               );

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { NavLink, useLocation, useParams } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
   Box,
@@ -45,6 +45,7 @@ const SelectedAdministrativeService = () => {
   const [feedbacks, setFeedbacks] = useState<any[]>([]);
   const [feedbackData, setFeedbackData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const mapRatingTextToNumber = (ratingText: string): number => {
     switch (ratingText) {
@@ -78,7 +79,7 @@ const SelectedAdministrativeService = () => {
         const data = await res.json();
         setService(data);
       } else {
-        toast.error('dịch vụ không tồn tại hãy tải lại trang');
+        navigate('/login');
       }
     } catch (error) {
       console.log(error);
@@ -114,12 +115,14 @@ const SelectedAdministrativeService = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         }
       );
-      if (!res.ok) throw new Error('Không thể lấy đánh giá');
+      if (!res.ok) {
+        navigate('/login');
+      }
       const data = await res.json();
       setFeedbackData(data);
       setFeedbacks(data.allFeedbackResponses || []);
     } catch (err) {
-      toast.error('Không thể lấy đánh giá');
+      console.log(err);
     } finally {
       setLoading(false);
     }

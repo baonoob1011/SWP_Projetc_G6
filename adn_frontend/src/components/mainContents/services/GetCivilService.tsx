@@ -13,6 +13,7 @@ import {
 import { NavLink } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 type PriceItem = {
   time: string;
   price: number;
@@ -68,7 +69,7 @@ const CivilServiceList = () => {
           'http://localhost:8080/api/services/get-all-civil-service'
         );
         if (!response.ok) {
-          throw new Error('Không thể lấy dữ liệu dịch vụ');
+          toast.error('lỗi kết nối');
         }
         const data = await response.json();
         setServices(Array.isArray(data) ? data : []);
