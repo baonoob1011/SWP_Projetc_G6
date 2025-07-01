@@ -7,6 +7,9 @@ const GetKitDeliveryStatus = () => {
   const [kitStatus, setKitStatus] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [expandedOrders, setExpandedOrders] = useState<Set<number>>(new Set());
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 2;
 
   // Define order tracking steps matching API statuses
   const trackingSteps = [
@@ -155,11 +158,6 @@ const GetKitDeliveryStatus = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Manual refresh function
-  const handleRefresh = () => {
-    fetchKitStatus();
-  };
-
   // Toggle expand/collapse for specific order
   const toggleOrderExpansion = (orderIndex: number) => {
     const newExpandedOrders = new Set(expandedOrders);
@@ -189,6 +187,12 @@ const GetKitDeliveryStatus = () => {
     }
   };
 
+  // Pagination logic
+  const totalPages = Math.ceil(kitStatus.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentItems = kitStatus.slice(startIndex, endIndex);
+
   if (isLoading && kitStatus.length === 0) {
     return (
       <div className={styles.container}>
@@ -204,7 +208,7 @@ const GetKitDeliveryStatus = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
+      {/* <div className={styles.header}>
         📦 Theo Dõi Đơn Hàng Kit DNA
         <button 
           onClick={handleRefresh}
@@ -222,7 +226,7 @@ const GetKitDeliveryStatus = () => {
         >
           {isLoading ? '🔄' : '↻'} Làm mới
         </button>
-      </div>
+      </div> */}
 
       {kitStatus.length === 0 ? (
         <div className={styles.noDataContainer}>
@@ -230,73 +234,128 @@ const GetKitDeliveryStatus = () => {
           <p className={styles.noDataText}>Không có đơn hàng nào để theo dõi.</p>
         </div>
       ) : (
-        kitStatus.map((order: any, orderIndex: number) => {
-          const currentStepIndex = getCurrentStepIndex(order.deliveryStatus);
-          const relevantSteps = getRelevantSteps(order.deliveryStatus);
-          const isExpanded = expandedOrders.has(orderIndex);
-          const statusColorClass = getStatusColorClass(order.deliveryStatus);
-          
-          return (
-            <div key={orderIndex} className={`${styles.orderCard} ${styles[statusColorClass]}`}>
-              {/* Order Header */}
-              <div className={styles.orderHeader}>
-                <div className={styles.orderInfo}>
-                  <div className={styles.orderId}>
-                    Đơn hàng #{orderIndex + 1}
+        <>
+          {currentItems.map((order: any, orderIndex: number) => {
+            const realIndex = startIndex + orderIndex;
+            const currentStepIndex = getCurrentStepIndex(order.deliveryStatus);
+            const relevantSteps = getRelevantSteps(order.deliveryStatus);
+            const isExpanded = expandedOrders.has(realIndex);
+            const statusColorClass = getStatusColorClass(order.deliveryStatus);
+            return (
+              <div key={realIndex} className={`${styles.orderCard} ${styles[statusColorClass]}`}>
+                {/* Order Header */}
+                <div className={styles.orderHeader}>
+                  <div className={styles.orderInfo}>
+                    <div className={styles.orderId}>
+                      Đơn hàng #{realIndex + 1}
+                    </div>
+                    <div className={styles.orderDate}>
+                      Ngày đặt: {new Date(order.createOrderDate).toLocaleDateString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                      })}
+                    </div>
                   </div>
-                  <div className={styles.orderDate}>
-                    Ngày đặt: {new Date(order.createOrderDate).toLocaleDateString('vi-VN', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric'
+                  <div className={styles.orderActions}>
+                    <div className={`${styles.orderStatus} ${styles[statusColorClass]}`}>
+                      {order.deliveryStatus}
+                    </div>
+                    <button 
+                      className={styles.toggleButton}
+                      onClick={() => toggleOrderExpansion(realIndex)}
+                    >
+                      {isExpanded ? '🔼 Thu gọn' : '🔽 Xem chi tiết'}
+                    </button>
+                  </div>
+                </div>
+                {/* Timeline - Conditionally rendered */}
+                {isExpanded && (
+                  <div className={styles.timeline}>
+                    {relevantSteps.map((step, stepIndex) => {
+                      const stepClass = getStepClass(stepIndex, currentStepIndex, order.deliveryStatus, step);
+                      return (
+                        <div key={step.id} className={`${styles.timelineStep} ${styles[stepClass]}`}>
+                          {/* Step Icon */}
+                          <div className={`${styles.stepIcon} ${styles[stepClass]}`}>
+                            {stepClass === 'completed' ? '✓' : stepClass === 'failed' ? '✗' : step.icon}
+                          </div>
+                          {/* Step Content */}
+                          <div className={styles.stepContent}>
+                            <div className={`${styles.stepTitle} ${styles[stepClass]}`}>
+                              {step.title}
+                            </div>
+                            <div className={styles.stepDescription}>
+                              {step.description}
+                            </div>
+                            <div className={`${styles.stepTime} ${styles[stepClass]}`}>
+                              {stepClass === 'pending' ? 'Chưa thực hiện' : ''}
+                            </div>
+                          </div>
+                        </div>
+                      );
                     })}
                   </div>
-                </div>
-                <div className={styles.orderActions}>
-                  <div className={`${styles.orderStatus} ${styles[statusColorClass]}`}>
-                    {order.deliveryStatus}
-                  </div>
-                  <button 
-                    className={styles.toggleButton}
-                    onClick={() => toggleOrderExpansion(orderIndex)}
-                  >
-                    {isExpanded ? '🔼 Thu gọn' : '🔽 Xem chi tiết'}
-                  </button>
-                </div>
+                )}
               </div>
-
-              {/* Timeline - Conditionally rendered */}
-              {isExpanded && (
-                <div className={styles.timeline}>
-                                  {relevantSteps.map((step, stepIndex) => {
-                  const stepClass = getStepClass(stepIndex, currentStepIndex, order.deliveryStatus, step);
-                  return (
-                      <div key={step.id} className={`${styles.timelineStep} ${styles[stepClass]}`}>
-                                              {/* Step Icon */}
-                      <div className={`${styles.stepIcon} ${styles[stepClass]}`}>
-                        {stepClass === 'completed' ? '✓' : stepClass === 'failed' ? '✗' : step.icon}
-                      </div>
-
-                        {/* Step Content */}
-                        <div className={styles.stepContent}>
-                          <div className={`${styles.stepTitle} ${styles[stepClass]}`}>
-                            {step.title}
-                          </div>
-                          <div className={styles.stepDescription}>
-                            {step.description}
-                          </div>
-                                                  <div className={`${styles.stepTime} ${styles[stepClass]}`}>
-                          {stepClass === 'pending' ? 'Chưa thực hiện' : ''}
-                        </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+            );
+          })}
+          {/* Pagination Controls */}
+          {kitStatus.length > itemsPerPage && (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 24, gap: 16 }}>
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: 8,
+                  border: '1px solid #ccc',
+                  background: currentPage === 1 ? '#f3f3f3' : '#fff',
+                  color: currentPage === 1 ? '#aaa' : '#333',
+                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                  fontWeight: 500
+                }}
+              >
+                Trang trước
+              </button>
+              <div style={{ display: 'flex', gap: 4 }}>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    style={{
+                      padding: '8px 12px',
+                      borderRadius: 8,
+                      border: '1px solid #ccc',
+                      background: currentPage === page ? '#2563eb' : '#fff',
+                      color: currentPage === page ? '#fff' : '#333',
+                      fontWeight: currentPage === page ? 700 : 500,
+                      cursor: 'pointer',
+                      margin: 0
+                    }}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: 8,
+                  border: '1px solid #ccc',
+                  background: currentPage === totalPages ? '#f3f3f3' : '#fff',
+                  color: currentPage === totalPages ? '#aaa' : '#333',
+                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                  fontWeight: 500
+                }}
+              >
+                Trang sau
+              </button>
             </div>
-          );
-        })
+          )}
+        </>
       )}
     </div>
   );
