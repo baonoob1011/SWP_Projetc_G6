@@ -727,21 +727,10 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/service/civil"
-              element={
-                <ProtectedRoute>
-                  <CivilServiceList />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/service/civil" element={<CivilServiceList />} />
             <Route
               path="/service/administrative"
-              element={
-                <ProtectedRoute>
-                  <AdministrativeServiceList />
-                </ProtectedRoute>
-              }
+              element={<AdministrativeServiceList />}
             />
 
             {/* STAFF + MANAGER */}

@@ -295,6 +295,12 @@ const Booking = () => {
                           {item.payments[0].amount?.toLocaleString('vi-VN')} VNĐ
                         </p>
                       </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Trạng thái mẫu</p>
+                        <p className="font-medium text-gray-900">
+                          {item.show.note}
+                        </p>
+                      </div>
                       <div className="text-right">
                         <p className="text-sm text-gray-500">Trạng thái</p>
                         <span

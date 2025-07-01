@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { NavLink, useLocation, useParams } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
   Box,
@@ -49,7 +49,7 @@ const SelectedCivilService = () => {
   const [feedbacks, setFeedbacks] = useState<any[]>([]);
   const [feedbackData, setFeedbackData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const fetchData = async () => {
     try {
       const res = await fetch(
@@ -59,7 +59,7 @@ const SelectedCivilService = () => {
         }
       );
       if (res.ok) setService(await res.json());
-      else toast.error('Dịch vụ không tồn tại, hãy tải lại trang');
+      else navigate('/login');
     } catch (err) {
       console.log(err);
     }
@@ -88,12 +88,14 @@ const SelectedCivilService = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         }
       );
-      if (!res.ok) throw new Error('Không thể lấy đánh giá');
+      if (!res.ok) {
+        navigate('/login');
+      }
       const data = await res.json();
       setFeedbackData(data);
       setFeedbacks(data.allFeedbackResponses || []);
     } catch (err) {
-      toast.error('Không thể lấy đánh giá');
+      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -183,15 +185,13 @@ const SelectedCivilService = () => {
               }}
             >
               {/* Product Image */}
-              <Box
-                sx={{ flex: { md: '0 0 450px' }, position: 'relative' }}
-              >
+              <Box sx={{ flex: { md: '0 0 450px' }, position: 'relative' }}>
                 {svc.image && (
                   <CardMedia
                     component="img"
                     image={`data:image/*;base64,${svc.image}`}
                     alt={svc.serviceName}
-                    sx={{ 
+                    sx={{
                       height: { xs: 700, md: 700 },
                       objectFit: 'cover',
                       borderRadius: { xs: 0, md: '12px 0 0 12px' },
