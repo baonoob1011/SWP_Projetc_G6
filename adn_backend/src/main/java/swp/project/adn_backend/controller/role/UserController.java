@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import swp.project.adn_backend.dto.InfoDTO.UserResponse;
 import swp.project.adn_backend.dto.request.updateRequest.UpdateUserRequest;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.AllAppointmentAtCenterResponse;
 import swp.project.adn_backend.dto.response.role.UpdateUserResponse;
@@ -36,6 +37,11 @@ public class UserController {
         this.appointmentService = appointmentService;
         this.slotService = slotService;
         this.locationService = locationService;
+    }
+
+    @GetMapping("/get-user-info")
+    public ResponseEntity<UserResponse> getUserInfo(Authentication authentication) {
+        return ResponseEntity.ok(userService.getUserInfo(authentication));
     }
 
     @PutMapping("/update-user")

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   Box,
@@ -23,9 +24,8 @@ import { Home, Person, Payment, LocationOn } from '@mui/icons-material';
 
 const BookingAtHome = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState<any>('');
   const navigate = useNavigate();
-  const [auth, setAuth] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [price, setPrice] = useState<Price[]>([]);
   const [selectedPrice, setSelectedPrice] = useState<string>('');
@@ -70,9 +70,6 @@ const BookingAtHome = () => {
     }));
   };
   // Kiểm tra token và auth
-  useEffect(() => {
-    setAuth(localStorage.getItem('role') === 'USER');
-  });
 
   const fetchPrice = async () => {
     try {
@@ -114,7 +111,34 @@ const BookingAtHome = () => {
     const priceId = event.target.value;
     setSelectedPrice(priceId);
   };
+  const fetchData = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/api/user/get-user-info', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
 
+      if (!res.ok) {
+        const errorText = await res.text();
+        toast.error('❌ Cập nhật thất bại: ' + errorText);
+        return;
+      }
+
+      const updated = await res.json();
+      if (updated.address) {
+        setAddress(updated.address);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('❌ Lỗi kết nối với hệ thống');
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   const handleSubmit = async () => {
     if (!serviceId) {
       toast.error('Service ID không hợp lệ');
@@ -184,34 +208,6 @@ const BookingAtHome = () => {
   useEffect(() => {
     fetchPrice();
   }, []);
-
-  if (!auth) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '50vh',
-          backgroundColor: '#f8faff',
-        }}
-      >
-        <Paper
-          elevation={2}
-          sx={{
-            p: 4,
-            textAlign: 'center',
-            backgroundColor: '#fff',
-            borderRadius: 3,
-          }}
-        >
-          <Typography variant="h6" color="primary">
-            Đang kiểm tra quyền truy cập...
-          </Typography>
-        </Paper>
-      </Box>
-    );
-  }
 
   return (
     <Box

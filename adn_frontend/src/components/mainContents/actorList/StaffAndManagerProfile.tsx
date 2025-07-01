@@ -109,7 +109,7 @@ const NewProfile = ({ role }: Profile) => {
 
     try {
       const apiMap = {
-        CASHIER: 'http://localhost:8080/api/staff/update-staff',
+        CASHIER: 'http://localhost:8080/api/staff/verify-password',
         STAFF: 'http://localhost:8080/api/staff/verify-password',
         MANAGER: 'http://localhost:8080/api/manager/verify-password',
       };
@@ -156,7 +156,7 @@ const NewProfile = ({ role }: Profile) => {
 
     try {
       const apiMap = {
-        CASHIER: 'http://localhost:8080/api/staff/update-staff',
+        CASHIER: 'http://localhost:8080/api/staff/change-password',
         STAFF: 'http://localhost:8080/api/staff/change-password',
         MANAGER: 'http://localhost:8080/api/manager/change-password',
       };
@@ -406,37 +406,154 @@ const NewProfile = ({ role }: Profile) => {
 
             {/* Enhanced Change Password Tab */}
             {activeTab === 'changePassword' && (
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl overflow-hidden">
-                <div className="relative px-8 py-6 bg-gradient-to-r from-blue-500 to-indigo-600">
-                  <div className="absolute inset-0 bg-black/10"></div>
-                  <div className="relative">
-                    <h2 className="text-2xl font-bold text-white">
+              <div
+                style={{
+                  backgroundColor: 'white',
+                  padding: '0',
+                  borderRadius: '16px',
+                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.1)',
+                  overflow: 'hidden',
+                }}
+              >
+                {/* Blue Header Section */}
+                <div
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+                    borderRadius: '16px 16px 0 0',
+                    padding: '40px',
+                    color: 'white',
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: '#3639CD',
+                      backdropFilter: 'blur(10px)',
+                    }}
+                  ></div>
+                  <div style={{ position: 'relative', zIndex: 1 }}>
+                    <h2
+                      style={{ margin: 0, fontWeight: '600', fontSize: '30px' }}
+                    >
                       Bảo mật tài khoản
                     </h2>
-                    <p className="text-blue-100 mt-2">
+                    <p
+                      style={{
+                        margin: '10px 0 0 0',
+                        opacity: 0.9,
+                        fontSize: '15px',
+                      }}
+                    >
                       Thay đổi mật khẩu để tăng cường bảo mật
                     </p>
                   </div>
                 </div>
-                <div className="p-8">
+
+                {/* Content Section */}
+                <div
+                  style={{
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '0 0 16px 16px',
+                    padding: '50px 40px',
+                    textAlign: 'center',
+                    boxShadow: '0 10px 25px #3639CD',
+                  }}
+                >
                   {/* Step 1: Verify Old Password */}
                   {passwordStep === 1 && (
-                    <div className="max-w-md mx-auto">
-                      <form
-                        onSubmit={handleVerifyOldPassword}
-                        className="space-y-6"
+                    <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+                      {/* Shield Icon */}
+                      <div
+                        style={{
+                          width: '100px',
+                          height: '100px',
+                          borderRadius: '50%',
+                          backgroundColor: '#3639CD',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          margin: '0 auto 40px',
+                          border: '4px solid #3639CD',
+                        }}
                       >
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Mật khẩu cũ
+                        <Shield
+                          style={{
+                            width: '45px',
+                            height: '45px',
+                            color: 'white',
+                          }}
+                        />
+                      </div>
+
+                      {/* Title and Subtitle */}
+                      <h3
+                        style={{
+                          fontSize: '28px',
+                          fontWeight: '600',
+                          color: '#374151',
+                          margin: '0 0 10px 0',
+                        }}
+                      >
+                        Xác thực mật khẩu
+                      </h3>
+                      <p
+                        style={{
+                          fontSize: '16px',
+                          color: '#6b7280',
+                          margin: '0 0 40px 0',
+                        }}
+                      >
+                        Vui lòng nhập mật khẩu hiện tại để tiếp tục
+                      </p>
+
+                      <form onSubmit={handleVerifyOldPassword}>
+                        <div
+                          style={{ textAlign: 'left', marginBottom: '30px' }}
+                        >
+                          <label
+                            style={{
+                              display: 'block',
+                              fontSize: '16px',
+                              fontWeight: '500',
+                              color: '#374151',
+                              marginBottom: '10px',
+                            }}
+                          >
+                            Mật khẩu hiện tại
                           </label>
-                          <div className="relative">
+                          <div style={{ position: 'relative' }}>
                             <input
                               type={showOldPassword ? 'text' : 'password'}
                               value={oldPassword}
                               onChange={(e) => setOldPassword(e.target.value)}
-                              placeholder="Nhập mật khẩu cũ"
-                              className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 text-gray-800 font-medium"
+                              placeholder="Nhập mật khẩu hiện tại"
+                              style={{
+                                width: '100%',
+                                padding: '18px 50px 18px 18px',
+                                border: '2px solid #e1e5e9',
+                                borderRadius: '12px',
+                                backgroundColor: 'white',
+                                fontSize: '16px',
+                                outline: 'none',
+                                transition: 'all 0.3s ease',
+                                boxSizing: 'border-box',
+                              }}
+                              onFocus={(e) => {
+                                e.target.style.borderColor = '#4f46e5';
+                                e.target.style.boxShadow =
+                                  '0 0 0 4px rgba(79, 70, 229, 0.15)';
+                              }}
+                              onBlur={(e) => {
+                                e.target.style.borderColor = '#e5e7eb';
+                                e.target.style.boxShadow = 'none';
+                              }}
                               required
                             />
                             <button
@@ -444,21 +561,62 @@ const NewProfile = ({ role }: Profile) => {
                               onClick={() =>
                                 setShowOldPassword(!showOldPassword)
                               }
-                              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                              style={{
+                                position: 'absolute',
+                                right: '15px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                color: '#6b7280',
+                                cursor: 'pointer',
+                                padding: '5px',
+                              }}
                             >
                               {showOldPassword ? (
-                                <EyeOff className="w-5 h-5" />
+                                <EyeOff
+                                  style={{ width: '20px', height: '20px' }}
+                                />
                               ) : (
-                                <Eye className="w-5 h-5" />
+                                <Eye
+                                  style={{ width: '20px', height: '20px' }}
+                                />
                               )}
                             </button>
                           </div>
                         </div>
+
                         <button
                           type="submit"
-                          className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                          style={{
+                            width: '100%',
+                            background:
+                              'linear-gradient(135deg, #4f46e5 0%, #3639CD 100%)',
+                            color: 'white',
+                            border: 'none',
+                            padding: '18px 0',
+                            borderRadius: '12px',
+                            fontSize: '16px',
+                            fontWeight: '700',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            textTransform: 'uppercase',
+                            letterSpacing: '1px',
+                          }}
+                          onMouseOver={(e) => {
+                            (e.target as HTMLButtonElement).style.transform =
+                              'translateY(-3px)';
+                            (e.target as HTMLButtonElement).style.boxShadow =
+                              '0 12px 35px rgba(79, 70, 229, 0.5)';
+                          }}
+                          onMouseOut={(e) => {
+                            (e.target as HTMLButtonElement).style.transform =
+                              'translateY(0)';
+                            (e.target as HTMLButtonElement).style.boxShadow =
+                              '0 8px 25px rgba(79, 70, 229, 0.4)';
+                          }}
                         >
-                          XÁC NHẬN
+                          XÁC THỰC MẬT KHẨU
                         </button>
                       </form>
                     </div>
@@ -466,22 +624,93 @@ const NewProfile = ({ role }: Profile) => {
 
                   {/* Step 2: Enter New Password */}
                   {passwordStep === 2 && (
-                    <div className="max-w-md mx-auto">
-                      <form
-                        onSubmit={handleChangePassword}
-                        className="space-y-6"
+                    <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+                      {/* Shield Icon */}
+                      <div
+                        style={{
+                          width: '100px',
+                          height: '100px',
+                          borderRadius: '50%',
+                          backgroundColor: '#4f46e5',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          margin: '0 auto 40px',
+                          boxShadow: '0 15px 35px rgba(79, 70, 229, 0.4)',
+                          border: '4px solid rgba(255, 255, 255, 0.2)',
+                        }}
                       >
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Shield
+                          style={{
+                            width: '45px',
+                            height: '45px',
+                            color: 'white',
+                          }}
+                        />
+                      </div>
+
+                      {/* Title and Subtitle */}
+                      <h3
+                        style={{
+                          fontSize: '28px',
+                          fontWeight: '600',
+                          color: '#374151',
+                          margin: '0 0 10px 0',
+                        }}
+                      >
+                        Tạo mật khẩu mới
+                      </h3>
+                      <p
+                        style={{
+                          fontSize: '16px',
+                          color: '#6b7280',
+                          margin: '0 0 40px 0',
+                        }}
+                      >
+                        Nhập mật khẩu mới để hoàn tất quá trình thay đổi
+                      </p>
+
+                      <form onSubmit={handleChangePassword}>
+                        <div
+                          style={{ textAlign: 'left', marginBottom: '20px' }}
+                        >
+                          <label
+                            style={{
+                              display: 'block',
+                              fontSize: '16px',
+                              fontWeight: '500',
+                              color: '#374151',
+                              marginBottom: '10px',
+                            }}
+                          >
                             Mật khẩu mới
                           </label>
-                          <div className="relative">
+                          <div style={{ position: 'relative' }}>
                             <input
                               type={showNewPassword ? 'text' : 'password'}
                               value={newPassword}
                               onChange={(e) => setNewPassword(e.target.value)}
                               placeholder="Nhập mật khẩu mới"
-                              className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 text-gray-800 font-medium"
+                              style={{
+                                width: '100%',
+                                padding: '18px 50px 18px 18px',
+                                border: '2px solid #e1e5e9',
+                                borderRadius: '12px',
+                                fontSize: '16px',
+                                outline: 'none',
+                                transition: 'all 0.3s ease',
+                                boxSizing: 'border-box',
+                                backgroundColor: 'white',
+                              }}
+                              onFocus={(e) => {
+                                e.target.style.borderColor = '#4f46e5';
+                                e.target.style.boxShadow =
+                                  '0 0 0 4px rgba(79, 70, 229, 0.15)';
+                              }}
+                              onBlur={(e) => {
+                                e.target.style.borderColor = '#e1e5e9';
+                                e.target.style.boxShadow = 'none';
+                              }}
                               required
                             />
                             <button
@@ -489,22 +718,46 @@ const NewProfile = ({ role }: Profile) => {
                               onClick={() =>
                                 setShowNewPassword(!showNewPassword)
                               }
-                              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                              style={{
+                                position: 'absolute',
+                                right: '15px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                color: '#6b7280',
+                                cursor: 'pointer',
+                                padding: '5px',
+                              }}
                             >
                               {showNewPassword ? (
-                                <EyeOff className="w-5 h-5" />
+                                <EyeOff
+                                  style={{ width: '20px', height: '20px' }}
+                                />
                               ) : (
-                                <Eye className="w-5 h-5" />
+                                <Eye
+                                  style={{ width: '20px', height: '20px' }}
+                                />
                               )}
                             </button>
                           </div>
                         </div>
 
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <div
+                          style={{ textAlign: 'left', marginBottom: '30px' }}
+                        >
+                          <label
+                            style={{
+                              display: 'block',
+                              fontSize: '16px',
+                              fontWeight: '500',
+                              color: '#374151',
+                              marginBottom: '10px',
+                            }}
+                          >
                             Xác nhận mật khẩu mới
                           </label>
-                          <div className="relative">
+                          <div style={{ position: 'relative' }}>
                             <input
                               type={showConfirmPassword ? 'text' : 'password'}
                               value={confirmPassword}
@@ -512,7 +765,26 @@ const NewProfile = ({ role }: Profile) => {
                                 setConfirmPassword(e.target.value)
                               }
                               placeholder="Nhập lại mật khẩu"
-                              className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-400 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 text-gray-800 font-medium"
+                              style={{
+                                width: '100%',
+                                padding: '18px 50px 18px 18px',
+                                border: '2px solid #e1e5e9',
+                                borderRadius: '12px',
+                                fontSize: '16px',
+                                outline: 'none',
+                                transition: 'all 0.3s ease',
+                                boxSizing: 'border-box',
+                                backgroundColor: 'white',
+                              }}
+                              onFocus={(e) => {
+                                e.target.style.borderColor = '#4f46e5';
+                                e.target.style.boxShadow =
+                                  '0 0 0 4px rgba(79, 70, 229, 0.15)';
+                              }}
+                              onBlur={(e) => {
+                                e.target.style.borderColor = '#e1e5e9';
+                                e.target.style.boxShadow = 'none';
+                              }}
                               required
                             />
                             <button
@@ -520,30 +792,73 @@ const NewProfile = ({ role }: Profile) => {
                               onClick={() =>
                                 setShowConfirmPassword(!showConfirmPassword)
                               }
-                              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                              style={{
+                                position: 'absolute',
+                                right: '15px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                color: '#6b7280',
+                                cursor: 'pointer',
+                                padding: '5px',
+                              }}
                             >
                               {showConfirmPassword ? (
-                                <EyeOff className="w-5 h-5" />
+                                <EyeOff
+                                  style={{ width: '20px', height: '20px' }}
+                                />
                               ) : (
-                                <Eye className="w-5 h-5" />
+                                <Eye
+                                  style={{ width: '20px', height: '20px' }}
+                                />
                               )}
                             </button>
                           </div>
                         </div>
 
-                        <div className="flex space-x-4">
+                        <div style={{ display: 'flex', gap: '15px' }}>
                           <button
                             type="button"
                             onClick={() => setPasswordStep(1)}
-                            className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-gray-300"
+                            style={{
+                              flex: '1',
+                              background:
+                                'linear-gradient(135deg, #64748b 0%, #475569 100%)',
+                              color: 'white',
+                              border: 'none',
+                              padding: '18px 0',
+                              borderRadius: '12px',
+                              fontSize: '16px',
+                              fontWeight: '600',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease',
+                              textTransform: 'uppercase',
+                              letterSpacing: '1px',
+                            }}
                           >
                             QUAY LẠI
                           </button>
                           <button
                             type="submit"
-                            className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                            style={{
+                              flex: '1',
+                              background:
+                                'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+                              color: 'white',
+                              border: 'none',
+                              padding: '18px 0',
+                              borderRadius: '12px',
+                              fontSize: '16px',
+                              fontWeight: '700',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease',
+                              boxShadow: '0 8px 25px rgba(79, 70, 229, 0.4)',
+                              textTransform: 'uppercase',
+                              letterSpacing: '1px',
+                            }}
                           >
-                            XÁC NHẬN
+                            ĐỔI MẬT KHẨU
                           </button>
                         </div>
                       </form>
@@ -558,6 +873,5 @@ const NewProfile = ({ role }: Profile) => {
     </div>
   );
 };
-
 
 export default NewProfile;

@@ -5,7 +5,6 @@ import {
   User,
   //   Settings,
   LogOut,
-  Bell,
   // Users,
   // BarChart3,
   // FileText,
@@ -21,13 +20,12 @@ import { Button } from '@mui/material';
 //import { toast } from 'react-toastify';
 //import { ArrowBack, RoomService } from '@mui/icons-material';
 import { toast } from 'react-toastify';
-import { ArrowBack, LocationCity, Room, RoomService } from '@mui/icons-material';
 
+//import { ArrowBack, RoomService } from '@mui/icons-material';
 
 const ManagerPage = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeItem, setActiveItem] = useState('dashboard');
-  const [notifications] = useState(0);
   const [fullName, setFullName] = useState<string>('');
   const navigate = useNavigate();
   const TimeLeftLogout = (exp: number) => {
@@ -80,11 +78,11 @@ const ManagerPage = () => {
     { id: 'dashboard', icon: ArrowBack, label: 'Home', path: '' },
     { id: 'data', icon: List, label: 'Danh sách', path: 'manager/data' },
     {
-          id: 'location',
-          icon: LocationCity,
-          label: 'Tạo địa chỉ mới',
-          path: 'manager/location',
-        },
+      id: 'location',
+      icon: LocationCity,
+      label: 'Tạo địa chỉ mới',
+      path: 'manager/location',
+    },
     {
       id: 'room',
       icon: Room,
@@ -167,14 +165,6 @@ const ManagerPage = () => {
         </div>
 
         <div className="flex items-center space-x-3">
-          <button className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors">
-            <Bell className="h-5 w-5" />
-            {notifications > 0 && (
-              <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                {notifications}
-              </span>
-            )}
-          </button>
           <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
             <User className="h-4 w-4 text-gray-600" />
           </div>

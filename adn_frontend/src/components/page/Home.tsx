@@ -11,8 +11,8 @@ import { useRef, useState } from 'react';
 import './Home.module.css';
 import banner_video from '../../image/Banner_video.mp4';
 import { FaPhoneAlt } from 'react-icons/fa';
-import { FaFacebookMessenger } from 'react-icons/fa';
-import { SiZalo } from 'react-icons/si';
+// import { FaFacebookMessenger } from 'react-icons/fa';
+// import { SiZalo } from 'react-icons/si';
 import Notification from './Notification';
 import {
   ClipboardCheck,
@@ -28,11 +28,27 @@ import {
   Linkedin,
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+type Consultation = {
+  phone: string;
+  name: string;
+};
 
 export default function Home() {
   // ref đúng type SwiperRef
 
+  const [consultation, setConsultation] = useState<Consultation>({
+    phone: '',
+    name: '',
+  });
+
   const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát việc mở/đóng modal
+  const consultationRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToConsultation = () => {
+    consultationRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const handleOpenModal = () => {
     setIsModalOpen(true); // Mở modal
@@ -51,6 +67,36 @@ export default function Home() {
 
   const handleNext = () => {
     swiperRef.current?.swiper.slideNext();
+  };
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setConsultation((consultation) => ({
+      ...consultation,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(
+        'http://localhost:8080/api/register-for-consultation/register-consultation',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+          body: JSON.stringify(consultation),
+        }
+      );
+      if (res.ok) {
+        toast.success('thành công');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const imageData = [
@@ -226,20 +272,17 @@ export default function Home() {
       <div className="fixed bottom-6 left-4 z-50 space-y-3">
         {/* Hotline */}
         <a
-          href="tel:19001234"
+          onClick={scrollToConsultation}
           className="group flex flex-col items-center transition-all duration-300"
         >
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center text-white text-2xl shadow-lg animate-pulse">
             <FaPhoneAlt className="group-hover:rotate-12 transition-transform duration-300" />
           </div>
-          <span className="text-xs text-gray-600 mt-1 font-medium">
-            Hotline
-          </span>
         </a>
 
-        {/* Messenger */}
-        <a
-          href="https://m.me/yourpage"
+        {/* Messenger
+        <NavLink
+          to="/messenger"
           target="_blank"
           rel="noopener noreferrer"
           className="group flex flex-col items-center transition-all duration-300"
@@ -247,13 +290,10 @@ export default function Home() {
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-white text-2xl shadow-lg">
             <FaFacebookMessenger className="group-hover:rotate-12 transition-transform duration-300" />
           </div>
-          <span className="text-xs text-gray-600 mt-1 font-medium">
-            Messenger
-          </span>
-        </a>
+        </NavLink>
 
         {/* Zalo */}
-        <a
+        {/* <a
           href="https://zalo.me/yourzaloid"
           target="_blank"
           rel="noopener noreferrer"
@@ -263,7 +303,7 @@ export default function Home() {
             <SiZalo className="group-hover:rotate-12 transition-transform duration-300" />
           </div>
           <span className="text-xs text-gray-600 mt-1 font-medium">Zalo</span>
-        </a>
+        </a>  */}
       </div>
 
       {/* Hero Section - Enhanced với overlay gradient và typography */}
@@ -502,7 +542,10 @@ export default function Home() {
           <div className="absolute bottom-20 right-20 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-12">
+        <div
+          className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-12"
+          ref={consultationRef}
+        >
           {/* Nội dung bên trái */}
           <div className="lg:w-2/3 bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-10 space-y-8 border border-white/20">
             <div className="space-y-4">
@@ -554,11 +597,27 @@ export default function Home() {
                 <input
                   type="text"
                   placeholder="Nhập số điện thoại của bạn"
+                  value={consultation.phone}
+                  name="phone"
+                  onChange={handleInput}
                   className="flex-grow px-6 py-4 text-gray-700 placeholder-gray-400 bg-white rounded-2xl border border-gray-200 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:border-transparent shadow-lg"
                 />
-                <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transform transition-all duration-300 whitespace-nowrap">
-                  Tư vấn ngay
-                </button>
+                <input
+                  type="text"
+                  placeholder="Nhập họ và tên"
+                  value={consultation.name}
+                  name="name"
+                  onChange={handleInput}
+                  className="flex-grow px-6 py-4 text-gray-700 placeholder-gray-400 bg-white rounded-2xl border border-gray-200 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:border-transparent shadow-lg"
+                />
+                <form onSubmit={handleSubmit}>
+                  <button
+                    type="submit"
+                    className="px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transform transition-all duration-300 whitespace-nowrap"
+                  >
+                    Tư vấn ngay
+                  </button>
+                </form>
               </div>
               <p className="text-xs text-gray-500 text-center mt-2">
                 Chúng tôi sẽ liên hệ với bạn trong vòng 30 phút

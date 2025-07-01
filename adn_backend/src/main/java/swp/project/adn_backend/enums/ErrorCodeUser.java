@@ -15,6 +15,7 @@ public enum ErrorCodeUser {
     TIME_EXISTED(1004, "Khung giờ bị trùng với một slot đã tồn tại trong cùng phòng", HttpStatus.BAD_REQUEST),
     SLOT_NOT_EXISTS(1005, "Slot không tồn tại", HttpStatus.BAD_REQUEST),
     LOCATION_NOT_EXISTS(1006, "Địa điểm không tồn tại", HttpStatus.BAD_REQUEST),
+    DISCOUNT_NOT_EXISTS(1006, "Địa điểm không tồn tại", HttpStatus.BAD_REQUEST),
     PRICE_LIST_NOT_FOUND(1007, "Không tìm thấy bảng giá", HttpStatus.BAD_REQUEST),
     ROOM_NOT_FOUND(1008, "Phòng không tồn tại", HttpStatus.BAD_REQUEST),
     MANAGER_NOT_FOUND(1009, "Quản lý không tồn tại", HttpStatus.BAD_REQUEST),
@@ -73,6 +74,9 @@ public enum ErrorCodeUser {
 
     // Blog validation  
     BLOG_NOT_FOUND(1003, "Blog không tồn tại", HttpStatus.BAD_REQUEST),
+
+    // Feedback validation
+    FEEDBACK_NOT_FOUND(1044, "Feedback không tồn tại", HttpStatus.NOT_FOUND),
 
     //
 

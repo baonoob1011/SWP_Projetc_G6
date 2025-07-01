@@ -14,6 +14,15 @@ public class AllAppointmentAtCenterResponse {
     private RoomAppointmentResponse roomAppointmentResponse;
     private List<PriceAppointmentResponse> priceAppointmentResponse;
     private List<PaymentAppointmentResponse> paymentAppointmentResponse;
+    private UserAppointmentResponse userAppointmentResponses;
+
+    public UserAppointmentResponse getUserAppointmentResponses() {
+        return userAppointmentResponses;
+    }
+
+    public void setUserAppointmentResponses(UserAppointmentResponse userAppointmentResponses) {
+        this.userAppointmentResponses = userAppointmentResponses;
+    }
 
     public AllAppointmentAtCenterResponse() {
     }

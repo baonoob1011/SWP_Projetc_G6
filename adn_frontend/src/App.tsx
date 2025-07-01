@@ -25,6 +25,7 @@ import CreateLocation from './components/mainContents/feature/CreateLocation';
 import CreateRoom from './components/mainContents/feature/CreateRoom';
 import CreateKit from './components/mainContents/feature/CreateKit';
 import CreateLocus from './components/mainContents/feature/CreateLocus';
+import Rating from './components/page/Rating';
 
 // Dữ liệu người dùng (User / Staff / Manager / Collector / Admin)
 import DataList, {
@@ -47,9 +48,10 @@ import SignUpStaff from './components/mainContents/feature/SignUpForStaff';
 import SignUpStaffAtHome from './components/mainContents/actorList/staff/StaffAtHome';
 
 // Quản lý lịch & Slot
-import StaffSlot from './components/mainContents/actorList/staff/GetStaffShedule';
+import StaffSlot from './components/mainContents/actorList/staff/GetStaffSchedule';
 import SignUpStaffSchedule from './components/mainContents/actorList/staff/SignUpStaffSchedule';
-import AppointmentSchedule from './components/mainContents/actorList/staff/AppoimentSchedule';
+
+import AppointmentSchedule from './components/mainContents/actorList/staff/AppointmentSchedule';
 
 // Quản lý cuộc hẹn
 import GetSampleInfo from './components/mainContents/actorList/staff/GetSampleInfo';
@@ -59,7 +61,7 @@ import GetAppointmentByAdmin from './components/mainContents/actorList/admin/Get
 import Services from './components/mainContents/services/CreateServices';
 import ServiceList from './components/mainContents/services/GetService';
 import CivilServiceList from './components/mainContents/services/GetCivilService';
-import AdministrativeServiceList from './components/mainContents/services/GetAdmintrativeService';
+import AdministrativeServiceList from './components/mainContents/services/GetAdministrativeService';
 import NewPrice from './components/mainContents/services/NewPrice';
 import CreateResultAllele from './components/mainContents/actorList/staff/ResultAllele';
 
@@ -70,7 +72,7 @@ import BookingAtHome from './components/mainContents/services/BookingAtHome';
 import CheckAppointment from './components/mainContents/actorList/staff/CheckAppointment';
 import { CollectorSlots } from './components/mainContents/actorList/staff/CollectorSlot';
 import GetCollector from './components/mainContents/actorList/GetCollector';
-import SignUpCollector from './components/mainContents/actorList/staff/SignUpColector';
+import SignUpCollector from './components/mainContents/actorList/staff/SignUpCollector';
 import CreateBlog from './components/mainContents/services/CreateBlog';
 
 import PatientRequest from './components/mainContents/feature/PatientRequest';
@@ -78,11 +80,21 @@ import PatientRequest from './components/mainContents/feature/PatientRequest';
 // Thanh toán
 import VNPayResult from './components/mainContents/feature/VNPAY';
 import GetStaffAtHome from './components/mainContents/actorList/staff/GetStaffAtHome';
-import TotalUserChart from './components/mainContents/actorList/admin/GetDashBoard';
 import GetAllResult from './components/mainContents/feature/GetAllResult';
 import GetCashier from './components/mainContents/actorList/admin/GetAllCashier';
 import SignUpCashier from './components/mainContents/actorList/staff/SignUpCashier';
+import GetAllBill from './components/mainContents/actorList/staff/GetAllBill';
+import CreateDiscount from './components/mainContents/actorList/admin/CreateDiscount';
+import SelectedCivilService from './components/mainContents/services/SelectedCivilService';
+import SelectedAdministrativeService from './components/mainContents/services/SelectedAdministrativeService';
+import { DashBoard } from './components/mainContents/actorList/admin/dashboard/Dashboard';
 
+// import ChatComponent from './components/page/Messenger';
+
+import GetStaffTechnical from './components/mainContents/actorList/staff/GetStaffTechnical';
+import SignUpStaffTechnical from './components/mainContents/actorList/staff/SignUpStaffTechnical';
+import GetBlogById from './components/mainContents/actorList/user/GetBlogById';
+import { LabCheckSample } from './components/mainContents/actorList/staff/LabCheckSample';
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
@@ -102,6 +114,7 @@ function App() {
     '/s-page/checkAppointment/:slotId',
     '/s-page/get-appointment/:appointmentId',
     '/s-page/selectorSlot',
+    '/s-page/labCheckSample',
     '/s-page/record-result/:sampleId',
     '/s-page',
   ].some((path) => matchPath(path, location.pathname));
@@ -177,6 +190,14 @@ function App() {
                   }
                 />
                 <Route
+                  path="technical"
+                  element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <GetStaffTechnical />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="appointment"
                   element={
                     <ProtectedRoute allowedRoles={['ADMIN']}>
@@ -219,6 +240,14 @@ function App() {
                 }
               />
               <Route
+                path="/signup-staff-technical"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <SignUpStaffTechnical />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/location"
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
@@ -239,6 +268,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <CreateKit />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/discount/:serviceId"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <CreateDiscount />
                   </ProtectedRoute>
                 }
               />
@@ -310,7 +347,7 @@ function App() {
                 path="/"
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
-                    <TotalUserChart />
+                    <DashBoard />
                   </ProtectedRoute>
                 }
               />
@@ -342,7 +379,7 @@ function App() {
               zIndex: 1000,
             }}
           >
-            <ProtectedRoute allowedRoles={['STAFF']}>
+            <ProtectedRoute allowedRoles={['STAFF', 'LAB_TECHNICIAN']}>
               <StaffPage />
             </ProtectedRoute>
           </Box>
@@ -386,7 +423,7 @@ function App() {
               <Route
                 path="/s-page/record-result/:sampleId"
                 element={
-                  <ProtectedRoute allowedRoles={['STAFF']}>
+                  <ProtectedRoute allowedRoles={['LAB_TECHNICIAN', 'STAFF']}>
                     <CreateResultAllele />
                   </ProtectedRoute>
                 }
@@ -394,7 +431,7 @@ function App() {
               <Route
                 path="/s-page/checkAppointment/:slotId"
                 element={
-                  <ProtectedRoute allowedRoles={['STAFF']}>
+                  <ProtectedRoute allowedRoles={['STAFF', 'STAFF']}>
                     <CheckAppointment />
                   </ProtectedRoute>
                 }
@@ -402,7 +439,7 @@ function App() {
               <Route
                 path="/s-page/get-appointment/:appointmentId"
                 element={
-                  <ProtectedRoute allowedRoles={['STAFF']}>
+                  <ProtectedRoute allowedRoles={['LAB_TECHNICIAN', 'STAFF']}>
                     <GetSampleInfo />
                   </ProtectedRoute>
                 }
@@ -412,6 +449,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['STAFF']}>
                     <CollectorSlots />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/s-page/labCheckSample"
+                element={
+                  <ProtectedRoute allowedRoles={['LAB_TECHNICIAN']}>
+                    <LabCheckSample />
                   </ProtectedRoute>
                 }
               />
@@ -608,6 +653,14 @@ function App() {
               }
             />
             <Route
+              path="/blog-detail/:blogId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <GetBlogById />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/result/:appointmentId"
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
@@ -624,10 +677,42 @@ function App() {
               }
             />
             <Route
+              path="feedback/:serviceId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <Rating />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/feedback/:serviceId"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <Rating />
+                </ProtectedRoute>
+              }
+            />
+            {/* <Route
+              path="/messenger"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <ChatComponent />
+                </ProtectedRoute>
+              }
+            /> */}
+            <Route
               path="/u-profile"
               element={
                 <ProtectedRoute allowedRoles={['USER', 'MANAGER', 'STAFF']}>
                   <NewUserProfile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manager-bill"
+              element={
+                <ProtectedRoute allowedRoles={['CASHIER']}>
+                  <GetAllBill />
                 </ProtectedRoute>
               }
             />
@@ -642,21 +727,10 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/service/civil"
-              element={
-                <ProtectedRoute>
-                  <CivilServiceList />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/service/civil" element={<CivilServiceList />} />
             <Route
               path="/service/administrative"
-              element={
-                <ProtectedRoute>
-                  <AdministrativeServiceList />
-                </ProtectedRoute>
-              }
+              element={<AdministrativeServiceList />}
             />
 
             {/* STAFF + MANAGER */}
@@ -664,8 +738,8 @@ function App() {
             <Route
               path="/s-m-profile"
               element={
-                <ProtectedRoute allowedRoles={['STAFF', 'MANAGER']}>
-                  <NewProfile role={role as 'STAFF' | 'MANAGER'} />
+                <ProtectedRoute allowedRoles={['STAFF', 'MANAGER', 'CASHIER']}>
+                  <NewProfile role={role as 'STAFF' | 'MANAGER' | 'CASHIER'} />
                 </ProtectedRoute>
               }
             />
@@ -677,6 +751,14 @@ function App() {
             <Route
               path="/service/administrative"
               element={<AdministrativeServiceList />}
+            />
+            <Route
+              path="/order-civil/:serviceId"
+              element={<SelectedCivilService />}
+            />
+            <Route
+              path="/order-administrative/:serviceId"
+              element={<SelectedAdministrativeService />}
             />
             <Route path="/m-getAllService" element={<ServiceList />} />
           </Routes>

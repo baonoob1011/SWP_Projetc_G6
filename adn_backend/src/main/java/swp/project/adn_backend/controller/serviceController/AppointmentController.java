@@ -66,15 +66,20 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getAllAppointments(authentication));
     }
 
+    @GetMapping("/get-history")
+    public ResponseEntity<AllAppointmentResponse> getUserHistory(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getHistory(authentication));
+    }
+
 //    @GetMapping("/get-appointment-at-home")
 //    public ResponseEntity<List<AllAppointmentAtHomeResponse>> getAppointmentForUserAtHome(Authentication authentication) {
 //        return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
 //    }
 
-    @GetMapping("/get-appointment-history-user")
-    public ResponseEntity<AllAppointmentResponse> getHistoryAppointmentUser(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getHistoryAppointmentUser(authentication));
-    }
+//    @GetMapping("/get-appointment-history-user")
+//    public ResponseEntity<AllAppointmentResponse> getHistoryAppointmentUser(Authentication authentication) {
+//        return ResponseEntity.ok(appointmentService.getHistoryAppointmentUser(authentication));
+//    }
 
     @GetMapping("/get-appointment-by-slot/{slotId}")
     public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentBySlot(@PathVariable("slotId") long slotId) {
@@ -82,10 +87,10 @@ public class AppointmentController {
     }
 
 
-    //staff lấy đo dk tại nhà ra nhập mẫu
+    //lab lấy mẫu ra dể ghi kết quả
     @GetMapping("/get-appointment-at-home-to-get-sample")
     public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentAtHomeToGetSample(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeToGetSample(authentication));
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeToRecordResult(authentication));
     }
 //    //staff lay appoint de thanh toan tien mat
 //    @GetMapping("/get-appointment-of-user-by-phone")
@@ -103,20 +108,15 @@ public class AppointmentController {
 //    }
 
     @GetMapping("/get-appointment-at-home-by-staff")
-    public ResponseEntity<List<AppointmentAtHomeInfoDTO>> getAppointmentAtHome(Authentication authentication) {
+    public ResponseEntity<List<AllAppointmentAtHomeResponse>> getAppointmentAtHome(Authentication authentication) {
         return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
     }
 
-    //admin lấy ra để add staff dô
-    @GetMapping("/get-appointment-at-home-by-admin")
-    public ResponseEntity<List<AllAppointmentAtHomeManagerResponse>> getAppointmentAtHomeForAdmin() {
-        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeForAdmin());
-    }
 
     @GetMapping("/get-all-result")
     public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResult(Authentication authentication,
                                                                                @RequestParam long appointmentId) {
-        return ResponseEntity.ok(appointmentService.getAllAppointmentsResult(authentication,appointmentId));
+        return ResponseEntity.ok(appointmentService.getAllAppointmentsResult(authentication, appointmentId));
     }
 
     //thêm staff vào appointment at home
@@ -125,6 +125,14 @@ public class AppointmentController {
                                                         @RequestParam long appointmentId) {
         appointmentService.addStaffToAppointment(staffId, appointmentId);
         return ResponseEntity.ok("add staff to appointment successful");
+    }
+
+    //thong bao sample bi loi
+    @PutMapping("/update-note")
+    public ResponseEntity<String> updateNote(@RequestBody AppointmentRequest appointmentRequest,
+                                             @RequestParam long appointmentId) {
+        appointmentService.updateNote(appointmentRequest, appointmentId);
+        return ResponseEntity.ok("update note appointment successful");
     }
 
     @PostMapping("/cancel-appointment/{appointmentId}")

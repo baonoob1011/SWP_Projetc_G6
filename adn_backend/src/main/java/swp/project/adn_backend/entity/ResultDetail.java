@@ -23,9 +23,10 @@ public class ResultDetail {
     @Column(name = "combined_paternity_index")
     double combinedPaternityIndex;
     double paternityProbability;
+    @Column(columnDefinition = "nvarchar(255)")
     String conclusion;
 
-    @Column(name = "result_summary")
+    @Column(name = "result_summary", columnDefinition = "nvarchar(255)")
     String resultSummary;
     @ManyToOne
     @JoinColumn(name = "appointment_id")

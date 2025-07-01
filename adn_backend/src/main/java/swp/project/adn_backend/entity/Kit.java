@@ -23,14 +23,12 @@ public class Kit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "kit_id")
     long kitId;
-
     String kitCode;
-
     @Column(name = "kit_name", columnDefinition = "nvarchar(255)")
     String kitName;
     @Column(columnDefinition = "nvarchar(255)")
     String targetPersonCount;
-
+    int quantity;
     double price;
 
     @Column(columnDefinition = "nvarchar(255)")
@@ -46,6 +44,14 @@ public class Kit {
 
     public List<KitDeliveryStatus> getKitDeliveryStatuses() {
         return kitDeliveryStatuses;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public void setKitDeliveryStatuses(List<KitDeliveryStatus> kitDeliveryStatuses) {

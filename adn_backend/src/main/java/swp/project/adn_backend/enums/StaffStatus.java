@@ -6,6 +6,7 @@ public enum StaffStatus {
     IN_ANALYSIS,       // Đang phân tích mẫu
     COMPLETED,         // Đã có kết quả
     CANCELLED,         // Đã hủy xét nghiệm
-    NO_SHOW     ,
-    BOOK,// Vắng mặt khi đến lịch
+    NO_SHOW     ,// Vắng mặt khi đến lịch
+    BOOKED,
+    AVAILABLE
 }

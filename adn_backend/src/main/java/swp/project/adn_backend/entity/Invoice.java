@@ -16,6 +16,7 @@ public class Invoice {
 
     private String txnRef; // Mã giao dịch VNPay (gửi sang VNPay)
 
+    @Column(columnDefinition = "nvarchar(255)")
     private String orderInfo; // Tên dịch vụ hoặc mô tả
 
     private Long amount; // Số tiền thanh toán (đơn vị VND)
@@ -29,7 +30,6 @@ public class Invoice {
 
     private LocalDateTime payDate; // Ngày giờ thanh toán
 
-    private String status; // PENDING | SUCCESS | FAILED
 
     private LocalDateTime createdDate; // Lưu thời điểm tạo invoice
 
@@ -134,13 +134,7 @@ public class Invoice {
         this.payDate = payDate;
     }
 
-    public String getStatus() {
-        return status;
-    }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public LocalDateTime getCreatedDate() {
         return createdDate;

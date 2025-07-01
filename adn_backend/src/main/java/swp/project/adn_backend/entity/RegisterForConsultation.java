@@ -13,7 +13,7 @@ public class RegisterForConsultation {
     @Column(columnDefinition = "NVARCHAR(100)")
     private String name;
     private String phone;
-    @Column(name = "consultation-status")
+    @Column(name = "consultation_status")
     @Enumerated(EnumType.STRING)
     private ConsultationStatus consultationStatus;
 

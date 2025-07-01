@@ -381,9 +381,6 @@ const BookingAtCenter = () => {
               Đặt Lịch Dịch Vụ Tại Trung Tâm
             </Typography>
           </Box>
-          <Typography variant="body2" sx={{ mt: 1, color: '#666' }}>
-            Service ID: {serviceId}
-          </Typography>
         </Paper>
 
         {/* Service Configuration Section */}
@@ -532,7 +529,6 @@ const BookingAtCenter = () => {
                 >
                   <MenuItem value="VN_PAY">VN PAY</MenuItem>
                   <MenuItem value="CASH">Tiền mặt</MenuItem>
-                  <MenuItem value="BANK_TRANSFER">Chuyển khoản</MenuItem>
                 </Select>
               </FormControl>
             </Box>
@@ -816,54 +812,6 @@ const BookingAtCenter = () => {
               }}
             >
               {isSubmitting ? 'Đang đăng ký...' : 'Đăng Ký Slot'}
-            </Button>
-
-            {selectedSlot && (
-              <Button
-                variant="outlined"
-                size="large"
-                onClick={() => setSelectedSlot('')}
-                sx={{
-                  fontSize: '16px',
-                  fontWeight: 600,
-                  px: 4,
-                  py: 2,
-                  borderRadius: 2,
-                  textTransform: 'none',
-                  borderColor: '#1976d2',
-                  color: '#1976d2',
-                  '&:hover': {
-                    borderColor: '#1565c0',
-                    backgroundColor: 'rgba(25, 118, 210, 0.04)',
-                  },
-                }}
-              >
-                Bỏ Chọn Slot
-              </Button>
-            )}
-
-            <Button
-              variant="outlined"
-              size="large"
-              color="secondary"
-              onClick={() => {
-                setSelectedLocation('');
-                setSelectedSlot('');
-                setSlots([]);
-              }}
-              sx={{
-                fontSize: '16px',
-                fontWeight: 600,
-                px: 4,
-                py: 2,
-                borderRadius: 2,
-                textTransform: 'none',
-                '&:hover': {
-                  backgroundColor: 'rgba(156, 39, 176, 0.04)',
-                },
-              }}
-            >
-              Reset
             </Button>
           </Box>
         </Paper>

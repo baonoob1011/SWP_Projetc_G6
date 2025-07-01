@@ -49,6 +49,46 @@ const GetSampleInfo = () => {
       console.log(error);
     }
   };
+  const handleUpdate = async (sampleId: string, sampleStatus: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/sample/update-status-sample?sampleId=${sampleId}&appointmentId=${appointmentId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+          body: JSON.stringify({
+            sampleStatus: sampleStatus,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        toast.error('Không đúng định dạng hoặc cập nhật thất bại');
+      } else {
+        toast.success('Cập nhật trạng thái thành công');
+        setSamples((prevSamples) =>
+          prevSamples.map((s) =>
+            s.sampleResponse.sampleId === sampleId
+              ? {
+                  ...s,
+                  sampleResponse: {
+                    ...s.sampleResponse,
+                    sampleStatus: sampleStatus,
+                  },
+                }
+              : s
+          )
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Lỗi khi cập nhật trạng thái mẫu');
+    }
+  };
+
   useEffect(() => {
     const fetchSamples = async () => {
       if (!appointmentId) return;
@@ -79,19 +119,20 @@ const GetSampleInfo = () => {
   }, [appointmentId]);
 
   // Helper function to get gender badge class
-  const getGenderClass = (gender: string) => {
-    const lowerGender = gender.toLowerCase();
-    if (lowerGender.includes('nam') || lowerGender.includes('male')) {
-      return `${styles.genderBadge} ${styles.genderMale}`;
-    }
-    return `${styles.genderBadge} ${styles.genderFemale}`;
-  };
+
+  const sampleStatusOptions = [
+    { value: 'COLLECTED', label: 'Đã thu thập mẫu' },
+    { value: 'IN_TRANSIT', label: 'Đang vận chuyển đến phòng xét nghiệm' },
+    { value: 'RECEIVED', label: 'Phòng xét nghiệm đã nhận' },
+    { value: 'TESTING', label: 'Đang xét nghiệm' },
+    { value: 'COMPLETED', label: 'Đã xét nghiệm xong' },
+    { value: 'DAMAGED', label: 'Mẫu bị hỏng' },
+    { value: 'REJECTED', label: 'Mẫu bị từ chối' },
+  ];
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        🧬 Danh Sách Mẫu Đã Thu
-      </div>
+      <div className={styles.header}>🧬 Danh Sách Mẫu Đã Thu</div>
 
       {/* Stats Cards */}
       {samples.length > 0 && (
@@ -102,7 +143,10 @@ const GetSampleInfo = () => {
           </div>
           <div className={styles.statsCard}>
             <div className={styles.statsNumber}>
-              {new Set(samples.map(s => s.patientSampleResponse.fullName)).size}
+              {
+                new Set(samples.map((s) => s.patientSampleResponse?.patientId))
+                  .size
+              }
             </div>
             <div className={styles.statsLabel}>Bệnh nhân</div>
           </div>
@@ -121,11 +165,10 @@ const GetSampleInfo = () => {
               <thead className={styles.tableHeader}>
                 <tr>
                   <th className={styles.tableHeaderCell}>Họ tên bệnh nhân</th>
-                  <th className={styles.tableHeaderCell}>Giới tính</th>
                   <th className={styles.tableHeaderCell}>Quan hệ</th>
                   <th className={styles.tableHeaderCell}>Loại mẫu</th>
                   <th className={styles.tableHeaderCell}>Mã mẫu</th>
-                  <th className={styles.tableHeaderCell}>Ngày thu</th>
+                  <th className={styles.tableHeaderCell}>Trạng thái mẫu</th>
                   <th className={styles.tableHeaderCell}>Thao tác</th>
                 </tr>
               </thead>
@@ -135,11 +178,7 @@ const GetSampleInfo = () => {
                     <td className={`${styles.tableCell} ${styles.patientName}`}>
                       {item.patientSampleResponse.fullName}
                     </td>
-                    <td className={styles.tableCell}>
-                      <span className={getGenderClass(item.patientSampleResponse.gender)}>
-                        {item.patientSampleResponse.gender}
-                      </span>
-                    </td>
+
                     <td className={styles.tableCell}>
                       <span className={styles.relationshipBadge}>
                         {item.patientSampleResponse.relationship}
@@ -154,8 +193,24 @@ const GetSampleInfo = () => {
                       </span>
                     </td>
                     <td className={styles.tableCell}>
-                      {new Date(item.sampleResponse.collectionDate).toLocaleDateString('vi-VN')}
+                      <select
+                        className={styles.statusSelect}
+                        value={item.sampleResponse?.sampleStatus}
+                        onChange={(e) =>
+                          handleUpdate(
+                            item.sampleResponse.sampleId,
+                            e.target.value
+                          )
+                        }
+                      >
+                        {sampleStatusOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
                     </td>
+
                     <td className={styles.tableCell}>
                       <NavLink
                         className={styles.actionButton}
@@ -174,7 +229,7 @@ const GetSampleInfo = () => {
               </tbody>
             </table>
           </div>
-          
+
           <div className={styles.submitContainer}>
             <button
               type="button"

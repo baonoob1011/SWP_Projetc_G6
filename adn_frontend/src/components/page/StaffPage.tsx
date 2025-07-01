@@ -66,27 +66,47 @@ const StaffPage = () => {
     setFullName(storeName);
   }, []);
 
+  const role = localStorage.getItem('role');
+
   const menuItems = [
     { id: 'dashboard', icon: ArrowBack, label: 'Home', path: '' },
-    { id: 'data', icon: List, label: 'Danh sách', path: 's-page/s-userData' },
-    {
-      id: 'schedule',
-      icon: Schedule,
-      label: 'Lịch làm',
-      path: 's-page/s-slot',
-    },
-    {
-      id: 'appointment',
-      icon: BookImageIcon,
-      label: 'Lịch hẹn',
-      path: 's-page/checkBooking',
-    },
-    {
-      id: 'checkAppointment',
-      icon: AppRegistration,
-      label: 'Đơn đăng ký',
-      path: 's-page/selectorSlot',
-    },
+    ...(role === 'STAFF'
+      ? [
+          {
+            id: 'data',
+            icon: List,
+            label: 'Danh sách',
+            path: 's-page/s-userData',
+          },
+          {
+            id: 'schedule',
+            icon: Schedule,
+            label: 'Lịch làm',
+            path: 's-page/s-slot',
+          },
+          {
+            id: 'appointment',
+            icon: BookImageIcon,
+            label: 'Lịch hẹn',
+            path: 's-page/checkBooking',
+          },
+          {
+            id: 'checkAppointment',
+            icon: AppRegistration,
+            label: 'Đơn đăng ký',
+            path: 's-page/selectorSlot',
+          },
+        ]
+      : role === 'LAB_TECHNICIAN'
+      ? [
+          {
+            id: 'checkAppointment',
+            icon: AppRegistration,
+            label: 'Đơn đăng ký',
+            path: 's-page/labCheckSample',
+          },
+        ]
+      : []),
   ];
 
   const handleLogout = async () => {
@@ -216,7 +236,7 @@ const StaffPage = () => {
         {/* Bottom Section */}
         <div className="border-t border-gray-200 p-4 space-y-2">
           {/* Notifications */}
-          {/* <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">
+          <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">
             <div className="relative">
               <Bell className="h-5 w-5" />
               {notifications > 0 && (
@@ -226,13 +246,13 @@ const StaffPage = () => {
               )}
             </div>
             <span className="font-medium">Thông báo</span>
-          </button> */}
+          </button>
 
           {/* Settings
           <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">
             <Settings className="h-5 w-5" />
             <span className="font-medium">Cài đặt</span>
-          </button> */}
+          </button>
 
           {/* User Profile */}
           <div className="flex items-center space-x-3 px-3 py-3 rounded-lg bg-gray-50">

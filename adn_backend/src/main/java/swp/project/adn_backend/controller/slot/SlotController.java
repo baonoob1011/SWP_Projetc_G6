@@ -70,6 +70,13 @@ public class SlotController {
         return ResponseEntity.ok(slotService.updateSlot(slotRequest, slotId));
     }
 
+    @PutMapping("/add-more-staff-to-slot")
+    public ResponseEntity<String> addMoreStaffToSlot(@RequestParam long staffId,
+                                                     @RequestParam long slotId) {
+        slotService.addMoreStaffToSlot(slotId, staffId);
+        return ResponseEntity.ok("Thêm staff thành công");
+    }
+
 //    @PutMapping("/update-order-staff")
 //    public ResponseEntity<Slot> updateOrderStaff(@RequestParam long staffId,
 //                                                 @RequestParam long slotId) {

@@ -15,17 +15,26 @@ public class KitInfoDTO {
     String targetPersonCount;
     double price;
     String contents;
+    int quantity;
 
 
-    public KitInfoDTO(long kitId, String kitCode, String kitName, String targetPersonCount, double price, String contents) {
+    public KitInfoDTO(long kitId, String kitCode, String kitName, String targetPersonCount, double price, String contents, int quantity) {
         this.kitId = kitId;
         this.kitCode = kitCode;
         this.kitName = kitName;
         this.targetPersonCount = targetPersonCount;
         this.price = price;
         this.contents = contents;
+        this.quantity = quantity;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public long getKitId() {
         return kitId;

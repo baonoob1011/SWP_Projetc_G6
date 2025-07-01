@@ -37,4 +37,5 @@ public interface AppointmentMapper {
     ResultLocusAppointmentResponse toResultLocusAppointmentResponse(ResultLocus resultLocus);
     ResultDetailAppointmentResponse toResultDetailAppointmentResponse(ResultDetail resultDetail);
     List<SampleAppointmentResponse> toSampleAppointmentResponse(List<Sample> sample);
+    List<UserAppointmentResponse> toUserAppointmentResponseList(List<Users> users);
 }

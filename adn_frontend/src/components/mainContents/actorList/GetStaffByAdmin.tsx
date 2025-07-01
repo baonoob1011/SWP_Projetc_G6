@@ -39,7 +39,7 @@ function GetStaffByAdmin() {
   const fetchData = async () => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:8080/api/admin/get-all-staff', {
+      const res = await fetch('http://localhost:8080/api/staff/get-all-staff', {
         method: 'GET',
         headers: { Authorization: `Bearer ${token}` },
       });

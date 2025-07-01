@@ -17,22 +17,18 @@ import swp.project.adn_backend.dto.response.slot.GetFullSlotResponse;
 import swp.project.adn_backend.dto.response.slot.RoomSlotResponse;
 import swp.project.adn_backend.dto.response.slot.SlotResponse;
 import swp.project.adn_backend.dto.response.slot.StaffSlotResponse;
-import swp.project.adn_backend.entity.Room;
-import swp.project.adn_backend.entity.Slot;
-import swp.project.adn_backend.entity.Staff;
+import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.SlotStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.SlotMapper;
-import swp.project.adn_backend.repository.RoomRepository;
-import swp.project.adn_backend.repository.SlotRepository;
-import swp.project.adn_backend.repository.StaffRepository;
-import swp.project.adn_backend.repository.UserRepository;
+import swp.project.adn_backend.repository.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,15 +41,17 @@ public class SlotService {
     StaffRepository staffRepository;
     EntityManager entityManager;
     RoomRepository roomRepository;
+    NotificationRepository notificationRepository;
 
     @Autowired
-    public SlotService(SlotMapper slotMapper, SlotRepository slotRepository, UserRepository userRepository, StaffRepository staffRepository, EntityManager entityManager, RoomRepository roomRepository) {
+    public SlotService(SlotMapper slotMapper, SlotRepository slotRepository, UserRepository userRepository, StaffRepository staffRepository, EntityManager entityManager, RoomRepository roomRepository, NotificationRepository notificationRepository) {
         this.slotMapper = slotMapper;
         this.slotRepository = slotRepository;
         this.userRepository = userRepository;
         this.staffRepository = staffRepository;
         this.entityManager = entityManager;
         this.roomRepository = roomRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     public List<SlotResponse> createSlot(SlotRequest slotRequest, long roomId, List<StaffSlotRequest> staffSlotRequests) {
@@ -114,11 +112,10 @@ public class SlotService {
 
             // Tạo slot mới
             Slot slot = slotMapper.toSlot(slotRequest);
-            slot.setSlotStatus(SlotStatus.AVAILABLE);
             slot.setSlotDate(currentDate);
             slot.setRoom(room);
-            slot.setStaff(staffList); // Danh sách staff
-
+            slot.setStaff(staffList); // set staff trước khi xử lý role
+            slot.setSlotStatus(SlotStatus.AVAILABLE);
             createdSlots.add(slotRepository.save(slot));
             currentDate = currentDate.plusDays(1);
         }
@@ -126,37 +123,63 @@ public class SlotService {
         return slotMapper.toSlotResponses(createdSlots);
     }
 
+    @Transactional
+    public void addMoreStaffToSlot(long slotId, long staffId) {
+        Slot slot = slotRepository.findById(slotId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
+        Staff staff = staffRepository.findById(staffId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+        if (slot.getStaff() == null) {
+            slot.setStaff(new ArrayList<>()); // hoặc ArrayList nếu bạn dùng List
+        }
+
+        if (slot.getStaff().contains(staff)) {
+            throw new RuntimeException("Staff này đã trong slot");
+
+        }
+        slot.getStaff().add(staff);
+
+    }
 
 
     public List<SlotInfoDTO> getAllUpcomingSlotsForUser() {
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+
+        // ✅ Lấy đủ 2 ngày tương lai hợp lệ (bỏ T7/CN)
+        List<LocalDate> validDates = getNextWeekdays(today.plusDays(1), 2);
+
+        if (validDates.size() < 2) return Collections.emptyList(); // Không đủ 2 ngày
+
+        // Không dùng BETWEEN nữa vì 2 ngày có thể không liên tiếp (ví dụ 27 và 30)
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
                 "s.slotId, s.slotDate, s.startTime, s.endTime, s.slotStatus) " +
                 "FROM Slot s " +
                 "WHERE s.slotStatus = :slotStatus " +
-                "AND s.slotDate BETWEEN :today AND :afterTwoDays";
-
-        LocalDate today = LocalDate.now();
-        LocalDate afterTwoDays = today.plusDays(2);
-        LocalTime now = LocalTime.now();
+                "AND s.slotDate IN :dates";
 
         TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
         query.setParameter("slotStatus", SlotStatus.AVAILABLE);
-        query.setParameter("today", today);
-        query.setParameter("afterTwoDays", afterTwoDays);
+        query.setParameter("dates", validDates); // dùng IN thay vì BETWEEN
 
-        List<SlotInfoDTO> filteredSlots = query.getResultList().stream()
-                .filter(slot -> {
-                    LocalDate slotDate = slot.getSlotDate();
-                    if (slotDate.isEqual(today)) {
-                        return slot.getEndTime().isAfter(now); // còn thời gian
-                    }
-                    return true; // ngày 24, 25 giữ nguyên
-                })
-                .collect(Collectors.toList());
-
-        return new ArrayList<>(filteredSlots);
+        return query.getResultList();
     }
 
+
+    private List<LocalDate> getNextWeekdays(LocalDate fromDate, int count) {
+        List<LocalDate> result = new ArrayList<>();
+        LocalDate current = fromDate;
+
+        while (result.size() < count) {
+            DayOfWeek dow = current.getDayOfWeek();
+            if (dow != DayOfWeek.SATURDAY && dow != DayOfWeek.SUNDAY) {
+                result.add(current);
+            }
+            current = current.plusDays(1);
+        }
+
+        return result;
+    }
 
 
     public List<GetFullSlotResponse> getAllSlot() {
@@ -201,40 +224,36 @@ public class SlotService {
         return fullSlotResponses;
     }
 
+    @Transactional
     public List<GetFullSlotResponse> getAllSlotOfStaff(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
 
         Staff staff = staffRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-        List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();
-        List<Slot> slotList = staff.getSlots();
-        GetFullSlotResponse getAllServiceResponse = null;
-        for (Slot slot : slotList) {
-//            if (slot.getSlotStatus().equals(SlotStatus.BOOKED)) {
-                SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
 
-                //lay room
+        List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();
+
+        for (Slot slot : staff.getSlots()) {
+            if (slot.getSlotStatus().equals(SlotStatus.BOOKED)) {
+                SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
                 RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
                 roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
                 roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
                 roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
                 roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
 
-
                 GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
                 getFullSlotResponse.setSlotResponse(slotResponse);
                 getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
 
-
-                //lay full response
                 fullSlotResponses.add(getFullSlotResponse);
-
-
-//            }
+            }
         }
+
         return fullSlotResponses;
     }
+
 
     public void deleteSlot(long slotId) {
         Slot slot = slotRepository.findById(slotId)
@@ -250,6 +269,9 @@ public class SlotService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
         Slot slot = slotRepository.findById(slotId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
+        if (!staff1.getRole().equals(staff2.getRole())) {
+            throw new RuntimeException("hai người này không trùng chức vụ");
+        }
         List<Staff> staffList = slot.getStaff();
         for (int i = 0; i < staffList.size(); i++) {
             if (staffList.get(i) == staff1) {

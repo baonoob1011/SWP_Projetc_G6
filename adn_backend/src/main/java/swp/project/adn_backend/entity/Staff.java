@@ -38,7 +38,7 @@ public class Staff {
     @Column(columnDefinition = "nvarchar(255)")
     String address;
     String phone;
-
+    StaffStatus staffStatus;
 
     @Column(name = "day_of_birth")
     LocalDate dateOfBirth;
@@ -72,6 +72,26 @@ public class Staff {
     })
     private List<Slot> slots;
 
+
+    @OneToOne(mappedBy = "staff", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    // trỏ đến tên biến bên Notification
+    private Notification notification;
+
+    public Notification getNotification() {
+        return notification;
+    }
+
+    public void setNotification(Notification notification) {
+        this.notification = notification;
+    }
+
+    public StaffStatus getStaffStatus() {
+        return staffStatus;
+    }
+
+    public void setStaffStatus(StaffStatus staffStatus) {
+        this.staffStatus = staffStatus;
+    }
 
     public List<Slot> getSlots() {
         return slots;
@@ -120,7 +140,6 @@ public class Staff {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
 
     public boolean isEnabled() {

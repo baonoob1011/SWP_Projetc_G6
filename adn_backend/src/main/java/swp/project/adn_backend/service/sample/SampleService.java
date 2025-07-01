@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.request.sample.SampleRequest;
 import swp.project.adn_backend.dto.response.sample.*;
 import swp.project.adn_backend.entity.*;
+import swp.project.adn_backend.enums.DeliveryStatus;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.PatientStatus;
 import swp.project.adn_backend.enums.SampleStatus;
@@ -19,11 +20,14 @@ import swp.project.adn_backend.mapper.AppointmentMapper;
 import swp.project.adn_backend.mapper.SampleMapper;
 import swp.project.adn_backend.mapper.StaffMapper;
 import swp.project.adn_backend.repository.*;
+import swp.project.adn_backend.service.registerServiceTestService.AppointmentService;
+import swp.project.adn_backend.service.slot.StaffAssignmentTracker;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -37,9 +41,11 @@ public class SampleService {
     StaffMapper staffMapper;
     AllSampleResponseMapper allSampleResponseMapper;
     AppointmentMapper appointmentMapper;
+    private StaffAssignmentTracker staffAssignmentTracker;
+    AppointmentService appointmentService;
 
     @Autowired
-    public SampleService(SampleRepository sampleRepository, SampleMapper sampleMapper, PatientRepository patientRepository, StaffRepository staffRepository, ServiceTestRepository serviceTestRepository, AppointmentRepository appointmentRepository, StaffMapper staffMapper, AllSampleResponseMapper allSampleResponseMapper, AppointmentMapper appointmentMapper) {
+    public SampleService(SampleRepository sampleRepository, SampleMapper sampleMapper, PatientRepository patientRepository, StaffRepository staffRepository, ServiceTestRepository serviceTestRepository, AppointmentRepository appointmentRepository, StaffMapper staffMapper, AllSampleResponseMapper allSampleResponseMapper, AppointmentMapper appointmentMapper, StaffAssignmentTracker staffAssignmentTracker) {
         this.sampleRepository = sampleRepository;
         this.sampleMapper = sampleMapper;
         this.patientRepository = patientRepository;
@@ -49,6 +55,7 @@ public class SampleService {
         this.staffMapper = staffMapper;
         this.allSampleResponseMapper = allSampleResponseMapper;
         this.appointmentMapper = appointmentMapper;
+        this.staffAssignmentTracker = staffAssignmentTracker;
     }
 
     public SampleResponse collectSample(long patientId,
@@ -61,7 +68,7 @@ public class SampleService {
         Long staffId = jwt.getClaim("id");
         Staff staff = staffRepository.findById(staffId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-
+        List<Staff> labTechnician = staffRepository.findAll();
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PATIENT_INFO_NOT_EXISTS));
 
@@ -79,9 +86,31 @@ public class SampleService {
         sample.setKit(serviceTest.getKit());
         sample.setAppointment(appointment);
         patient.setPatientStatus(PatientStatus.SAMPLE_COLLECTED);
+        if (serviceTest.getKit().getQuantity() == 0) {
+            throw new RuntimeException("Cơ sở đã hết số lượng kit");
+        }
+        if (serviceTest.getKit().getQuantity() > 0) {
+            serviceTest.getKit().setQuantity(serviceTest.getKit().getQuantity() - 2);
+        }
+        List<Staff> labTechnician1 = labTechnician.stream()
+                .filter(lab -> "LAB_TECHNICIAN".equals(lab.getRole()))
+                .collect(Collectors.toList());
+
+        if (labTechnician1.isEmpty()) {
+            throw new RuntimeException("Không có nhân viên phòng lab");
+        }
+
+// Đảm bảo index luôn nằm trong giới hạn danh sách
+        int selectedIndex = staffAssignmentTracker.getNextIndex(labTechnician1.size());
+        selectedIndex = selectedIndex % labTechnician1.size(); // fix an toàn
+        Staff selectedStaff = labTechnician1.get(selectedIndex);
+//        appointmentService.increaseStaffNotification(selectedStaff);
+        appointment.setStaff(selectedStaff);
+        appointment.setNote("Đã lấy mẫu thành công");
         SampleResponse response = sampleMapper.toSampleResponse(sampleRepository.save(sample));
         return response;
     }
+
 
     public String generateSampleCode() {
         char firstChar = (char) ('A' + new Random().nextInt(26));
@@ -89,7 +118,6 @@ public class SampleService {
         char lastChar = (char) ('A' + new Random().nextInt(26));
         return String.format("%c%04d%c", firstChar, numberPart, lastChar);
     }
-
 
     public List<AllSampleResponse> getAllSampleOfPatient(Authentication authentication,
                                                          long appointmentId) {
@@ -116,12 +144,44 @@ public class SampleService {
         return allSampleResponseList;
     }
 
+    //check sample có hợp lệ không nếu không chuyển trạng thái
     @Transactional
-    public void updateSampleStatus(long sampleId, SampleRequest sampleRequest) {
+    public void updateSampleStatus(long sampleId,
+                                   long appointmentId,
+                                   SampleRequest sampleRequest) {
         Sample sample = sampleRepository.findById(sampleId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         sample.setSampleStatus(sampleRequest.getSampleStatus());
+        if (sampleRequest.getSampleStatus().equals(SampleStatus.DAMAGED)) {
+            appointment.setNote("Mẫu của bạn bị hỏng trong quá trình xử lý. Chúng tôi sẽ gửi lại bộ kit đến địa chỉ của bạn để tiến hành thu mẫu lần nữa.");
+            appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.PENDING);
+        } if (sampleRequest.getSampleStatus().equals(SampleStatus.REJECTED)) {
+            appointment.setNote("Mẫu của bạn không đạt yêu cầu trong quá trình xử lý. Chúng tôi sẽ gửi lại bộ kit đến địa chỉ của bạn để tiến hành thu mẫu lại trong thời gian sớm nhất.");
+            appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.PENDING);
+        }
+
+        switch (sampleRequest.getSampleStatus()) {
+            case IN_TRANSIT:
+                appointment.setNote("Đang vận chuyển đến phòng xét nghiệm");
+                break;
+            case RECEIVED:
+                appointment.setNote("Phòng xét nghiệm đã nhận mẫu");
+                break;
+            case TESTING:
+                appointment.setNote("Mẫu đang được xét nghiệm");
+                break;
+            case COMPLETED:
+                appointment.setNote("Đã xét nghiệm xong");
+                break;
+            case REJECTED:
+                appointment.setNote("Mẫu bị từ chối");
+                break;
+        }
+
     }
+
     @Transactional
     public void deleteSample(long sampleId) {
         Sample sample = sampleRepository.findById(sampleId)

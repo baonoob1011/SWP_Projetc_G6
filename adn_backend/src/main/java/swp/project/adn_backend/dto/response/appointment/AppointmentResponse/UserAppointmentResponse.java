@@ -12,6 +12,8 @@ public class UserAppointmentResponse {
     String phone;
     String email;
 
+    public UserAppointmentResponse() {
+    }
 
     public UserAppointmentResponse(long userId, String address, String fullName, String phone, String email, UserStatus userStatus) {
         this.userId = userId;
@@ -21,8 +23,6 @@ public class UserAppointmentResponse {
         this.email = email;
 
     }
-
-
 
     public long getUserId() {
         return userId;

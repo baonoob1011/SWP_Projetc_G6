@@ -1,7 +1,7 @@
 package swp.project.adn_backend.service.roleService;
 
 import jakarta.persistence.EntityManager;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import jakarta.persistence.TypedQuery;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.AccessLevel;
 
@@ -11,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo;
+import swp.project.adn_backend.dto.InfoDTO.UserResponse;
 import swp.project.adn_backend.dto.request.roleRequest.ManagerRequest;
 import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
 import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
@@ -21,6 +23,7 @@ import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.Roles;
+import swp.project.adn_backend.enums.StaffStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.exception.MultiFieldValidationException;
 import swp.project.adn_backend.mapper.ManagerMapper;
@@ -35,6 +38,7 @@ import org.springframework.mail.SimpleMailMessage;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 
@@ -63,6 +67,19 @@ public class UserService {
         this.staffMapper = staffMapper;
         this.managerMapper = managerMapper;
         this.sendEmailService = sendEmailService;
+    }
+
+    public UserResponse getUserInfo(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.UserResponse(" +
+                "s.userId, s.fullName, s.phone, s.address, s.email) FROM Users s " +
+                "Where s.userId=:userId";
+        TypedQuery<UserResponse> query = entityManager.createQuery(jpql, UserResponse.class);
+        query.setParameter("userId",userId);
+        return query.getSingleResult();
     }
 
     // Đăng ký User
@@ -101,6 +118,50 @@ public class UserService {
 
         Staff staff = staffMapper.toStaff(staffRequest);
         staff.setRole("STAFF");
+        staff.setStaffId(users.getUserId());
+        staff.setCreateAt(LocalDate.now());
+        staff.setUsers(userRegister);
+        staffRepository.save(staff);
+
+        // Send welcome email to staff
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(users.getEmail());
+        message.setSubject("Welcome to ADN Medical Center - Staff Account Created");
+        message.setText("Dear " + users.getFullName() + ",\n\n" +
+                "Welcome to ADN Medical Center! Your staff account has been successfully created.\n\n" +
+                "Your account details:\n" +
+                "Username: " + users.getUsername() + "\n" +
+                "Password: " + staffRequest.getPassword() + "\n\n" +
+                "Email: " + users.getEmail() + "\n" +
+                "You can now log in to the system using your credentials.\n\n" +
+                "Best regards,\n" +
+                "ADN Medical Center Team");
+        sendEmailService.sendEmailCreateAccountSuccessful(users.getEmail(), message.getText());
+
+        // Lưu lại để cascade lưu role
+        return userRepository.save(users);
+    }
+
+    public Users registerLabTechnicianAccount(StaffRequest staffRequest, Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users userRegister = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+
+        HashSet<String> roles = new HashSet<>();
+        validateStaff(staffRequest);
+        // Tạo user từ DTO và mã hóa mật khẩu
+        Users users = userMapper.toStaff(staffRequest);
+        roles.add(Roles.LAB_TECHNICIAN.name());
+        users.setRoles(roles);
+        users.setCreateAt(LocalDate.now());
+        users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
+        userRepository.save(users);
+        //add vao bang staff
+
+        Staff staff = staffMapper.toStaff(staffRequest);
+        staff.setRole("LAB_TECHNICIAN");
         staff.setStaffId(users.getUserId());
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);
@@ -168,6 +229,51 @@ public class UserService {
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
     }
+
+    public Users registerStaffCollectorSampleAtHomeAccount(StaffRequest staffRequest, Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users userRegister = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+
+        HashSet<String> roles = new HashSet<>();
+        validateStaff(staffRequest);
+        // Tạo user từ DTO và mã hóa mật khẩu
+        Users users = userMapper.toStaff(staffRequest);
+        roles.add(Roles.STAFF.name());
+        users.setRoles(roles);
+        users.setCreateAt(LocalDate.now());
+        users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
+        userRepository.save(users);
+        //add vao bang staff
+
+        Staff staff = staffMapper.toStaff(staffRequest);
+        staff.setRole("SAMPLE_COLLECTOR_AT_HOME");
+        staff.setStaffId(users.getUserId());
+        staff.setCreateAt(LocalDate.now());
+        staff.setUsers(userRegister);
+        staffRepository.save(staff);
+
+        // Send welcome email to staff
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(users.getEmail());
+        message.setSubject("Welcome to ADN Medical Center - Staff Account Created");
+        message.setText("Dear " + users.getFullName() + ",\n\n" +
+                "Welcome to ADN Medical Center! Your staff account has been successfully created.\n\n" +
+                "Your account details:\n" +
+                "Username: " + users.getUsername() + "\n" +
+                "Password: " + staffRequest.getPassword() + "\n\n" +
+                "Email: " + users.getEmail() + "\n" +
+                "You can now log in to the system using your credentials.\n\n" +
+                "Best regards,\n" +
+                "ADN Medical Center Team");
+        sendEmailService.sendEmailCreateAccountSuccessful(users.getEmail(), message.getText());
+
+        // Lưu lại để cascade lưu role
+        return userRepository.save(users);
+    }
+
     public Users registerCashierAccount(StaffRequest staffRequest, Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
@@ -233,6 +339,7 @@ public class UserService {
         Staff staff = staffMapper.toStaff(staffRequest);
         staff.setRole("STAFF_AT_HOME");
         staff.setStaffId(users.getUserId());
+        staff.setStaffStatus(StaffStatus.AVAILABLE);
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);
         staffRepository.save(staff);

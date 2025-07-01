@@ -10,6 +10,18 @@ public class DiscountResponse {
     LocalDate endDate;
     boolean isActive ;
 
+    public DiscountResponse(long discountId, String discountName, double discountValue, LocalDate startDate, LocalDate endDate, boolean isActive) {
+        this.discountId = discountId;
+        this.discountName = discountName;
+        this.discountValue = discountValue;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.isActive = isActive;
+    }
+
+    public DiscountResponse() {
+    }
+
     public long getDiscountId() {
         return discountId;
     }

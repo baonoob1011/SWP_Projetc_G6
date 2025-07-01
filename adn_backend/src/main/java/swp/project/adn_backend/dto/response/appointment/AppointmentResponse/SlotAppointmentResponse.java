@@ -2,6 +2,7 @@ package swp.project.adn_backend.dto.response.appointment.AppointmentResponse;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import swp.project.adn_backend.enums.SlotStatus;
 
 import java.sql.Time;
 import java.time.LocalDate;
@@ -13,12 +14,24 @@ public class SlotAppointmentResponse {
     LocalDate slotDate;
     LocalTime startTime;
     LocalTime  endTime;
+    SlotStatus slotStatus;
+
+    public SlotAppointmentResponse() {
+    }
 
     public SlotAppointmentResponse(long slotId, LocalDate slotDate, LocalTime startTime, LocalTime endTime) {
         this.slotId = slotId;
         this.slotDate = slotDate;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public SlotStatus getSlotStatus() {
+        return slotStatus;
+    }
+
+    public void setSlotStatus(SlotStatus slotStatus) {
+        this.slotStatus = slotStatus;
     }
 
     public long getSlotId() {

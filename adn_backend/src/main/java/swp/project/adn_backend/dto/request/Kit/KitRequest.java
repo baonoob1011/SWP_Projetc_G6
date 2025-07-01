@@ -11,11 +11,20 @@ public class KitRequest {
     String targetPersonCount;
     double price;
     String contents;
+    int quantity;
 
 //    LocalDate deliveryDate;
 //    LocalDate returnDate;
 //    DeliveryStatus kitStatus;
 
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public String getContents() {
         return contents;

@@ -7,8 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import swp.project.adn_backend.dto.InfoDTO.BlogResponse;
 import swp.project.adn_backend.dto.InfoDTO.BlogsInfoDTO;
 import swp.project.adn_backend.dto.request.blog.BlogRequest;
+import swp.project.adn_backend.dto.InfoDTO.BlogsInfoDTO;
 import swp.project.adn_backend.entity.Blog;
 import swp.project.adn_backend.service.blog.BlogService;
 
@@ -22,15 +24,26 @@ public class BlogController {
 
 
     @GetMapping("/get-all-blog")
-    public ResponseEntity<List<BlogsInfoDTO>>getAllBlog(){
+    public ResponseEntity<List<BlogResponse>> getAllBlog() {
         return ResponseEntity.ok(blogService.getAllBlogs());
     }
+
     @PostMapping(value = "/create-blog", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Blog> createBlog( @RequestPart("blogRequest") @Valid BlogRequest blogRequest,
-                                            Authentication authentication,
-                                            @RequestPart(value = "file", required = false) MultipartFile file
+    public ResponseEntity<Blog> createBlog(@RequestPart("blogRequest") @Valid BlogRequest blogRequest,
+                                           Authentication authentication,
+                                           @RequestPart(value = "file", required = false) MultipartFile file
     ) {
-        return ResponseEntity.ok(blogService.createBlog(blogRequest, authentication,file));
+        return ResponseEntity.ok(blogService.createBlog(blogRequest, authentication, file));
+    }
+
+    @GetMapping("/get-all-blogs")
+    public ResponseEntity<List<BlogResponse>> getAllBlogs() {
+        return ResponseEntity.ok(blogService.getAllBlogs());
+    }
+
+    @GetMapping("/get-blog")
+    public ResponseEntity<BlogResponse> getBlogById(@RequestParam Long blogId) {
+        return ResponseEntity.ok(blogService.getBlogById(blogId));
     }
 
     @PutMapping(value = "/update-blog/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -46,4 +59,5 @@ public class BlogController {
         blogService.deleteBlog(blogId, authentication);
         return ResponseEntity.noContent().build();
     }
+
 }
