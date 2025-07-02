@@ -339,7 +339,6 @@ public class UserService {
         Staff staff = staffMapper.toStaff(staffRequest);
         staff.setRole("STAFF_AT_HOME");
         staff.setStaffId(users.getUserId());
-        staff.setStaffStatus(StaffStatus.AVAILABLE);
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);
         staffRepository.save(staff);

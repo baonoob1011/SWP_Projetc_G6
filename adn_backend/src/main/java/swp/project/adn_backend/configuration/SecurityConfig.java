@@ -153,7 +153,7 @@ public class SecurityConfig {
                         .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN", "MANAGER")
                         .requestMatchers(CASHIER_ENDPOINTS).hasAnyRole("CASHIER", "ADMIN")
                         .requestMatchers(LAB_TECHNICIAN).hasAnyRole("LAB_TECHNICIAN", "ADMIN")
-                        .requestMatchers(STAFF_PUBLIC).hasAnyRole("STAFF", "LAB_TECHNICIAN","CASHIER")
+                        .requestMatchers(STAFF_PUBLIC).hasAnyRole("STAFF", "LAB_TECHNICIAN","CASHIER","ADMIN","MANAGER")
 
                         // Quyền STAFF
                         .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")

@@ -10,9 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.request.sample.SampleRequest;
 import swp.project.adn_backend.dto.response.sample.*;
 import swp.project.adn_backend.entity.*;
+<<<<<<< Updated upstream
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.PatientStatus;
 import swp.project.adn_backend.enums.SampleStatus;
+=======
+import swp.project.adn_backend.enums.*;
+>>>>>>> Stashed changes
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.AllSampleResponseMapper;
 import swp.project.adn_backend.mapper.AppointmentMapper;
@@ -76,6 +80,9 @@ public class SampleService {
 
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
+        if (serviceTest.getKit().getQuantity() == 0) {
+            throw new RuntimeException("Cơ sở đã hết số lượng kit");
+        }
         Sample sample = sampleMapper.toSample(sampleRequest);
         sample.setSampleStatus(SampleStatus.COLLECTED);
         sample.setCollectionDate(LocalDate.now());
@@ -85,7 +92,14 @@ public class SampleService {
         sample.setKit(serviceTest.getKit());
         sample.setAppointment(appointment);
         patient.setPatientStatus(PatientStatus.SAMPLE_COLLECTED);
+<<<<<<< Updated upstream
         // Lọc ra danh sách nhân viên tại nhà còn hoạt động
+=======
+        appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+        if (serviceTest.getKit().getQuantity() > 0) {
+            serviceTest.getKit().setQuantity(serviceTest.getKit().getQuantity() - 2);
+        }
+>>>>>>> Stashed changes
         List<Staff> labTechnician1 = labTechnician.stream()
                 .filter(lab -> "LAB_TECHNICIAN".equals(lab.getRole()))
                 .collect(Collectors.toList());
