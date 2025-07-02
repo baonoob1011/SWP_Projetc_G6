@@ -28,7 +28,7 @@ public class AppointmentController {
     AppointmentService appointmentService;
 
     @PostMapping("/book-appointment/{serviceId}")
-    public AllAppointmentAtCenterResponse bookAppointmentAtCenter(@RequestBody BookAppointmentRequest request,
+    public AllAppointmentAtCenterResponse bookAppointmentAtCenter(@RequestBody @Valid BookAppointmentRequest request,
                                                                   Authentication authentication,
                                                                   @PathVariable("serviceId") long serviceId,
                                                                   @RequestParam long slotId,
@@ -47,7 +47,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/book-appointment-at-home/{serviceId}")
-    public AllAppointmentAtHomeResponse bookAppointmentAtHome(@RequestBody BookAppointmentRequest request,
+    public AllAppointmentAtHomeResponse bookAppointmentAtHome(@RequestBody @Valid BookAppointmentRequest request,
                                                               Authentication authentication,
                                                               @PathVariable("serviceId") long serviceId,
                                                               @RequestParam long priceId) {

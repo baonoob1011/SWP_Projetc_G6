@@ -427,7 +427,7 @@ public class AppointmentService {
         double totalPrice = priceList.getPrice();
         // Tạo payment
         Payment payment = new Payment();
-        payment.setAmount(totalPrice); // dùng tổng giá
+        payment.setAmount(amountAsDouble); // dùng tổng giá
         payment.setAppointment(appointment);
         payment.setUsers(userBookAppointment);
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
@@ -465,7 +465,7 @@ public class AppointmentService {
 
 
     @Transactional
-    public UpdateAppointmentStatusResponse ConfirmAppointmentAtHome(long appointmentId,
+    public UpdateAppointmentStatusResponse  ConfirmAppointmentAtHome(long appointmentId,
                                                                     long userId,
                                                                     long serviceId) {
         Users userBookAppointment = userRepository.findById(userId)
@@ -477,7 +477,7 @@ public class AppointmentService {
             throw new RuntimeException("Cơ sở đã hết số lượng kit");
         }
         if (serviceTest.getKit().getQuantity() > 0) {
-            serviceTest.getKit().setQuantity(serviceTest.getKit().getQuantity() - 2);
+            serviceTest.getKit().setQuantity(serviceTest.getKit().getQuantity() - 1);
         }
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
@@ -514,7 +514,7 @@ public class AppointmentService {
 
         Staff staff = staffRepository.findById(staffId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-        if(!staff.getRole().equals("LAB_TECHNICIAN")){
+        if (!staff.getRole().equals("LAB_TECHNICIAN")) {
             throw new RuntimeException("Bạn không phải là nhân viên phòng lab");
         }
         List<AllAppointmentAtCenterResponse> centerList = new ArrayList<>();

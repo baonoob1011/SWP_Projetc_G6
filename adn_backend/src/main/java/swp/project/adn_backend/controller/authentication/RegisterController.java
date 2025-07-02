@@ -138,6 +138,23 @@ public class RegisterController {
         Users user = userService.registerLabTechnicianAccount(staffRequest, authentication);
         return ResponseEntity.ok(user);
     }
+    @PostMapping("/consultant-account")
+    public ResponseEntity<?> registerConsultantAccount(
+            @RequestBody @Valid StaffRequest staffRequest,
+            BindingResult bindingResult,
+            Authentication authentication) {
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error ->
+                    errors.put(error.getField(), error.getDefaultMessage())
+            );
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        Users user = userService.registerConsultantAccount(staffRequest, authentication);
+        return ResponseEntity.ok(user);
+    }
 
     @PostMapping("/manager-account")
     public ResponseEntity<?> registerManagerAccount(

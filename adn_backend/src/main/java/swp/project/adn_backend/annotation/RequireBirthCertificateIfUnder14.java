@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RequireBirthCertificateIfUnder14 {
-    String message() default "Birth certificate is required for patients under 14 years old";
+    String message() default  "Trẻ dưới 14 tuổi phải có giấy khai sinh";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

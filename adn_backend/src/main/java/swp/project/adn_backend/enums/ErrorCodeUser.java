@@ -45,6 +45,7 @@ public enum ErrorCodeUser {
     CONFIRM_PASSWORD_BLANK(1031, "Xác nhận mật khẩu không được để trống", HttpStatus.BAD_REQUEST),
     CONFIRM_PASSWORD_NOT_MATCHING(1032, "Mật khẩu xác nhận không khớp", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(1033, "Người dùng không tồn tại", HttpStatus.BAD_REQUEST),
+    CONSULTANT_REGISTER_NOT_EXISTED(1033, "Đơn đăng ký tư vấn không tồn tại", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(1034, "Chưa xác thực người dùng", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1035, "Bạn không có quyền truy cập", HttpStatus.FORBIDDEN),
     PHONE_NOT_EXISTS(1036, "Số điện thoại không tồn tại", HttpStatus.BAD_REQUEST),

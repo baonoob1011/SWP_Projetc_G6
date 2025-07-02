@@ -1,6 +1,7 @@
 package swp.project.adn_backend.dto.GlobalRequest;
 
 
+import jakarta.validation.Valid;
 import swp.project.adn_backend.dto.request.Location.LocationRequest;
 import swp.project.adn_backend.dto.request.payment.PaymentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
@@ -17,6 +18,7 @@ public class BookAppointmentRequest {
     private StaffRequest staffRequest;
     private SlotRequest slotRequest;
     private LocationRequest locationRequest;
+    @Valid
     private List<PatientRequest> patientRequestList;
     private PaymentRequest paymentRequest;
 

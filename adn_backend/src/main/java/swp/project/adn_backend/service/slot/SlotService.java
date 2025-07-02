@@ -187,7 +187,7 @@ public class SlotService {
         List<Slot> slotList = slotRepository.findAll();
         GetFullSlotResponse getAllServiceResponse = null;
         for (Slot slot : slotList) {
-            if (slot.getSlotStatus().equals(SlotStatus.AVAILABLE)) {
+
 
                 SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
 
@@ -219,7 +219,7 @@ public class SlotService {
                 //lay full response
                 fullSlotResponses.add(getFullSlotResponse);
 
-            }
+
         }
         return fullSlotResponses;
     }
