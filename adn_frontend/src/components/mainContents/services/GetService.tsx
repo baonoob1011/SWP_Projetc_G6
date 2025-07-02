@@ -64,12 +64,12 @@ const ServiceList = () => {
       const data = await res.json();
       const fixedData = Array.isArray(data)
         ? data.map((item) => ({
-            ...item,
-            serviceRequest: {
-              ...item.serviceRequest,
-              serviceId: Number(item.serviceRequest.serviceId) || 0,
-            },
-          }))
+          ...item,
+          serviceRequest: {
+            ...item.serviceRequest,
+            serviceId: Number(item.serviceRequest.serviceId) || 0,
+          },
+        }))
         : [];
 
       setServices(fixedData);
@@ -196,190 +196,270 @@ const ServiceList = () => {
   };
 
   if (!auth) return null;
-  if (loading) return <div className="text-center mt-4">Đang tải...</div>;
-  if (error)
-    return <div className="text-danger text-center mt-4">Lỗi: {error}</div>;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br p-6 flex items-center justify-center">
+        <div className="flex items-center gap-4">
+          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-blue-600 font-semibold">Đang tải...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p className="text-red-600 font-semibold">Lỗi: {error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div
-      className="container py-4 service-list-container"
-      style={{
-        background: 'linear-gradient(to right, #e3f2fd, #ffffff)',
-        borderRadius: '12px',
-        padding: '25px',
-        boxShadow: '0 0 15px rgba(33, 150, 243, 0.1)',
-      }}
-    >
-      <h2
-        className="mb-4 text-primary text-center"
-        style={{ fontWeight: 700, fontFamily: 'Poppins, sans-serif' }}
-      >
-        Quản lý Dịch vụ
-      </h2>
+    <div className="min-h-screen bg-gradient-to-br p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Services Table */}
+        <div className="bg-white rounded-2xl border border-blue-100 shadow-xl shadow-blue-100/50 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
+            <h2 className="text-xl font-bold text-white">Danh Sách Dịch Vụ</h2>
+            <p className="text-blue-100 text-sm mt-1">Tất cả dịch vụ đã đăng ký</p>
+          </div>
 
-      {services.length === 0 ? (
-        <div className="text-muted text-center">Không có dịch vụ nào.</div>
-      ) : (
-        <div className="table-responsive">
-          <table className="table table-bordered table-hover text-center align-middle table-medical">
-            <thead className="table-primary text-start">
-              <tr style={{ fontWeight: '600' }}>
-                <th>Số thứ tự</th>
-                <th>Tên dịch vụ</th>
-                <th>Loại</th>
-                <th>Mô tả</th>
-                <th>Ngày đăng ký</th>
-                <th>Giá hiện tại</th>
-                <th>Hành động</th>
-              </tr>
-            </thead>
-            <tbody className="text-start">
-              {services.map((s, index) => {
-                const latestPrice = s.priceListRequest.at(-1);
-                const isEditing =
-                  editingServiceId === s.serviceRequest.serviceId;
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-blue-50/50 border-b border-blue-100">
+                  <th className="px-8 py-5 text-left text-xs font-bold text-blue-700 uppercase tracking-wider">
+                    <div className="flex items-center gap-2">
+                      STT
+                      <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                      </svg>
+                    </div>
+                  </th>
+                  <th className="px-8 py-5 text-left text-xs font-bold text-blue-700 uppercase tracking-wider">
+                    <div className="flex items-center gap-2">
+                      Tên Dịch Vụ
+                      <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                      </svg>
+                    </div>
+                  </th>
+                  <th className="px-8 py-5 text-left text-xs font-bold text-blue-700 uppercase tracking-wider">
+                    <div className="flex items-center gap-2">
+                      Loại
+                      <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                      </svg>
+                    </div>
+                  </th>
+                  <th className="px-8 py-5 text-left text-xs font-bold text-blue-700 uppercase tracking-wider">
+                    <div className="flex items-center gap-2">
+                      Mô Tả
+                      <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                      </svg>
+                    </div>
+                  </th>
+                  <th className="px-8 py-5 text-left text-xs font-bold text-blue-700 uppercase tracking-wider">
+                    <div className="flex items-center gap-2">
+                      Ngày Đăng Ký
+                      <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                      </svg>
+                    </div>
+                  </th>
+                  <th className="px-8 py-5 text-left text-xs font-bold text-blue-700 uppercase tracking-wider">
+                    <div className="flex items-center gap-2">
+                      Giá Hiện Tại
+                      <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                      </svg>
+                    </div>
+                  </th>
+                  <th className="px-8 py-5 text-left text-xs font-bold text-blue-700 uppercase tracking-wider">
+                    Thao Tác
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-blue-50">
+                {services.map((s, index) => {
+                  const latestPrice = s.priceListRequest.at(-1);
+                  const isEditing = editingServiceId === s.serviceRequest.serviceId;
 
-                return (
-                  <tr key={s.serviceRequest.serviceId}>
-                    <td>{index + 1}</td>
-
-                    {/* Tên dịch vụ */}
-                    <td style={{ minWidth: '160px' }}>
-                      {isEditing ? (
-                        <input
-                          className="form-control form-control-sm"
-                          style={{ borderColor: '#0d6efd' }}
-                          value={updatedName}
-                          onChange={(e) => setUpdatedName(e.target.value)}
-                        />
-                      ) : (
-                        <span style={{ fontWeight: 500, color: '#0d47a1' }}>
-                          {s.serviceRequest.serviceName}
+                  return (
+                    <tr key={s.serviceRequest.serviceId} className="hover:bg-blue-50/50 transition-colors duration-200">
+                      <td className="px-8 py-6 whitespace-nowrap">
+                        <span className="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-sm font-bold rounded-full shadow-lg">
+                          {index + 1}
                         </span>
-                      )}
-                    </td>
+                      </td>
 
-                    {/* Loại */}
-                    <td style={{ minWidth: '100px' }}>
-                      <span className="badge text-dark">
-                        {s.serviceRequest.serviceType}
-                      </span>
-                    </td>
+                      {/* Tên dịch vụ */}
+                      <td className="px-8 py-6">
+                        {isEditing ? (
+                          <input
+                            className="w-full px-4 py-3 border-2 border-blue-100 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-slate-700 placeholder-slate-400 bg-blue-50/30 hover:border-blue-200"
+                            value={updatedName}
+                            onChange={(e) => setUpdatedName(e.target.value)}
+                            placeholder="Nhập tên dịch vụ"
+                          />
+                        ) : (
+                          <span className="text-sm text-slate-900 font-semibold">
+                            {s.serviceRequest.serviceName}
+                          </span>
+                        )}
+                      </td>
 
-                    {/* Mô tả */}
-                    <td style={{ minWidth: '220px' }}>
-                      {isEditing ? (
-                        <textarea
-                          className="form-control form-control-sm"
-                          style={{ borderColor: '#0d6efd' }}
-                          rows={2}
-                          value={updatedDescription}
-                          onChange={(e) =>
-                            setUpdatedDescription(e.target.value)
-                          }
-                        />
-                      ) : (
-                        <span>{s.serviceRequest.description}</span>
-                      )}
-                    </td>
+                      {/* Loại */}
+                      <td className="px-8 py-6">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border border-blue-200">
+                          {s.serviceRequest.serviceType}
+                        </span>
+                      </td>
 
-                    {/* Ngày đăng ký */}
-                    <td style={{ minWidth: '120px', color: '#555' }}>
-                      {new Date(
-                        s.serviceRequest.registerDate
-                      ).toLocaleDateString('vi-VN')}
-                    </td>
+                      {/* Mô tả */}
+                      <td className="px-8 py-6">
+                        {isEditing ? (
+                          <textarea
+                            className="w-full px-4 py-3 border-2 border-blue-100 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-slate-700 placeholder-slate-400 bg-blue-50/30 hover:border-blue-200 resize-none"
+                            rows={2}
+                            value={updatedDescription}
+                            onChange={(e) => setUpdatedDescription(e.target.value)}
+                            placeholder="Nhập mô tả"
+                          />
+                        ) : (
+                          <span className="text-sm text-slate-600 font-medium">
+                            {s.serviceRequest.description}
+                          </span>
+                        )}
+                      </td>
 
-                    {/* Giá hiện tại */}
-                    <td style={{ minWidth: '160px' }}>
-                      {isEditing ? (
-                        <input
-                          type="number"
-                          min={0}
-                          className="form-control form-control-sm"
-                          style={{ borderColor: '#0d6efd' }}
-                          value={updatedPrice}
-                          onChange={(e) =>
-                            setUpdatedPrice(Number(e.target.value))
-                          }
-                        />
-                      ) : latestPrice ? (
-                        <>
-                          <div style={{ fontWeight: 600, color: '#2e7d32' }}>
-                            {latestPrice.price.toLocaleString()} VNĐ
+                      {/* Ngày đăng ký */}
+                      <td className="px-8 py-6 text-sm text-slate-600 font-medium">
+                        {new Date(s.serviceRequest.registerDate).toLocaleDateString('vi-VN')}
+                      </td>
+
+                      {/* Giá hiện tại */}
+                      <td className="px-8 py-6">
+                        {isEditing ? (
+                          <input
+                            type="number"
+                            min={0}
+                            className="w-full px-4 py-3 border-2 border-blue-100 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-slate-700 placeholder-slate-400 bg-blue-50/30 hover:border-blue-200"
+                            value={updatedPrice}
+                            onChange={(e) => setUpdatedPrice(Number(e.target.value))}
+                            placeholder="Nhập giá"
+                          />
+                        ) : latestPrice ? (
+                          <div>
+                            <div className="text-sm font-bold text-green-600">
+                              {latestPrice.price.toLocaleString()} VNĐ
+                            </div>
+                            <small className="text-xs text-slate-500">
+                              ({new Date(latestPrice.time).toLocaleDateString('vi-VN')})
+                            </small>
                           </div>
-                          <small className="text-muted">
-                            (
-                            {new Date(latestPrice.time).toLocaleDateString(
-                              'vi-VN'
-                            )}
-                            )
-                          </small>
-                        </>
-                      ) : (
-                        <span className="text-muted">Chưa có</span>
-                      )}
-                    </td>
+                        ) : (
+                          <span className="text-sm text-slate-400 italic">Chưa có</span>
+                        )}
+                      </td>
 
-                    {/* Hành động */}
-                    <td style={{ minWidth: '160px' }}>
-                      {isEditing ? (
-                        <>
-                          <button
-                            className="btn btn-sm btn-outline-success me-1"
-                            onClick={() =>
-                              handleUpdate(s.serviceRequest.serviceId)
-                            }
-                          >
-                            💾 Lưu
-                          </button>
-                          <button
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() => setEditingServiceId(null)}
-                          >
-                            ❌ Huỷ
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            className="btn btn-sm btn-outline-primary me-1"
-                            onClick={() => startEdit(s)}
-                          >
-                            ✏️ Sửa
-                          </button>
-                          <button
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() =>
-                              handleDelete(s.serviceRequest.serviceId)
-                            }
-                          >
-                            🗑️ Xoá
-                          </button>
-                          <Button
-                            component={NavLink}
-                            to={`/newPrice/${s.serviceRequest.serviceId}`}
-                            className="btn btn-sm btn-outline-secondary"
-                          >
-                            thêm giá
-                          </Button>
-                          <Button
-                            component={NavLink}
-                            to={`/discount/${s.serviceRequest.serviceId}`}
-                            className="btn btn-sm btn-outline-secondary"
-                          >
-                            giảm giá
-                          </Button>
-                        </>
-                      )}
+                      {/* Hành động */}
+                      <td className="px-8 py-6 whitespace-nowrap">
+                        {isEditing ? (
+                          <div className="flex items-center gap-2">
+                            <button
+                              className="p-2 text-green-600 hover:text-green-800 hover:bg-green-100 rounded-xl transition-all duration-200 transform hover:scale-110"
+                              onClick={() => handleUpdate(s.serviceRequest.serviceId)}
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                            </button>
+                            <button
+                              className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-xl transition-all duration-200 transform hover:scale-110"
+                              onClick={() => setEditingServiceId(null)}
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <button
+                              className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-100 rounded-xl transition-all duration-200 transform hover:scale-110"
+                              onClick={() => startEdit(s)}
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                            </button>
+                            <button
+                              className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-xl transition-all duration-200 transform hover:scale-110"
+                              onClick={() => handleDelete(s.serviceRequest.serviceId)}
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                            <Button
+                              component={NavLink}
+                              to={`/newPrice/${s.serviceRequest.serviceId}`}
+                              className="!p-2 !text-purple-500 hover:!text-purple-700 hover:!bg-purple-100 !rounded-xl !transition-all !duration-200 transform hover:scale-110 !min-w-0"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                              </svg>
+                            </Button>
+                            <Button
+                              component={NavLink}
+                              to={`/discount/${s.serviceRequest.serviceId}`}
+                              className="!p-2 !text-orange-500 hover:!text-orange-700 hover:!bg-orange-100 !rounded-xl !transition-all !duration-200 transform hover:scale-110 !min-w-0"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                              </svg>
+                            </Button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+
+                {services.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="px-8 py-20 text-center">
+                      <div className="flex flex-col items-center gap-4">
+                        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center shadow-lg">
+                          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-slate-700 font-bold text-lg">Không tìm thấy dịch vụ nào</p>
+                          <p className="text-sm text-slate-500 mt-1">Bắt đầu bằng cách tạo dịch vụ đầu tiên của bạn</p>
+                        </div>
+                      </div>
                     </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-      )}
+      </div>
+
       <CustomSnackBar
         open={snackbar.open}
         message={snackbar.message}

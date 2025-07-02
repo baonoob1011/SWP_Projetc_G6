@@ -182,7 +182,7 @@ const CreateBlog = () => {
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Quản Lý Blog</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Quản Lý Blog/ Tin tức</h1>
             <p className="text-gray-600 mt-1">
               Quản lý và tổ chức nội dung blog một cách hiệu quả
             </p>
@@ -223,7 +223,7 @@ const CreateBlog = () => {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  {form.blogId ? 'Cập Nhật Blog' : 'Tạo Blog Mới'}
+                  {form.blogId ? 'Cập Nhật Blog' : 'Tạo Blog/Tin tức mới'}
                 </h2>
                 <p className="text-gray-600">
                   {form.blogId
@@ -235,19 +235,6 @@ const CreateBlog = () => {
                 onClick={() => setShowForm(false)}
                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                <svg
-                  className="w-6 h-6 text-gray-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
               </button>
             </div>
 
@@ -483,13 +470,9 @@ const CreateBlog = () => {
 
         {/* Blog List */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-          <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Danh Sách Blog
-            </h3>
-            <p className="text-gray-600 text-sm mt-1">
-              Tất cả các blog đã được tạo
-            </p>
+         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
+            <h2 className="text-xl font-bold text-white">Danh Sách Blog/ tin tức</h2>
+            <p className="text-blue-100 text-sm mt-1">Tất cả Blog và tin tức đã tạo</p>
           </div>
 
           {blogs.length > 0 ? (

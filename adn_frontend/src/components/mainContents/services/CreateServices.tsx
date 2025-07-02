@@ -59,6 +59,7 @@ const Services = () => {
   const [preview, setPreview] = useState<string>('');
   const fileRef = useRef<HTMLInputElement>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     setIsAdmin(
@@ -202,6 +203,7 @@ const Services = () => {
   if (!isAdmin) return null;
 
   return (
+<<<<<<< Updated upstream
     <div className="min-vh-100" style={{ backgroundColor: '#f8f9fa' }}>
       <div className="container py-5">
         <div className="row justify-content-center">
@@ -236,13 +238,62 @@ const Services = () => {
                 <div>
                   <h3 className="mb-1 fw-bold">Thêm Dịch Vụ Mới</h3>
                   <p className="mb-0 opacity-75">Điền thông tin chi tiết dịch vụ bên dưới</p>
+=======
+    <div className="min-h-screen bg-gradient-to-br p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              Quản Lý Dịch Vụ
+            </h1>
+            <p className="text-sm text-slate-600 mt-2 flex items-center gap-2">
+              <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" />
+                <circle cx="9" cy="7" r="4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Quản lý và tổ chức dữ liệu dịch vụ một cách hiệu quả
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setShowCreateForm(!showCreateForm)}
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+              </svg>
+              {showCreateForm ? 'Ẩn Form' : 'Thêm Dịch Vụ'}
+            </button>
+          </div>
+        </div>
+
+        {/* Create Form - Collapsible */}
+        <div className={`transition-all duration-500 ease-in-out ${showCreateForm ? 'opacity-100 max-h-[1000px] transform translate-y-0' : 'opacity-0 max-h-0 overflow-hidden transform -translate-y-4'}`}>
+          <div className="bg-white rounded-2xl border border-blue-100 shadow-xl shadow-blue-100/50">
+            <div className="border-b border-blue-50 px-8 py-6 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-t-2xl">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" />
+                    <circle cx="9" cy="7" r="4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">Thêm Dịch Vụ Mới</h3>
+                  <p className="text-blue-100 text-sm">Điền thông tin chi tiết dịch vụ bên dưới</p>
+>>>>>>> Stashed changes
                 </div>
               </div>
             </div>
-
-            {/* Form */}
-            <div className="bg-white p-4 rounded-bottom shadow-sm">
+            
+            <div className="p-8">
               <form onSubmit={handleSubmit}>
+<<<<<<< Updated upstream
                 <div className="row g-4">
                   {/* Kit Selection */}
                   <div className="col-12">
@@ -373,8 +424,89 @@ const Services = () => {
                         <option value="CIVIL">Dân sự</option>
                       </select>
                     </div>
+=======
+                {/* Kit Selection */}
+                <div className="mb-8">
+                  <label className="block text-sm font-semibold text-slate-700 mb-3">
+                    Chọn Kit
+                  </label>
+                  <FormControl fullWidth>
+                    <Select
+                      value={selectedKit}
+                      onChange={handleKitChange}
+                      input={<OutlinedInput />}
+                      displayEmpty
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '12px',
+                          backgroundColor: '#f8fafc',
+                          border: '2px solid #e2e8f0',
+                          '&:hover': {
+                            backgroundColor: '#f1f5f9',
+                            borderColor: '#cbd5e1',
+                          },
+                          '&.Mui-focused': {
+                            backgroundColor: '#f1f5f9',
+                            borderColor: '#3b82f6',
+                            boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.1)',
+                          },
+                        },
+                      }}
+                    >
+                      <MenuItem value="">
+                        <em style={{ color: '#64748b' }}>
+                          ----Chọn Kit----
+                        </em>
+                      </MenuItem>
+                      {kit.map((kit) => (
+                        <MenuItem key={kit.kitId} value={kit.kitId}>
+                          {kit.kitCode}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                  {/* Service Name */}
+                  <div className="space-y-3">
+                    <label className="block text-sm font-semibold text-slate-700">
+                      Tên Dịch Vụ
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 border-2 border-blue-100 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-slate-700 placeholder-slate-400 bg-blue-50/30 hover:border-blue-200"
+                      value={form.service.serviceName}
+                      onChange={(e) =>
+                        handleInput('service', 'serviceName', e.target.value)
+                      }
+                      placeholder="Nhập tên dịch vụ"
+                      required
+                    />
                   </div>
 
+                  {/* Service Type */}
+                  <div className="space-y-3">
+                    <label className="block text-sm font-semibold text-slate-700">
+                      Loại Dịch Vụ
+                    </label>
+                    <select
+                      className="w-full px-4 py-3 border-2 border-blue-100 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-slate-700 placeholder-slate-400 bg-blue-50/30 hover:border-blue-200"
+                      value={form.service.serviceType}
+                      onChange={(e) =>
+                        handleInput('service', 'serviceType', e.target.value)
+                      }
+                      required
+                    >
+                      <option value="">-- Chọn loại dịch vụ --</option>
+                      <option value="ADMINISTRATIVE">Hành chính</option>
+                      <option value="CIVIL">Dân sự</option>
+                    </select>
+>>>>>>> Stashed changes
+                  </div>
+                </div>
+
+<<<<<<< Updated upstream
                   {/* Description */}
                   <div className="col-12">
                     <div className="position-relative">
@@ -413,8 +545,28 @@ const Services = () => {
                       />
                     </div>
                   </div>
+=======
+                {/* Description */}
+                <div className="mb-8">
+                  <label className="block text-sm font-semibold text-slate-700 mb-3">
+                    Mô Tả
+                  </label>
+                  <textarea
+                    className="w-full px-4 py-3 border-2 border-blue-100 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-slate-700 placeholder-slate-400 bg-blue-50/30 hover:border-blue-200 resize-vertical"
+                    value={form.service.description}
+                    onChange={(e) =>
+                      handleInput('service', 'description', e.target.value)
+                    }
+                    placeholder="Nhập mô tả dịch vụ"
+                    required
+                    rows={3}
+                  />
+                </div>
+>>>>>>> Stashed changes
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                   {/* Time */}
+<<<<<<< Updated upstream
                   <div className="col-md-6">
                     <div className="position-relative">
                       <div className="d-flex align-items-center mb-3">
@@ -484,8 +636,43 @@ const Services = () => {
                         }}
                       />
                     </div>
+=======
+                  <div className="space-y-3">
+                    <label className="block text-sm font-semibold text-slate-700">
+                      Thời Gian
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 border-2 border-blue-100 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-slate-700 placeholder-slate-400 bg-blue-50/30 hover:border-blue-200"
+                      value={form.price.time}
+                      onChange={(e) =>
+                        handleInput('price', 'time', e.target.value)
+                      }
+                      placeholder="Nhập thời gian thực hiện"
+                      required
+                    />
                   </div>
 
+                  {/* Price */}
+                  <div className="space-y-3">
+                    <label className="block text-sm font-semibold text-slate-700">
+                      Giá Tiền
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 border-2 border-blue-100 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-slate-700 placeholder-slate-400 bg-blue-50/30 hover:border-blue-200"
+                      value={form.price.price}
+                      onChange={(e) =>
+                        handleInput('price', 'price', e.target.value)
+                      }
+                      placeholder="Nhập giá dịch vụ"
+                      required
+                    />
+>>>>>>> Stashed changes
+                  </div>
+                </div>
+
+<<<<<<< Updated upstream
                   {/* Image Upload */}
                   <div className="col-12">
                     <div className="position-relative">
@@ -548,9 +735,32 @@ const Services = () => {
                           }}
                         />
                       </div>
+=======
+                {/* Image Upload */}
+                <div className="mb-8">
+                  <label className="block text-sm font-semibold text-slate-700 mb-3">
+                    Hình Ảnh
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileRef}
+                    onChange={handleFile}
+                    className="w-full px-4 py-3 border-2 border-blue-100 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-slate-700 bg-blue-50/30 hover:border-blue-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+                  {file && (
+                    <div className="mt-3 flex items-center gap-2 text-blue-600 font-medium">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4905 2.02168 11.3363C2.16356 9.18206 2.99721 7.13175 4.39828 5.49385C5.79935 3.85595 7.69279 2.71917 9.79619 2.24712C11.8996 1.77507 14.1003 1.98245 16.07 2.83" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M22 4L12 14.01L9 11.01" />
+                      </svg>
+                      Đã chọn: {file.name}
+>>>>>>> Stashed changes
                     </div>
                   )}
+                </div>
 
+<<<<<<< Updated upstream
                   {/* Submit Button */}
                   <div className="col-12">
                     <button
@@ -569,7 +779,29 @@ const Services = () => {
                       </svg>
                       Tạo Dịch Vụ
                     </button>
+=======
+                {/* Image Preview */}
+                {preview && (
+                  <div className="mb-8 text-center">
+                    <img
+                      src={preview}
+                      alt="preview"
+                      className="inline-block max-w-xs max-h-48 object-cover rounded-xl shadow-lg border-4 border-blue-200"
+                    />
+>>>>>>> Stashed changes
                   </div>
+                )}
+
+                <div className="flex justify-end pt-6 border-t border-blue-50">
+                  <button
+                    type="submit"
+                    className="flex items-center gap-3 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Tạo Dịch Vụ
+                  </button>
                 </div>
               </form>
             </div>
@@ -579,5 +811,8 @@ const Services = () => {
     </div>
   );
 };
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 export default Services;
