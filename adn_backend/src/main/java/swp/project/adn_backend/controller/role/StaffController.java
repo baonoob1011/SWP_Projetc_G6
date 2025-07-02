@@ -61,6 +61,10 @@ public class StaffController {
     public ResponseEntity<List<StaffBasicInfo>> getAllLabTechnicianBasicInfo() {
         return ResponseEntity.ok(staffService.getAllLabTechnicianBasicInfo());
     }
+    @GetMapping("/get-all-consultant")
+    public ResponseEntity<List<StaffBasicInfo>> getAllLConsultantBasicInfo() {
+        return ResponseEntity.ok(staffService.getAllLConsultantBasicInfo());
+    }
 
 //    @GetMapping("/get-staff-slot")
 //    public ResponseEntity<List<SlotInfoDTO>> getSlotById(Authentication authentication) {
