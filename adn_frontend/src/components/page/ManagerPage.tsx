@@ -16,16 +16,8 @@ import {
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
-
-import {
-  ArrowBack,
-  LocationCity,
-  Room,
-  RoomService,
-} from '@mui/icons-material';
 import { toast } from 'react-toastify';
-
-//import { ArrowBack, RoomService } from '@mui/icons-material';
+import { ArrowBack, LocationCity, Room, RoomService } from '@mui/icons-material';
 
 const ManagerPage = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -93,12 +85,12 @@ const ManagerPage = () => {
       label: 'Tạo phòng',
       path: 'manager/room',
     },
-    {
-      id: 'services',
-      icon: ShoppingBag,
-      label: 'Tất cả dịch vụ',
-      path: 'manager/services',
-    },
+    // {
+    //   id: 'services',
+    //   icon: ShoppingBag,
+    //   label: 'Tất cả dịch vụ',
+    //   path: 'manager/services',
+    // },
     {
       id: 'blog',
       icon: Newspaper,

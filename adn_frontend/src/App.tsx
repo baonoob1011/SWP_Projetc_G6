@@ -134,6 +134,7 @@ function App() {
     '/manager/create-locus',
     '/newPrice/:serviceId',
     '/manager',
+    '/discount/:serviceId',
   ].some((path) => matchPath(path, location.pathname));
 
   return (
@@ -573,6 +574,14 @@ function App() {
                 }
               />
               <Route
+                path="/discount/:serviceId"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateDiscount />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="manager/create-services"
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
@@ -727,21 +736,10 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/service/civil"
-              element={
-                <ProtectedRoute>
-                  <CivilServiceList />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/service/civil" element={<CivilServiceList />} />
             <Route
               path="/service/administrative"
-              element={
-                <ProtectedRoute>
-                  <AdministrativeServiceList />
-                </ProtectedRoute>
-              }
+              element={<AdministrativeServiceList />}
             />
 
             {/* STAFF + MANAGER */}

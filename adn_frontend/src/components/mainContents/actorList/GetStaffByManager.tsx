@@ -1,6 +1,5 @@
 import {
   Button,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -9,11 +8,12 @@ import {
   TableRow,
   TextField,
 } from '@mui/material';
-import { Plus, Trash2 } from 'lucide-react';
+
 import { useEffect, useState } from 'react';
 import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
 import Swal from 'sweetalert2';
 import { NavLink } from 'react-router-dom';
+import styles from './GetStaffByManager.module.css';
 
 type Staff = {
   idCard: string;
@@ -34,9 +34,11 @@ function GetStaffByManager() {
   const [isManager, setIsManager] = useState(true);
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     const token = localStorage.getItem('token');
+    setLoading(true);
     try {
       const res = await fetch(
         'http://localhost:8080/api/manager/get-all-staff',
@@ -51,9 +53,12 @@ function GetStaffByManager() {
       }
       const data = await res.json();
       setAccount(data);
+      setError(null);
     } catch (error) {
       console.log(error);
       setError('Không thể lấy dữ liệu');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,7 +78,7 @@ function GetStaffByManager() {
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
+        cancelButtonColor: '#1976d2',
         confirmButtonText: 'Xóa',
         cancelButtonText: 'Hủy',
       });
@@ -111,106 +116,140 @@ function GetStaffByManager() {
 
   const searchByphone = account.filter((user) => user.phone.includes(search));
 
-  return (
-    <>
-      {error && showErrorSnackbar(error)}
-      <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
-        <TextField
-          label="Nhập số điện thoại"
-          variant="outlined"
-          size="small"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          sx={{ margin: '10px 5px' }}
-        />
-        <Table sx={{ fontSize: '13px' }}>
-          <TableHead>
-            <TableRow>
-              {/** Dòng tiêu đề với border */}
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                ID
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Họ tên
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                CCCD
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Ngày sinh
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Giới tính
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Email
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                SĐT
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Địa chỉ
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Thao tác
-              </TableCell>
-            </TableRow>
-          </TableHead>
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loadingContainer}>
+          Đang tải dữ liệu...
+        </div>
+      </div>
+    );
+  }
 
-          <TableBody>
-            {searchByphone.map((user, index) => (
-              <TableRow key={index}>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
-                  {index + 1}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
-                  {user.fullName}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
-                  {user.idCard}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
-                  {user.dateOfBirth}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
-                  {user.gender}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
-                  {user.email}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
-                  {user.phone}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
-                  {user.address}
-                </TableCell>
-                <TableCell sx={{ border: '1px solid #ccc' }}>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    size="small"
-                    sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}
-                    onClick={() => handleDelete(user.phone, user.fullName)}
-                  >
-                    <Trash2 size={16} />
-                  </Button>
-                  <Button
-                    variant="contained"
-                    component={NavLink}
-                    to={`/slot/${user.staffId}`}
-                    color="error"
-                    size="small"
-                    sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}
-                  >
-                    <Plus size={10} />
-                  </Button>
-                </TableCell>
+  return (
+    <div className={styles.container}>
+      {/* Header */}
+      <div className={styles.header}>
+        <h1 className={styles.title}>Quản Lý Nhân Viên</h1>
+        <p className={styles.subtitle}>Danh sách nhân viên trong hệ thống</p>
+      </div>
+
+      {/* Stats Cards */}
+      <div className={styles.statsContainer}>
+        <div className={styles.statCard}>
+          <h2 className={styles.statNumber}>{account.length}</h2>
+          <p className={styles.statLabel}>Tổng nhân viên</p>
+        </div>
+        <div className={styles.statCard}>
+          <h2 className={styles.statNumber}>{account.filter(staff => staff.enabled).length}</h2>
+          <p className={styles.statLabel}>Đang hoạt động</p>
+        </div>
+        <div className={styles.statCard}>
+          <h2 className={styles.statNumber}>{searchByphone.length}</h2>
+          <p className={styles.statLabel}>Kết quả tìm kiếm</p>
+        </div>
+      </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className={styles.errorMessage}>
+          {error}
+        </div>
+      )}
+
+      {/* Table Card */}
+      <div className={styles.tableCard}>
+        {/* Search Section */}
+        <div className={styles.searchContainer}>
+          <TextField
+            label="Tìm kiếm theo số điện thoại"
+            variant="outlined"
+            size="small"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className={styles.searchField}
+            placeholder="Nhập số điện thoại để tìm kiếm..."
+          />
+        </div>
+
+        {/* Table */}
+        <TableContainer className={styles.tableContainer}>
+          <Table className={styles.table}>
+            <TableHead className={styles.tableHead}>
+              <TableRow>
+                <TableCell className={styles.headerCell}>STT</TableCell>
+                <TableCell className={styles.headerCell}>Họ tên</TableCell>
+                <TableCell className={styles.headerCell}>CCCD</TableCell>
+                <TableCell className={styles.headerCell}>Ngày sinh</TableCell>
+                <TableCell className={styles.headerCell}>Giới tính</TableCell>
+                <TableCell className={styles.headerCell}>Email</TableCell>
+                <TableCell className={styles.headerCell}>SĐT</TableCell>
+                <TableCell className={styles.headerCell}>Địa chỉ</TableCell>
+                <TableCell className={styles.headerCell}>Thao tác</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+            </TableHead>
+
+            <TableBody>
+              {searchByphone.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={9} className={styles.noData}>
+                    {search ? 'Không tìm thấy nhân viên với số điện thoại này' : 'Chưa có nhân viên nào'}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                searchByphone.map((user, index) => (
+                  <TableRow key={index} className={styles.bodyRow}>
+                    <TableCell className={styles.bodyCell}>
+                      {index + 1}
+                    </TableCell>
+                    <TableCell className={styles.bodyCell}>
+                      {user.fullName}
+                    </TableCell>
+                    <TableCell className={styles.bodyCell}>
+                      {user.idCard}
+                    </TableCell>
+                    <TableCell className={styles.bodyCell}>
+                      {user.dateOfBirth}
+                    </TableCell>
+                    <TableCell className={styles.bodyCell}>
+                      {user.gender}
+                    </TableCell>
+                    <TableCell className={styles.bodyCell}>
+                      {user.email}
+                    </TableCell>
+                    <TableCell className={styles.bodyCell}>
+                      {user.phone}
+                    </TableCell>
+                    <TableCell className={styles.bodyCell}>
+                      {user.address}
+                    </TableCell>
+                    <TableCell className={styles.actionCell}>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        className={styles.deleteButton}
+                        onClick={() => handleDelete(user.phone, user.fullName)}
+                      >
+                        Xóa
+                      </Button>
+                      <Button
+                        variant="contained"
+                        component={NavLink}
+                        to={`/slot/${user.staffId}`}
+                        size="small"
+                        className={styles.addButton}
+                      >
+                        Slot
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+    </div>
   );
 }
 
