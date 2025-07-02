@@ -96,4 +96,16 @@ public class DashboardController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/weekly-daily-revenue")
+    public ResponseEntity<DailyRevenueResponse> getWeeklyDailyRevenue(
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate) {
+        if (startDate == null || endDate == null) {
+            endDate = LocalDate.now();
+            startDate = endDate.minusDays(6);
+        }
+        DailyRevenueResponse response = dashboardService.getDailyRevenue(startDate, endDate);
+        return ResponseEntity.ok(response);
+    }
 } 
