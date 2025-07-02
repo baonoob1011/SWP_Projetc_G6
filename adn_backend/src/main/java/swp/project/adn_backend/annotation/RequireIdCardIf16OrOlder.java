@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RequireIdCardIf16OrOlder {
-    String message() default "ID Card is required for patients 16 years old or older";
+    String message() default "Bệnh nhân từ 16 tuổi trở lên bắt buộc phải có số CMND/CCCD";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

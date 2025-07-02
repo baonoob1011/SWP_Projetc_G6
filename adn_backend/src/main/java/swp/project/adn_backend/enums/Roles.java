@@ -12,7 +12,8 @@ public enum Roles {
     PATIENT,
     COLLECTOR,
     CASHIER,
-    LAB_TECHNICIAN
+    LAB_TECHNICIAN,
+    CONSULTANT
     ;
 
     Roles() {

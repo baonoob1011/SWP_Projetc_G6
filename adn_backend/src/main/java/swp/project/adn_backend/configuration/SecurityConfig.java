@@ -92,6 +92,12 @@ public class SecurityConfig {
 
 
     };
+    private final String[] CONSULTANT_PUBLIC = {
+            "/api/register-for-consultation/get-register-consultation",
+            "/api/register-for-consultation/update-register-consultation-status",
+
+
+    };
     private final String[] STAFF_ENDPOINTS = {
             "/api/staff/update-profile",
             "/api/kit/get-all-kit-staff",
@@ -108,7 +114,7 @@ public class SecurityConfig {
             "/api/feedback/response-feedback",
             "/api/appointment/get-appointment-at-home-by-staff",
             "/api/kit-delivery-status/get-kit-status-staff-by-appointment/**",
-            "/api/sample/collect-sample-patient/**",
+            "/api/sample/**",
             "/api/sample/collect-sample-patient-at-center",
 
     };
@@ -117,26 +123,26 @@ public class SecurityConfig {
             "/api/result-allele/create-result-allele",
             "/api/result-locus/create-result-locus/**",
             "/api/result-detail/create-result-detail/**",
-            "/api/locus/create-locus",
             "/api/locus/get-all-locus",
             "/api/appointment/update-note",
             "/api/sample/update-status-sample",
 
     };
     private final String[] MANAGER_ENDPOINTS = {
-            "/api/manager/update-profile",
-            "/api/manager/**",
-            "/api/services/**",
-            "/api/blog/**",
-            "/api/slot/**",
-            "/api/price/**",
-            "/api/room/**",
-            "/api/payment/**",
-            "/api/appointment/**",
-            "/api/kit/**",
-            "/api/staff/get-all-staff",
-            "/api/discount/create-discount-service",
-            "/api/dashboard/**"
+//            "/api/manager/update-profile",
+//            "/api/manager/**",
+//            "/api/services/**",
+//            "/api/blog/**",
+//            "/api/slot/**",
+//            "/api/price/**",
+//            "/api/room/**",
+//            "/api/payment/**",
+//            "/api/appointment/**",
+//            "/api/kit/**",
+//            "/api/staff/get-all-staff",
+//            "/api/discount/create-discount-service",
+//            "/api/dashboard/**"
+            "api/**"
     };
 
     private final String[] ADMIN_ENDPOINTS = {
@@ -159,8 +165,9 @@ public class SecurityConfig {
                         // Quyền USER
                         .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN", "MANAGER")
                         .requestMatchers(CASHIER_ENDPOINTS).hasAnyRole("CASHIER", "ADMIN")
+                        .requestMatchers(CONSULTANT_PUBLIC).hasAnyRole("CONSULTANT", "ADMIN")
                         .requestMatchers(LAB_TECHNICIAN).hasAnyRole("LAB_TECHNICIAN", "ADMIN")
-                        .requestMatchers(STAFF_PUBLIC).hasAnyRole("STAFF", "LAB_TECHNICIAN","CASHIER")
+                        .requestMatchers(STAFF_PUBLIC).hasAnyRole("STAFF", "LAB_TECHNICIAN", "CASHIER", "ADMIN", "MANAGER","CONSULTANT")
 
                         // Quyền STAFF
                         .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")
@@ -169,7 +176,7 @@ public class SecurityConfig {
                         .requestMatchers(MANAGER_ENDPOINTS).hasAnyRole("MANAGER", "ADMIN")
 
                         // Quyền ADMIN
-                        .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
+                        .requestMatchers(ADMIN_ENDPOINTS).hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers(ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
 
 

@@ -34,6 +34,23 @@ public class SampleController {
 
     }
 
+    @PostMapping("/collect-sample-patient-at-home")
+    public ResponseEntity<SampleResponse> collectSampleAtHome(@RequestBody SampleRequest sampleRequest,
+                                                        @RequestParam long patientId,
+                                                        @RequestParam long serviceId,
+                                                        @RequestParam long appointmentId,
+                                                        Authentication authentication
+    ) {
+        return ResponseEntity.ok(sampleService.collectSampleAtHome(
+                patientId,
+                serviceId,
+                appointmentId,
+                sampleRequest,
+                authentication
+        ));
+
+    }
+
 
 
     @GetMapping("/get-all-sample")

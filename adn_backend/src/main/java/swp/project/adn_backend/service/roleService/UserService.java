@@ -186,6 +186,50 @@ public class UserService {
         return userRepository.save(users);
     }
 
+    public Users registerConsultantAccount(StaffRequest staffRequest, Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users userRegister = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+
+
+        HashSet<String> roles = new HashSet<>();
+        validateStaff(staffRequest);
+        // Tạo user từ DTO và mã hóa mật khẩu
+        Users users = userMapper.toStaff(staffRequest);
+        roles.add(Roles.CONSULTANT.name());
+        users.setRoles(roles);
+        users.setCreateAt(LocalDate.now());
+        users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
+        userRepository.save(users);
+        //add vao bang staff
+
+        Staff staff = staffMapper.toStaff(staffRequest);
+        staff.setRole("CONSULTANT");
+        staff.setStaffId(users.getUserId());
+        staff.setCreateAt(LocalDate.now());
+        staff.setUsers(userRegister);
+        staffRepository.save(staff);
+
+        // Send welcome email to staff
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(users.getEmail());
+        message.setSubject("Welcome to ADN Medical Center - Staff Account Created");
+        message.setText("Dear " + users.getFullName() + ",\n\n" +
+                "Welcome to ADN Medical Center! Your staff account has been successfully created.\n\n" +
+                "Your account details:\n" +
+                "Username: " + users.getUsername() + "\n" +
+                "Password: " + staffRequest.getPassword() + "\n\n" +
+                "Email: " + users.getEmail() + "\n" +
+                "You can now log in to the system using your credentials.\n\n" +
+                "Best regards,\n" +
+                "ADN Medical Center Team");
+        sendEmailService.sendEmailCreateAccountSuccessful(users.getEmail(), message.getText());
+
+        // Lưu lại để cascade lưu role
+        return userRepository.save(users);
+    }
+
     public Users registerStaffCollectorSampleAccount(StaffRequest staffRequest, Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
@@ -339,7 +383,6 @@ public class UserService {
         Staff staff = staffMapper.toStaff(staffRequest);
         staff.setRole("STAFF_AT_HOME");
         staff.setStaffId(users.getUserId());
-        staff.setStaffStatus(StaffStatus.AVAILABLE);
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);
         staffRepository.save(staff);
