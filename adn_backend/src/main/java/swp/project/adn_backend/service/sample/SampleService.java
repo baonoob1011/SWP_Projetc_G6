@@ -86,7 +86,6 @@ public class SampleService {
         sample.setKit(serviceTest.getKit());
         sample.setAppointment(appointment);
         patient.setPatientStatus(PatientStatus.SAMPLE_COLLECTED);
-        appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
         if (serviceTest.getKit().getQuantity() > 0) {
             serviceTest.getKit().setQuantity(serviceTest.getKit().getQuantity() - 1);
         }

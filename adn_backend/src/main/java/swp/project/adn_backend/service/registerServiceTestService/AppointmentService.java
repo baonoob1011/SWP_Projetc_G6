@@ -568,6 +568,68 @@ public class AppointmentService {
             }
         }
         return new AllAppointmentResponse(centerList, homeList);
+    } //staff lấy appointment đó để xác nhận
+
+    public AllAppointmentResponse getAppointmentAtHomeByStaffId(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long staffId = jwt.getClaim("id");
+
+        Staff staff = staffRepository.findById(staffId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+        if (!staff.getRole().equals("STAFF_AT_HOME")) {
+            throw new RuntimeException("Bạn không phải là nhân viên vận chuyển");
+        }
+        List<AllAppointmentAtCenterResponse> centerList = new ArrayList<>();
+        List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
+
+        for (Appointment appointment : staff.getAppointments()) {
+            if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
+                if (appointment.getAppointmentType().equals(AppointmentType.CENTER)) {
+                    ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
+                    List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
+                    RoomAppointmentResponse room = new RoomAppointmentResponse();
+                    room.setRoomName(appointment.getSlot().getRoom().getRoomName());
+                    // Lọc bệnh nhân có trạng thái REGISTERED
+                    List<Patient> registeredPatients = appointment.getPatients().
+                            stream()
+                            .filter(p -> p.getPatientStatus() == PatientStatus.SAMPLE_COLLECTED)
+                            .collect(Collectors.toList());
+
+                    // Map các thông tin liên quan
+                    List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
+                            .map(appointmentMapper::toPatientAppointment)
+                            .collect(Collectors.toList());
+
+                    AllAppointmentAtCenterResponse centerResponse = new AllAppointmentAtCenterResponse();
+                    centerResponse.setShowAppointmentResponse(show);
+                    centerResponse.setServiceAppointmentResponses(services);
+                    centerResponse.setPatientAppointmentResponse(patientResponses);
+                    centerList.add(centerResponse);
+
+                } else if (
+                        appointment.getAppointmentType() == AppointmentType.HOME &&
+                                appointment.getServices().getServiceType() == ServiceType.CIVIL) {
+
+                    ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
+                    List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
+                    List<Patient> registeredPatients = appointment.getPatients().
+                            stream()
+                            .filter(p -> p.getPatientStatus() == PatientStatus.SAMPLE_COLLECTED)
+                            .collect(Collectors.toList());
+
+                    // Map các thông tin liên quan
+                    List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
+                            .map(appointmentMapper::toPatientAppointment)
+                            .collect(Collectors.toList());
+                    AllAppointmentAtHomeResponse homeResponse = new AllAppointmentAtHomeResponse();
+                    homeResponse.setShowAppointmentResponse(show);
+                    homeResponse.setServiceAppointmentResponses(services);
+                    homeResponse.setPatientAppointmentResponse(patientResponses);
+                    homeList.add(homeResponse);
+                }
+            }
+        }
+        return new AllAppointmentResponse(centerList, homeList);
     }
 
 
@@ -642,19 +704,22 @@ public class AppointmentService {
 
                 // Lọc bệnh nhân có trạng thái REGISTERED
                 List<Patient> registeredPatients = appointment.getPatients().stream()
-                        .filter(p -> p.getPatientStatus() == PatientStatus.REGISTERED)
+                        .filter(p -> p.getPatientStatus() == PatientStatus.REGISTERED
+                                || p.getPatientStatus() == PatientStatus.SAMPLE_COLLECTED)
                         .collect(Collectors.toList());
 
                 // Map các thông tin liên quan
                 List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
                         .map(appointmentMapper::toPatientAppointment)
                         .collect(Collectors.toList());
-
+                KitAppointmentResponse kitAppointmentResponse = appointmentMapper.toKitAppointmentResponse(appointment.getServices().getKit());
                 AllAppointmentAtCenterResponse response = new AllAppointmentAtCenterResponse();
+                response.setKitAppointmentResponse(kitAppointmentResponse);
                 response.setShowAppointmentResponse(appointmentMapper.toShowAppointmentResponse(appointment));
                 response.setUserAppointmentResponse(
                         List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()))
                 );
+
                 response.setStaffAppointmentResponse(
                         List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()))
                 );
@@ -1011,7 +1076,15 @@ public class AppointmentService {
         }
         return appointmentResponses;
     }
-
+    @Transactional
+    public void patientCheckIn(long patientId, long appointmentId){
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.PATIENT_INFO_NOT_EXISTS));
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        appointment.setNote("Bệnh nhân vắng mặt nên không thể hoàn thành việc lấy mẫu");
+        patient.setPatientStatus(PatientStatus.NO_SHOW);
+    }
     @Transactional
     public void payAppointment(long paymentId, long appointmentId) {
         Payment payment = paymentRepository.findById(paymentId)

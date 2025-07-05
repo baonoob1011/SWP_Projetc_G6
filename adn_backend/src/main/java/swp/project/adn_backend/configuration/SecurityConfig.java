@@ -98,6 +98,7 @@ public class SecurityConfig {
     private final String[] STAFF_ENDPOINTS = {
             "/api/staff/update-profile",
             "/api/kit/get-all-kit-staff",
+            "/api/kit/decrease-quantity-kit",
             "/api/kit/update-kit/**",
             "/api/blog/**",
             "/api/appointment/confirm-appointment-at-center/**",
@@ -105,6 +106,7 @@ public class SecurityConfig {
             "/api/appointment/get-appointment-by-slot/**",
             "/api/appointment/get-appointment-of-user-by-phone/**",
             "/api/appointment/get-payment-at-center/**",
+            "/api/appointment/check-in-patient/**",
             "/api/slot/get-all-slot-of-staff/**",
             "/api/slot/get-all-slot/**",
             "/api/kit-delivery-status/update-kit-status/**",
@@ -118,6 +120,7 @@ public class SecurityConfig {
 
     private final String[] LAB_TECHNICIAN = {
             "/api/result-allele/create-result-allele",
+            "/api/result-allele/get-result-allele",
             "/api/result-locus/create-result-locus/**",
             "/api/result-detail/create-result-detail/**",
             "/api/locus/get-all-locus",

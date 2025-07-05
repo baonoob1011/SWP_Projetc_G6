@@ -8,6 +8,7 @@ import swp.project.adn_backend.dto.request.result.ResultAlleleRequest;
 import swp.project.adn_backend.dto.request.result.ResultLocusRequest;
 import swp.project.adn_backend.dto.response.result.ResultAlleleResponse;
 import swp.project.adn_backend.dto.response.result.ResultLocusResponse;
+import swp.project.adn_backend.service.registerServiceTestService.AllAlleleResponse;
 import swp.project.adn_backend.service.result.ResultAlleleService;
 import swp.project.adn_backend.service.result.ResultLocusService;
 
@@ -28,5 +29,8 @@ public class ResultAlleleController {
         List<ResultAlleleResponse> responses = resultAlleleService.createAllelePair(request, sampleId, locusId);
         return ResponseEntity.ok(responses);
     }
-
+    @GetMapping("/get-result-allele")
+    public ResponseEntity<AllAlleleResponse>getResultAllele(@RequestParam long patientId){
+        return ResponseEntity.ok(resultAlleleService.getAllAlleleOfSample(patientId));
+    }
 }

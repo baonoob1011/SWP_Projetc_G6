@@ -66,16 +66,15 @@ public class StaffController {
         return ResponseEntity.ok(staffService.getAllLConsultantBasicInfo());
     }
 
-//    @GetMapping("/get-staff-slot")
-//    public ResponseEntity<List<SlotInfoDTO>> getSlotById(Authentication authentication) {
-//        return ResponseEntity.ok(slotService.getSlotByStaffId(authentication));
-//    }
-
-
     //thanh
     @GetMapping("/get-appointment-by-staff")
     public ResponseEntity<AllAppointmentResponse> getAppointmentByStaffId(Authentication authentication) {
         return ResponseEntity.ok(appointmentService.getAppointmentByStaffId(authentication));
+    }
+
+    @GetMapping("/get-appointment-at-home-by-staff")
+    public ResponseEntity<AllAppointmentResponse> getAppointmentAtHomeByStaffId(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeByStaffId(authentication));
     }
 
 

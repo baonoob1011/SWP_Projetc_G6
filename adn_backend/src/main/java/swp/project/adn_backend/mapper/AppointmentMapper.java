@@ -8,6 +8,8 @@ import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appo
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.ResultLocusAppointmentResponse;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.SampleAppointmentResponse;
 import swp.project.adn_backend.dto.response.appointment.updateAppointmentStatus.UpdateAppointmentStatusResponse;
+import swp.project.adn_backend.dto.response.result.PatientAlleleResponse;
+import swp.project.adn_backend.dto.response.result.SampleAlleleResponse;
 import swp.project.adn_backend.dto.response.sample.AppointmentSampleResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.*;
@@ -38,4 +40,6 @@ public interface AppointmentMapper {
     ResultDetailAppointmentResponse toResultDetailAppointmentResponse(ResultDetail resultDetail);
     List<SampleAppointmentResponse> toSampleAppointmentResponse(List<Sample> sample);
     List<UserAppointmentResponse> toUserAppointmentResponseList(List<Users> users);
+    PatientAlleleResponse toPatientAppointmentResponse(Patient patient);
+    List<SampleAlleleResponse> toSampleAlleleResponses(List<Sample> sample);
 }

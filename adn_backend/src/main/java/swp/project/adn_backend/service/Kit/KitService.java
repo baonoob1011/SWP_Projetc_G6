@@ -51,6 +51,13 @@ public class KitService {
         return kitRepository.save(kit);
     }
 
+    @Transactional
+    public void updateKitQuantity(long kitId) {
+        Kit kit = kitRepository.findById(kitId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.KIT_NOT_EXISTS));
+        kit.setQuantity(kit.getQuantity() - 1);
+    }
+
     public List<KitInfoDTO> getAllKit() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.KitInfoDTO(" +
                 "s.kitId, s.kitCode, s.kitName, s.targetPersonCount, s.price, s.contents, s.quantity) " +

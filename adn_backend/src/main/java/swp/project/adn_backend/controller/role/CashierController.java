@@ -33,15 +33,25 @@ public class CashierController {
         this.slotService = slotService;
         this.appointmentService = appointmentService;
     }
+
     @PutMapping("/get-payment-at-center")
     public ResponseEntity<String> getAppointmentOfUser(@RequestParam long paymentId,
                                                        @RequestParam long appointmentId) {
-        appointmentService.payAppointment(paymentId,appointmentId);
+        appointmentService.payAppointment(paymentId, appointmentId);
         return ResponseEntity.ok("thanh toán bằng tiền mặt thành công");
     }
+
     @PostMapping("/get-appointment-of-user-by-phone")
     public ResponseEntity<List<AllAppointmentAtCenterUserResponse>> getAppointmentOfUser(@RequestBody UserPhoneRequest userRequest,
                                                                                          Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getAppointmentOfUser(authentication,userRequest));
+        return ResponseEntity.ok(appointmentService.getAppointmentOfUser(authentication, userRequest));
+    }
+
+    // đánh vắng patient
+    @PutMapping("/check-in-patient")
+    public ResponseEntity<String> checkInPatient(@RequestParam long patientId,
+                                                 @RequestParam long appointmentId) {
+        appointmentService.patientCheckIn(patientId, appointmentId);
+        return ResponseEntity.ok("Bệnh nhân vắng mặt");
     }
 }
