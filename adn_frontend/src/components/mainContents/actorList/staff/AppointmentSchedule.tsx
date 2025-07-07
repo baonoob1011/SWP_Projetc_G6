@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import styles from './AppointmentSchedule.module.css';
 
 const AppointmentSchedule = () => {
   const [homeSchedule, setHomeSchedule] = useState<any[]>([]);
@@ -66,211 +67,193 @@ const AppointmentSchedule = () => {
     fetchScheduleAtHome();
   }, []);
 
+  // Filter paid appointments
+  const paidAppointments = homeSchedule.filter(
+    (item) => item.showAppointmentResponse.note === 'Đã thanh toán'
+  );
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className={styles.container}>
+      <div className={styles.wrapper}>
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Danh Sách Lịch Hẹn
-          </h1>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Danh Sách Lịch Hẹn</h1>
+          <p className={styles.subtitle}>
+            Quản lý và xác nhận các lịch hẹn tại nhà
+          </p>
         </div>
 
         {loadingHome ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-            <p className="text-gray-600 text-lg">Đang tải dữ liệu...</p>
+          <div className={styles.loadingCard}>
+            <p className={styles.loadingText}>Đang tải dữ liệu...</p>
+          </div>
+        ) : paidAppointments.length === 0 ? (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>📅</div>
+            <h3 className={styles.emptyTitle}>Danh sách lịch hẹn trống</h3>
+            <p className={styles.emptyDescription}>
+              Hiện tại không có lịch hẹn nào cần xác nhận
+            </p>
           </div>
         ) : (
-          <div className="space-y-6">
-            {homeSchedule
-              .filter(
-                (item) => item.showAppointmentResponse.note === 'Đã thanh toán'
-              )
-              .map((item, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
-                >
-                  <div className="p-6">
-                    {/* Header with appointment info */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="flex-shrink-0">
-                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                            <span className="text-blue-600 font-bold text-sm">
-                              #{index + 1}
-                            </span>
-                          </div>
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900">
-                            Lịch hẹn #
-                            {item.showAppointmentResponse.appointmentId}
-                          </h3>
-                          <p className="text-sm text-gray-500">
-                            {item.showAppointmentResponse.appointmentDate}
-                          </p>
-                        </div>
+          <div className={styles.appointmentsList}>
+            {paidAppointments.map((item, index) => (
+              <div key={index} className={styles.appointmentCard}>
+                <div className={styles.cardContent}>
+                  {/* Header with appointment info */}
+                  <div className={styles.cardHeader}>
+                    <div className={styles.headerLeft}>
+                      <div className={styles.appointmentIcon}>
+                        <span className={styles.appointmentNumber}>
+                          #{index + 1}
+                        </span>
                       </div>
+                      <div className={styles.headerInfo}>
+                        <h3>
+                          Lịch hẹn #{item.showAppointmentResponse.appointmentId}
+                        </h3>
+                        <p>{item.showAppointmentResponse.appointmentDate}</p>
+                      </div>
+                    </div>
 
-                      <span className="px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+                    <span className={styles.statusBadge}>
+                      {item.showAppointmentResponse.appointmentStatus}
+                    </span>
+                  </div>
+
+                  {/* Info Grid */}
+                  <div className={styles.infoGrid}>
+                    {/* Ngày hẹn */}
+                    <div className={styles.infoItem}>
+                      <p className={styles.infoLabel}>Ngày Hẹn</p>
+                      <p className={styles.infoValue}>
+                        {item.showAppointmentResponse.appointmentDate}
+                      </p>
+                    </div>
+
+                    {/* Trạng thái */}
+                    <div className={styles.infoItem}>
+                      <p className={styles.infoLabel}>Trạng Thái</p>
+                      <p className={styles.infoValue}>
                         {item.showAppointmentResponse.appointmentStatus}
-                      </span>
+                      </p>
                     </div>
 
-                    {/* Info Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                      {/* Ngày hẹn */}
-                      <div className="flex items-center space-x-3">
-                        <div>
-                          <p className="text-sm text-gray-500">Ngày Hẹn</p>
-                          <p className="font-medium text-gray-900">
-                            {item.showAppointmentResponse.appointmentDate}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Trạng thái */}
-                      <div className="flex items-center space-x-3">
-                        <div>
-                          <p className="text-sm text-gray-500">Trạng Thái</p>
-                          <p className="font-medium text-gray-900">
-                            {item.showAppointmentResponse.appointmentStatus}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Ghi chú */}
-                      <div className="flex items-center space-x-3">
-                        <div>
-                          <p className="text-sm text-gray-500">Ghi Chú</p>
-                          <p className="font-medium text-gray-900">
-                            {item.showAppointmentResponse.note}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Tên dịch vụ */}
-                      <div className="flex items-center space-x-3">
-                        <div>
-                          <p className="text-sm text-gray-500">Tên Dịch Vụ</p>
-                          <p className="font-medium text-gray-900">
-                            {item.serviceAppointmentResponses?.[0]
-                              ?.serviceName || '—'}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Loại dịch vụ */}
-                      <div className="flex items-center space-x-3">
-                        <div>
-                          <p className="text-sm text-gray-500">Loại Dịch Vụ</p>
-                          <p className="font-medium text-gray-900">
-                            {item.serviceAppointmentResponses?.[0]
-                              ?.serviceType || '—'}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Mã kit */}
-                      <div className="flex items-center space-x-3">
-                        <div>
-                          <p className="text-sm text-gray-500">Mã Kit</p>
-                          <p className="font-medium text-gray-900">
-                            {item.kitAppointmentResponse?.kitCode || '—'}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Tên kit */}
-                      <div className="flex items-center space-x-3">
-                        <div>
-                          <p className="text-sm text-gray-500">Tên Kit</p>
-                          <p className="font-medium text-gray-900">
-                            {item.kitAppointmentResponse?.kitName || '—'}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Số người */}
-                      <div className="flex items-center space-x-3">
-                        <div>
-                          <p className="text-sm text-gray-500">Số Người</p>
-                          <p className="font-medium text-gray-900">
-                            {item.kitAppointmentResponse?.targetPersonCount ||
-                              '—'}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Nội dung kit */}
-                      <div className="flex items-center space-x-3">
-                        <div>
-                          <p className="text-sm text-gray-500">Nội Dung Kit</p>
-                          <p className="font-medium text-gray-900">
-                            {item.kitAppointmentResponse?.contents || '—'}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Địa chỉ - full width */}
-                      <div className="flex items-start space-x-3 col-span-1 md:col-span-2 lg:col-span-3">
-                        <div>
-                          <p className="text-sm text-gray-500">Địa Chỉ</p>
-                          <p className="font-medium text-gray-900">
-                            {item.userAppointmentResponses?.address || '—'}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Người đặt */}
-                      <div className="flex items-center space-x-3">
-                        <div>
-                          <p className="text-sm text-gray-500">Người Đặt</p>
-                          <p className="font-medium text-gray-900">
-                            {item.userAppointmentResponses?.fullName || '—'}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* SĐT */}
-                      <div className="flex items-center space-x-3">
-                        <div>
-                          <p className="text-sm text-gray-500">SĐT</p>
-                          <p className="font-medium text-gray-900">
-                            {item.userAppointmentResponses?.phone || '—'}
-                          </p>
-                        </div>
-                      </div>
+                    {/* Ghi chú */}
+                    <div className={styles.infoItem}>
+                      <p className={styles.infoLabel}>Ghi Chú</p>
+                      <p className={styles.infoValue}>
+                        {item.showAppointmentResponse.note}
+                      </p>
                     </div>
 
-                    {/* Action Button */}
-                    <div className="flex flex-wrap gap-3">
-                      <button
-                        onClick={() =>
-                          handleCheckAtHome(
-                            item.showAppointmentResponse.appointmentId,
-                            item.userAppointmentResponses.userId,
-                            item.serviceAppointmentResponses.map(
-                              (s: any) => s.serviceId
-                            )
-                          )
-                        }
-                        className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled={
-                          loadingRowId ===
-                          item.showAppointmentResponse.appointmentId
-                        }
-                      >
-                        {loadingRowId ===
-                        item.showAppointmentResponse.appointmentId
-                          ? 'Đang xác nhận...'
-                          : 'Xác Nhận'}
-                      </button>
+                    {/* Tên dịch vụ */}
+                    <div className={styles.infoItem}>
+                      <p className={styles.infoLabel}>Tên Dịch Vụ</p>
+                      <p className={styles.infoValue}>
+                        {item.serviceAppointmentResponses?.[0]?.serviceName ||
+                          '—'}
+                      </p>
+                    </div>
+
+                    {/* Loại dịch vụ */}
+                    <div className={styles.infoItem}>
+                      <p className={styles.infoLabel}>Loại Dịch Vụ</p>
+                      <p className={styles.infoValue}>
+                        {item.serviceAppointmentResponses?.[0]?.serviceType ||
+                          '—'}
+                      </p>
+                    </div>
+
+                    {/* Mã kit */}
+                    <div className={styles.infoItem}>
+                      <p className={styles.infoLabel}>Mã Kit</p>
+                      <p className={styles.infoValue}>
+                        {item.kitAppointmentResponse?.kitCode || '—'}
+                      </p>
+                    </div>
+
+                    {/* Tên kit */}
+                    <div className={styles.infoItem}>
+                      <p className={styles.infoLabel}>Tên Kit</p>
+                      <p className={styles.infoValue}>
+                        {item.kitAppointmentResponse?.kitName || '—'}
+                      </p>
+                    </div>
+
+                    {/* Số người */}
+                    <div className={styles.infoItem}>
+                      <p className={styles.infoLabel}>Số Người</p>
+                      <p className={styles.infoValue}>
+                        {item.kitAppointmentResponse?.targetPersonCount || '—'}
+                      </p>
+                    </div>
+
+                    {/* Nội dung kit */}
+                    <div className={styles.infoItem}>
+                      <p className={styles.infoLabel}>Nội Dung Kit</p>
+                      <p className={styles.infoValue}>
+                        {item.kitAppointmentResponse?.contents || '—'}
+                      </p>
+                    </div>
+
+                    {/* Địa chỉ - full width */}
+                    <div className={`${styles.infoItem} ${styles.addressItem}`}>
+                      <p className={styles.infoLabel}>Địa Chỉ</p>
+                      <p className={styles.infoValue}>
+                        {item.userAppointmentResponses?.address || '—'}
+                      </p>
+                    </div>
+
+                    {/* Người đặt */}
+                    <div className={styles.infoItem}>
+                      <p className={styles.infoLabel}>Người Đặt</p>
+                      <p className={styles.infoValue}>
+                        {item.userAppointmentResponses?.fullName || '—'}
+                      </p>
+                    </div>
+
+                    {/* SĐT */}
+                    <div className={styles.infoItem}>
+                      <p className={styles.infoLabel}>SĐT</p>
+                      <p className={styles.infoValue}>
+                        {item.userAppointmentResponses?.phone || '—'}
+                      </p>
                     </div>
                   </div>
+
+                  {/* Action Button */}
+                  <div className={styles.actions}>
+                    <button
+                      onClick={() =>
+                        handleCheckAtHome(
+                          item.showAppointmentResponse.appointmentId,
+                          item.userAppointmentResponses.userId,
+                          item.serviceAppointmentResponses.map(
+                            (s: any) => s.serviceId
+                          )
+                        )
+                      }
+                      className={styles.confirmButton}
+                      disabled={
+                        loadingRowId ===
+                        item.showAppointmentResponse.appointmentId
+                      }
+                    >
+                      {loadingRowId ===
+                      item.showAppointmentResponse.appointmentId ? (
+                        <>
+                          <span className={styles.loadingSpinner}></span>
+                          Đang xác nhận...
+                        </>
+                      ) : (
+                        'Xác Nhận'
+                      )}
+                    </button>
+                  </div>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         )}
       </div>
