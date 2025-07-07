@@ -72,16 +72,16 @@ const VNPayResult = () => {
           Thanh toán thất bại hoặc không hợp lệ.
         </div>
         <div className={styles.buttonContainer}>
-        <a href="/" className={styles.homeButton}>
-          Quay về trang chủ
-        </a>
-      </div>
+          <a href="/" className={styles.homeButton}>
+            Quay về trang chủ
+          </a>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{ marginTop: 120 }}>
       <div className={styles.alertSuccess} role="alert">
         Thanh toán thành công!
       </div>

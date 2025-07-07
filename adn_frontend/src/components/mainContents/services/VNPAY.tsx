@@ -62,7 +62,7 @@ const VNPayResult = () => {
   if (status === 'fail') {
     return (
       <div className="alert alert-danger text-center mt-5" role="alert">
-        ❌ Thanh toán thất bại hoặc không hợp lệ.
+        Thanh toán thất bại hoặc không hợp lệ.
       </div>
     );
   }
@@ -70,7 +70,7 @@ const VNPayResult = () => {
   return (
     <div className="container" style={{ marginTop: 150 }}>
       <div className="alert alert-success text-center" role="alert">
-        ✅ Thanh toán thành công!
+        Thanh toán thành công!
       </div>
 
       {invoice && (

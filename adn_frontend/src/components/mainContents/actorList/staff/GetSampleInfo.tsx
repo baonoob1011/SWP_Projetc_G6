@@ -121,9 +121,6 @@ const GetSampleInfo = () => {
   // Helper function to get gender badge class
 
   const sampleStatusOptions = [
-    { value: 'COLLECTED', label: 'Đã thu thập mẫu' },
-    { value: 'IN_TRANSIT', label: 'Đang vận chuyển đến phòng xét nghiệm' },
-    { value: 'RECEIVED', label: 'Phòng xét nghiệm đã nhận' },
     { value: 'TESTING', label: 'Đang xét nghiệm' },
     { value: 'COMPLETED', label: 'Đã xét nghiệm xong' },
     { value: 'DAMAGED', label: 'Mẫu bị hỏng' },

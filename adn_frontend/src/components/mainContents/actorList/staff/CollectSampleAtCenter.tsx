@@ -12,6 +12,7 @@ const CollectSampleAtCenter = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+
   const [sampleType, setSampleTypes] = useState<{ [key: string]: string }>({});
   const sampleTypes = [
     'Niêm mạc miệng',
@@ -20,25 +21,11 @@ const CollectSampleAtCenter = () => {
     'Răng',
     'Tóc',
   ];
-  const translateStatus = (status: string): string => {
-    switch (status) {
-      case 'REGISTERED':
-        return 'Đã đăng ký';
-      case 'SAMPLE_COLLECTED':
-        return 'Đã thu mẫu';
-      case 'IN_ANALYSIS':
-        return 'Đang phân tích';
-      case 'COMPLETED':
-        return 'Đã có kết quả';
-      case 'CANCELLED':
-        return 'Đã hủy';
-      case 'NO_SHOW':
-        return 'Vắng mặt';
-      default:
-        return status;
-    }
-  };
-
+  const sampleStatusOptions = [
+    { value: 'COLLECTED', label: 'Đã thu thập mẫu' },
+    { value: 'IN_TRANSIT', label: 'Đang vận chuyển' },
+    { value: 'RECEIVED', label: 'Đã nhận tại phòng xét nghiệm' },
+  ];
   const fetchAppointment = async () => {
     try {
       setLoading(true);
@@ -92,6 +79,74 @@ const CollectSampleAtCenter = () => {
       toast.error('Không thể lấy dữ liệu mẫu xét nghiệm');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpdate = async (sampleId: string, sampleStatus: string) => {
+    // Tìm sample tương ứng để lấy patientId
+    const matchedSample = sample.find(
+      (s: any) => s.sampleResponse.sampleId === sampleId
+    );
+    const patientId = matchedSample?.patientSampleResponse?.patientId;
+
+    if (!patientId) {
+      toast.error('Không tìm thấy patientId từ sample');
+      return;
+    }
+
+    // Tìm appointmentId từ appointmentItem chứa patientId
+    const matchedAppointment = appointments.find((appointmentItem) =>
+      appointmentItem.patientAppointmentResponse.some(
+        (p: any) => p.patientId === patientId
+      )
+    );
+
+    const appointmentId =
+      matchedAppointment?.showAppointmentResponse?.appointmentId;
+
+    if (!appointmentId) {
+      toast.error('Không tìm thấy appointmentId từ API lịch hẹn');
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/sample/update-status-sample?sampleId=${sampleId}&appointmentId=${appointmentId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+          body: JSON.stringify({
+            sampleStatus: sampleStatus,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        const err = await res.text();
+        toast.error(`Cập nhật thất bại: ${err}`);
+      } else {
+        toast.success('Cập nhật trạng thái thành công');
+        // cập nhật local state
+        setSample((prev) =>
+          prev.map((s) =>
+            s.sampleResponse.sampleId === sampleId
+              ? {
+                  ...s,
+                  sampleResponse: {
+                    ...s.sampleResponse,
+                    sampleStatus: sampleStatus,
+                  },
+                }
+              : s
+          )
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Lỗi khi cập nhật trạng thái mẫu');
     }
   };
 
@@ -177,9 +232,21 @@ const CollectSampleAtCenter = () => {
       console.error('Error checking in patient:', error);
     }
   };
+  const findSampleIdByPatientId = (patientId: string): string | undefined => {
+    const matchedSample = sample.find(
+      (s) => s.patientSampleResponse.patientId === patientId
+    );
+    return matchedSample?.sampleResponse?.sampleId;
+  };
+
+  const sampleStatus = appointments.map(
+    (a) =>
+      a.patientAppointmentResponse.patientStatus ===
+      'Đã đăng ký lịch xét nghiệm'
+  );
 
   const isPaid = appointments.some(
-    (a) => a.showAppointmentResponse.note === 'Đã thanh toán'
+    (a) => a.showAppointmentResponse?.note === 'Đã thanh toán'
   );
 
   return (
@@ -201,12 +268,12 @@ const CollectSampleAtCenter = () => {
                 <th className={styles.tableHeaderCell}>Ngày sinh</th>
                 <th className={styles.tableHeaderCell}>Giới tính</th>
                 <th className={styles.tableHeaderCell}>Quan hệ</th>
-                <th className={styles.tableHeaderCell}>Ngày hẹn</th>
+                <th className={styles.tableHeaderCell}>Trạng thái mẫu</th>
                 <th className={styles.tableHeaderCell}>Ghi chú</th>
                 {isPaid ? (
                   <th className={styles.tableHeaderCell}>Vật xét nghiệm</th>
                 ) : null}
-                {!isPaid ? (
+                {sampleStatus ? (
                   <th className={styles.tableHeaderCell}>Hủy</th>
                 ) : null}
               </tr>
@@ -236,22 +303,43 @@ const CollectSampleAtCenter = () => {
                           {patient.relationship}
                         </td>
                         <td className={styles.tableCell}>
-                          {
-                            appointmentItem.showAppointmentResponse
-                              ?.appointmentDate
-                          }
-                        </td>
-                        <td
-                          className={`${styles.tableCell} ${styles.noteCell}`}
-                        >
-                          <span
-                            className={
-                              isPaid ? styles.paidStatus : styles.unpaidStatus
+                          <select
+                            value={
+                              findSampleIdByPatientId(patient.patientId)
+                                ? sample.find(
+                                    (s) =>
+                                      s.patientSampleResponse.patientId ===
+                                      patient.patientId
+                                  )?.sampleResponse?.sampleStatus || ''
+                                : ''
                             }
+                            onChange={(e) => {
+                              const sampleId = findSampleIdByPatientId(
+                                patient.patientId
+                              );
+                              if (sampleId) {
+                                handleUpdate(sampleId, e.target.value);
+                              } else {
+                                toast.error(
+                                  'Không tìm thấy mẫu để cập nhật trạng thái'
+                                );
+                              }
+                            }}
+                            className={styles.sampleSelect}
                           >
-                            {translateStatus(patient.patientStatus)}
-                          </span>
+                            <option value="">Chọn trạng thái</option>
+                            {sampleStatusOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
                         </td>
+
+                        <td className={styles.tableCell}>
+                          {patient.patientStatus}
+                        </td>
+
                         {isPaid ? (
                           <td className={styles.tableCell}>
                             {isPaid ? (
@@ -289,7 +377,7 @@ const CollectSampleAtCenter = () => {
                             )}
                           </td>
                         ) : null}
-                        {!isPaid ? (
+                        {sampleStatus ? (
                           <td>
                             <button
                               className={styles.submitBtn}

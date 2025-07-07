@@ -136,11 +136,11 @@ const BookingAtCenter = () => {
   };
 
   // Fetch slots for selected location
-  const fetchSlots = async () => {
+  const fetchSlots = async (locationId: string) => {
     setIsLoadingSlots(true);
     try {
       const res = await fetch(
-        `http://localhost:8080/api/slot/get-all-slot-user?locationId=${selectedLocation}`,
+        `http://localhost:8080/api/slot/get-all-slot-user?locationId=${locationId}`,
         {
           method: 'GET',
           headers: {
@@ -222,7 +222,7 @@ const BookingAtCenter = () => {
     setSelectedSlot(''); // Reset selected slot when location changes
 
     if (locationId) {
-      fetchSlots();
+      fetchSlots(locationId);
     } else {
       setSlots([]);
     }
