@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -19,8 +20,10 @@ const CreateResultAllele = () => {
   const { sampleId } = useParams();
   const location = useLocation();
   const { patientName } = location.state || {};
+  const { patientId } = location.state || {};
   const navigate = useNavigate();
   const { appointmentId } = location.state || {};
+  const [alleleResultData, setAlleleResultData] = useState<any>('');
   const fetchData = async () => {
     try {
       const res = await fetch('http://localhost:8080/api/locus/get-all-locus', {
@@ -40,9 +43,32 @@ const CreateResultAllele = () => {
       toast.error('Lỗi khi lấy dữ liệu locus.');
     }
   };
+  const fetchAlleleData = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/result-allele/get-result-allele?patientId=${patientId}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        toast.error('Không thể lấy dữ liệu đã ghi');
+      } else {
+        const data = await res.json();
+        setAlleleResultData(data);
+      }
+    } catch (error) {
+      console.error('Lỗi khi lấy locus:', error);
+      toast.error('Lỗi khi lấy dữ liệu đã ghi');
+    }
+  };
 
   useEffect(() => {
     fetchData();
+    fetchAlleleData();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -122,7 +148,7 @@ const CreateResultAllele = () => {
                 required
               />
             </div>
-            
+
             <div className={`${styles.formGroup} ${styles.alleleField}`}>
               <label className={styles.label}>Allele 2</label>
               <input
@@ -144,11 +170,11 @@ const CreateResultAllele = () => {
               onChange={(e) => setAlleleStatus(e.target.value)}
               required
             >
-              <option value="ENTERED">✅ Đã nhập</option>
-              <option value="NOT_ENTERED">❌ Chưa nhập</option>
-              <option value="SUSPECT">🤔 Nghi ngờ</option>
-              <option value="VALID">✔️ Hợp lệ</option>
-              <option value="DONE">🎉 Hoàn thành</option>
+              <option value="ENTERED">Đã nhập</option>
+              <option value="NOT_ENTERED">Chưa nhập</option>
+              <option value="SUSPECT">Nghi ngờ</option>
+              <option value="VALID">Hợp lệ</option>
+              <option value="DONE">Hoàn thành</option>
             </select>
           </div>
 
@@ -160,10 +186,10 @@ const CreateResultAllele = () => {
               onChange={(e) => setSelectedLocus(e.target.value)}
               required
             >
-              <option value="">🔬 -- Chọn locus --</option>
+              <option value="">-- Chọn locus --</option>
               {locusList.map((locus) => (
                 <option key={locus.locusId} value={locus.locusId}>
-                  📍 {locus.locusName}
+                  {locus.locusName}
                 </option>
               ))}
             </select>
@@ -174,10 +200,48 @@ const CreateResultAllele = () => {
             className={styles.submitButton}
             disabled={!selectedLocus}
           >
-            🧬 Ghi kết quả
+            Ghi kết quả
           </button>
         </form>
       </div>
+      {alleleResultData &&
+        alleleResultData.resultAlleleResponse?.length > 0 && (
+          <div className={styles.resultTableContainer}>
+            <h2 className={styles.subTitle}>🧬 Kết quả Allele</h2>
+
+            <p>
+              <strong>Bệnh nhân:</strong>{' '}
+              {alleleResultData.patientAppointmentResponse?.fullName}
+            </p>
+
+            <p>
+              <strong>Loại mẫu:</strong>{' '}
+              {alleleResultData.sampleAlleleResponse?.[0]?.sampleType ||
+                'Không có dữ liệu'}
+            </p>
+
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Giá trị Allele</th>
+                  <th>Vị trí Allele</th>
+                </tr>
+              </thead>
+              <tbody>
+                {alleleResultData.resultAlleleResponse.map(
+                  (allele: any, index: number) => (
+                    <tr key={allele.alleleId}>
+                      <td>{index + 1}</td>
+                      <td>{allele.alleleValue}</td>
+                      <td>{allele.allelePosition}</td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
     </div>
   );
 };

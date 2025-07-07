@@ -69,8 +69,7 @@ import CreateResultAllele from './components/mainContents/actorList/staff/Result
 import BookingAtCenter from './components/mainContents/services/BookingAtCenter';
 import BookingAtHome from './components/mainContents/services/BookingAtHome';
 
-import CheckAppointment from './components/mainContents/actorList/staff/CheckAppointment';
-import { CollectorSlots } from './components/mainContents/actorList/staff/CollectorSlot';
+import { CollectSampleAtHome } from './components/mainContents/actorList/staff/CollectSampleAtHome';
 import GetCollector from './components/mainContents/actorList/GetCollector';
 import SignUpCollector from './components/mainContents/actorList/staff/SignUpCollector';
 import CreateBlog from './components/mainContents/services/CreateBlog';
@@ -95,6 +94,7 @@ import GetStaffTechnical from './components/mainContents/actorList/staff/GetStaf
 import SignUpStaffTechnical from './components/mainContents/actorList/staff/SignUpStaffTechnical';
 import GetBlogById from './components/mainContents/actorList/user/GetBlogById';
 import { LabCheckSample } from './components/mainContents/actorList/staff/LabCheckSample';
+import CollectSampleAtCenter from './components/mainContents/actorList/staff/CollectSampleAtCenter';
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
@@ -433,7 +433,7 @@ function App() {
                 path="/s-page/checkAppointment/:slotId"
                 element={
                   <ProtectedRoute allowedRoles={['STAFF', 'STAFF']}>
-                    <CheckAppointment />
+                    <CollectSampleAtCenter />
                   </ProtectedRoute>
                 }
               />
@@ -449,7 +449,7 @@ function App() {
                 path="/s-page/selectorSlot"
                 element={
                   <ProtectedRoute allowedRoles={['STAFF']}>
-                    <CollectorSlots />
+                    <CollectSampleAtHome />
                   </ProtectedRoute>
                 }
               />

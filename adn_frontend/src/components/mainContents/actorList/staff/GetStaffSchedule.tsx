@@ -29,9 +29,12 @@ const StaffSlot = () => {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token');
 
-      const res = await fetch('http://localhost:8080/api/slot/get-all-slot', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        'http://localhost:8080/api/slot/get-all-slot-of-staff',
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       if (!res.ok) throw new Error('Failed to fetch');
 

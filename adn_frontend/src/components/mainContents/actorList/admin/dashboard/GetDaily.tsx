@@ -47,7 +47,7 @@ const GetDaily = () => {
       if (!token) throw new Error('Không có token xác thực');
 
       const res = await fetch(
-        `http://localhost:8080/api/dashboard/daily-revenue?startDate=${startDate}&endDate=${endDate}`,
+        `http://localhost:8080/api/dashboard/weekly-daily-revenue?startDate=${startDate}&endDate=${endDate}`,
         {
           method: 'GET',
           headers: {

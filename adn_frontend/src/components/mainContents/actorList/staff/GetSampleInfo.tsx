@@ -219,9 +219,10 @@ const GetSampleInfo = () => {
                           patientName: item.patientSampleResponse.fullName,
                           sampleId: item.sampleResponse.sampleId,
                           appointmentId: appointmentId,
+                          patientId: item.patientSampleResponse.patientId,
                         }}
                       >
-                        📝 Ghi kết quả
+                        Ghi kết quả
                       </NavLink>
                     </td>
                   </tr>
@@ -236,7 +237,7 @@ const GetSampleInfo = () => {
               onClick={handleResult}
               className={styles.submitButton}
             >
-              🚀 Gửi kết quả
+              Gửi kết quả
             </button>
           </div>
         </>
