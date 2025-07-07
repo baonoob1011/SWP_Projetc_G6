@@ -34,6 +34,25 @@ public class SampleController {
 
     }
 
+    @PostMapping("/collect-sample-patient-at-home")
+    public ResponseEntity<SampleResponse> collectSampleAtHome(@RequestBody SampleRequest sampleRequest,
+                                                        @RequestParam long patientId,
+                                                        @RequestParam long serviceId,
+                                                        @RequestParam long appointmentId,
+                                                        Authentication authentication
+    ) {
+        return ResponseEntity.ok(sampleService.collectSampleAtHome(
+                patientId,
+                serviceId,
+                appointmentId,
+                sampleRequest,
+                authentication
+        ));
+
+    }
+
+
+
     @GetMapping("/get-all-sample")
     public ResponseEntity<List<AllSampleResponse>> getAllSample(Authentication authentication,
                                                                 @RequestParam long appointmentId) {
@@ -42,8 +61,9 @@ public class SampleController {
 
     @PutMapping("/update-status-sample")
     public ResponseEntity<String> updateSampleStatus(@RequestBody SampleRequest sampleRequest,
-                                                     @RequestParam long sampleId) {
-        sampleService.updateSampleStatus(sampleId, sampleRequest);
+                                                     @RequestParam long sampleId,
+                                                     @RequestParam long appointmentId) {
+        sampleService.updateSampleStatus(sampleId, appointmentId, sampleRequest);
         return ResponseEntity.ok("Update successful");
     }
 

@@ -2,6 +2,7 @@ package swp.project.adn_backend.exception;
 
 import org.hibernate.query.SemanticException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -15,7 +16,11 @@ import swp.project.adn_backend.dto.response.APIResponse;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalException {
@@ -80,12 +85,27 @@ public class GlobalException {
         return ResponseEntity.badRequest().body(apiResponse);
     }
 
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    ResponseEntity<APIResponse> handlingMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        APIResponse apiResponse = new APIResponse<>();
-        apiResponse.setCode(1001);
-        apiResponse.setMessage(e.getMessage());
-        return ResponseEntity.badRequest().body(apiResponse);
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException ex) {
+        Map<String, Object> response = new HashMap<>();
+
+        List<Map<String, String>> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> {
+                    Map<String, String> errorDetail = new HashMap<>();
+                    errorDetail.put("field", error.getField());
+                    errorDetail.put("message", error.getDefaultMessage());
+                    return errorDetail;
+                })
+                .collect(Collectors.toList());
+
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("errors", errors);
+
+        return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(value = InvalidDataAccessApiUsageException.class)

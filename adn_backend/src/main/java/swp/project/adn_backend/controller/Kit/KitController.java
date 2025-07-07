@@ -24,6 +24,12 @@ public class KitController {
         return ResponseEntity.ok(kitService.createKit(kitRequest));
     }
 
+    @PutMapping("/decrease-quantity-kit")
+    public ResponseEntity<String> decreaseQuantityKit(@RequestParam long kitId) {
+        kitService.updateKitQuantity(kitId);
+        return ResponseEntity.ok("Giảm số lượng kit thành công");
+    }
+
     @GetMapping("/get-all-kit-staff")
     public ResponseEntity<List<KitInfoDTO>> getALlKit() {
         return ResponseEntity.ok(kitService.getAllKit());

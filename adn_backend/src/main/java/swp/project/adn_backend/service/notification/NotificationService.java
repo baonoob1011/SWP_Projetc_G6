@@ -35,7 +35,7 @@ public class NotificationService {
         Staff staff = staffRepository.findById(staffId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.NotificationResponse(" +
-                "s.notificationId, s.numOfNotification) FROM Notification s " +
+                "s.notificationId, s.numOfNotification, s.note) FROM Notification s " +
                 "Where s.staff.staffId=:staffId";
         TypedQuery<NotificationResponse> query = entityManager.createQuery(jpql, NotificationResponse.class);
         query.setParameter("staffId", staffId);

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.InfoDTO.PriceInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO;
 import swp.project.adn_backend.dto.request.serviceRequest.AddPriceListRequest;
+import swp.project.adn_backend.entity.Discount;
 import swp.project.adn_backend.entity.PriceList;
 import swp.project.adn_backend.entity.ServiceTest;
 import swp.project.adn_backend.enums.ErrorCodeUser;
@@ -18,6 +19,7 @@ import swp.project.adn_backend.repository.ServiceTestRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -50,16 +52,33 @@ public class AddPriceListService {
     }
 
     public List<PriceInfoDTO> getAllPrice(long serviceId) {
+        // 1. Tìm service theo ID
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
 
-        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.PriceInfoDTO(" +
-                "s.priceId, s.price, s.time) " +
-                "FROM PriceList s Where s.service.serviceId=:serviceId";
-        TypedQuery<PriceInfoDTO> query = entityManager.createQuery(jpql, PriceInfoDTO.class);
-        query.setParameter("serviceId", serviceId);
-        return query.getResultList();
+        // 2. Tính tổng phần trăm discount đang active
+        double totalDiscountPercent = serviceTest.getDiscounts().stream()
+                .filter(Discount::isActive)
+                .mapToDouble(Discount::getDiscountValue)
+                .sum();
 
+        // 3. Lấy danh sách PriceList và áp dụng discount phần trăm
+        List<PriceList> priceLists = serviceTest.getPriceLists();
+
+        return priceLists.stream()
+                .map(priceList -> {
+                    double originalPrice = priceList.getPrice();
+                    double discountedPrice = originalPrice * (1 - totalDiscountPercent / 100.0);
+
+                    return new PriceInfoDTO(
+                            priceList.getPriceId(),
+                            discountedPrice,
+                            priceList.getTime()
+                    );
+                })
+                .collect(Collectors.toList());
     }
+
+
 
 }

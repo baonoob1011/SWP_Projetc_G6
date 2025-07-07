@@ -13,6 +13,7 @@ import swp.project.adn_backend.repository.InvoiceRepository;
 import swp.project.adn_backend.repository.FeedbackRepository;
 import swp.project.adn_backend.repository.ServiceTestRepository;
 import swp.project.adn_backend.repository.AppointmentRepository;
+import swp.project.adn_backend.repository.PatientRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,16 +31,18 @@ public class DashboardService {
     private final FeedbackRepository feedbackRepository;
     private final ServiceTestRepository serviceTestRepository;
     private final AppointmentRepository appointmentRepository;
+    private final PatientRepository patientRepository;
     
     @Autowired
     public DashboardService(UserRepository userRepository, InvoiceRepository invoiceRepository,
                           FeedbackRepository feedbackRepository, ServiceTestRepository serviceTestRepository,
-                          AppointmentRepository appointmentRepository) {
+                          AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
         this.userRepository = userRepository;
         this.invoiceRepository = invoiceRepository;
         this.feedbackRepository = feedbackRepository;
         this.serviceTestRepository = serviceTestRepository;
         this.appointmentRepository = appointmentRepository;
+        this.patientRepository = patientRepository;
     }
     
     
@@ -130,15 +133,26 @@ public class DashboardService {
         LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
 
         List<Object[]> results = invoiceRepository.findDailyRevenueBetween(startDateTime, endDateTime);
-        List<Map<String, Object>> dailyRevenues = new ArrayList<>();
+        Map<LocalDate, Long> revenueMap = new HashMap<>();
         long totalRevenue = 0L;
 
+        // Đưa dữ liệu từ DB vào map để tra cứu nhanh
         for (Object[] result : results) {
+            LocalDate date = (LocalDate) result[0];
+            Long revenue = (Long) result[1];
+            revenueMap.put(date, revenue);
+            totalRevenue += revenue;
+        }
+
+        // Tạo list đủ ngày, ngày nào không có thì revenue = 0
+        List<Map<String, Object>> dailyRevenues = new ArrayList<>();
+        LocalDate current = startDate;
+        while (!current.isAfter(endDate)) {
             Map<String, Object> dayRevenue = new HashMap<>();
-            dayRevenue.put("date", result[0]);
-            dayRevenue.put("revenue", result[1]);
+            dayRevenue.put("date", current);
+            dayRevenue.put("revenue", revenueMap.getOrDefault(current, 0L));
             dailyRevenues.add(dayRevenue);
-            totalRevenue += (Long) result[1];
+            current = current.plusDays(1);
         }
 
         return new DailyRevenueResponse(dailyRevenues, totalRevenue, "Doanh thu hàng ngày từ " + startDate + " đến " + endDate);

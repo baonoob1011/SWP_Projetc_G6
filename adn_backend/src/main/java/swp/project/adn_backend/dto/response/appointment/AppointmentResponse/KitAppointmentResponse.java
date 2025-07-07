@@ -12,8 +12,12 @@ public class KitAppointmentResponse {
     DeliveryStatus kitStatus;
     LocalDate deliveryDate;
     LocalDate returnDate;
+    int quantity;
 
-    public KitAppointmentResponse(String kitCode, String kitName, String targetPersonCount, String contents, DeliveryStatus kitStatus, LocalDate deliveryDate, LocalDate returnDate) {
+    public KitAppointmentResponse() {
+    }
+
+    public KitAppointmentResponse(String kitCode, String kitName, String targetPersonCount, String contents, DeliveryStatus kitStatus, LocalDate deliveryDate, LocalDate returnDate, int quantity) {
         this.kitCode = kitCode;
         this.kitName = kitName;
         this.targetPersonCount = targetPersonCount;
@@ -21,6 +25,15 @@ public class KitAppointmentResponse {
         this.kitStatus = kitStatus;
         this.deliveryDate = deliveryDate;
         this.returnDate = returnDate;
+        this.quantity = quantity;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public DeliveryStatus getKitStatus() {

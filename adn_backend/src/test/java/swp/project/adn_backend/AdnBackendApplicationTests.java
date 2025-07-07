@@ -14,7 +14,9 @@ class AdnBackendApplicationTests {
 
 
 	@Test
-	public void testSendMessage() {
-
+	public void AppointmentServiceTest() {
+	}
+	@Test
+	public void ServiceTestServiceTest() {
 	}
 }

@@ -136,6 +136,7 @@ function App() {
     '/manager/create-locus',
     '/newPrice/:serviceId',
     '/manager',
+    '/discount/:serviceId',
   ].some((path) => matchPath(path, location.pathname));
 
   return (
@@ -579,6 +580,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
                     <CreateKit />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/discount/:serviceId"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CreateDiscount />
                   </ProtectedRoute>
                 }
               />

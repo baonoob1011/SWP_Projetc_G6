@@ -76,83 +76,96 @@ export const LabCheckSample = () => {
     );
   }
 
+  // Empty state nếu không có lịch hẹn
+  if (!appointments || appointments.length === 0) {
+    return (
+      <div className={styles.emptyState}>
+        <h3>Không có lịch hẹn nào</h3>
+        <p>Hiện tại bạn chưa có lịch hẹn nào để kiểm tra.</p>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Danh sách Lịch hẹn (Tại nhà & Trung tâm)</h1>
-      <table className={styles.table}>
-        <thead className={styles.tableHeader}>
-          <tr>
-            <th>Họ tên</th>
-            <th>Ngày sinh</th>
-            <th>Giới tính</th>
-            <th>Quan hệ</th>
-            <th>Ngày hẹn</th>
-            <th>Loại dịch vụ</th>
-            <th>Thao tác</th>
-          </tr>
-        </thead>
-        <tbody>
-          {appointments.map((appointmentItem: any) => {
-            const appointment = appointmentItem.showAppointmentResponse;
-            const appointmentId = appointment?.appointmentId;
-            const patients = appointmentItem.patientAppointmentResponse;
+      <div className={styles.tableContainer}>
+        <table className={styles.table}>
+          <thead className={styles.tableHeader}>
+            <tr>
+              <th className={styles.tableHeaderCell}>Họ tên</th>
+              <th className={styles.tableHeaderCell}>Ngày sinh</th>
+              <th className={styles.tableHeaderCell}>Giới tính</th>
+              <th className={styles.tableHeaderCell}>Quan hệ</th>
+              <th className={styles.tableHeaderCell}>Ngày hẹn</th>
+              <th className={styles.tableHeaderCell}>Loại dịch vụ</th>
+              <th className={styles.tableHeaderCell}>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {appointments.map((appointmentItem: any) => {
+              const appointment = appointmentItem.showAppointmentResponse;
+              const appointmentId = appointment?.appointmentId;
+              const patients = appointmentItem.patientAppointmentResponse;
 
-            if (!appointment || appointment.appointmentStatus !== 'CONFIRMED')
-              return null;
+              if (!appointment || appointment.appointmentStatus !== 'CONFIRMED')
+                return null;
 
-            // Nếu không có bệnh nhân, render một dòng duy nhất
-            if (!Array.isArray(patients) || patients.length === 0) {
-              return (
-                <tr key={`no-patient-${appointmentId}`}>
-                  <td
-                    colSpan={4}
-                    style={{ fontStyle: 'italic', color: '#888' }}
-                  >
-                    Chưa có bệnh nhân
-                  </td>
-                  <td>{appointment?.appointmentDate}</td>
-                  <td>{appointment?.appointmentType}</td>
-                  <td>
-                    <NavLink
-                      to={`/s-page/get-appointment/${appointmentId}`}
-                      className={styles.viewBtn}
+              // Nếu không có bệnh nhân, render một dòng duy nhất
+              if (!Array.isArray(patients) || patients.length === 0) {
+                return (
+                  <tr key={`no-patient-${appointmentId}`} className={styles.tableRow}>
+                    <td
+                      colSpan={4}
+                      className={styles.tableCell}
+                      style={{ fontStyle: 'italic', color: '#888' }}
                     >
-                      Xem
-                    </NavLink>
-                  </td>
-                </tr>
-              );
-            }
-
-            // Nếu có bệnh nhân
-            return patients.map((patient: any, index: number) => {
-              const key = `${appointmentId}_${patient.patientId}`;
-              const isFirst = index === 0;
-
-              return (
-                <tr key={key}>
-                  <td>{patient.fullName}</td>
-                  <td>{patient.dateOfBirth}</td>
-                  <td>{patient.gender}</td>
-                  <td>{patient.relationship}</td>
-                  <td>{appointment?.appointmentDate}</td>
-                  <td>{appointment?.appointmentType}</td>
-                  <td>
-                    {isFirst && (
+                      Chưa có bệnh nhân
+                    </td>
+                    <td className={styles.tableCell}>{appointment?.appointmentDate}</td>
+                    <td className={styles.tableCell}>{appointment?.appointmentType}</td>
+                    <td className={styles.tableCell}>
                       <NavLink
                         to={`/s-page/get-appointment/${appointmentId}`}
                         className={styles.viewBtn}
                       >
                         Xem
                       </NavLink>
-                    )}
-                  </td>
-                </tr>
-              );
-            });
-          })}
-        </tbody>
-      </table>
+                    </td>
+                  </tr>
+                );
+              }
+
+              // Nếu có bệnh nhân
+              return patients.map((patient: any, index: number) => {
+                const key = `${appointmentId}_${patient.patientId}`;
+                const isFirst = index === 0;
+
+                return (
+                  <tr key={key} className={styles.tableRow}>
+                    <td className={styles.tableCell}>{patient.fullName}</td>
+                    <td className={styles.tableCell}>{patient.dateOfBirth}</td>
+                    <td className={styles.tableCell}>{patient.gender}</td>
+                    <td className={styles.tableCell}>{patient.relationship}</td>
+                    <td className={styles.tableCell}>{appointment?.appointmentDate}</td>
+                    <td className={styles.tableCell}>{appointment?.appointmentType}</td>
+                    <td className={styles.tableCell}>
+                      {isFirst && (
+                        <NavLink
+                          to={`/s-page/get-appointment/${appointmentId}`}
+                          className={styles.viewBtn}
+                        >
+                          Xem
+                        </NavLink>
+                      )}
+                    </td>
+                  </tr>
+                );
+              });
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

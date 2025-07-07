@@ -5,20 +5,27 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import swp.project.adn_backend.dto.InfoDTO.AlleleInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo;
 import swp.project.adn_backend.dto.request.result.AllelePairRequest;
 import swp.project.adn_backend.dto.request.result.ResultAlleleRequest;
 import swp.project.adn_backend.dto.request.result.ResultRequest;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.PatientAppointmentResponse;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.SampleAppointmentResponse;
+import swp.project.adn_backend.dto.response.result.PatientAlleleResponse;
 import swp.project.adn_backend.dto.response.result.ResultAlleleResponse;
 import swp.project.adn_backend.dto.response.result.ResultResponse;
+import swp.project.adn_backend.dto.response.result.SampleAlleleResponse;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.AlleleStatus;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.ResultStatus;
 import swp.project.adn_backend.exception.AppException;
+import swp.project.adn_backend.mapper.AppointmentMapper;
 import swp.project.adn_backend.mapper.ResultAlleleMapper;
 import swp.project.adn_backend.mapper.ResultMapper;
 import swp.project.adn_backend.repository.*;
+import swp.project.adn_backend.service.registerServiceTestService.AllAlleleResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,22 +38,26 @@ public class ResultAlleleService {
     private LocusRepository locusRepository;
     private StaffRepository staffRepository;
     private EntityManager entityManager;
+    private PatientRepository patientRepository;
+private AppointmentMapper appointmentMapper;
 
-    @Autowired
-    public ResultAlleleService(ResultAlleleRepository resultAlleleRepository, ResultAlleleMapper resultAlleleMapper, SampleRepository sampleRepository, LocusRepository locusRepository, StaffRepository staffRepository, EntityManager entityManager) {
+@Autowired
+    public ResultAlleleService(ResultAlleleRepository resultAlleleRepository, ResultAlleleMapper resultAlleleMapper, SampleRepository sampleRepository, LocusRepository locusRepository, StaffRepository staffRepository, EntityManager entityManager, PatientRepository patientRepository, AppointmentMapper appointmentMapper) {
         this.resultAlleleRepository = resultAlleleRepository;
         this.resultAlleleMapper = resultAlleleMapper;
         this.sampleRepository = sampleRepository;
         this.locusRepository = locusRepository;
         this.staffRepository = staffRepository;
         this.entityManager = entityManager;
+        this.patientRepository = patientRepository;
+        this.appointmentMapper = appointmentMapper;
     }
 
     @Transactional
     public List<ResultAlleleResponse> createAllelePair(AllelePairRequest request,
                                                        long sampleId,
                                                        long locusId
-                                                        ) {
+    ) {
 
         Sample sample = sampleRepository.findById(sampleId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
@@ -78,4 +89,20 @@ public class ResultAlleleService {
         return responses;
     }
 
+    public AllAlleleResponse getAllAlleleOfSample(long patientId) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(()->new AppException(ErrorCodeUser.PATIENT_INFO_NOT_EXISTS));
+        PatientAlleleResponse patientAppointmentResponse=appointmentMapper.toPatientAppointmentResponse(patient);
+        List<SampleAlleleResponse> sampleAlleleResponse=appointmentMapper.toSampleAlleleResponses(patient.getSamples());
+        List<ResultAlleleResponse> resultAlleleResponseList=new ArrayList<>();
+        for (ResultAllele resultAllele:patient.getSamples().getFirst().getResultAlleles()){
+            ResultAlleleResponse resultAlleleResponse= resultAlleleMapper.toResultAlleleResponse(resultAllele);
+            resultAlleleResponseList.add(resultAlleleResponse);
+        }
+        AllAlleleResponse allAlleleResponse=new AllAlleleResponse();
+        allAlleleResponse.setPatientAppointmentResponse(patientAppointmentResponse);
+        allAlleleResponse.setSampleAlleleResponse(sampleAlleleResponse);
+        allAlleleResponse.setResultAlleleResponse(resultAlleleResponseList);
+        return allAlleleResponse;
+    }
 }

@@ -14,10 +14,10 @@ public class UpdateKitRequest {
     String targetPersonCount;
     Double  price;
     String contents;
-    @Enumerated(EnumType.STRING)
     DeliveryStatus kitStatus;
     LocalDate deliveryDate;
     LocalDate returnDate;
+
 
     public String getKitCode() {
         return kitCode;

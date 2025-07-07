@@ -13,6 +13,8 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long notificationId;
     private int numOfNotification;
+    @Column(columnDefinition = "nvarchar(255)")
+    private String note;
 
     @OneToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -20,6 +22,14 @@ public class Notification {
     })
     @JoinColumn(name = "staff_id")  // Chỉ định tên cột khóa ngoại
     private Staff staff;
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 
     public Notification() {
     }

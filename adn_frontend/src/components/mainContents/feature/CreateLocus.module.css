@@ -1,0 +1,171 @@
+.createLocusContainer {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.createLocusCard {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  max-width: 600px;
+  overflow: hidden;
+}
+
+.cardHeader {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  padding: 30px;
+  text-align: center;
+  color: white;
+}
+
+.cardTitle {
+  margin: 0 0 10px 0;
+  font-size: 28px;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cardSubtitle {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.locusForm {
+  padding: 40px;
+}
+
+.formGroup {
+  margin-bottom: 25px;
+}
+
+.formLabel {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+}
+
+.required {
+  color: #e74c3c;
+  margin-left: 4px;
+}
+
+.formControl {
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+  width: 100%;
+}
+
+.formControl:focus {
+  border-color: #4facfe;
+  box-shadow: 0 0 0 0.2rem rgba(79, 172, 254, 0.25);
+  background-color: white;
+  outline: none;
+}
+
+.formControl.isValid {
+  border-color: #28a745;
+  background-color: white;
+}
+
+.formControl.isInvalid {
+  border-color: #dc3545;
+  background-color: white;
+}
+
+.invalidFeedback {
+  display: block;
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.formText {
+  color: #6c757d;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.formActions {
+  margin-top: 35px;
+  text-align: center;
+}
+
+.btnSubmit {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 50px;
+  padding: 15px 40px;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  color: white;
+  cursor: pointer;
+}
+
+.btnSubmit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.btnSubmit:active {
+  transform: translateY(0);
+}
+
+.btnSubmit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spinnerBorderSm {
+  width: 1rem;
+  height: 1rem;
+  border: 0.125em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinnerBorder 0.75s linear infinite;
+}
+
+@keyframes spinnerBorder {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .createLocusContainer {
+    padding: 20px 15px;
+  }
+  
+  .cardHeader {
+    padding: 25px 20px;
+  }
+  
+  .cardTitle {
+    font-size: 24px;
+  }
+  
+  .locusForm {
+    padding: 30px 25px;
+  }
+} 

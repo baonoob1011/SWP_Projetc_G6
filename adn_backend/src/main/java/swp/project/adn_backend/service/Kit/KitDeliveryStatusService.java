@@ -87,31 +87,59 @@ public class KitDeliveryStatusService {
                                                              long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
-        List<Staff> labTechnician = staffRepository.findAll();
+
+        List<Staff> labTechnicians = staffRepository.findAll();
+
         KitDeliveryStatus kitDeliveryStatus = appointment.getKitDeliveryStatus();
-        if (kitDeliveryStatusRequest.getDeliveryStatus().equals(DeliveryStatus.DONE)) {
+        DeliveryStatus newStatus = kitDeliveryStatusRequest.getDeliveryStatus();
+        DeliveryStatus currentStatus = kitDeliveryStatus.getDeliveryStatus();
+
+        // Kiểm tra không cho phép cập nhật lùi trạng thái (ngoại trừ FAILED)
+        if (newStatus != null && currentStatus != null
+                && newStatus != DeliveryStatus.FAILED
+                && newStatus.ordinal() < currentStatus.ordinal()) {
+            throw new IllegalStateException("Không thể cập nhật trạng thái lùi về bước trước đó.");
+        }
+
+        // Xử lý nếu trạng thái mới là DONE
+        if (newStatus == DeliveryStatus.DONE) {
             kitDeliveryStatus.setReturnDate(LocalDate.now());
-            // Lọc ra danh sách nhân viên tại nhà còn hoạt động
-            List<Staff> labTechnician1 = labTechnician.stream()
+
+            // Lọc ra danh sách nhân viên LAB_TECHNICIAN còn hoạt động
+            List<Staff> activeLabTechnicians = labTechnicians.stream()
                     .filter(staff -> "LAB_TECHNICIAN".equals(staff.getRole()))
                     .collect(Collectors.toList());
 
-            if (labTechnician1.isEmpty()) {
+            if (activeLabTechnicians.isEmpty()) {
                 throw new RuntimeException("Không có nhân viên lab");
             }
 
-            // Chọn nhân viên tiếp theo theo round-robin
-            int selectedIndex = staffAssignmentTracker.getNextIndex(labTechnician1.size());
-            Staff selectedStaff = labTechnician1.get(selectedIndex);
+            // Gán nhân viên theo vòng tròn (round-robin)
+            int selectedIndex = staffAssignmentTracker.getNextIndex(activeLabTechnicians.size());
+            Staff selectedStaff = activeLabTechnicians.get(selectedIndex);
             appointment.setStaff(selectedStaff);
+            appointment.setNote("Đã nhận lại bộ kit");
         }
-        if (kitDeliveryStatusRequest.getDeliveryStatus() != null) {
-            kitDeliveryStatus.setDeliveryStatus(kitDeliveryStatusRequest.getDeliveryStatus());
+
+        // Cập nhật ghi chú theo trạng thái
+        if (newStatus != null) {
+            switch (newStatus) {
+                case PENDING -> appointment.setNote("Đang chờ giao bộ kit");
+                case IN_PROGRESS -> appointment.setNote("Đang giao bộ kit");
+                case DELIVERED -> appointment.setNote("Đã giao bộ kit thành công");
+                case FAILED -> appointment.setNote("Giao bộ kit thất bại");
+                default -> { } // DONE đã xử lý ở trên
+            }
+
+            kitDeliveryStatus.setDeliveryStatus(newStatus);
         }
+
+        // Cập nhật ngày trả nếu có trong request
         if (kitDeliveryStatusRequest.getReturnDate() != null) {
             kitDeliveryStatus.setReturnDate(kitDeliveryStatusRequest.getReturnDate());
         }
-        KitDeliveryStatusResponse kitDeliveryStatusResponse = kitDeliveryStatusMapper.toKitDeliveryStatusResponse(kitDeliveryStatus);
-        return kitDeliveryStatusResponse;
+
+        return kitDeliveryStatusMapper.toKitDeliveryStatusResponse(kitDeliveryStatus);
     }
+
 }

@@ -49,6 +49,7 @@ public class SecurityConfig {
             "/api/jasperpdf/**",
             "/api/register-for-consultation/register-consultation/**",
             "/api/blog/get-all-blog",
+            "/api/blog/get-blog",
             "/api/discount/get-discount-by-service",
             "/api/services/get-service",
             "/ws/**",                     // Cho phép WebSocket endpoint nếu dùng STOMP
@@ -85,11 +86,19 @@ public class SecurityConfig {
     private final String[] STAFF_PUBLIC = {
             "/api/sample/get-all-sample/**",
             "/api/notification/get-notification/**",
+            "/api/appointment/get-appointment-at-home-to-get-sample",
+            "/api/staff/**",
+    };
+    private final String[] CONSULTANT_PUBLIC = {
+            "/api/register-for-consultation/get-register-consultation",
+            "/api/register-for-consultation/update-register-consultation-status",
+
 
     };
     private final String[] STAFF_ENDPOINTS = {
             "/api/staff/update-profile",
             "/api/kit/get-all-kit-staff",
+            "/api/kit/decrease-quantity-kit",
             "/api/kit/update-kit/**",
             "/api/blog/**",
             "/api/appointment/confirm-appointment-at-center/**",
@@ -97,39 +106,43 @@ public class SecurityConfig {
             "/api/appointment/get-appointment-by-slot/**",
             "/api/appointment/get-appointment-of-user-by-phone/**",
             "/api/appointment/get-payment-at-center/**",
+            "/api/appointment/check-in-patient/**",
             "/api/slot/get-all-slot-of-staff/**",
             "/api/slot/get-all-slot/**",
             "/api/kit-delivery-status/update-kit-status/**",
             "/api/feedback/response-feedback",
             "/api/appointment/get-appointment-at-home-by-staff",
             "/api/kit-delivery-status/get-kit-status-staff-by-appointment/**",
-            "/api/sample/collect-sample-patient/**",
-            "/api/staff/**"
+            "/api/sample/**",
+            "/api/sample/collect-sample-patient-at-center",
+
     };
 
     private final String[] LAB_TECHNICIAN = {
-            "/api/appointment/get-appointment-at-home-to-get-sample",
             "/api/result-allele/create-result-allele",
+            "/api/result-allele/get-result-allele",
             "/api/result-locus/create-result-locus/**",
             "/api/result-detail/create-result-detail/**",
-            "/api/locus/create-locus",
             "/api/locus/get-all-locus",
+            "/api/appointment/update-note",
+            "/api/sample/update-status-sample",
 
     };
     private final String[] MANAGER_ENDPOINTS = {
-            "/api/manager/update-profile",
-            "/api/manager/**",
-            "/api/services/**",
-            "/api/blog/**",
-            "/api/slot/**",
-            "/api/price/**",
-            "/api/room/**",
-            "/api/payment/**",
-            "/api/appointment/**",
-            "/api/kit/**",
-            "/api/staff/get-all-staff",
-            "/api/discount/create-discount-service",
-            "/api/dashboard/**"
+//            "/api/manager/update-profile",
+//            "/api/manager/**",
+//            "/api/services/**",
+//            "/api/blog/**",
+//            "/api/slot/**",
+//            "/api/price/**",
+//            "/api/room/**",
+//            "/api/payment/**",
+//            "/api/appointment/**",
+//            "/api/kit/**",
+//            "/api/staff/get-all-staff",
+//            "/api/discount/create-discount-service",
+//            "/api/dashboard/**"
+            "api/**"
     };
 
     private final String[] ADMIN_ENDPOINTS = {
@@ -152,8 +165,9 @@ public class SecurityConfig {
                         // Quyền USER
                         .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN", "MANAGER")
                         .requestMatchers(CASHIER_ENDPOINTS).hasAnyRole("CASHIER", "ADMIN")
+                        .requestMatchers(CONSULTANT_PUBLIC).hasAnyRole("CONSULTANT", "ADMIN")
                         .requestMatchers(LAB_TECHNICIAN).hasAnyRole("LAB_TECHNICIAN", "ADMIN")
-                        .requestMatchers(STAFF_PUBLIC).hasAnyRole("STAFF", "LAB_TECHNICIAN","CASHIER")
+                        .requestMatchers(STAFF_PUBLIC).hasAnyRole("STAFF", "LAB_TECHNICIAN", "CASHIER", "ADMIN", "MANAGER","CONSULTANT")
 
                         // Quyền STAFF
                         .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")
@@ -162,7 +176,7 @@ public class SecurityConfig {
                         .requestMatchers(MANAGER_ENDPOINTS).hasAnyRole("MANAGER", "ADMIN")
 
                         // Quyền ADMIN
-                        .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
+                        .requestMatchers(ADMIN_ENDPOINTS).hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers(ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
 
 

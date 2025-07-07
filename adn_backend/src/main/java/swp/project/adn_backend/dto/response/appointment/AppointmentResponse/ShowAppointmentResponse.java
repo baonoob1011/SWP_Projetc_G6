@@ -15,6 +15,9 @@ public class ShowAppointmentResponse {
     String note;
     AppointmentType appointmentType;
 
+    public ShowAppointmentResponse() {
+    }
+
     public ShowAppointmentResponse(long appointmentId, LocalDate appointmentDate, AppointmentStatus appointmentStatus, String note, AppointmentType appointmentType) {
         this.appointmentId = appointmentId;
         this.appointmentDate = appointmentDate;

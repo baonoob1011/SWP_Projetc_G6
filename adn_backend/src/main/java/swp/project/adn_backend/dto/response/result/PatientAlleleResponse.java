@@ -1,38 +1,16 @@
-package swp.project.adn_backend.dto.response.appointment.AppointmentResponse;
+package swp.project.adn_backend.dto.response.result;
 
-import swp.project.adn_backend.entity.Sample;
 import swp.project.adn_backend.enums.PatientStatus;
 
 import java.time.LocalDate;
 
-public class PatientAppointmentResponse {
+public class PatientAlleleResponse {
     long patientId;
     String fullName;
     LocalDate dateOfBirth;
     String gender;
     String relationship;
     PatientStatus patientStatus;
-
-
-    public PatientAppointmentResponse() {
-    }
-
-    public PatientAppointmentResponse(long patientId, String fullName, LocalDate dateOfBirth, String gender, String relationship, PatientStatus patientStatus) {
-        this.patientId = patientId;
-        this.fullName = fullName;
-        this.dateOfBirth = dateOfBirth;
-        this.gender = gender;
-        this.relationship = relationship;
-        this.patientStatus = patientStatus;
-    }
-
-    public PatientStatus getPatientStatus() {
-        return patientStatus;
-    }
-
-    public void setPatientStatus(PatientStatus patientStatus) {
-        this.patientStatus = patientStatus;
-    }
 
     public long getPatientId() {
         return patientId;
@@ -72,5 +50,13 @@ public class PatientAppointmentResponse {
 
     public void setRelationship(String relationship) {
         this.relationship = relationship;
+    }
+
+    public PatientStatus getPatientStatus() {
+        return patientStatus;
+    }
+
+    public void setPatientStatus(PatientStatus patientStatus) {
+        this.patientStatus = patientStatus;
     }
 }
