@@ -5,9 +5,6 @@ import {
   FaEye,
   FaMoneyBillWave,
   FaTimes,
-  FaCalendarAlt,
-  FaStethoscope,
-  FaMapMarkerAlt,
   FaStar,
   FaChevronLeft,
   FaChevronRight,
@@ -254,18 +251,18 @@ const Booking = () => {
 
                 {/* Info Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                  {/* Ngày khám */}
                   <div className="flex items-center space-x-3">
-                    <FaCalendarAlt className="text-gray-400 flex-shrink-0" />
                     <div>
-                      <p className="text-sm text-gray-500">Ngày khám</p>
+                      <p className="text-sm text-gray-500">Ngày lấy mẫu</p>
                       <p className="font-medium text-gray-900">
                         {item.show.appointmentDate}
                       </p>
                     </div>
                   </div>
 
+                  {/* Dịch vụ */}
                   <div className="flex items-center space-x-3">
-                    <FaStethoscope className="text-gray-400 flex-shrink-0" />
                     <div>
                       <p className="text-sm text-gray-500">Dịch vụ</p>
                       <p className="font-medium text-gray-900 line-clamp-1">
@@ -274,12 +271,31 @@ const Booking = () => {
                     </div>
                   </div>
 
+                  {/* Hình thức */}
                   <div className="flex items-center space-x-3">
-                    <FaMapMarkerAlt className="text-gray-400 flex-shrink-0" />
                     <div>
                       <p className="text-sm text-gray-500">Hình thức</p>
                       <p className="font-medium text-gray-900">
                         {translateAppointmentType(item.show.appointmentType)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Phòng / Thời gian / Địa chỉ */}
+                  <div className="flex items-start space-x-3 col-span-1 md:col-span-2 lg:col-span-3">
+                    <div>
+                      <p className="font-medium text-gray-900 whitespace-pre-line">
+                        {item.show.appointmentType === 'CENTER'
+                          ? `Phòng: ${item.room?.roomName ?? '---'}\nGiờ: ${
+                              item.slot?.[0]?.startTime ?? '--'
+                            } đến ${
+                              item.slot?.[0]?.endTime ?? '--'
+                            }\nĐịa chỉ: ${
+                              item.location?.[0]?.addressLine ?? ''
+                            }, ${item.location?.[0]?.district ?? ''}, ${
+                              item.location?.[0]?.city ?? ''
+                            }`
+                          : null}
                       </p>
                     </div>
                   </div>
@@ -295,12 +311,7 @@ const Booking = () => {
                           {item.payments[0].amount?.toLocaleString('vi-VN')} VNĐ
                         </p>
                       </div>
-                      <div>
-                        <p className="text-sm text-gray-500">Trạng thái mẫu</p>
-                        <p className="font-medium text-gray-900">
-                          {item.show.note}
-                        </p>
-                      </div>
+                      <div></div>
                       <div className="text-right">
                         <p className="text-sm text-gray-500">Trạng thái</p>
                         <span
@@ -315,6 +326,19 @@ const Booking = () => {
                             : 'Chưa thanh toán'}
                         </span>
                       </div>
+                    </div>
+                    <div>
+                      {item.show &&
+                      item.show.note &&
+                      item.show.note.length > 0 ? (
+                        <p className="text-sm text-gray-500">
+                          Trạng thái đơn đăng ký
+                        </p>
+                      ) : null}
+
+                      <p className="font-medium text-gray-900">
+                        {item.show.note}
+                      </p>
                     </div>
                   </div>
                 )}

@@ -3,18 +3,28 @@
 import React, { useEffect, useState } from 'react';
 import { CircularProgress } from '@mui/material';
 import { Check } from '@mui/icons-material';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from './CollectorSlot.module.css';
 
-export const CollectorSlots = () => {
+export const CollectSampleAtHome = () => {
   const [slots, setSlots] = useState<any[]>([]);
+  const [sample, setSample] = useState<any[]>([]);
+
   const [appointments, setAppointments] = useState<any[]>([]);
-  const [sampleType, setSampleType] = useState<{ [key: string]: string }>({});
+  const sampleTypes = [
+    'Niêm mạc miệng',
+    'Máu',
+    'Móng tay / móng chân',
+    'Răng',
+    'Tóc',
+  ];
+
   const [loading, setLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<{
     [key: string]: string;
   }>({});
+  const [sampleType, setSampleTypes] = useState<{ [key: string]: string }>({});
 
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
@@ -55,12 +65,51 @@ export const CollectorSlots = () => {
       if (response.ok) {
         const data = await response.json();
         setAppointments(data);
+        const appointmentId = data?.[0].showAppointmentResponse?.appointmentId;
+        if (appointmentId) {
+          fetchSampleData(appointmentId); // gọi API sample khi có appointmentId
+        }
       }
     } catch (error) {
       toast.error('Không thể lấy dữ liệu lịch hẹn');
     } finally {
       setLoading(false);
     }
+  };
+  const fetchSampleData = async (appointmentId: number | string) => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://localhost:8080/api/sample/get-all-sample?appointmentId=${appointmentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Fetch failed');
+      }
+
+      const data = await response.json();
+      setSample(data);
+    } catch (error) {
+      console.error('Error fetching sample data:', error);
+      toast.error('Không thể lấy dữ liệu mẫu xét nghiệm');
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleSeletedSample = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+    key: string
+  ) => {
+    const { value } = event.target;
+    setSampleTypes((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
   };
 
   useEffect(() => {
@@ -74,6 +123,7 @@ export const CollectorSlots = () => {
     key: string
   ) => {
     const sample = sampleType[key];
+
     if (!sample) {
       toast.error('Vui lòng nhập vật xét nghiệm');
       return;
@@ -93,10 +143,20 @@ export const CollectorSlots = () => {
           }),
         }
       );
-      if (res.ok) {
-        toast.success('Thu mẫu thành công');
+      if (!res.ok) {
+        let errorMessage = 'Không thể tạo'; // mặc định
+
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await res.json();
+          errorMessage = errorData.message || JSON.stringify(errorData);
+        } else {
+          errorMessage = await res.text();
+        }
+
+        toast.error(errorMessage);
       } else {
-        toast.error('Thu mẫu thất bại');
+        toast.success('Thu mẫu thành công');
       }
     } catch (error) {
       console.log(error);
@@ -104,7 +164,15 @@ export const CollectorSlots = () => {
     }
   };
 
-  const handleUpdateStatus = async (appointmentId: string) => {
+  const handleUpdateStatus = async (
+    appointmentId: string,
+    newStatus: string,
+    currentStatus: string
+  ) => {
+    if (currentStatus === 'FAILED') {
+      toast.error('Đơn hàng đã thất bại');
+      return;
+    }
     try {
       const res = await fetch(
         `http://localhost:8080/api/kit-delivery-status/update-kit-status?appointmentId=${appointmentId}`,
@@ -115,15 +183,18 @@ export const CollectorSlots = () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
           body: JSON.stringify({
-            deliveryStatus: selectedStatus[appointmentId],
+            deliveryStatus: newStatus,
           }),
         }
       );
       if (res.ok) {
         toast.success('Cập nhật trạng thái thành công');
+      } else {
+        toast.error('Không thể cập nhật trạng thái cũ');
       }
     } catch (error) {
       console.log(error);
+      toast.error('Lỗi khi cập nhật trạng thái');
     }
   };
 
@@ -157,8 +228,7 @@ export const CollectorSlots = () => {
                 <th className={styles.tableHeaderCell}>Ngày sinh</th>
                 <th className={styles.tableHeaderCell}>Giới tính</th>
                 <th className={styles.tableHeaderCell}>Quan hệ</th>
-                <th className={styles.tableHeaderCell}>Ngày hẹn</th>
-                <th className={styles.tableHeaderCell}>Thu mẫu / Xem</th>
+                <th className={styles.tableHeaderCell}>Thu mẫu</th>
                 <th className={styles.tableHeaderCell}>Trạng thái</th>
               </tr>
             </thead>
@@ -194,25 +264,20 @@ export const CollectorSlots = () => {
                         {patient.relationship}
                       </td>
                       <td className={styles.tableCell}>
-                        {
-                          appointmentItem.showAppointmentResponse
-                            ?.appointmentDate
-                        }
-                      </td>
-                      <td className={styles.tableCell}>
                         <div className={styles.inputGroup}>
-                          <input
-                            type="text"
-                            className={styles.sampleInput}
-                            placeholder="Nhập vật mẫu"
-                            value={sampleType[key] || ''}
-                            onChange={(e) =>
-                              setSampleType((prev) => ({
-                                ...prev,
-                                [key]: e.target.value,
-                              }))
-                            }
-                          />
+                          <select
+                            className={styles.sampleSelect}
+                            value={sampleType[key as any] || ''}
+                            onChange={(e) => handleSeletedSample(e, key)}
+                          >
+                            <option value="">Chọn vật xét nghiệm</option>
+                            {sampleTypes.map((type) => (
+                              <option key={type} value={type}>
+                                {type}
+                              </option>
+                            ))}
+                          </select>
+
                           <button
                             className={styles.submitBtn}
                             onClick={() =>
@@ -237,19 +302,24 @@ export const CollectorSlots = () => {
                           <select
                             className={styles.statusSelect}
                             value={selectedStatus[appointmentId] || 'PENDING'}
-                            onChange={(e) =>
-                              setSelectedStatus((prev) => ({
-                                ...prev,
-                                [appointmentId]: e.target.value,
-                              }))
-                            }
-                            onBlur={() => handleUpdateStatus(appointmentId)}
+                            onChange={(e) => {
+                              const newStatus = e.target.value;
+                              const currentStatus =
+                                selectedStatus[appointmentId] || 'PENDING';
+                              setSelectedStatus({
+                                [appointmentId]: newStatus,
+                              });
+                              handleUpdateStatus(
+                                appointmentId,
+                                newStatus,
+                                currentStatus
+                              );
+                            }}
                           >
                             <option value="PENDING">PENDING</option>
                             <option value="IN_PROGRESS">IN_PROGRESS</option>
                             <option value="DELIVERED">DELIVERED</option>
                             <option value="FAILED">FAILED</option>
-                            <option value="COMPLETED">COMPLETED</option>
                             <option value="DONE">DONE</option>
                           </select>
                         </td>
@@ -294,6 +364,39 @@ export const CollectorSlots = () => {
           )}
         </div>
       )}
+      {sample.length > 0 ? (
+        <div className={styles.tableContainer}>
+          <h2 className={styles.subTitle}>Danh sách mẫu đã nhập</h2>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Họ tên</th>
+                <th>Giới tính</th>
+                <th>Ngày sinh</th>
+                <th>Quan hệ</th>
+                <th>Loại mẫu</th>
+                <th>Mã mẫu</th>
+                <th>Ngày thu</th>
+                <th>Người thu</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sample.map((item: any, index: number) => (
+                <tr key={index}>
+                  <td>{item.patientSampleResponse.fullName}</td>
+                  <td>{item.patientSampleResponse.gender}</td>
+                  <td>{item.patientSampleResponse.dateOfBirth}</td>
+                  <td>{item.patientSampleResponse.relationship}</td>
+                  <td>{item.sampleResponse.sampleType}</td>
+                  <td>{item.sampleResponse.sampleCode}</td>
+                  <td>{item.sampleResponse.collectionDate}</td>
+                  <td>{item.staffSampleResponse.fullName}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
     </div>
   );
 };

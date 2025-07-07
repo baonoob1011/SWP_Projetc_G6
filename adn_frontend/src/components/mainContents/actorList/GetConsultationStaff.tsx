@@ -14,7 +14,6 @@ import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
 import Swal from 'sweetalert2';
-import './styles/swal-custom.css';
 
 type Staff = {
   idCard: string;
@@ -30,7 +29,7 @@ type Staff = {
   createAt: string;
 };
 
-function GetStaffByAdmin() {
+function GetCollector() {
   const [account, setAccount] = useState<Staff[]>([]);
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -38,10 +37,13 @@ function GetStaffByAdmin() {
   const fetchData = async () => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:8080/api/staff/get-all-staff', {
-        method: 'GET',
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        'http://localhost:8080/api/staff/get-all-staff-collector',
+        {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (!res.ok) {
         setError('Không thể lấy dữ liệu');
         return;
@@ -189,16 +191,6 @@ function GetStaffByAdmin() {
                   >
                     <Trash2 size={10} />
                   </Button>
-                  <Button
-                    variant="contained"
-                    component={NavLink}
-                    to={`/s-slot/${user.staffId}`}
-                    color="error"
-                    size="small"
-                    sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}
-                  >
-                    <Plus size={10} />
-                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -208,7 +200,7 @@ function GetStaffByAdmin() {
       </TableContainer>
       <Button
         component={NavLink}
-        to="/signup-staff"
+        to="/signup-collector"
         className="normal-case"
         style={{ textDecoration: 'none' }}
       >
@@ -218,4 +210,4 @@ function GetStaffByAdmin() {
   );
 }
 
-export default GetStaffByAdmin;
+export default GetCollector;
