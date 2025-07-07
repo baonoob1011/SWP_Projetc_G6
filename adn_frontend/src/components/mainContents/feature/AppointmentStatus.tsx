@@ -9,43 +9,36 @@ const GetKitDeliveryStatus = () => {
   const [expandedOrders, setExpandedOrders] = useState<Set<number>>(new Set());
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 2;
+  const itemsPerPage = 3;
 
   // Define order tracking steps matching API statuses
   const trackingSteps = [
     {
       id: 'pending',
       title: 'Đặt hàng thành công',
-      description: 'Đơn hàng của bạn đã được đặt và đang chờ xử lý',
+      description: 'Đơn hàng của bạn đã được đặt và đang chờ giao hàng',
       icon: '📝',
       status: 'PENDING'
     },
     {
       id: 'in_progress',
-      title: 'Đang xử lý',
-      description: 'Đơn hàng đang được xử lý và chuẩn bị',
-      icon: '⚙️',
+      title: 'Đang giao hàng',
+      description: 'Đơn hàng đang được giao đến bạn',
+      icon: '🚚',
       status: 'IN_PROGRESS'
     },
     {
-      id: 'preparing',
-      title: 'Đang chuẩn bị hàng',
-      description: 'Bộ kit đang được chuẩn bị và đóng gói',
-      icon: '📦',
-      status: 'COMPLETED'
-    },
-    {
-      id: 'shipping',
-      title: 'Đang giao hàng',
-      description: 'Đơn hàng đang trên đường giao đến bạn',
-      icon: '🚚',
+      id: 'delivered',
+      title: 'Đã giao thành công',
+      description: 'Đơn hàng đã được giao thành công đến bạn',
+      icon: '✅',
       status: 'DELIVERED'
     },
     {
-      id: 'delivered',
-      title: 'Giao hàng thành công',
-      description: 'Đơn hàng đã được giao thành công đến bạn',
-      icon: '✅',
+      id: 'done',
+      title: 'Kit đã được nhận về và xử lý',
+      description: 'Kit đã được nhận về và xử lý xong',
+      icon: '🎉',
       status: 'DONE'
     },
     {
@@ -65,14 +58,12 @@ const GetKitDeliveryStatus = () => {
         return 0;
       case 'IN_PROGRESS':
         return 1;
-      case 'COMPLETED':
-        return 2;
       case 'DELIVERED':
-        return 3;
+        return 2;
       case 'DONE':
-        return 4;
+        return 3;
       case 'FAILED':
-        return 5;
+        return 4;
       default:
         return 0;
     }
@@ -87,17 +78,24 @@ const GetKitDeliveryStatus = () => {
       if (step.status === 'FAILED') {
         return 'failed';
       }
-      // For FAILED orders, mark previous steps as completed up to DELIVERED
-      if (stepIndex < 4) return 'completed'; // PENDING, IN_PROGRESS, COMPLETED, DELIVERED
+      // For FAILED orders, mark previous steps as completed up to IN_PROGRESS
+      if (stepIndex < 2) return 'completed'; // PENDING, IN_PROGRESS
       return 'pending';
     }
     
     // For DONE status, mark all normal flow steps as completed
     if (upperStatus === 'DONE') {
-      if (stepIndex <= 4) return 'completed'; // All steps completed for DONE
+      if (stepIndex <= 3) return 'completed'; // PENDING, IN_PROGRESS, DELIVERED, DONE
+      return 'pending';
+    }
+
+    // For DELIVERED status, mark steps 0,1,2 as completed, 3 as pending
+    if (upperStatus === 'DELIVERED') {
+      if (stepIndex <= 2) return 'completed';
       return 'pending';
     }
     
+    // For other statuses, use the default logic
     if (stepIndex < currentIndex) return 'completed';
     if (stepIndex === currentIndex) return 'active';
     return 'pending';
@@ -110,7 +108,7 @@ const GetKitDeliveryStatus = () => {
     // If failed, show all steps up to failed
     if (upperStatus === 'FAILED') {
       return trackingSteps.filter(step => 
-        ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'DELIVERED', 'FAILED'].includes(step.status)
+        ['PENDING', 'IN_PROGRESS', 'FAILED'].includes(step.status)
       );
     }
     
@@ -169,19 +167,38 @@ const GetKitDeliveryStatus = () => {
     setExpandedOrders(newExpandedOrders);
   };
 
+  // Get status display text
+  const getStatusDisplayText = (status: string) => {
+    const upperStatus = status.toUpperCase();
+    switch (upperStatus) {
+      case 'PENDING':
+        return 'Chờ giao hàng';
+      case 'IN_PROGRESS':
+        return 'Đang giao hàng';
+      case 'DELIVERED':
+        return 'Đã giao thành công';
+      case 'DONE':
+        return 'Kit đã được nhận về và xử lý';
+      case 'FAILED':
+        return 'Giao hàng thất bại';
+      default:
+        return status;
+    }
+  };
+
   // Get status color class
   const getStatusColorClass = (status: string) => {
     const upperStatus = status.toUpperCase();
     switch (upperStatus) {
       case 'PENDING':
       case 'IN_PROGRESS':
-      case 'COMPLETED':
-      case 'DELIVERED':
         return 'statusGray';
-      case 'FAILED':
-        return 'statusRed';
+      case 'DELIVERED':
+        return 'statusBlue';
       case 'DONE':
         return 'statusGreen';
+      case 'FAILED':
+        return 'statusRed';
       default:
         return 'statusGray';
     }
@@ -259,7 +276,7 @@ const GetKitDeliveryStatus = () => {
                   </div>
                   <div className={styles.orderActions}>
                     <div className={`${styles.orderStatus} ${styles[statusColorClass]}`}>
-                      {order.deliveryStatus}
+                      {getStatusDisplayText(order.deliveryStatus)}
                     </div>
                     <button 
                       className={styles.toggleButton}
@@ -289,7 +306,10 @@ const GetKitDeliveryStatus = () => {
                               {step.description}
                             </div>
                             <div className={`${styles.stepTime} ${styles[stepClass]}`}>
-                              {stepClass === 'pending' ? 'Chưa thực hiện' : ''}
+                              {stepClass === 'pending' ? 'Chưa thực hiện' : 
+                               stepClass === 'active' ? 'Đang thực hiện' :
+                               stepClass === 'completed' ? 'Đã hoàn thành' :
+                               stepClass === 'failed' ? 'Thất bại' : ''}
                             </div>
                           </div>
                         </div>

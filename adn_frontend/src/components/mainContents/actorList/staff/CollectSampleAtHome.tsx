@@ -26,8 +26,18 @@ export const CollectSampleAtHome = () => {
   }>({});
   const [sampleType, setSampleTypes] = useState<{ [key: string]: string }>({});
 
+  // Mapping trạng thái thành tiếng Việt
+  const statusOptions = [
+    { value: 'PENDING', label: 'Chờ giao hàng' },
+    { value: 'IN_PROGRESS', label: 'Đang giao hàng' },
+    { value: 'DELIVERED', label: 'Đã giao thành công' },
+    { value: 'DONE', label: 'Kit đã được nhận về' },
+    { value: 'FAILED', label: 'Giao hàng thất bại' },
+  ];
+
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+
   const fetchSlots = async () => {
     setLoading(true);
     try {
@@ -76,6 +86,7 @@ export const CollectSampleAtHome = () => {
       setLoading(false);
     }
   };
+
   const fetchSampleData = async (appointmentId: number | string) => {
     try {
       setLoading(true);
@@ -101,6 +112,7 @@ export const CollectSampleAtHome = () => {
       setLoading(false);
     }
   };
+
   const handleSeletedSample = (
     event: React.ChangeEvent<HTMLSelectElement>,
     key: string
@@ -207,6 +219,13 @@ export const CollectSampleAtHome = () => {
     );
   }
 
+  // Group appointments by appointmentId
+  const groupedAppointments = appointments.filter(
+    (a) =>
+      a.showAppointmentResponse?.appointmentType === 'HOME' &&
+      a.showAppointmentResponse?.appointmentStatus === 'CONFIRMED'
+  );
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -214,128 +233,124 @@ export const CollectSampleAtHome = () => {
       </div>
 
       {/* Bảng thông tin khách tại nhà */}
-      {/* ✅ Nếu có lịch tại nhà thì hiện bảng, ngược lại hiện slot */}
-      {appointments.some(
-        (a) =>
-          a.showAppointmentResponse?.appointmentType === 'HOME' &&
-          a.showAppointmentResponse?.appointmentStatus === 'CONFIRMED'
-      ) ? (
-        <div className={styles.tableContainer}>
-          <table className={styles.table}>
-            <thead className={styles.tableHeader}>
-              <tr>
-                <th className={styles.tableHeaderCell}>Họ tên</th>
-                <th className={styles.tableHeaderCell}>Ngày sinh</th>
-                <th className={styles.tableHeaderCell}>Giới tính</th>
-                <th className={styles.tableHeaderCell}>Quan hệ</th>
-                <th className={styles.tableHeaderCell}>Thu mẫu</th>
-                <th className={styles.tableHeaderCell}>Trạng thái</th>
-              </tr>
-            </thead>
-            <tbody>
-              {appointments.map((appointmentItem) => {
-                const appointmentId =
-                  appointmentItem.showAppointmentResponse?.appointmentId;
-                const serviceId =
-                  appointmentItem.serviceAppointmentResponses?.[0]?.serviceId;
-                const isHome =
-                  appointmentItem.showAppointmentResponse?.appointmentType ===
-                  'HOME';
-                const isConfirmed =
-                  appointmentItem.showAppointmentResponse?.appointmentStatus ===
-                  'CONFIRMED';
+      {groupedAppointments.length > 0 ? (
+        <div>
+          {groupedAppointments.map((appointmentItem, appointmentIndex) => {
+            const appointmentId = appointmentItem.showAppointmentResponse?.appointmentId;
+            const serviceId = appointmentItem.serviceAppointmentResponses?.[0]?.serviceId;
+            const patients = appointmentItem.patientAppointmentResponse;
+            const appointmentDate = appointmentItem.showAppointmentResponse?.appointmentDate;
 
-                if (!isHome || !isConfirmed) return null;
+            return (
+              <div key={appointmentId} className={styles.orderGroup}>
+                <div className={styles.orderHeader}>
+                  <div className={styles.orderInfo}>
+                    <div className={styles.orderBadge}>
+                      Đơn hàng #{appointmentIndex + 1}
+                    </div>
+                    <div>Ngày hẹn: {appointmentDate}</div>
+                    <div className={styles.patientCount}>
+                      {patients.length} bệnh nhân
+                    </div>
+                  </div>
+                </div>
+                
+                <div className={styles.tableContainer}>
+                  <table className={styles.table}>
+                    <thead className={styles.tableHeader}>
+                      <tr>
+                        <th className={styles.tableHeaderCell}>Họ tên</th>
+                        <th className={styles.tableHeaderCell}>Ngày sinh</th>
+                        <th className={styles.tableHeaderCell}>Giới tính</th>
+                        <th className={styles.tableHeaderCell}>Quan hệ</th>
+                        <th className={styles.tableHeaderCell}>Thu mẫu</th>
+                        <th className={styles.tableHeaderCell}>Trạng thái Kit</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {patients.map((patient: any, index: number) => {
+                        const key = `${appointmentId}_${patient.patientId}`;
+                        const isFirstPatient = index === 0;
 
-                const patients = appointmentItem.patientAppointmentResponse;
-
-                return patients.map((patient: any, index: number) => {
-                  const key = `${appointmentId}_${patient.patientId}`;
-                  const isFirstPatient = index === 0;
-
-                  return (
-                    <tr key={key} className={styles.tableRow}>
-                      <td className={styles.tableCell}>{patient.fullName}</td>
-                      <td className={styles.tableCell}>
-                        {patient.dateOfBirth}
-                      </td>
-                      <td className={styles.tableCell}>{patient.gender}</td>
-                      <td className={styles.tableCell}>
-                        {patient.relationship}
-                      </td>
-                      <td className={styles.tableCell}>
-                        <div className={styles.inputGroup}>
-                          <select
-                            className={styles.sampleSelect}
-                            value={sampleType[key as any] || ''}
-                            onChange={(e) => handleSeletedSample(e, key)}
+                        return (
+                          <tr 
+                            key={key} 
+                            className={`${styles.tableRow} ${isFirstPatient ? styles.firstPatientRow : ''}`}
                           >
-                            <option value="">Chọn vật xét nghiệm</option>
-                            {sampleTypes.map((type) => (
-                              <option key={type} value={type}>
-                                {type}
-                              </option>
-                            ))}
-                          </select>
+                            <td className={styles.tableCell}>{patient.fullName}</td>
+                            <td className={styles.tableCell}>{patient.dateOfBirth}</td>
+                            <td className={styles.tableCell}>{patient.gender}</td>
+                            <td className={styles.tableCell}>{patient.relationship}</td>
+                            <td className={styles.tableCell}>
+                              <div className={styles.inputGroup}>
+                                <select
+                                  className={styles.sampleSelect}
+                                  value={sampleType[key as any] || ''}
+                                  onChange={(e) => handleSeletedSample(e, key)}
+                                >
+                                  <option value="">Chọn vật xét nghiệm</option>
+                                  {sampleTypes.map((type) => (
+                                    <option key={type} value={type}>
+                                      {type}
+                                    </option>
+                                  ))}
+                                </select>
 
-                          <button
-                            className={styles.submitBtn}
-                            onClick={() =>
-                              handleSendSample(
-                                patient.patientId,
-                                serviceId,
-                                appointmentId,
-                                key
-                              )
-                            }
-                          >
-                            <Check fontSize="small" />
-                          </button>
-                        </div>
-                      </td>
+                                <button
+                                  className={styles.submitBtn}
+                                  onClick={() =>
+                                    handleSendSample(
+                                      patient.patientId,
+                                      serviceId,
+                                      appointmentId,
+                                      key
+                                    )
+                                  }
+                                >
+                                  <Check fontSize="small" />
+                                </button>
+                              </div>
+                            </td>
 
-                      {isFirstPatient && (
-                        <td
-                          className={styles.tableCell}
-                          rowSpan={patients.length}
-                        >
-                          <select
-                            className={styles.statusSelect}
-                            value={selectedStatus[appointmentId] || 'PENDING'}
-                            onChange={(e) => {
-                              const newStatus = e.target.value;
-                              const currentStatus =
-                                selectedStatus[appointmentId] || 'PENDING';
-                              setSelectedStatus({
-                                [appointmentId]: newStatus,
-                              });
-                              handleUpdateStatus(
-                                appointmentId,
-                                newStatus,
-                                currentStatus
-                              );
-                            }}
-                          >
-                            <option value="PENDING">PENDING</option>
-                            <option value="IN_PROGRESS">IN_PROGRESS</option>
-                            <option value="DELIVERED">DELIVERED</option>
-                            <option value="FAILED">FAILED</option>
-                            <option value="DONE">DONE</option>
-                          </select>
-                        </td>
-                      )}
-                    </tr>
-                  );
-                });
-              })}
-            </tbody>
-          </table>
+                            {isFirstPatient && (
+                              <td
+                                className={`${styles.tableCell} ${styles.statusColumn}`}
+                                rowSpan={patients.length}
+                              >
+                                <select
+                                  className={styles.statusSelect}
+                                  value={selectedStatus[appointmentId] || 'PENDING'}
+                                  onChange={(e) => {
+                                    const newStatus = e.target.value;
+                                    const currentStatus = selectedStatus[appointmentId] || 'PENDING';
+                                    setSelectedStatus({
+                                      [appointmentId]: newStatus,
+                                    });
+                                    handleUpdateStatus(appointmentId, newStatus, currentStatus);
+                                  }}
+                                >
+                                  {statusOptions.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                      {option.label}
+                                    </option>
+                                  ))}
+                                </select>
+                              </td>
+                            )}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            );
+          })}
         </div>
       ) : (
         // Không có lịch tại nhà thì hiện slot
         <div className={styles.slotsContainer}>
-          {slots.filter((slot) => slot.slotResponse.slotStatus === 'BOOKED')
-            .length > 0 ? (
+          {slots.filter((slot) => slot.slotResponse.slotStatus === 'BOOKED').length > 0 ? (
             <div className={styles.slotsGrid}>
               {slots
                 .filter((slot) => slot.slotResponse.slotStatus === 'BOOKED')
@@ -344,15 +359,12 @@ export const CollectSampleAtHome = () => {
                     key={slot.slotResponse.slotId}
                     className={styles.slotButton}
                     onClick={() =>
-                      navigate(
-                        `/s-page/checkAppointment/${slot.slotResponse.slotId}`
-                      )
+                      navigate(`/s-page/checkAppointment/${slot.slotResponse.slotId}`)
                     }
                   >
                     <div>Slot {slot.slotResponse.slotId}</div>
                     <div>
-                      {slot.slotResponse.startTime} ~{' '}
-                      {slot.slotResponse.endTime}
+                      {slot.slotResponse.startTime} ~ {slot.slotResponse.endTime}
                     </div>
                   </button>
                 ))}
@@ -364,6 +376,8 @@ export const CollectSampleAtHome = () => {
           )}
         </div>
       )}
+
+      {/* Bảng mẫu đã thu */}
       {sample.length > 0 ? (
         <div className={styles.tableContainer}>
           <h2 className={styles.subTitle}>Danh sách mẫu đã nhập</h2>

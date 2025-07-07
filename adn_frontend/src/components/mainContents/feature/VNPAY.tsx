@@ -58,7 +58,7 @@ const VNPayResult = () => {
         <div className={styles.loadingContainer}>
           <div className={styles.loadingSpinner}></div>
           <div className={styles.loadingText}>
-            ⏳ Đang xử lý kết quả thanh toán...
+            Đang xử lý kết quả thanh toán...
           </div>
         </div>
       </div>
@@ -69,8 +69,13 @@ const VNPayResult = () => {
     return (
       <div className={styles.container}>
         <div className={styles.alertDanger} role="alert">
-          ❌ Thanh toán thất bại hoặc không hợp lệ.
+          Thanh toán thất bại hoặc không hợp lệ.
         </div>
+        <div className={styles.buttonContainer}>
+        <a href="/" className={styles.homeButton}>
+          Quay về trang chủ
+        </a>
+      </div>
       </div>
     );
   }
@@ -78,7 +83,7 @@ const VNPayResult = () => {
   return (
     <div className={styles.container}>
       <div className={styles.alertSuccess} role="alert">
-        ✅ Thanh toán thành công!
+        Thanh toán thành công!
       </div>
 
       {invoice && (
