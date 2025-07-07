@@ -30,8 +30,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loadingText {
@@ -162,14 +166,12 @@
 
 /* Success and Error Enhancements */
 .alertSuccess::before {
-  content: "✅";
   font-size: 2rem;
   display: block;
   margin-bottom: 1rem;
 }
 
 .alertDanger::before {
-  content: "❌";
   font-size: 2rem;
   display: block;
   margin-bottom: 1rem;
@@ -177,14 +179,14 @@
 
 /* Loading Enhancement */
 .loadingContainer::before {
-  content: "⏳";
+  content: '⏳';
   font-size: 2rem;
   margin-bottom: 1rem;
 }
 
 /* Invoice Enhancements */
 .invoiceHeader::before {
-  content: "🧾";
+  content: '🧾';
   font-size: 1.5rem;
   margin-right: 0.5rem;
 }
@@ -194,23 +196,23 @@
   .container {
     padding: 1rem;
   }
-  
+
   .invoiceTable th,
   .invoiceTable td {
     padding: 0.75rem 1rem;
     font-size: 0.8rem;
   }
-  
+
   .invoiceTable th {
     width: 40%;
   }
-  
+
   .alertSuccess,
   .alertDanger {
     padding: 1.25rem;
     font-size: 1rem;
   }
-  
+
   .homeButton {
     padding: 0.75rem 1.25rem;
     font-size: 0.875rem;
@@ -230,12 +232,12 @@
   .invoiceTable {
     font-size: 0.75rem;
   }
-  
+
   .invoiceTable th,
   .invoiceTable td {
     padding: 0.5rem 0.75rem;
   }
-  
+
   .invoiceHeader {
     padding: 1rem;
     font-size: 1rem;
@@ -251,4 +253,4 @@
     padding: 0.625rem 1rem;
     font-size: 0.8rem;
   }
-} 
+}

@@ -19,7 +19,11 @@ export const CollectSampleAtHome = () => {
     'Răng',
     'Tóc',
   ];
-
+  const sampleStatusOptions = [
+    { value: 'COLLECTED', label: 'Đã thu thập mẫu' },
+    { value: 'IN_TRANSIT', label: 'Đang vận chuyển' },
+    { value: 'RECEIVED', label: 'Đã nhận tại phòng xét nghiệm' },
+  ];
   const [loading, setLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<{
     [key: string]: string;
@@ -59,6 +63,84 @@ export const CollectSampleAtHome = () => {
   useEffect(() => {
     fetchSlots();
   }, []);
+  const handleUpdate = async (sampleId: string, sampleStatus: string) => {
+    // Tìm sample tương ứng để lấy patientId
+    const matchedSample = sample.find(
+      (s: any) => s.sampleResponse.sampleId === sampleId
+    );
+    const patientId = matchedSample?.patientSampleResponse?.patientId;
+
+    if (!patientId) {
+      toast.error('Không tìm thấy patientId từ sample');
+      return;
+    }
+
+    // Tìm appointmentId từ appointmentItem chứa patientId
+    const matchedAppointment = appointments.find((appointmentItem) =>
+      appointmentItem.patientAppointmentResponse.some(
+        (p: any) => p.patientId === patientId
+      )
+    );
+
+    const appointmentId =
+      matchedAppointment?.showAppointmentResponse?.appointmentId;
+
+    if (!appointmentId) {
+      toast.error('Không tìm thấy appointmentId từ API lịch hẹn');
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/sample/update-status-sample?sampleId=${sampleId}&appointmentId=${appointmentId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+          body: JSON.stringify({
+            sampleStatus: sampleStatus,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        const err = await res.text();
+        toast.error(`Cập nhật thất bại: ${err}`);
+      } else {
+        toast.success('Cập nhật trạng thái thành công');
+        // cập nhật local state
+        setSample((prev) =>
+          prev.map((s) =>
+            s.sampleResponse.sampleId === sampleId
+              ? {
+                  ...s,
+                  sampleResponse: {
+                    ...s.sampleResponse,
+                    sampleStatus: sampleStatus,
+                  },
+                }
+              : s
+          )
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Lỗi khi cập nhật trạng thái mẫu');
+    }
+  };
+
+  const findSampleByPatientAndAppointment = (
+    patientId: string,
+    appointmentId: string
+  ): any | undefined => {
+    return sample.find(
+      (s) =>
+        s.patientSampleResponse.patientId === patientId &&
+        s.sampleResponse.appointmentId === appointmentId
+    );
+  };
 
   const fetchAppointmentAtHome = async () => {
     try {
@@ -236,10 +318,13 @@ export const CollectSampleAtHome = () => {
       {groupedAppointments.length > 0 ? (
         <div>
           {groupedAppointments.map((appointmentItem, appointmentIndex) => {
-            const appointmentId = appointmentItem.showAppointmentResponse?.appointmentId;
-            const serviceId = appointmentItem.serviceAppointmentResponses?.[0]?.serviceId;
+            const appointmentId =
+              appointmentItem.showAppointmentResponse?.appointmentId;
+            const serviceId =
+              appointmentItem.serviceAppointmentResponses?.[0]?.serviceId;
             const patients = appointmentItem.patientAppointmentResponse;
-            const appointmentDate = appointmentItem.showAppointmentResponse?.appointmentDate;
+            const appointmentDate =
+              appointmentItem.showAppointmentResponse?.appointmentDate;
 
             return (
               <div key={appointmentId} className={styles.orderGroup}>
@@ -254,7 +339,7 @@ export const CollectSampleAtHome = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className={styles.tableContainer}>
                   <table className={styles.table}>
                     <thead className={styles.tableHeader}>
@@ -264,23 +349,46 @@ export const CollectSampleAtHome = () => {
                         <th className={styles.tableHeaderCell}>Giới tính</th>
                         <th className={styles.tableHeaderCell}>Quan hệ</th>
                         <th className={styles.tableHeaderCell}>Thu mẫu</th>
-                        <th className={styles.tableHeaderCell}>Trạng thái Kit</th>
+                        <th className={styles.tableHeaderCell}>
+                          Trạng thái mẫu
+                        </th>
+                        <th className={styles.tableHeaderCell}>
+                          Trạng thái Kit
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {patients.map((patient: any, index: number) => {
+                        const sampleData = findSampleByPatientAndAppointment(
+                          patient.patientId,
+                          appointmentId
+                        );
+                        const sampleId = sampleData?.sampleResponse?.sampleId;
+                        const currentSampleStatus =
+                          sampleData?.sampleResponse?.sampleStatus || '';
+
                         const key = `${appointmentId}_${patient.patientId}`;
                         const isFirstPatient = index === 0;
 
                         return (
-                          <tr 
-                            key={key} 
-                            className={`${styles.tableRow} ${isFirstPatient ? styles.firstPatientRow : ''}`}
+                          <tr
+                            key={key}
+                            className={`${styles.tableRow} ${
+                              isFirstPatient ? styles.firstPatientRow : ''
+                            }`}
                           >
-                            <td className={styles.tableCell}>{patient.fullName}</td>
-                            <td className={styles.tableCell}>{patient.dateOfBirth}</td>
-                            <td className={styles.tableCell}>{patient.gender}</td>
-                            <td className={styles.tableCell}>{patient.relationship}</td>
+                            <td className={styles.tableCell}>
+                              {patient.fullName}
+                            </td>
+                            <td className={styles.tableCell}>
+                              {patient.dateOfBirth}
+                            </td>
+                            <td className={styles.tableCell}>
+                              {patient.gender}
+                            </td>
+                            <td className={styles.tableCell}>
+                              {patient.relationship}
+                            </td>
                             <td className={styles.tableCell}>
                               <div className={styles.inputGroup}>
                                 <select
@@ -311,6 +419,31 @@ export const CollectSampleAtHome = () => {
                                 </button>
                               </div>
                             </td>
+                            <td className={styles.tableCell}>
+                              <select
+                                value={currentSampleStatus}
+                                onChange={(e) => {
+                                  if (sampleId) {
+                                    handleUpdate(sampleId, e.target.value);
+                                  } else {
+                                    toast.error(
+                                      'Không tìm thấy mẫu để cập nhật trạng thái'
+                                    );
+                                  }
+                                }}
+                                className={styles.sampleSelect}
+                              >
+                                <option value="">Chọn trạng thái</option>
+                                {sampleStatusOptions.map((option) => (
+                                  <option
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
 
                             {isFirstPatient && (
                               <td
@@ -319,18 +452,29 @@ export const CollectSampleAtHome = () => {
                               >
                                 <select
                                   className={styles.statusSelect}
-                                  value={selectedStatus[appointmentId] || 'PENDING'}
+                                  value={
+                                    selectedStatus[appointmentId] || 'PENDING'
+                                  }
                                   onChange={(e) => {
                                     const newStatus = e.target.value;
-                                    const currentStatus = selectedStatus[appointmentId] || 'PENDING';
+                                    const currentStatus =
+                                      selectedStatus[appointmentId] ||
+                                      'PENDING';
                                     setSelectedStatus({
                                       [appointmentId]: newStatus,
                                     });
-                                    handleUpdateStatus(appointmentId, newStatus, currentStatus);
+                                    handleUpdateStatus(
+                                      appointmentId,
+                                      newStatus,
+                                      currentStatus
+                                    );
                                   }}
                                 >
                                   {statusOptions.map((option) => (
-                                    <option key={option.value} value={option.value}>
+                                    <option
+                                      key={option.value}
+                                      value={option.value}
+                                    >
                                       {option.label}
                                     </option>
                                   ))}
@@ -346,11 +490,45 @@ export const CollectSampleAtHome = () => {
               </div>
             );
           })}
+          {sample.length > 0 ? (
+            <div className={styles.tableContainer}>
+              <h2 className={styles.subTitle}>Danh sách mẫu đã nhập</h2>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Họ tên</th>
+                    <th>Giới tính</th>
+                    <th>Ngày sinh</th>
+                    <th>Quan hệ</th>
+                    <th>Loại mẫu</th>
+                    <th>Mã mẫu</th>
+                    <th>Ngày thu</th>
+                    <th>Người thu</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sample.map((item: any, index: number) => (
+                    <tr key={index}>
+                      <td>{item.patientSampleResponse.fullName}</td>
+                      <td>{item.patientSampleResponse.gender}</td>
+                      <td>{item.patientSampleResponse.dateOfBirth}</td>
+                      <td>{item.patientSampleResponse.relationship}</td>
+                      <td>{item.sampleResponse.sampleType}</td>
+                      <td>{item.sampleResponse.sampleCode}</td>
+                      <td>{item.sampleResponse.collectionDate}</td>
+                      <td>{item.staffSampleResponse.fullName}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : null}
         </div>
       ) : (
         // Không có lịch tại nhà thì hiện slot
         <div className={styles.slotsContainer}>
-          {slots.filter((slot) => slot.slotResponse.slotStatus === 'BOOKED').length > 0 ? (
+          {slots.filter((slot) => slot.slotResponse.slotStatus === 'BOOKED')
+            .length > 0 ? (
             <div className={styles.slotsGrid}>
               {slots
                 .filter((slot) => slot.slotResponse.slotStatus === 'BOOKED')
@@ -359,12 +537,15 @@ export const CollectSampleAtHome = () => {
                     key={slot.slotResponse.slotId}
                     className={styles.slotButton}
                     onClick={() =>
-                      navigate(`/s-page/checkAppointment/${slot.slotResponse.slotId}`)
+                      navigate(
+                        `/s-page/checkAppointment/${slot.slotResponse.slotId}`
+                      )
                     }
                   >
                     <div>Slot {slot.slotResponse.slotId}</div>
                     <div>
-                      {slot.slotResponse.startTime} ~ {slot.slotResponse.endTime}
+                      {slot.slotResponse.startTime} ~{' '}
+                      {slot.slotResponse.endTime}
                     </div>
                   </button>
                 ))}
@@ -378,39 +559,6 @@ export const CollectSampleAtHome = () => {
       )}
 
       {/* Bảng mẫu đã thu */}
-      {sample.length > 0 ? (
-        <div className={styles.tableContainer}>
-          <h2 className={styles.subTitle}>Danh sách mẫu đã nhập</h2>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Họ tên</th>
-                <th>Giới tính</th>
-                <th>Ngày sinh</th>
-                <th>Quan hệ</th>
-                <th>Loại mẫu</th>
-                <th>Mã mẫu</th>
-                <th>Ngày thu</th>
-                <th>Người thu</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sample.map((item: any, index: number) => (
-                <tr key={index}>
-                  <td>{item.patientSampleResponse.fullName}</td>
-                  <td>{item.patientSampleResponse.gender}</td>
-                  <td>{item.patientSampleResponse.dateOfBirth}</td>
-                  <td>{item.patientSampleResponse.relationship}</td>
-                  <td>{item.sampleResponse.sampleType}</td>
-                  <td>{item.sampleResponse.sampleCode}</td>
-                  <td>{item.sampleResponse.collectionDate}</td>
-                  <td>{item.staffSampleResponse.fullName}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : null}
     </div>
   );
 };

@@ -209,24 +209,39 @@ const CreateResultAllele = () => {
           <div className={styles.resultTableContainer}>
             <div className={styles.header}>
               <h2 className={styles.title}>Kết quả Allele</h2>
-              <p className={styles.subtitle}>Thông tin chi tiết kết quả phân tích DNA</p>
+              <p className={styles.subtitle}>
+                Thông tin chi tiết kết quả phân tích DNA
+              </p>
             </div>
 
             <div className={styles.patientInfo}>
               <div className="row">
                 <div className="col-md-6">
-                  <p><strong>Bệnh nhân:</strong> {alleleResultData.patientAppointmentResponse?.fullName}</p>
+                  <p>
+                    <strong>Bệnh nhân:</strong>{' '}
+                    {alleleResultData.patientAppointmentResponse?.fullName}
+                  </p>
                 </div>
                 <div className="col-md-6">
-                  <p><strong>Loại mẫu:</strong> {alleleResultData.sampleAlleleResponse?.[0]?.sampleType || 'Không có dữ liệu'}</p>
+                  <p>
+                    <strong>Loại mẫu:</strong>{' '}
+                    {alleleResultData.sampleAlleleResponse?.[0]?.sampleType ||
+                      'Không có dữ liệu'}
+                  </p>
                 </div>
               </div>
               <div className="row">
                 <div className="col-md-6">
-                  <p><strong>Ngày nhận mẫu:</strong> {new Date().toLocaleDateString('vi-VN')}</p>
+                  <p>
+                    <strong>Ngày nhận mẫu:</strong>{' '}
+                    {new Date().toLocaleDateString('vi-VN')}
+                  </p>
                 </div>
                 <div className="col-md-6">
-                  <p><strong>Tổng số allele:</strong> {alleleResultData.resultAlleleResponse?.length || 0}</p>
+                  <p>
+                    <strong>Tổng số allele:</strong>{' '}
+                    {alleleResultData.resultAlleleResponse?.length || 0}
+                  </p>
                 </div>
               </div>
             </div>
@@ -247,16 +262,26 @@ const CreateResultAllele = () => {
                     (allele: any, index: number) => (
                       <tr key={allele.alleleId}>
                         <td>{index + 1}</td>
-                        <td><span className="badge bg-primary">{allele.locusName || 'N/A'}</span></td>
-                        <td><strong>{allele.alleleValue}</strong></td>
+                        <td>
+                          <span className="badge bg-primary">
+                            {allele.locusName || 'N/A'}
+                          </span>
+                        </td>
+                        <td>
+                          <strong>{allele.alleleValue}</strong>
+                        </td>
                         <td>{allele.allelePosition}</td>
                         <td>
                           <span className="badge bg-success">
-                            {allele.status === 'ENTERED' ? 'Đã nhập' :
-                             allele.status === 'VALID' ? 'Hợp lệ' :
-                             allele.status === 'DONE' ? 'Hoàn thành' :
-                             allele.status === 'SUSPECT' ? 'Nghi ngờ' : 
-                             allele.status || 'Đã xác nhận'}
+                            {allele.status === 'ENTERED'
+                              ? 'Đã nhập'
+                              : allele.status === 'VALID'
+                              ? 'Hợp lệ'
+                              : allele.status === 'DONE'
+                              ? 'Hoàn thành'
+                              : allele.status === 'SUSPECT'
+                              ? 'Nghi ngờ'
+                              : allele.status || 'Đã xác nhận'}
                           </span>
                         </td>
                       </tr>
@@ -270,14 +295,18 @@ const CreateResultAllele = () => {
               <div className="row text-center">
                 <div className="col-md-4">
                   <div className="p-3 bg-light rounded">
-                    <h5 className="text-primary">{alleleResultData.resultAlleleResponse?.length || 0}</h5>
+                    <h5 className="text-primary">
+                      {alleleResultData.resultAlleleResponse?.length || 0}
+                    </h5>
                     <small className="text-muted">Tổng Allele</small>
                   </div>
                 </div>
                 <div className="col-md-4">
                   <div className="p-3 bg-light rounded">
                     <h5 className="text-success">
-                      {alleleResultData.resultAlleleResponse?.filter((a: any) => a.status === 'VALID' || a.status === 'DONE').length || 0}
+                      {alleleResultData.resultAlleleResponse?.filter(
+                        (a: any) => a.status === 'VALID' || a.status === 'DONE'
+                      ).length || 0}
                     </h5>
                     <small className="text-muted">Hợp lệ</small>
                   </div>
@@ -285,7 +314,9 @@ const CreateResultAllele = () => {
                 <div className="col-md-4">
                   <div className="p-3 bg-light rounded">
                     <h5 className="text-warning">
-                      {alleleResultData.resultAlleleResponse?.filter((a: any) => a.status === 'SUSPECT').length || 0}
+                      {alleleResultData.resultAlleleResponse?.filter(
+                        (a: any) => a.status === 'SUSPECT'
+                      ).length || 0}
                     </h5>
                     <small className="text-muted">Nghi ngờ</small>
                   </div>
