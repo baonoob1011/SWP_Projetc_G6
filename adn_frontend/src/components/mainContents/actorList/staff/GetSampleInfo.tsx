@@ -132,7 +132,7 @@ const GetSampleInfo = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>🧬 Danh Sách Mẫu Đã Thu</div>
+      <div className={styles.header}> Danh Sách Mẫu Đã Thu</div>
 
       {/* Stats Cards */}
       {samples.length > 0 && (

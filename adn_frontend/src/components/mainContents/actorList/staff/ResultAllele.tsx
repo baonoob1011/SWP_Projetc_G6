@@ -119,7 +119,7 @@ const CreateResultAllele = () => {
     <div className={styles.container}>
       <div className={styles.formCard}>
         <div className={styles.header}>
-          <h1 className={styles.title}>🧬 Ghi Kết Quả Allele</h1>
+          <h1 className={styles.title}>Ghi Kết Quả Allele</h1>
           <p className={styles.subtitle}>Nhập thông tin allele cho mẫu DNA</p>
         </div>
 
@@ -207,39 +207,91 @@ const CreateResultAllele = () => {
       {alleleResultData &&
         alleleResultData.resultAlleleResponse?.length > 0 && (
           <div className={styles.resultTableContainer}>
-            <h2 className={styles.subTitle}>🧬 Kết quả Allele</h2>
+            <div className={styles.header}>
+              <h2 className={styles.title}>Kết quả Allele</h2>
+              <p className={styles.subtitle}>Thông tin chi tiết kết quả phân tích DNA</p>
+            </div>
 
-            <p>
-              <strong>Bệnh nhân:</strong>{' '}
-              {alleleResultData.patientAppointmentResponse?.fullName}
-            </p>
+            <div className={styles.patientInfo}>
+              <div className="row">
+                <div className="col-md-6">
+                  <p><strong>Bệnh nhân:</strong> {alleleResultData.patientAppointmentResponse?.fullName}</p>
+                </div>
+                <div className="col-md-6">
+                  <p><strong>Loại mẫu:</strong> {alleleResultData.sampleAlleleResponse?.[0]?.sampleType || 'Không có dữ liệu'}</p>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-6">
+                  <p><strong>Ngày nhận mẫu:</strong> {new Date().toLocaleDateString('vi-VN')}</p>
+                </div>
+                <div className="col-md-6">
+                  <p><strong>Tổng số allele:</strong> {alleleResultData.resultAlleleResponse?.length || 0}</p>
+                </div>
+              </div>
+            </div>
 
-            <p>
-              <strong>Loại mẫu:</strong>{' '}
-              {alleleResultData.sampleAlleleResponse?.[0]?.sampleType ||
-                'Không có dữ liệu'}
-            </p>
+            <div className="table-responsive">
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>STT</th>
+                    <th>Locus</th>
+                    <th>Giá trị Allele</th>
+                    <th>Vị trí Allele</th>
+                    <th>Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {alleleResultData.resultAlleleResponse.map(
+                    (allele: any, index: number) => (
+                      <tr key={allele.alleleId}>
+                        <td>{index + 1}</td>
+                        <td><span className="badge bg-primary">{allele.locusName || 'N/A'}</span></td>
+                        <td><strong>{allele.alleleValue}</strong></td>
+                        <td>{allele.allelePosition}</td>
+                        <td>
+                          <span className="badge bg-success">
+                            {allele.status === 'ENTERED' ? 'Đã nhập' :
+                             allele.status === 'VALID' ? 'Hợp lệ' :
+                             allele.status === 'DONE' ? 'Hoàn thành' :
+                             allele.status === 'SUSPECT' ? 'Nghi ngờ' : 
+                             allele.status || 'Đã xác nhận'}
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  )}
+                </tbody>
+              </table>
+            </div>
 
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>STT</th>
-                  <th>Giá trị Allele</th>
-                  <th>Vị trí Allele</th>
-                </tr>
-              </thead>
-              <tbody>
-                {alleleResultData.resultAlleleResponse.map(
-                  (allele: any, index: number) => (
-                    <tr key={allele.alleleId}>
-                      <td>{index + 1}</td>
-                      <td>{allele.alleleValue}</td>
-                      <td>{allele.allelePosition}</td>
-                    </tr>
-                  )
-                )}
-              </tbody>
-            </table>
+            <div className={styles.tableSummary}>
+              <div className="row text-center">
+                <div className="col-md-4">
+                  <div className="p-3 bg-light rounded">
+                    <h5 className="text-primary">{alleleResultData.resultAlleleResponse?.length || 0}</h5>
+                    <small className="text-muted">Tổng Allele</small>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="p-3 bg-light rounded">
+                    <h5 className="text-success">
+                      {alleleResultData.resultAlleleResponse?.filter((a: any) => a.status === 'VALID' || a.status === 'DONE').length || 0}
+                    </h5>
+                    <small className="text-muted">Hợp lệ</small>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="p-3 bg-light rounded">
+                    <h5 className="text-warning">
+                      {alleleResultData.resultAlleleResponse?.filter((a: any) => a.status === 'SUSPECT').length || 0}
+                    </h5>
+                    <small className="text-muted">Nghi ngờ</small>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
     </div>

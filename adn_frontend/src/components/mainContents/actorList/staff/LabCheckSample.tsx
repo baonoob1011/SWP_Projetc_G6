@@ -79,93 +79,134 @@ export const LabCheckSample = () => {
   // Empty state nếu không có lịch hẹn
   if (!appointments || appointments.length === 0) {
     return (
-      <div className={styles.emptyState}>
-        <h3>Không có lịch hẹn nào</h3>
-        <p>Hiện tại bạn chưa có lịch hẹn nào để kiểm tra.</p>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Danh sách Lịch hẹn Lab</h1>
+        </div>
+        <div className={styles.emptyState}>
+          <h3>Không có lịch hẹn nào</h3>
+          <p>Hiện tại bạn chưa có lịch hẹn nào để kiểm tra.</p>
+        </div>
       </div>
     );
   }
 
+  // Filter only confirmed appointments
+  const confirmedAppointments = appointments.filter(
+    (appointmentItem) => 
+      appointmentItem.showAppointmentResponse?.appointmentStatus === 'CONFIRMED'
+  );
+
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Danh sách Lịch hẹn (Tại nhà & Trung tâm)</h1>
-      <div className={styles.tableContainer}>
-        <table className={styles.table}>
-          <thead className={styles.tableHeader}>
-            <tr>
-              <th className={styles.tableHeaderCell}>Họ tên</th>
-              <th className={styles.tableHeaderCell}>Ngày sinh</th>
-              <th className={styles.tableHeaderCell}>Giới tính</th>
-              <th className={styles.tableHeaderCell}>Quan hệ</th>
-              <th className={styles.tableHeaderCell}>Ngày hẹn</th>
-              <th className={styles.tableHeaderCell}>Loại dịch vụ</th>
-              <th className={styles.tableHeaderCell}>Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {appointments.map((appointmentItem: any) => {
-              const appointment = appointmentItem.showAppointmentResponse;
-              const appointmentId = appointment?.appointmentId;
-              const patients = appointmentItem.patientAppointmentResponse;
-
-              if (!appointment || appointment.appointmentStatus !== 'CONFIRMED')
-                return null;
-
-              // Nếu không có bệnh nhân, render một dòng duy nhất
-              if (!Array.isArray(patients) || patients.length === 0) {
-                return (
-                  <tr key={`no-patient-${appointmentId}`} className={styles.tableRow}>
-                    <td
-                      colSpan={4}
-                      className={styles.tableCell}
-                      style={{ fontStyle: 'italic', color: '#888' }}
-                    >
-                      Chưa có bệnh nhân
-                    </td>
-                    <td className={styles.tableCell}>{appointment?.appointmentDate}</td>
-                    <td className={styles.tableCell}>{appointment?.appointmentType}</td>
-                    <td className={styles.tableCell}>
-                      <NavLink
-                        to={`/s-page/get-appointment/${appointmentId}`}
-                        className={styles.viewBtn}
-                      >
-                        Xem
-                      </NavLink>
-                    </td>
-                  </tr>
-                );
-              }
-
-              // Nếu có bệnh nhân
-              return patients.map((patient: any, index: number) => {
-                const key = `${appointmentId}_${patient.patientId}`;
-                const isFirst = index === 0;
-
-                return (
-                  <tr key={key} className={styles.tableRow}>
-                    <td className={styles.tableCell}>{patient.fullName}</td>
-                    <td className={styles.tableCell}>{patient.dateOfBirth}</td>
-                    <td className={styles.tableCell}>{patient.gender}</td>
-                    <td className={styles.tableCell}>{patient.relationship}</td>
-                    <td className={styles.tableCell}>{appointment?.appointmentDate}</td>
-                    <td className={styles.tableCell}>{appointment?.appointmentType}</td>
-                    <td className={styles.tableCell}>
-                      {isFirst && (
-                        <NavLink
-                          to={`/s-page/get-appointment/${appointmentId}`}
-                          className={styles.viewBtn}
-                        >
-                          Xem
-                        </NavLink>
-                      )}
-                    </td>
-                  </tr>
-                );
-              });
-            })}
-          </tbody>
-        </table>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Danh sách Lịch hẹn Lab</h1>
       </div>
+
+      {confirmedAppointments.length > 0 ? (
+        <div>
+          {confirmedAppointments.map((appointmentItem, appointmentIndex) => {
+            const appointment = appointmentItem.showAppointmentResponse;
+            const appointmentId = appointment?.appointmentId;
+            const patients = appointmentItem.patientAppointmentResponse || [];
+            const appointmentDate = appointment?.appointmentDate;
+            const appointmentType = appointment?.appointmentType;
+
+            return (
+              <div key={appointmentId} className={styles.orderGroup}>
+                <div className={styles.orderHeader}>
+                  <div className={styles.orderInfo}>
+                    <div className={styles.orderBadge}>
+                      Lịch hẹn #{appointmentIndex + 1}
+                    </div>
+                    <div>Ngày hẹn: {appointmentDate}</div>
+                    <div className={styles.patientCount}>
+                      {patients.length} bệnh nhân
+                    </div>
+                    <div className={styles.orderBadge}>
+                      {appointmentType === 'HOME' ? 'Tại nhà' : 'Trung tâm'}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className={styles.tableContainer}>
+                  <table className={styles.table}>
+                    <thead className={styles.tableHeader}>
+                      <tr>
+                        <th className={styles.tableHeaderCell}>Họ tên</th>
+                        <th className={styles.tableHeaderCell}>Ngày sinh</th>
+                        <th className={styles.tableHeaderCell}>Giới tính</th>
+                        <th className={styles.tableHeaderCell}>Quan hệ</th>
+                        <th className={styles.tableHeaderCell}>Loại dịch vụ</th>
+                        <th className={styles.tableHeaderCell}>Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {patients.length > 0 ? (
+                        patients.map((patient: any, index: number) => {
+                          const key = `${appointmentId}_${patient.patientId}`;
+                          const isFirstPatient = index === 0;
+
+                          return (
+                            <tr 
+                              key={key} 
+                              className={`${styles.tableRow} ${isFirstPatient ? styles.firstPatientRow : ''}`}
+                            >
+                              <td className={styles.tableCell}>{patient.fullName}</td>
+                              <td className={styles.tableCell}>{patient.dateOfBirth}</td>
+                              <td className={styles.tableCell}>{patient.gender}</td>
+                              <td className={styles.tableCell}>{patient.relationship}</td>
+                              <td className={styles.tableCell}>
+                                {appointmentType === 'HOME' ? 'Tại nhà' : 'Trung tâm'}
+                              </td>
+                              {isFirstPatient && (
+                                <td
+                                  className={`${styles.tableCell} ${styles.statusColumn}`}
+                                  rowSpan={patients.length}
+                                >
+                                  <NavLink
+                                    to={`/s-page/get-appointment/${appointmentId}`}
+                                    className={styles.viewBtn}
+                                  >
+                                    Xem chi tiết
+                                  </NavLink>
+                                </td>
+                              )}
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr className={styles.tableRow}>
+                          <td
+                            colSpan={5}
+                            className={styles.tableCell}
+                            style={{ fontStyle: 'italic', color: '#6c757d', textAlign: 'center' }}
+                          >
+                            Chưa có bệnh nhân
+                          </td>
+                          <td className={`${styles.tableCell} ${styles.statusColumn}`}>
+                            <NavLink
+                              to={`/s-page/get-appointment/${appointmentId}`}
+                              className={styles.viewBtn}
+                            >
+                              Xem chi tiết
+                            </NavLink>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className={styles.emptyState}>
+          <h3>Không có lịch hẹn được xác nhận</h3>
+          <p>Hiện tại không có lịch hẹn nào ở trạng thái đã xác nhận.</p>
+        </div>
+      )}
     </div>
   );
 };
