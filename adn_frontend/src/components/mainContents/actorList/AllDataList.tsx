@@ -1,109 +1,88 @@
-import { Box, Button } from '@mui/material';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import styles from './AllDataList.module.css';
+import { Box, Button, Paper, TableContainer } from '@mui/material';
+import { NavLink, Outlet } from 'react-router-dom';
 
 const DataList = () => {
-  const location = useLocation();
-
-  const adminNavItems = [
-    { path: '/admin/user', label: 'Danh sách người dùng' },
-    { path: '/admin/manager', label: 'Danh sách quản lý' },
-    { path: '/admin/staff', label: 'Danh sách nhân viên' },
-    { path: '/admin/collector', label: 'Danh sách nhân viên thu mẫu' },
-    { path: '/admin/staff-at-home', label: 'Danh sách nhân viên dịch vụ tại nhà' },
-    { path: '/admin/cashier', label: 'Danh sách nhân viên thu ngân' },
-    { path: '/admin/technical', label: 'Danh sách nhân viên phòng lab' },
-    { path: '/admin/appointment', label: 'Danh sách lịch hẹn' },
-  ];
+  const linkStyle = {
+    backgroundColor: 'white',
+    color: 'black',
+    border: '1px solid #ccc',
+    borderRadius: '6px',
+    margin: '0 8px 8px 0',
+    padding: '6px 16px',
+    textTransform: 'none',
+    '&:hover': {
+      backgroundColor: '#f0f0f0',
+    },
+    '&.active': {
+      backgroundColor: '#1976d2',
+      color: 'white',
+    },
+  };
 
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <h1 className={styles.title}>Quản Trị Hệ Thống</h1>
-        <p className={styles.subtitle}>Quản lý toàn bộ dữ liệu và người dùng trong hệ thống</p>
-      </div>
-
-      {/* Content Card */}
-      <div className={styles.contentCard}>
-        {/* Navigation */}
-        <div className={styles.navigationContainer}>
-          <div className={styles.breadcrumb}>
-            <span className={styles.breadcrumbItem}>Admin</span>
-            <span className={styles.breadcrumbSeparator}>›</span>
-            <span>Danh sách dữ liệu</span>
-          </div>
-          
-          <div className={`${styles.navigationGrid} ${styles.adminNav}`}>
-            {adminNavItems.map((item) => (
-              <Button
-                key={item.path}
-                component={NavLink}
-                to={item.path}
-                className={`${styles.navButton} ${location.pathname === item.path ? styles.active : ''}`}
-              >
-                {item.label}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        {/* Content Area */}
-        <div className={styles.contentArea}>
-          <Outlet />
-        </div>
-      </div>
-    </div>
+    <TableContainer component={Paper} sx={{ p: 2 }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 2 }}>
+        <Button component={NavLink} to="/admin/user" sx={linkStyle}>
+          Danh sách người dùng
+        </Button>
+        <Button component={NavLink} to="/admin/manager" sx={linkStyle}>
+          Danh sách quản lý
+        </Button>
+        <Button component={NavLink} to="/admin/staff" sx={linkStyle}>
+          Danh sách nhân viên
+        </Button>
+        <Button component={NavLink} to="/admin/collector" sx={linkStyle}>
+          Danh sách nhân viên thu mẫu
+        </Button>
+        <Button component={NavLink} to="/admin/staff-at-home" sx={linkStyle}>
+          Danh sách nhân viên dịch vụ tại nhà
+        </Button>
+        <Button component={NavLink} to="/admin/cashier" sx={linkStyle}>
+          Danh sách nhân viên thu ngân
+        </Button>
+        <Button component={NavLink} to="/admin/technical" sx={linkStyle}>
+          Danh sách nhân viên phòng lab
+        </Button>
+        <Button component={NavLink} to="/admin/consultant" sx={linkStyle}>
+          Danh sách nhân viên tư vấn
+        </Button>
+      </Box>
+      <Outlet />
+    </TableContainer>
   );
 };
 
 export default DataList;
 
 export const DataList2 = () => {
-  const location = useLocation();
-
-  const managerNavItems = [
-    { path: '/manager/user', label: 'Danh sách người dùng' },
-    { path: '/manager/staff', label: 'Danh sách nhân viên' },
-  ];
+  const linkStyle = {
+    backgroundColor: 'white',
+    color: 'black',
+    border: '1px solid #ccc',
+    borderRadius: '6px',
+    margin: '0 8px 8px 0',
+    padding: '6px 16px',
+    textTransform: 'none',
+    '&:hover': {
+      backgroundColor: '#f0f0f0',
+    },
+    '&.active': {
+      backgroundColor: '#1976d2',
+      color: 'white',
+    },
+  };
 
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <h1 className={styles.title}>Quản Lý Dữ Liệu</h1>
-        <p className={styles.subtitle}>Quản lý người dùng và nhân viên trong phạm vi quyền hạn</p>
-      </div>
-
-      {/* Content Card */}
-      <div className={styles.contentCard}>
-        {/* Navigation */}
-        <div className={styles.navigationContainer}>
-          <div className={styles.breadcrumb}>
-            <span className={styles.breadcrumbItem}>Manager</span>
-            <span className={styles.breadcrumbSeparator}>›</span>
-            <span>Quản lý dữ liệu</span>
-          </div>
-          
-          <div className={`${styles.navigationGrid} ${styles.managerNav}`}>
-            {managerNavItems.map((item) => (
-              <Button
-                key={item.path}
-                component={NavLink}
-                to={item.path}
-                className={`${styles.navButton} ${location.pathname === item.path ? styles.active : ''}`}
-              >
-                {item.label}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        {/* Content Area */}
-        <div className={styles.contentArea}>
-          <Outlet />
-        </div>
-      </div>
-    </div>
+    <TableContainer component={Paper} sx={{ p: 2 }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 2 }}>
+        <Button component={NavLink} to="/manager/user" sx={linkStyle}>
+          Danh sách người dùng
+        </Button>
+        <Button component={NavLink} to="/manager/staff" sx={linkStyle}>
+          Danh sách nhân viên
+        </Button>
+      </Box>
+      <Outlet />
+    </TableContainer>
   );
 };

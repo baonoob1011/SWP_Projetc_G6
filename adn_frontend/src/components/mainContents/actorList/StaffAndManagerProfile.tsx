@@ -20,7 +20,7 @@ type OldProfile = {
 };
 
 type Profile = {
-  role: 'MANAGER' | 'STAFF' | 'CASHIER';
+  role: 'MANAGER' | 'STAFF' | 'CASHIER' | 'CONSULTANT';
 };
 
 const NewProfile = ({ role }: Profile) => {
@@ -70,6 +70,7 @@ const NewProfile = ({ role }: Profile) => {
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const apiMap = {
+      CONSULTANT: 'http://localhost:8080/api/staff/update-staff',
       CASHIER: 'http://localhost:8080/api/staff/update-staff',
       STAFF: 'http://localhost:8080/api/staff/update-staff',
       MANAGER: 'http://localhost:8080/api/manager/update-manager',
@@ -109,6 +110,7 @@ const NewProfile = ({ role }: Profile) => {
 
     try {
       const apiMap = {
+        CONSULTANT: 'http://localhost:8080/api/staff/verify-password',
         CASHIER: 'http://localhost:8080/api/staff/verify-password',
         STAFF: 'http://localhost:8080/api/staff/verify-password',
         MANAGER: 'http://localhost:8080/api/manager/verify-password',
@@ -156,6 +158,7 @@ const NewProfile = ({ role }: Profile) => {
 
     try {
       const apiMap = {
+        CONSULTANT: 'http://localhost:8080/api/staff/change-password',
         CASHIER: 'http://localhost:8080/api/staff/change-password',
         STAFF: 'http://localhost:8080/api/staff/change-password',
         MANAGER: 'http://localhost:8080/api/manager/change-password',
