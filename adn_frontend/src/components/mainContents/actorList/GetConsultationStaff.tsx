@@ -29,7 +29,7 @@ type Staff = {
   createAt: string;
 };
 
-function GetCollector() {
+function GetConsultationStaff() {
   const [account, setAccount] = useState<Staff[]>([]);
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +38,7 @@ function GetCollector() {
     const token = localStorage.getItem('token');
     try {
       const res = await fetch(
-        'http://localhost:8080/api/staff/get-all-staff-collector',
+        'http://localhost:8080/api/staff/get-all-consultant',
         {
           method: 'GET',
           headers: { Authorization: `Bearer ${token}` },
@@ -200,7 +200,7 @@ function GetCollector() {
       </TableContainer>
       <Button
         component={NavLink}
-        to="/signup-collector"
+        to="/signup-consultant"
         className="normal-case"
         style={{ textDecoration: 'none' }}
       >
@@ -210,4 +210,4 @@ function GetCollector() {
   );
 }
 
-export default GetCollector;
+export default GetConsultationStaff;
