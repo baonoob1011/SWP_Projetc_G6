@@ -8,12 +8,8 @@ import styles from './CollectorSlot.module.css';
 export const CheckAppointment = () => {
   const [slots, setSlots] = useState<any[]>([]);
   const [bills, setBills] = useState<any[]>([]);
-
   const [loading, setLoading] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<{
-    [key: string]: string;
-  }>({});
-
+  const [isHomeCollector, setIsHomeCollector] = useState(false);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
@@ -26,6 +22,9 @@ export const CheckAppointment = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      if (!res.ok) {
+        throw new Error('Not a center collector');
+      }
       const data = await res.json();
       setSlots(data);
     } catch (err) {
@@ -34,6 +33,7 @@ export const CheckAppointment = () => {
       setLoading(false);
     }
   };
+
   const fetchBill = async () => {
     setLoading(true);
     try {
@@ -43,6 +43,9 @@ export const CheckAppointment = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      if (!res.ok) {
+        throw new Error('Not a home collector');
+      }
       const data = await res.json();
       setBills(data);
     } catch (err) {

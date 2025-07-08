@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { CircularProgress } from '@mui/material';
 import { Check } from '@mui/icons-material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from './CollectorSlot.module.css';
 
