@@ -121,9 +121,6 @@ const GetSampleInfo = () => {
   // Helper function to get gender badge class
 
   const sampleStatusOptions = [
-    { value: 'COLLECTED', label: 'Đã thu thập mẫu' },
-    { value: 'IN_TRANSIT', label: 'Đang vận chuyển đến phòng xét nghiệm' },
-    { value: 'RECEIVED', label: 'Phòng xét nghiệm đã nhận' },
     { value: 'TESTING', label: 'Đang xét nghiệm' },
     { value: 'COMPLETED', label: 'Đã xét nghiệm xong' },
     { value: 'DAMAGED', label: 'Mẫu bị hỏng' },
@@ -132,7 +129,7 @@ const GetSampleInfo = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>🧬 Danh Sách Mẫu Đã Thu</div>
+      <div className={styles.header}> Danh Sách Mẫu Đã Thu</div>
 
       {/* Stats Cards */}
       {samples.length > 0 && (
@@ -219,9 +216,10 @@ const GetSampleInfo = () => {
                           patientName: item.patientSampleResponse.fullName,
                           sampleId: item.sampleResponse.sampleId,
                           appointmentId: appointmentId,
+                          patientId: item.patientSampleResponse.patientId,
                         }}
                       >
-                        📝 Ghi kết quả
+                        Ghi kết quả
                       </NavLink>
                     </td>
                   </tr>
@@ -236,7 +234,7 @@ const GetSampleInfo = () => {
               onClick={handleResult}
               className={styles.submitButton}
             >
-              🚀 Gửi kết quả
+              Gửi kết quả
             </button>
           </div>
         </>

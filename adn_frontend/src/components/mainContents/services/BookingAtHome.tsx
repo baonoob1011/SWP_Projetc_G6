@@ -21,6 +21,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { fieldLabels, type Patient, type Price } from '../type/FillFormType';
 import { Home, Person, Payment, LocationOn } from '@mui/icons-material';
+import CustomSnackBar from '../userinfor/Snackbar';
 
 const BookingAtHome = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
@@ -30,6 +31,16 @@ const BookingAtHome = () => {
   const [price, setPrice] = useState<Price[]>([]);
   const [selectedPrice, setSelectedPrice] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const relationshipOption = [
+    'Con',
+    'Ba',
+    'Mẹ',
+    'Ông',
+    'Bà',
+    'Cô',
+    'Chú',
+    'Cháu',
+  ];
   const [patientOne, setPatientOne] = useState<Patient>({
     fullName: '',
     email: '',
@@ -53,7 +64,11 @@ const BookingAtHome = () => {
     relationship: '',
     birthCertificate: '',
   });
-
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error',
+  });
   const handleInputPatientOne = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPatientOne((prev) => ({
@@ -139,7 +154,37 @@ const BookingAtHome = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const calculateAge = (dob: string): number => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    return m < 0 || (m === 0 && today.getDate() < birthDate.getDate())
+      ? age - 1
+      : age;
+  };
   const handleSubmit = async () => {
+    const validatePatients = (): boolean => {
+      const patients = [patientOne, patientTwo];
+      for (let i = 0; i < patients.length; i++) {
+        const p = patients[i];
+        const age = calculateAge(p.dateOfBirth);
+        if (age < 14 && !p.birthCertificate) {
+          toast.warning(
+            `Người thứ ${i + 1}: Trẻ dưới 14 tuổi phải có giấy khai sinh`
+          );
+          return false;
+        }
+        if (age >= 16 && !p.identityNumber) {
+          toast.warning(
+            `Người thứ ${i + 1}: Từ 16 tuổi trở lên phải có số CMND/CCCD`
+          );
+          return false;
+        }
+      }
+      return true;
+    };
     if (!serviceId) {
       toast.error('Service ID không hợp lệ');
       return;
@@ -149,7 +194,9 @@ const BookingAtHome = () => {
       toast.error('Vui lòng nhập địa chỉ');
       return;
     }
-
+    if (!validatePatients()) {
+      return; // Dừng submit nếu không hợp lệ
+    }
     setIsSubmitting(true);
 
     try {
@@ -191,8 +238,21 @@ const BookingAtHome = () => {
       );
 
       if (!res.ok) {
-        const errorText = await res.text();
-        toast.error(errorText);
+        let errorMessage = 'Không thể tạo'; // mặc định
+
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await res.json();
+          errorMessage = errorData.message || JSON.stringify(errorData);
+        } else {
+          errorMessage = await res.text();
+        }
+
+        setSnackbar({
+          open: true,
+          message: errorMessage,
+          severity: 'error',
+        });
       } else {
         toast.success('Đặt lịch thành công');
         navigate(`/u-profile`);
@@ -412,6 +472,43 @@ const BookingAtHome = () => {
                     }}
                   />
                 ))}
+                <FormControl
+                  size="small"
+                  sx={{
+                    minWidth: '250px',
+                    flex: '1 1 300px',
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: '#fff',
+                      '&:hover fieldset': {
+                        borderColor: '#2196f3',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: '#1976d2',
+                      },
+                    },
+                  }}
+                >
+                  <InputLabel>Mối quan hệ</InputLabel>
+                  <Select
+                    value={patientOne.relationship}
+                    onChange={(e) =>
+                      setPatientOne((prev) => ({
+                        ...prev,
+                        relationship: e.target.value,
+                      }))
+                    }
+                    input={
+                      <OutlinedInput label="Quan hệ với người xét nghiệm" />
+                    }
+                  >
+                    {relationshipOption.map((relation) => (
+                      <MenuItem key={relation} value={relation}>
+                        {' '}
+                        {relation}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Box>
 
               <Box>
@@ -508,6 +605,43 @@ const BookingAtHome = () => {
                     }}
                   />
                 ))}
+                <FormControl
+                  size="small"
+                  sx={{
+                    minWidth: '250px',
+                    flex: '1 1 300px',
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: '#fff',
+                      '&:hover fieldset': {
+                        borderColor: '#2196f3',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: '#1976d2',
+                      },
+                    },
+                  }}
+                >
+                  <InputLabel>Mối quan hệ</InputLabel>
+                  <Select
+                    value={patientTwo.relationship}
+                    onChange={(e) =>
+                      setPatientTwo((prev) => ({
+                        ...prev,
+                        relationship: e.target.value,
+                      }))
+                    }
+                    input={
+                      <OutlinedInput label="Quan hệ với người xét nghiệm" />
+                    }
+                  >
+                    {relationshipOption.map((relation) => (
+                      <MenuItem key={relation} value={relation}>
+                        {' '}
+                        {relation}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Box>
 
               <Box>
@@ -538,6 +672,7 @@ const BookingAtHome = () => {
                           transform: 'scale(1.2)',
                         }}
                       />
+
                       <Typography
                         component="label"
                         htmlFor={`two-gender-${gender}`}
@@ -594,6 +729,12 @@ const BookingAtHome = () => {
           </Button>
         </Paper>
       </Container>
+      <CustomSnackBar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </Box>
   );
 };

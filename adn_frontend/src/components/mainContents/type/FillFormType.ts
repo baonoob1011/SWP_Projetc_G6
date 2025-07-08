@@ -34,13 +34,16 @@ export type Patient = {
   birthCertificate: string;
 };
 
-export const fieldLabels: { name: keyof Patient; label: string; type?: string }[] = [
+export const fieldLabels: {
+  name: keyof Patient;
+  label: string;
+  type?: string;
+}[] = [
   { name: 'fullName', label: 'Họ và tên' },
   { name: 'email', label: 'Email', type: 'email' },
   { name: 'phone', label: 'Số điện thoại' },
   { name: 'address', label: 'Địa chỉ' },
   { name: 'dateOfBirth', label: 'Ngày sinh', type: 'date' },
   { name: 'identityNumber', label: 'CMND/CCCD' },
-  { name: 'relationship', label: 'Mối quan hệ' },
   { name: 'birthCertificate', label: 'Giấy khai sinh (nếu có)' },
 ];

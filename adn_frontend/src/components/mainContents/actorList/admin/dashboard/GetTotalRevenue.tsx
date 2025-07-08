@@ -12,7 +12,14 @@ import {
   Pie,
   Cell,
 } from 'recharts';
-import { DollarSign, TrendingUp, Target, RefreshCw, BarChart3, PieChart as PieChartLucide } from 'lucide-react';
+import {
+  DollarSign,
+  TrendingUp,
+  Target,
+  RefreshCw,
+  BarChart3,
+  PieChart as PieChartLucide,
+} from 'lucide-react';
 
 interface RevenueStats {
   totalRevenue: number;
@@ -119,7 +126,9 @@ const RevenueDashboard = () => {
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-3xl p-8 mb-6">
           <div className="flex items-center justify-center h-32">
             <div className="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent"></div>
-            <p className="text-white ml-4 text-lg font-medium">Đang tải dữ liệu doanh thu...</p>
+            <p className="text-white ml-4 text-lg font-medium">
+              Đang tải dữ liệu doanh thu...
+            </p>
           </div>
         </div>
       </div>
@@ -156,13 +165,16 @@ const RevenueDashboard = () => {
     },
     {
       label: 'Triệu VND',
-      value: `$${revenue?.totalRevenue ? Math.floor(revenue.totalRevenue / 1000000) : 0}M`,
+      value: `$${
+        revenue?.totalRevenue ? Math.floor(revenue.totalRevenue / 1000000) : 0
+      }M`,
       icon: TrendingUp,
       bgColor: 'bg-green-400',
     },
     {
       label: 'Trạng Thái',
-      value: revenue?.totalRevenue && revenue.totalRevenue > 0 ? 'Status' : '📊',
+      value:
+        revenue?.totalRevenue && revenue.totalRevenue > 0 ? 'Status' : '📊',
       icon: Target,
       bgColor: 'bg-orange-400',
     },
@@ -182,23 +194,30 @@ const RevenueDashboard = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="relative z-10">
           <h1 className="text-white text-3xl font-bold mb-2">
-           {revenue?.description || 'Tổng Doanh Thu'}
+            {revenue?.description || 'Tổng Doanh Thu'}
           </h1>
-          <p className="text-blue-100 text-lg mb-8">Tổng quan doanh thu và thống kê chi tiết</p>
-          
+          <p className="text-blue-100 text-lg mb-8">
+            Tổng quan doanh thu và thống kê chi tiết
+          </p>
+
           <div className="flex space-x-6">
             {headerCards.map((card, idx) => (
-              <div key={idx} className={`${card.bgColor} rounded-2xl p-4 min-w-[140px]`}>
+              <div
+                key={idx}
+                className={`${card.bgColor} rounded-2xl p-4 min-w-[140px]`}
+              >
                 <div className="text-white mb-1">
                   <card.icon size={32} />
                 </div>
                 <div className="text-white text-2xl font-bold mb-1">
                   {card.value}
                 </div>
-                <div className="text-white text-sm opacity-90">{card.label}</div>
+                <div className="text-white text-sm opacity-90">
+                  {card.label}
+                </div>
               </div>
             ))}
           </div>
@@ -240,7 +259,11 @@ const RevenueDashboard = () => {
             </div>
           </div>
           <div className="text-4xl font-bold text-gray-900 mb-2">
-            ${revenue?.totalRevenue ? Math.floor(revenue.totalRevenue / 1000000) : 0}M
+            $
+            {revenue?.totalRevenue
+              ? Math.floor(revenue.totalRevenue / 1000000)
+              : 0}
+            M
           </div>
           <div className="text-gray-600 text-sm mb-3">Triệu VND</div>
           <div className="flex items-center justify-between">
@@ -262,7 +285,9 @@ const RevenueDashboard = () => {
             </div>
           </div>
           <div className="text-4xl font-bold text-gray-900 mb-2">
-            {revenue?.totalRevenue && revenue.totalRevenue > 0 ? 'Status' : '📊'}
+            {revenue?.totalRevenue && revenue.totalRevenue > 0
+              ? 'Status'
+              : '📊'}
           </div>
           <div className="text-gray-600 text-sm mb-3">Trạng Thái</div>
           <div className="flex items-center justify-between">
@@ -286,7 +311,9 @@ const RevenueDashboard = () => {
               </div>
             </div>
           </div>
-          <div className="text-lg font-bold text-gray-900 mb-6">Cập nhật dữ liệu</div>
+          <div className="text-lg font-bold text-gray-900 mb-6">
+            Cập nhật dữ liệu
+          </div>
           <button
             onClick={fetchRevenue}
             disabled={loading}
@@ -307,35 +334,53 @@ const RevenueDashboard = () => {
                 <BarChart3 className="w-5 h-5 text-white" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
-                 Biểu Đồ Cột Doanh Thu
+                Biểu Đồ Cột Doanh Thu
               </h3>
             </div>
           </div>
           <ResponsiveContainer width="100%" height={350}>
-            <BarChart 
-              data={chartData} 
+            <BarChart
+              data={chartData}
               margin={{ top: 30, right: 40, left: 40, bottom: 30 }}
               barCategoryGap="30%"
             >
               <defs>
-                <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.9}/>
-                  <stop offset="50%" stopColor="#2563eb" stopOpacity={0.8}/>
-                  <stop offset="100%" stopColor="#1d4ed8" stopOpacity={0.7}/>
+                <linearGradient
+                  id="revenueGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.9} />
+                  <stop offset="50%" stopColor="#2563eb" stopOpacity={0.8} />
+                  <stop offset="100%" stopColor="#1d4ed8" stopOpacity={0.7} />
                 </linearGradient>
-                <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feDropShadow dx="0" dy="4" stdDeviation="8" floodColor="#2563eb" floodOpacity="0.3"/>
+                <filter
+                  id="shadow"
+                  x="-50%"
+                  y="-50%"
+                  width="200%"
+                  height="200%"
+                >
+                  <feDropShadow
+                    dx="0"
+                    dy="4"
+                    stdDeviation="8"
+                    floodColor="#2563eb"
+                    floodOpacity="0.3"
+                  />
                 </filter>
               </defs>
-              <CartesianGrid 
-                strokeDasharray="3 3" 
-                stroke="#e2e8f0" 
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#e2e8f0"
                 strokeOpacity={0.6}
                 horizontal={true}
                 vertical={false}
               />
-              <XAxis 
-                dataKey="name" 
+              <XAxis
+                dataKey="name"
                 tick={{ fontSize: 14, fill: '#475569', fontWeight: 500 }}
                 axisLine={false}
                 tickLine={false}
@@ -343,7 +388,9 @@ const RevenueDashboard = () => {
                 interval={0}
               />
               <YAxis
-                tickFormatter={(value) => `${(value / 1000000).toFixed(0)}M VND`}
+                tickFormatter={(value) =>
+                  `${(value / 1000000).toFixed(0)}M VND`
+                }
                 tick={{ fontSize: 12, fill: '#64748b', fontWeight: 500 }}
                 axisLine={false}
                 tickLine={false}
@@ -355,20 +402,25 @@ const RevenueDashboard = () => {
                   formatCurrencyTooltip(Number(value)),
                   'Doanh Thu',
                 ]}
-                labelStyle={{ color: '#1e293b', fontWeight: 600, fontSize: '14px' }}
+                labelStyle={{
+                  color: '#1e293b',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                }}
                 contentStyle={{
                   backgroundColor: 'rgba(255, 255, 255, 0.98)',
                   border: 'none',
                   borderRadius: '12px',
-                  boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                  boxShadow:
+                    '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
                   padding: '12px 16px',
                 }}
                 cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }}
               />
-              <Bar 
-                dataKey="value" 
+              <Bar
+                dataKey="value"
                 fill="url(#revenueGradient)"
-                radius={[8, 8, 0, 0]} 
+                radius={[8, 8, 0, 0]}
                 filter="url(#shadow)"
                 maxBarSize={120}
               />
@@ -384,7 +436,7 @@ const RevenueDashboard = () => {
                 <PieChartLucide className="w-5 h-5 text-white" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
-                 Tiến Độ Mục Tiêu
+                Tiến Độ Mục Tiêu
               </h3>
             </div>
           </div>

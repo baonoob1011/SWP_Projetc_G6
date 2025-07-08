@@ -55,7 +55,6 @@ import AppointmentSchedule from './components/mainContents/actorList/staff/Appoi
 
 // Quản lý cuộc hẹn
 import GetSampleInfo from './components/mainContents/actorList/staff/GetSampleInfo';
-import GetAppointmentByAdmin from './components/mainContents/actorList/admin/GetAppointment';
 
 // Quản lý dịch vụ & kết quả
 import Services from './components/mainContents/services/CreateServices';
@@ -69,8 +68,7 @@ import CreateResultAllele from './components/mainContents/actorList/staff/Result
 import BookingAtCenter from './components/mainContents/services/BookingAtCenter';
 import BookingAtHome from './components/mainContents/services/BookingAtHome';
 
-import CheckAppointment from './components/mainContents/actorList/staff/CheckAppointment';
-import { CollectorSlots } from './components/mainContents/actorList/staff/CollectorSlot';
+import { CollectSampleAtHome } from './components/mainContents/actorList/staff/CollectSampleAtHome';
 import GetCollector from './components/mainContents/actorList/GetCollector';
 import SignUpCollector from './components/mainContents/actorList/staff/SignUpCollector';
 import CreateBlog from './components/mainContents/services/CreateBlog';
@@ -95,6 +93,10 @@ import GetStaffTechnical from './components/mainContents/actorList/staff/GetStaf
 import SignUpStaffTechnical from './components/mainContents/actorList/staff/SignUpStaffTechnical';
 import GetBlogById from './components/mainContents/actorList/user/GetBlogById';
 import { LabCheckSample } from './components/mainContents/actorList/staff/LabCheckSample';
+import CollectSampleAtCenter from './components/mainContents/actorList/staff/CollectSampleAtCenter';
+import GetConsultationStaff from './components/mainContents/actorList/GetConsultationStaff';
+import SignUpConsultation from './components/mainContents/actorList/staff/SignUpConsultation';
+import GetConsultant from './components/mainContents/actorList/staff/ConsultantPage';
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
@@ -199,18 +201,18 @@ function App() {
                   }
                 />
                 <Route
-                  path="appointment"
-                  element={
-                    <ProtectedRoute allowedRoles={['ADMIN']}>
-                      <GetAppointmentByAdmin />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
                   path="staff-at-home"
                   element={
                     <ProtectedRoute allowedRoles={['ADMIN']}>
                       <GetStaffAtHome />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="consultant"
+                  element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <GetConsultationStaff />
                     </ProtectedRoute>
                   }
                 />
@@ -245,6 +247,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <SignUpStaffTechnical />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup-consultant"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <SignUpConsultation />
                   </ProtectedRoute>
                 }
               />
@@ -433,7 +443,7 @@ function App() {
                 path="/s-page/checkAppointment/:slotId"
                 element={
                   <ProtectedRoute allowedRoles={['STAFF', 'STAFF']}>
-                    <CheckAppointment />
+                    <CollectSampleAtCenter />
                   </ProtectedRoute>
                 }
               />
@@ -449,7 +459,7 @@ function App() {
                 path="/s-page/selectorSlot"
                 element={
                   <ProtectedRoute allowedRoles={['STAFF']}>
-                    <CollectorSlots />
+                    <CollectSampleAtHome />
                   </ProtectedRoute>
                 }
               />
@@ -725,7 +735,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
+            <Route
+              path="/consultation"
+              element={
+                <ProtectedRoute allowedRoles={['CONSULTANT']}>
+                  <GetConsultant />
+                </ProtectedRoute>
+              }
+            />
             {/* MANAGER */}
 
             <Route
@@ -747,8 +764,14 @@ function App() {
             <Route
               path="/s-m-profile"
               element={
-                <ProtectedRoute allowedRoles={['STAFF', 'MANAGER', 'CASHIER']}>
-                  <NewProfile role={role as 'STAFF' | 'MANAGER' | 'CASHIER'} />
+                <ProtectedRoute
+                  allowedRoles={['STAFF', 'MANAGER', 'CASHIER', 'CONSULTANT']}
+                >
+                  <NewProfile
+                    role={
+                      role as 'STAFF' | 'MANAGER' | 'CASHIER' | 'CONSULTANT'
+                    }
+                  />
                 </ProtectedRoute>
               }
             />

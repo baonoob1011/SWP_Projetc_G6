@@ -38,7 +38,6 @@ import {
 const BookingAtCenter = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
   const navigate = useNavigate();
-  const [auth, setAuth] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [slots, setSlots] = useState<SlotInfo[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
@@ -48,6 +47,16 @@ const BookingAtCenter = () => {
   const [selectedPrice, setSelectedPrice] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+  const relationshipOption = [
+    'Con',
+    'Ba',
+    'Mẹ',
+    'Ông',
+    'Bà',
+    'Cô',
+    'Chú',
+    'Cháu',
+  ];
   const [patientOne, setPatientOne] = useState<Patient>({
     fullName: '',
     email: '',
@@ -94,11 +103,6 @@ const BookingAtCenter = () => {
     }));
   };
 
-  // Kiểm tra token và auth
-  useEffect(() => {
-    setAuth(localStorage.getItem('role') === 'USER');
-  });
-
   // Fetch all locations when component mounts
   const fetchLocations = async () => {
     try {
@@ -122,10 +126,6 @@ const BookingAtCenter = () => {
         return;
       }
 
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-      }
-
       const data = await res.json();
       console.log('Locations data:', data);
       setLocations(data);
@@ -136,11 +136,11 @@ const BookingAtCenter = () => {
   };
 
   // Fetch slots for selected location
-  const fetchSlots = async () => {
+  const fetchSlots = async (locationId: string) => {
     setIsLoadingSlots(true);
     try {
       const res = await fetch(
-        `http://localhost:8080/api/slot/get-all-slot-user`,
+        `http://localhost:8080/api/slot/get-all-slot-user?locationId=${locationId}`,
         {
           method: 'GET',
           headers: {
@@ -222,7 +222,7 @@ const BookingAtCenter = () => {
     setSelectedSlot(''); // Reset selected slot when location changes
 
     if (locationId) {
-      fetchSlots();
+      fetchSlots(locationId);
     } else {
       setSlots([]);
     }
@@ -237,8 +237,38 @@ const BookingAtCenter = () => {
     const priceId = event.target.value;
     setSelectedPrice(priceId);
   };
+  const calculateAge = (dob: string): number => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    return m < 0 || (m === 0 && today.getDate() < birthDate.getDate())
+      ? age - 1
+      : age;
+  };
 
   const handleSubmit = async () => {
+    const validatePatients = (): boolean => {
+      const patients = [patientOne, patientTwo];
+      for (let i = 0; i < patients.length; i++) {
+        const p = patients[i];
+        const age = calculateAge(p.dateOfBirth);
+        if (age < 14 && !p.birthCertificate) {
+          toast.warning(
+            `Người thứ ${i + 1}: Trẻ dưới 14 tuổi phải có giấy khai sinh`
+          );
+          return false;
+        }
+        if (age >= 16 && !p.identityNumber) {
+          toast.warning(
+            `Người thứ ${i + 1}: Từ 16 tuổi trở lên phải có số CMND/CCCD`
+          );
+          return false;
+        }
+      }
+      return true;
+    };
+
     if (!selectedLocation) {
       toast.warning('Vui lòng chọn một địa điểm');
       return;
@@ -253,7 +283,9 @@ const BookingAtCenter = () => {
       toast.error('Service ID không hợp lệ');
       return;
     }
-
+    if (!validatePatients()) {
+      return; // Dừng submit nếu không hợp lệ
+    }
     setIsSubmitting(true);
     try {
       // Tạo request body theo format BE yêu cầu
@@ -284,7 +316,7 @@ const BookingAtCenter = () => {
       }
 
       if (!res.ok) {
-        let errorMessage = 'Không thể đăng ký'; // mặc định
+        let errorMessage = 'Không thể tạo'; // mặc định
 
         const contentType = res.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
@@ -318,34 +350,6 @@ const BookingAtCenter = () => {
   useEffect(() => {
     fetchPrice();
   }, []);
-
-  if (!auth) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '50vh',
-          backgroundColor: '#f8faff',
-        }}
-      >
-        <Paper
-          elevation={2}
-          sx={{
-            p: 4,
-            textAlign: 'center',
-            backgroundColor: '#fff',
-            borderRadius: 3,
-          }}
-        >
-          <Typography variant="h6" color="primary">
-            Đang kiểm tra quyền truy cập...
-          </Typography>
-        </Paper>
-      </Box>
-    );
-  }
 
   return (
     <Box
@@ -625,6 +629,43 @@ const BookingAtCenter = () => {
                     }}
                   />
                 ))}
+                <FormControl
+                  size="small"
+                  sx={{
+                    minWidth: '250px',
+                    flex: '1 1 300px',
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: '#fff',
+                      '&:hover fieldset': {
+                        borderColor: '#2196f3',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: '#1976d2',
+                      },
+                    },
+                  }}
+                >
+                  <InputLabel>Mối quan hệ</InputLabel>
+                  <Select
+                    value={patientOne.relationship}
+                    onChange={(e) =>
+                      setPatientOne((prev) => ({
+                        ...prev,
+                        relationship: e.target.value,
+                      }))
+                    }
+                    input={
+                      <OutlinedInput label="Quan hệ với người xét nghiệm" />
+                    }
+                  >
+                    {relationshipOption.map((relation) => (
+                      <MenuItem key={relation} value={relation}>
+                        {' '}
+                        {relation}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Box>
 
               <Box>
@@ -721,6 +762,43 @@ const BookingAtCenter = () => {
                     }}
                   />
                 ))}
+                <FormControl
+                  size="small"
+                  sx={{
+                    minWidth: '250px',
+                    flex: '1 1 300px',
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: '#fff',
+                      '&:hover fieldset': {
+                        borderColor: '#2196f3',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: '#1976d2',
+                      },
+                    },
+                  }}
+                >
+                  <InputLabel>Mối quan hệ</InputLabel>
+                  <Select
+                    value={patientTwo.relationship}
+                    onChange={(e) =>
+                      setPatientTwo((prev) => ({
+                        ...prev,
+                        relationship: e.target.value,
+                      }))
+                    }
+                    input={
+                      <OutlinedInput label="Quan hệ với người xét nghiệm" />
+                    }
+                  >
+                    {relationshipOption.map((relation) => (
+                      <MenuItem key={relation} value={relation}>
+                        {' '}
+                        {relation}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Box>
 
               <Box>
