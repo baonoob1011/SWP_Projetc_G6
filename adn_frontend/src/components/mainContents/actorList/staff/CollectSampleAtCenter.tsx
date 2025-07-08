@@ -26,6 +26,25 @@ const CollectSampleAtCenter = () => {
     { value: 'IN_TRANSIT', label: 'Đang vận chuyển' },
     { value: 'RECEIVED', label: 'Đã nhận tại phòng xét nghiệm' },
   ];
+  const Translation = (status: string) => {
+    switch (status) {
+      case 'REGISTERED':
+        return 'Đã đăng ký';
+      case 'SAMPLE_COLLECTED':
+        return 'Đã thu mẫu';
+      case 'IN_ANALYSIS':
+        return 'Đang phân tích mẫu';
+      case 'COMPLETED':
+        return 'Đã có kết quả';
+      case 'CANCELLED':
+        return 'Đã hủy xét nghiệm';
+      case 'NO_SHOW':
+        return 'Không đến';
+      default:
+        return 'Không rõ trạng thái';
+    }
+  };
+
   const fetchAppointment = async () => {
     try {
       setLoading(true);
@@ -245,10 +264,6 @@ const CollectSampleAtCenter = () => {
       'Đã đăng ký lịch xét nghiệm'
   );
 
-  const isPaid = appointments.some(
-    (a) => a.showAppointmentResponse?.note === 'Đã thanh toán'
-  );
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -270,9 +285,8 @@ const CollectSampleAtCenter = () => {
                 <th className={styles.tableHeaderCell}>Quan hệ</th>
                 <th className={styles.tableHeaderCell}>Trạng thái mẫu</th>
                 <th className={styles.tableHeaderCell}>Ghi chú</th>
-                {isPaid ? (
-                  <th className={styles.tableHeaderCell}>Vật xét nghiệm</th>
-                ) : null}
+                <th className={styles.tableHeaderCell}>Vật xét nghiệm</th>
+
                 {sampleStatus ? (
                   <th className={styles.tableHeaderCell}>Hủy</th>
                 ) : null}
@@ -337,10 +351,10 @@ const CollectSampleAtCenter = () => {
                         </td>
 
                         <td className={styles.tableCell}>
-                          {patient.patientStatus}
+                          {Translation(patient.patientStatus)}
                         </td>
 
-                        {isPaid ? (
+                        {
                           <td className={styles.tableCell}>
                             {isPaid ? (
                               <div className={styles.actionsContainer}>
@@ -376,7 +390,7 @@ const CollectSampleAtCenter = () => {
                               </span>
                             )}
                           </td>
-                        ) : null}
+                        }
                         {sampleStatus ? (
                           <td>
                             <button

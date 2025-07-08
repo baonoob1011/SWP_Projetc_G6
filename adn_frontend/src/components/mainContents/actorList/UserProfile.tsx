@@ -36,6 +36,7 @@ const NewProfile = () => {
     phone: '',
     address: '',
   });
+  // const [amount, setAmount] = useState<number>();
   const [editableField, setEditableField] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<
@@ -55,6 +56,26 @@ const NewProfile = () => {
       }
     }
   }, []);
+  // const handleFund = async () => {
+  //   try {
+  //     const res = await fetch(`http://localhost:8080/api/wallet/create`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `Bearer ${localStorage.getItem('token')}`,
+  //       },
+  //       body: JSON.stringify({ amount }), // Example amount
+  //     });
+  //     const redirectUrl = await res.text();
+  //     if (res.ok) {
+  //       window.location.href = redirectUrl;
+  //     } else {
+  //       toast.error('bị lỗi');
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

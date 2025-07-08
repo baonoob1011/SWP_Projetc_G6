@@ -17,9 +17,7 @@ const BlogList = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('http://localhost:8080/api/blog/get-all-blog', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
+        const res = await fetch('http://localhost:8080/api/blog/get-all-blog');
         if (!res.ok) throw new Error('Không thể lấy danh sách blog');
         const data: Blog[] = await res.json();
         setBlogs(data);

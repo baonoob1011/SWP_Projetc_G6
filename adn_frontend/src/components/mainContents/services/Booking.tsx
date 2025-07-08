@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import type { BookingHistoryItem } from '../type/BookingType';
@@ -10,12 +11,17 @@ import {
   FaChevronRight,
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import InvoicePopup from '../actorList/user/PopupInvoice';
 
 // ==== COMPONENT ====
 const Booking = () => {
   const [bookingList, setBookingList] = useState<BookingHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [showInvoicePopup, setShowInvoicePopup] = useState(false);
+  const [invoices, setInvoices] = useState<any[]>([]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 2;
   const navigate = useNavigate();
@@ -23,6 +29,24 @@ const Booking = () => {
     if (type === 'CENTER') return 'Lấy mẫu tại cơ sở';
     if (type === 'HOME') return 'Lấy mẫu tại nhà';
     return 'Không xác định';
+  };
+  const handleViewInvoice = async (appoinmentId: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/invoice/get-invoice-of-user?appointmentId=${appoinmentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (!res.ok) throw new Error('Lỗi khi lấy hóa đơn');
+      const data = await res.json();
+      setInvoices(data);
+      setShowInvoicePopup(true);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -303,19 +327,19 @@ const Booking = () => {
 
                 {/* Payment Info */}
                 {item.payments.length > 0 && (
-                  <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                    <div className="flex items-center justify-between">
+                  <div className="bg-gray-50 rounded-lg p-4 mb-4 space-y-4">
+                    {/* Thanh toán và Trạng thái */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <p className="text-sm text-gray-500">Thanh toán</p>
                         <p className="font-medium text-gray-900">
                           {item.payments[0].amount?.toLocaleString('vi-VN')} VNĐ
                         </p>
                       </div>
-                      <div></div>
-                      <div className="text-right">
+                      <div className="md:text-right">
                         <p className="text-sm text-gray-500">Trạng thái</p>
                         <span
-                          className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                          className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
                             item.payments[0].getPaymentStatus === 'PAID'
                               ? 'bg-green-100 text-green-800'
                               : 'bg-yellow-100 text-yellow-800'
@@ -327,18 +351,30 @@ const Booking = () => {
                         </span>
                       </div>
                     </div>
-                    <div>
-                      {item.show &&
-                      item.show.note &&
-                      item.show.note.length > 0 ? (
-                        <p className="text-sm text-gray-500">
-                          Trạng thái đơn đăng ký
-                        </p>
-                      ) : null}
 
-                      <p className="font-medium text-gray-900">
-                        {item.show.note}
-                      </p>
+                    {/* Note và Tên nhân viên */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        {item.show?.note && item.show.note.length > 0 && (
+                          <>
+                            <p className="text-sm text-gray-500">
+                              Trạng thái đơn đăng ký
+                            </p>
+                            <p className="font-medium text-gray-900">
+                              {item.show.note}
+                            </p>
+                          </>
+                        )}
+                      </div>
+
+                      {item.staff && item.staff.length > 0 && (
+                        <div className="md:text-right">
+                          <p className="text-sm text-gray-500">Tên nhân viên</p>
+                          <p className="font-medium text-gray-900">
+                            {item.staff.map((s) => s.fullName).join(', ')}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -381,6 +417,18 @@ const Booking = () => {
                       >
                         <FaMoneyBillWave className="mr-2" />
                         Thanh toán
+                      </button>
+                    )}
+                  {item.payments.length > 0 &&
+                    item.payments[0].getPaymentStatus === 'PAID' && (
+                      <button
+                        className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
+                        onClick={() =>
+                          handleViewInvoice(item.show.appointmentId.toString())
+                        }
+                      >
+                        <FaMoneyBillWave className="mr-2" />
+                        Hóa đơn
                       </button>
                     )}
 
@@ -481,6 +529,11 @@ const Booking = () => {
           </div>
         )}
       </div>
+      <InvoicePopup
+        visible={showInvoicePopup}
+        onClose={() => setShowInvoicePopup(false)}
+        invoices={invoices}
+      />
     </div>
   );
 };

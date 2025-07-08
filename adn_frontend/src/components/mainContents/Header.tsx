@@ -25,7 +25,7 @@ import {
 
 import { NavLink } from 'react-router-dom';
 
-import logo from '../../image/Logo.png';
+import Logo from '../../image/Logo.png';
 
 type HeaderProps = {
   fullName: string;
@@ -128,11 +128,12 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               }}
             >
               <img
-                src={logo}
+                src={Logo}
                 alt="GenLink Logo"
                 style={{
-                  height: 200,
-                  width: 'auto',
+                  height: 80,
+                  width: '180px',
+                  marginLeft: 90,
                 }}
               />
               <Box sx={{ display: { xs: 'none', sm: 'block' } }}></Box>

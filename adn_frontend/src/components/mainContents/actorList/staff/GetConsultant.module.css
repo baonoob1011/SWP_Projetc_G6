@@ -1,41 +1,210 @@
+/* Container và Layout */
 .container {
-  padding: 20px;
-  max-width: 800px;
+  padding: 2rem;
+  max-width: 1400px;
   margin: 0 auto;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.header {
+  margin-top:7%;
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #0d6efd 0%, #0d6efd 100%);
+  color: white;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border: 1px solid rgba(0, 0, 0, 0.125);
 }
 
 .title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.025em;
 }
 
-.loadingText,
-.emptyText {
+/* Loading và Empty States */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+  color: #6c757d;
+}
+
+.emptyState {
   text-align: center;
-  font-size: 16px;
-  color: #888;
+  padding: 3rem;
+  color: #6c757d;
+  background: white;
+  border-radius: 0.5rem;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  margin-top: 2rem;
 }
 
-.card {
-  background-color: #fff;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  margin-bottom: 15px;
-  border-left: 6px solid #007bff;
+.emptyState h3 {
+  color: #495057;
+  font-weight: 500;
 }
 
-.card p {
-  margin: 4px 0;
+/* Table Container */
+.tableContainer {
+  background: white;
+  overflow: hidden;
+  border: 2px solid #dee2e6;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 
-.statusConfirmed {
-  color: green;
-  font-weight: bold;
+.table {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: none;
 }
 
-.statusPending {
-  color: orange;
-  font-weight: bold;
+.tableHeader {
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+.tableHeaderCell {
+  padding: 1rem 1.25rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #495057;
+  border-right: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+  border-top: none;
+  border-left: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: #f8f9fa;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.tableHeaderCell:first-child {
+  border-left: none;
+}
+
+.tableHeaderCell:last-child {
+  border-right: none;
+}
+
+.tableRow {
+  transition: background-color 0.15s ease-in-out;
+  background: white;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.tableRow:hover {
+  background-color: #f8f9fa;
+}
+
+.tableCell {
+  padding: 1rem 1.25rem;
+  text-align: center;
+  vertical-align: middle;
+  border-right: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+  border-top: none;
+  border-left: none;
+  color: #212529;
+  font-weight: 400;
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.tableCell:first-child {
+  border-left: none;
+}
+
+.tableCell:last-child {
+  border-right: none;
+}
+
+.tableRow:last-child .tableCell {
+  border-bottom: none;
+}
+
+/* Select dropdown cho trạng thái */
+.selectStatus {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #212529;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 130px;
+  outline: none;
+  width: 90%;
+  max-width: 180px;
+  margin: 0;
+}
+
+.selectStatus:hover {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.1rem rgba(13, 110, 253, 0.1);
+}
+
+.selectStatus:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .tableHeaderCell,
+  .tableCell {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .selectStatus {
+    min-width: auto;
+    width: 100%;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .table {
+    font-size: 0.75rem;
+  }
+
+  .tableHeaderCell,
+  .tableCell {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .header {
+    padding: 1.5rem 1rem;
+  }
+
+  .selectStatus {
+    font-size: 0.75rem;
+    min-width: 120px;
+  }
 }
