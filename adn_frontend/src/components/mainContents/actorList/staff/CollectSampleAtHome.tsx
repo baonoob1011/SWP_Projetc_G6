@@ -453,36 +453,38 @@ export const CollectSampleAtHome = () => {
           );
         })}
         {sample.length > 0 ? (
-          <div className={styles.tableContainer}>
+          <div>
             <h2 className={styles.subTitle}>Danh sách mẫu đã nhập</h2>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Họ tên</th>
-                  <th>Giới tính</th>
-                  <th>Ngày sinh</th>
-                  <th>Quan hệ</th>
-                  <th>Loại mẫu</th>
-                  <th>Mã mẫu</th>
-                  <th>Ngày thu</th>
-                  <th>Người thu</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sample.map((item: any, index: number) => (
-                  <tr key={index}>
-                    <td>{item.patientSampleResponse.fullName}</td>
-                    <td>{item.patientSampleResponse.gender}</td>
-                    <td>{item.patientSampleResponse.dateOfBirth}</td>
-                    <td>{item.patientSampleResponse.relationship}</td>
-                    <td>{item.sampleResponse.sampleType}</td>
-                    <td>{item.sampleResponse.sampleCode}</td>
-                    <td>{item.sampleResponse.collectionDate}</td>
-                    <td>{item.staffSampleResponse.fullName}</td>
+            <div className={styles.collectedSamplesContainer}>
+              <table className={styles.collectedSamplesTable}>
+                <thead>
+                  <tr>
+                    <th>Họ tên</th>
+                    <th>Giới tính</th>
+                    <th>Ngày sinh</th>
+                    <th>Quan hệ</th>
+                    <th>Loại mẫu</th>
+                    <th>Mã mẫu</th>
+                    <th>Ngày thu</th>
+                    <th>Người thu</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {sample.map((item: any, index: number) => (
+                    <tr key={index}>
+                      <td>{item.patientSampleResponse.fullName}</td>
+                      <td>{item.patientSampleResponse.gender}</td>
+                      <td>{item.patientSampleResponse.dateOfBirth}</td>
+                      <td>{item.patientSampleResponse.relationship}</td>
+                      <td>{item.sampleResponse.sampleType}</td>
+                      <td>{item.sampleResponse.sampleCode}</td>
+                      <td>{item.sampleResponse.collectionDate}</td>
+                      <td>{item.staffSampleResponse.fullName}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         ) : null}
       </div>
