@@ -70,43 +70,57 @@ const GetConsultant = () => {
   }, []);
 
   return (
-    <div className={styles.container} style={{ marginTop: 50 }}>
-      <h2 className={styles.title}>Danh Sách Đăng Ký Tư Vấn</h2>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Danh Sách Đăng Ký Tư Vấn</h1>
+      </div>
 
       {loading ? (
-        <p className={styles.loadingText}>Đang tải dữ liệu...</p>
+        <div className={styles.loading}>
+          <p>Đang tải dữ liệu...</p>
+        </div>
       ) : consultants.length === 0 ? (
-        <p className={styles.emptyText}>Không có đăng ký tư vấn nào.</p>
+        <div className={styles.emptyState}>
+          <h3>Không có đăng ký tư vấn nào</h3>
+        </div>
       ) : (
-        consultants.map((item) => (
-          <div key={item.registerForConsultationId} className={styles.card}>
-            <p>
-               <strong>Họ Tên:</strong> {item.name}
-            </p>
-            <p>
-              <strong>SĐT:</strong> {item.phone}
-            </p>
-            <p>
-              <strong>Trạng Thái:</strong>{' '}
-              <select
-                value={item.consultationStatus}
-                onChange={(e) =>
-                  handleStatusChange(
-                    item.registerForConsultationId,
-                    e.target.value
-                  )
-                }
-                className={styles.selectStatus}
-              >
-                <option value="PENDING"> Chờ xử lý</option>
-                <option value="CONFIRMED"> Đã xác nhận</option>
-                <option value="IN_PROGRESS"> Đang tiến hành</option>
-                <option value="COMPLETED"> Hoàn thành</option>
-                <option value="CANCELLED"> Đã hủy</option>
-              </select>
-            </p>
-          </div>
-        ))
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead className={styles.tableHeader}>
+              <tr>
+                <th className={styles.tableHeaderCell}>Họ Tên</th>
+                <th className={styles.tableHeaderCell}>Số Điện Thoại</th>
+                <th className={styles.tableHeaderCell}>Trạng Thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              {consultants.map((item) => (
+                <tr key={item.registerForConsultationId} className={styles.tableRow}>
+                  <td className={styles.tableCell}>{item.name}</td>
+                  <td className={styles.tableCell}>{item.phone}</td>
+                  <td className={styles.tableCell}>
+                    <select
+                      value={item.consultationStatus}
+                      onChange={(e) =>
+                        handleStatusChange(
+                          item.registerForConsultationId,
+                          e.target.value
+                        )
+                      }
+                      className={styles.selectStatus}
+                    >
+                      <option value="PENDING">Chờ xử lý</option>
+                      <option value="CONFIRMED">Đã xác nhận</option>
+                      <option value="IN_PROGRESS">Đang tiến hành</option>
+                      <option value="COMPLETED">Hoàn thành</option>
+                      <option value="CANCELLED">Đã hủy</option>
+                    </select>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
