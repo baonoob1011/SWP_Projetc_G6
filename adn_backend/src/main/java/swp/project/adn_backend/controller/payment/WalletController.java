@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.InfoDTO.InvoiceDTO;
 import swp.project.adn_backend.dto.InfoDTO.PaymentInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.WalletInfoAmountDTO;
 import swp.project.adn_backend.dto.InfoDTO.WalletInfoDTO;
 import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
 import swp.project.adn_backend.dto.request.payment.WalletRequest;
@@ -17,6 +18,7 @@ import swp.project.adn_backend.service.payment.CreatePaymentService;
 import swp.project.adn_backend.service.payment.InvoiceService;
 import swp.project.adn_backend.service.payment.PaymentService;
 import swp.project.adn_backend.service.payment.VNPayService;
+import swp.project.adn_backend.service.wallet.WalletService;
 
 import java.util.List;
 import java.util.Map;
@@ -32,9 +34,10 @@ public class WalletController {
     private InvoiceService invoiceService;
     private InvoiceRepository invoiceRepository;
     private WalletTransactionRepository walletTransactionRepository;
+    private WalletService walletService;
 
     @Autowired
-    public WalletController(PaymentService paymentService, VNPayService vnPayService, PaymentService getPaymentService, CreatePaymentService createPaymentService, InvoiceService invoiceService, InvoiceRepository invoiceRepository, WalletTransactionRepository walletTransactionRepository) {
+    public WalletController(PaymentService paymentService, VNPayService vnPayService, PaymentService getPaymentService, CreatePaymentService createPaymentService, InvoiceService invoiceService, InvoiceRepository invoiceRepository, WalletTransactionRepository walletTransactionRepository, WalletService walletService) {
         this.paymentService = paymentService;
         this.vnPayService = vnPayService;
         this.getPaymentService = getPaymentService;
@@ -42,6 +45,7 @@ public class WalletController {
         this.invoiceService = invoiceService;
         this.invoiceRepository = invoiceRepository;
         this.walletTransactionRepository = walletTransactionRepository;
+        this.walletService = walletService;
     }
 
     @GetMapping("/get-all-payment")
@@ -103,6 +107,11 @@ public class WalletController {
         List<PaymentInfoDTO> list = getPaymentService.getAllPayment(authentication);
         return ResponseEntity.ok(list);
     }
+    @GetMapping("/get-amount")
+    public ResponseEntity<WalletInfoAmountDTO> getWalletAmount(Authentication authentication) {
+        return ResponseEntity.ok(walletService.getWalletAmount(authentication));
+    }
+
 //    @GetMapping("/return-order-payment")
 //    public
 }

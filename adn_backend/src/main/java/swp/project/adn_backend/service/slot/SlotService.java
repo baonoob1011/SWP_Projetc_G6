@@ -238,6 +238,55 @@ public class SlotService {
         }
         return fullSlotResponses;
     }
+    public List<GetFullSlotResponse> getAllSlotStaff(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+
+        Staff staffCheck = staffRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+        if(!staffCheck.getRole().equals("STAFF") ||
+                !staffCheck.getRole().equals("SAMPLE_COLLECTOR") ){
+            throw new RuntimeException("Bạn không được phân công slot");
+        }
+        List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();
+        List<Slot> slotList = slotRepository.findAll();
+        GetFullSlotResponse getAllServiceResponse = null;
+
+        for (Slot slot : slotList) {
+                SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
+
+                //lay room
+                RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
+                roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
+                roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
+                roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
+                roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
+
+//                //lay staff
+//                StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
+//                staffSlotResponse.setStaffId(slot.getStaff().getFirst().getStaffId());
+//                staffSlotResponse.setFullName(slot.getStaff().getFirst().getFullName());
+
+                List<StaffSlotResponse> staffSlotResponses = new ArrayList<>();
+                for (Staff staff : slot.getStaff()) {
+                    StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
+                    staffSlotResponse.setStaffId(staff.getStaffId());
+                    staffSlotResponse.setFullName(staff.getFullName());
+                    staffSlotResponses.add(staffSlotResponse);
+                }
+                GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
+                getFullSlotResponse.setSlotResponse(slotResponse);
+                getFullSlotResponse.setStaffSlotResponses(staffSlotResponses);
+                getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
+
+
+                //lay full response
+                fullSlotResponses.add(getFullSlotResponse);
+
+
+        }
+        return fullSlotResponses;
+    }
 
     @Transactional
     public List<GetFullSlotResponse> getAllSlotOfStaff(Authentication authentication) {

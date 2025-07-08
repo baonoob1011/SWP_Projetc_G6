@@ -72,10 +72,8 @@ public class KitDeliveryStatusService {
     public List<KitDeliveryStatusInfoStaffDTO> getKitDeliveryStatusStaff(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
-        System.out.println("userId from JWT: " + userId);
         Staff staff = staffRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-        System.out.println("staffId from DB: " + staff.getStaffId());
         if(!staff.getRole().equals("STAFF_AT_HOME")){
             throw new RuntimeException("Chỉ có nhân viên thu mẫu tại nhà mới có thể lấy");
         }

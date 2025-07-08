@@ -113,6 +113,7 @@ public class SecurityConfig {
             "/api/appointment/check-in-patient/**",
             "/api/slot/get-all-slot-of-staff/**",
             "/api/slot/get-all-slot/**",
+            "/api/slot/get-all-slot-staff/**",
             "/api/kit-delivery-status/update-kit-status/**",
             "/api/feedback/response-feedback",
             "/api/appointment/get-appointment-at-home-by-staff",

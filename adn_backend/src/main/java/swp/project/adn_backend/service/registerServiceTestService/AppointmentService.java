@@ -908,13 +908,14 @@ public class AppointmentService {
                 } else if (
                         appointment.getAppointmentType() == AppointmentType.HOME &&
                                 appointment.getServices().getServiceType() == ServiceType.CIVIL) {
-
+                    List<StaffAppointmentResponse> staff = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
                     ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
                     List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
                     KitAppointmentResponse kit = appointmentMapper.toKitAppointmentResponse(appointment.getServices().getKit());
                     List<PaymentAppointmentResponse> payments = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
 
                     AllAppointmentAtHomeResponse homeResponse = new AllAppointmentAtHomeResponse();
+                    homeResponse.setStaffAppointmentResponse(staff);
                     homeResponse.setShowAppointmentResponse(show);
                     homeResponse.setServiceAppointmentResponses(services);
                     homeResponse.setKitAppointmentResponse(kit);
@@ -999,8 +1000,6 @@ public class AppointmentService {
 
         List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
         List<AllAppointmentResult> results = new ArrayList<>();
-
-
         if (appointment1.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
             List<PatientAppointmentResponse> patientAppointmentResponse = appointmentMapper.toPatientAppointmentService(appointment1.getPatients());
             ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment1.getServices());

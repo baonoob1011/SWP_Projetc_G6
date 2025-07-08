@@ -10,6 +10,15 @@ public class AllAppointmentAtHomeResponse {
     private KitAppointmentResponse kitAppointmentResponse;
     private List<PriceAppointmentResponse> priceAppointmentResponse;
     private List<PaymentAppointmentResponse> paymentAppointmentResponses;
+    private List<StaffAppointmentResponse> staffAppointmentResponse;
+
+    public List<StaffAppointmentResponse> getStaffAppointmentResponse() {
+        return staffAppointmentResponse;
+    }
+
+    public void setStaffAppointmentResponse(List<StaffAppointmentResponse> staffAppointmentResponse) {
+        this.staffAppointmentResponse = staffAppointmentResponse;
+    }
 
     private UserAppointmentResponse userAppointmentResponses;
 

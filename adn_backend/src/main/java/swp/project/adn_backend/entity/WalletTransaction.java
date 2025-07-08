@@ -18,6 +18,7 @@ public class WalletTransaction {
     private String txnRef;
     @Enumerated(EnumType.STRING)
     private TransactionType type;
+    @Enumerated(EnumType.STRING)
     private TransactionStatus transactionStatus;
     private LocalDateTime timestamp;
     private String bankCode;

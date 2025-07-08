@@ -12,6 +12,7 @@ public enum Roles {
     PATIENT,
     COLLECTOR,
     CASHIER,
+    STAFF_AT_HOME,
     LAB_TECHNICIAN,
     CONSULTANT
     ;

@@ -38,6 +38,10 @@ public class SlotController {
     public ResponseEntity<List<GetFullSlotResponse>> getAllSlot( ) {
         return ResponseEntity.ok(slotService.getAllSlot());
     }
+     @GetMapping("/get-all-slot-staff")
+        public ResponseEntity<List<GetFullSlotResponse>> getAllSlotStaff( Authentication authentication) {
+            return ResponseEntity.ok(slotService.getAllSlotStaff(authentication));
+     }
 
     @GetMapping("/get-all-slot-of-staff")
     public ResponseEntity<List<GetFullSlotResponse>> getAllSlotOfStaff(Authentication authentication) {

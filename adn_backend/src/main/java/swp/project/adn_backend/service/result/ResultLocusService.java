@@ -100,6 +100,7 @@ public class ResultLocusService {
 
         Sample sample1 = sampleRepository.findById(sampleId1)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
+
         Sample sample2 = sampleRepository.findById(sampleId2)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
         Appointment appointment = appointmentRepository.findById(appointmentId)
