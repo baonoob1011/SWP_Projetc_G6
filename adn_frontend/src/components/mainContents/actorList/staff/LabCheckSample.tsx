@@ -93,7 +93,7 @@ export const LabCheckSample = () => {
 
   // Filter only confirmed appointments
   const confirmedAppointments = appointments.filter(
-    (appointmentItem) => 
+    (appointmentItem) =>
       appointmentItem.showAppointmentResponse?.appointmentStatus === 'CONFIRMED'
   );
 
@@ -128,7 +128,7 @@ export const LabCheckSample = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className={styles.tableContainer}>
                   <table className={styles.table}>
                     <thead className={styles.tableHeader}>
@@ -137,7 +137,7 @@ export const LabCheckSample = () => {
                         <th className={styles.tableHeaderCell}>Ngày sinh</th>
                         <th className={styles.tableHeaderCell}>Giới tính</th>
                         <th className={styles.tableHeaderCell}>Quan hệ</th>
-                        <th className={styles.tableHeaderCell}>Loại dịch vụ</th>
+                        <th className={styles.tableHeaderCell}>Tên dịch vụ</th>
                         <th className={styles.tableHeaderCell}>Thao tác</th>
                       </tr>
                     </thead>
@@ -148,16 +148,31 @@ export const LabCheckSample = () => {
                           const isFirstPatient = index === 0;
 
                           return (
-                            <tr 
-                              key={key} 
-                              className={`${styles.tableRow} ${isFirstPatient ? styles.firstPatientRow : ''}`}
+                            <tr
+                              key={key}
+                              className={`${styles.tableRow} ${
+                                isFirstPatient ? styles.firstPatientRow : ''
+                              }`}
                             >
-                              <td className={styles.tableCell}>{patient.fullName}</td>
-                              <td className={styles.tableCell}>{patient.dateOfBirth}</td>
-                              <td className={styles.tableCell}>{patient.gender}</td>
-                              <td className={styles.tableCell}>{patient.relationship}</td>
                               <td className={styles.tableCell}>
-                                {appointmentType === 'HOME' ? 'Tại nhà' : 'Trung tâm'}
+                                {patient.fullName}
+                              </td>
+                              <td className={styles.tableCell}>
+                                {patient.dateOfBirth}
+                              </td>
+                              <td className={styles.tableCell}>
+                                {patient.gender}
+                              </td>
+                              <td className={styles.tableCell}>
+                                {patient.relationship}
+                              </td>
+                              <td className={styles.tableCell}>
+                                {appointmentItem.serviceAppointmentResponses
+                                  ?.length > 0
+                                  ? appointmentItem.serviceAppointmentResponses
+                                      .map((s: any) => s.description)
+                                      .join(', ')
+                                  : '—'}
                               </td>
                               {isFirstPatient && (
                                 <td
@@ -180,11 +195,17 @@ export const LabCheckSample = () => {
                           <td
                             colSpan={5}
                             className={styles.tableCell}
-                            style={{ fontStyle: 'italic', color: '#6c757d', textAlign: 'center' }}
+                            style={{
+                              fontStyle: 'italic',
+                              color: '#6c757d',
+                              textAlign: 'center',
+                            }}
                           >
                             Chưa có bệnh nhân
                           </td>
-                          <td className={`${styles.tableCell} ${styles.statusColumn}`}>
+                          <td
+                            className={`${styles.tableCell} ${styles.statusColumn}`}
+                          >
                             <NavLink
                               to={`/s-page/get-appointment/${appointmentId}`}
                               className={styles.viewBtn}
