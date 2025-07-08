@@ -86,7 +86,6 @@ export default function Home() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
           body: JSON.stringify(consultation),
         }
@@ -952,22 +951,6 @@ export default function Home() {
                     className="hover:opacity-75 transition-opacity no-underline text-white block"
                   >
                     Xét nghiệm dân sự
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/service/at-home"
-                    className="hover:opacity-75 transition-opacity no-underline text-white block"
-                  >
-                    Xét nghiệm tại nhà
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/service/at-center"
-                    className="hover:opacity-75 transition-opacity no-underline text-white block"
-                  >
-                    Xét nghiệm tại cơ sở
                   </NavLink>
                 </li>
               </ul>
