@@ -138,7 +138,8 @@ public class DashboardService {
 
         // Đưa dữ liệu từ DB vào map để tra cứu nhanh
         for (Object[] result : results) {
-            LocalDate date = (LocalDate) result[0];
+            java.sql.Date sqlDate = (java.sql.Date) result[0];
+            LocalDate date = sqlDate.toLocalDate();
             Long revenue = (Long) result[1];
             revenueMap.put(date, revenue);
             totalRevenue += revenue;
