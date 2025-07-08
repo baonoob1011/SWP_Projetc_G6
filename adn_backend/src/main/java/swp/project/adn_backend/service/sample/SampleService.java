@@ -21,6 +21,7 @@ import swp.project.adn_backend.service.registerServiceTestService.AppointmentSer
 import swp.project.adn_backend.service.slot.StaffAssignmentTracker;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -40,9 +41,10 @@ public class SampleService {
     AppointmentMapper appointmentMapper;
     private StaffAssignmentTracker staffAssignmentTracker;
     AppointmentService appointmentService;
+    SlotRepository slotRepository;
 
     @Autowired
-    public SampleService(SampleRepository sampleRepository, SampleMapper sampleMapper, PatientRepository patientRepository, StaffRepository staffRepository, ServiceTestRepository serviceTestRepository, AppointmentRepository appointmentRepository, StaffMapper staffMapper, AllSampleResponseMapper allSampleResponseMapper, AppointmentMapper appointmentMapper, StaffAssignmentTracker staffAssignmentTracker) {
+    public SampleService(SampleRepository sampleRepository, SampleMapper sampleMapper, PatientRepository patientRepository, StaffRepository staffRepository, ServiceTestRepository serviceTestRepository, AppointmentRepository appointmentRepository, StaffMapper staffMapper, AllSampleResponseMapper allSampleResponseMapper, AppointmentMapper appointmentMapper, StaffAssignmentTracker staffAssignmentTracker, AppointmentService appointmentService, SlotRepository slotRepository) {
         this.sampleRepository = sampleRepository;
         this.sampleMapper = sampleMapper;
         this.patientRepository = patientRepository;
@@ -53,8 +55,11 @@ public class SampleService {
         this.allSampleResponseMapper = allSampleResponseMapper;
         this.appointmentMapper = appointmentMapper;
         this.staffAssignmentTracker = staffAssignmentTracker;
+        this.appointmentService = appointmentService;
+        this.slotRepository = slotRepository;
     }
 
+    @Transactional
     public SampleResponse collectSample(long patientId,
                                         long serviceId,
                                         long appointmentId,
@@ -89,25 +94,26 @@ public class SampleService {
         if (serviceTest.getKit().getQuantity() > 0) {
             serviceTest.getKit().setQuantity(serviceTest.getKit().getQuantity() - 1);
         }
-        List<Staff> labTechnician1 = labTechnician.stream()
-                .filter(lab -> "LAB_TECHNICIAN".equals(lab.getRole()))
-                .collect(Collectors.toList());
-
-        if (labTechnician1.isEmpty()) {
-            throw new RuntimeException("Không có nhân viên phòng lab");
-        }
+//        List<Staff> labTechnician1 = labTechnician.stream()
+//                .filter(lab -> "LAB_TECHNICIAN".equals(lab.getRole()))
+//                .collect(Collectors.toList());
+//
+//        if (labTechnician1.isEmpty()) {
+//            throw new RuntimeException("Không có nhân viên phòng lab");
+//        }
 
 // Đảm bảo index luôn nằm trong giới hạn danh sách
-        int selectedIndex = staffAssignmentTracker.getNextIndex(labTechnician1.size());
-        selectedIndex = selectedIndex % labTechnician1.size(); // fix an toàn
-        Staff selectedStaff = labTechnician1.get(selectedIndex);
+//        int selectedIndex = staffAssignmentTracker.getNextIndex(labTechnician1.size());
+//        selectedIndex = selectedIndex % labTechnician1.size(); // fix an toàn
+//        Staff selectedStaff = labTechnician1.get(selectedIndex);
 //        appointmentService.increaseStaffNotification(selectedStaff);
-        appointment.setStaff(selectedStaff);
+//        appointment.setStaff(selectedStaff);
         appointment.setNote("Đã lấy mẫu thành công");
         SampleResponse response = sampleMapper.toSampleResponse(sampleRepository.save(sample));
         return response;
     }
 
+    @Transactional
     public SampleResponse collectSampleAtHome(long patientId,
                                               long serviceId,
                                               long appointmentId,
@@ -137,20 +143,8 @@ public class SampleService {
         sample.setKit(serviceTest.getKit());
         sample.setAppointment(appointment);
         patient.setPatientStatus(PatientStatus.SAMPLE_COLLECTED);
-        List<Staff> labTechnician1 = labTechnician.stream()
-                .filter(lab -> "LAB_TECHNICIAN".equals(lab.getRole()))
-                .collect(Collectors.toList());
 
-        if (labTechnician1.isEmpty()) {
-            throw new RuntimeException("Không có nhân viên phòng lab");
-        }
 
-// Đảm bảo index luôn nằm trong giới hạn danh sách
-        int selectedIndex = staffAssignmentTracker.getNextIndex(labTechnician1.size());
-        selectedIndex = selectedIndex % labTechnician1.size(); // fix an toàn
-        Staff selectedStaff = labTechnician1.get(selectedIndex);
-//        appointmentService.increaseStaffNotification(selectedStaff);
-        appointment.setStaff(selectedStaff);
         appointment.setNote("Đã lấy mẫu thành công");
         SampleResponse response = sampleMapper.toSampleResponse(sampleRepository.save(sample));
         return response;
@@ -194,26 +188,62 @@ public class SampleService {
     public void updateSampleStatus(long sampleId,
                                    long appointmentId,
                                    SampleRequest sampleRequest) {
+        List<Staff> labTechnician = staffRepository.findAll();
+
         Sample sample = sampleRepository.findById(sampleId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         sample.setSampleStatus(sampleRequest.getSampleStatus());
         if (sampleRequest.getSampleStatus().equals(SampleStatus.DAMAGED)) {
-            appointment.setNote("Mẫu của bạn bị hỏng trong quá trình xử lý. Chúng tôi sẽ gửi lại bộ kit đến địa chỉ của bạn để tiến hành thu mẫu lần nữa.");
-            appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.PENDING);
+            appointment.setNote("Mẫu của bạn bị hỏng trong quá trình xử lý. bạn vui lòng đến cơ sở để lấy lại mẫu");
+//            appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.PENDING);
+            appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+            appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
+            appointment.setAppointmentType(AppointmentType.CENTER);
+//            appointment.setLocation(appointment.getLocation());
+            // ✅ Tìm slot vào ngày mai
+            LocalDate tomorrow = appointment.getAppointmentDate().plusDays(1);
+            List<Slot> slotsTomorrow = slotRepository.findBySlotDateAndSlotStatus(
+                    tomorrow, SlotStatus.AVAILABLE);
+            if (!slotsTomorrow.isEmpty()) {
+                Slot chosenSlot = slotsTomorrow.get(0);
+                appointment.setLocation(chosenSlot.getRoom().getLocation());// Lấy slot đầu tiên ngày mai
+                appointment.setSlot(chosenSlot);
+                appointment.setAppointmentDate(chosenSlot.getSlotDate());
+                chosenSlot.setSlotStatus(SlotStatus.BOOKED);
+            } else {
+                throw new RuntimeException("Không có slot nào");
+            }
         }
-        if (sampleRequest.getSampleStatus().equals(SampleStatus.REJECTED)) {
-            appointment.setNote("Mẫu của bạn không đạt yêu cầu trong quá trình xử lý. Chúng tôi sẽ gửi lại bộ kit đến địa chỉ của bạn để tiến hành thu mẫu lại trong thời gian sớm nhất.");
-            appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.PENDING);
+//        if (sampleRequest.getSampleStatus().equals(SampleStatus.REJECTED)) {
+//            appointment.setNote("Mẫu của bạn không đạt yêu cầu trong quá trình xử lý. Chúng tôi sẽ gửi lại bộ kit đến địa chỉ của bạn để tiến hành thu mẫu lại trong thời gian sớm nhất.");
+//            appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.PENDING);
+//        }
+        if (sampleRequest.getSampleStatus().equals(SampleStatus.RECEIVED)) {
+            for (Patient patient : appointment.getPatients()) {
+                patient.setPatientStatus(PatientStatus.IN_ANALYSIS);
+            }
+            appointment.setNote("Phòng xét nghiệm đã nhận mẫu");
+            List<Staff> labTechnician1 = labTechnician.stream()
+                    .filter(lab -> "LAB_TECHNICIAN".equals(lab.getRole()))
+                    .collect(Collectors.toList());
+
+            if (labTechnician1.isEmpty()) {
+                throw new RuntimeException("Không có nhân viên phòng lab");
+            }
+
+// Đảm bảo index luôn nằm trong giới hạn danh sách
+            int selectedIndex = staffAssignmentTracker.getNextIndex(labTechnician1.size());
+            selectedIndex = selectedIndex % labTechnician1.size(); // fix an toàn
+            Staff selectedStaff = labTechnician1.get(selectedIndex);
+//        appointmentService.increaseStaffNotification(selectedStaff);
+            appointment.setStaff(selectedStaff);
         }
 
         switch (sampleRequest.getSampleStatus()) {
             case IN_TRANSIT:
                 appointment.setNote("Đang vận chuyển đến phòng xét nghiệm");
-                break;
-            case RECEIVED:
-                appointment.setNote("Phòng xét nghiệm đã nhận mẫu");
                 break;
             case TESTING:
                 appointment.setNote("Mẫu đang được xét nghiệm");

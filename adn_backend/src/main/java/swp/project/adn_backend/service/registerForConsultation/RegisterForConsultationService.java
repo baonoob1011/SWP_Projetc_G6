@@ -50,9 +50,10 @@ public class RegisterForConsultationService {
     }
 
     @Transactional
-    public void updateConsultantStatus(long registerForConsultationId) {
+    public void updateConsultantStatus(long registerForConsultationId,
+                                       RegisterConsultationRequest registerConsultationRequest) {
         RegisterForConsultation registerForConsultation = registerForConsultationRepository.findById(registerForConsultationId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.CONSULTANT_REGISTER_NOT_EXISTED));
-        registerForConsultation.setConsultationStatus(ConsultationStatus.COMPLETED);
+        registerForConsultation.setConsultationStatus(registerConsultationRequest.getConsultationStatus());
     }
 }

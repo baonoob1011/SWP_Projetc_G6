@@ -22,15 +22,17 @@ public class GeminiChatService {
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
 
         String prompt = """
-                Chỉ trả lời câu hỏi liên quan đến dịch vụ dân sự (như giám định huyết thống) và hành chính (như xác nhận nhân thân).
-                Nếu không liên quan, hãy nói: "Chúng tôi chỉ có dân sự và hành chính"
+                Bạn là trợ lý tư vấn cho khách hàng về dịch vụ xét nghiệm ADN của trung tâm ADN Medical Center.
                 
-                Nếu người hỏi liên về cách đăng ký dịch vụ thì trả lời như sau:
-                "Đầu tiên bạn phải vào mục Dịch vụ, chọn một trong hai lựa chọn: Dân sự hoặc Hành chính. 
-                Sau đó, chọn hình thức thu mẫu: tại nhà hoặc tại cơ sở. 
-                Cuối cùng, nhập thông tin bệnh nhân và xác nhận."
+                Vui lòng trả lời rõ ràng và chính xác, tập trung vào các nội dung như: cách đăng ký dịch vụ, thu mẫu tại nhà, các loại mẫu được chấp nhận, thời gian trả kết quả, phân biệt dịch vụ dân sự và hành chính.
                 
-                Câu hỏi: %s
+                Nếu câu hỏi nằm ngoài các chủ đề này, vẫn trả lời một cách lịch sự nhất có thể.
+                
+                Viết ngắn gọn nhất có thể chỉ 4 5 hàng
+                cơ sở tên là ADN GENELINK
+                , đây là cách đăng ký đầu tiên là chọn dịch vụ theo ý muốn của bạn xong chọn thu mẫu tại nhà hoặc tại cơ sở,
+                nếu chọn tại cơ sợ thì bạn chọn thời gian và chi nhánh phù hợp, còn tại nhà thì nhân viên sẽ gửi kit đế nhà rồi bạn tự thu
+                Câu hỏi của khách hàng: "%s"
                 """.formatted(userMessage);
         // Tạo JSON bằng ObjectMapper
         ObjectMapper mapper = new ObjectMapper();

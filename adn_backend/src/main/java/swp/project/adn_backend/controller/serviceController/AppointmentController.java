@@ -60,6 +60,13 @@ public class AppointmentController {
                 priceId
         );
     }
+    // đánh vắng patient
+    @PutMapping("/check-in-patient")
+    public ResponseEntity<String> checkInPatient(@RequestParam long patientId,
+                                                 @RequestParam long appointmentId) {
+        appointmentService.patientCheckIn(patientId, appointmentId);
+        return ResponseEntity.ok("Bệnh nhân vắng mặt");
+    }
 
     @GetMapping("/get-appointment")
     public ResponseEntity<AllAppointmentResponse> getAppointmentForUserAtCenter(Authentication authentication) {
@@ -82,8 +89,9 @@ public class AppointmentController {
 //    }
 
     @GetMapping("/get-appointment-by-slot/{slotId}")
-    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentBySlot(@PathVariable("slotId") long slotId) {
-        return ResponseEntity.ok(appointmentService.getAppointmentBySlot(slotId));
+    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentBySlot(@PathVariable("slotId") long slotId,
+                                                                                     Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAppointmentBySlot(slotId,authentication));
     }
 
 

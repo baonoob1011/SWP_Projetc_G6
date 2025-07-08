@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import swp.project.adn_backend.dto.InfoDTO.UserResponse;
+import swp.project.adn_backend.dto.request.account.StaffAccountRequest;
 import swp.project.adn_backend.dto.request.roleRequest.ManagerRequest;
 import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
 import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
@@ -45,6 +46,23 @@ public class RegisterController {
         }
 
         Users user = userService.registerUserAccount(userDTO);
+        return ResponseEntity.ok(user);
+    }
+    @PostMapping("/staff-account-auto")
+    public ResponseEntity<?> registerAccount(
+            @RequestBody StaffAccountRequest userDTO,
+            Authentication authentication,
+            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error ->
+                    errors.put(error.getField(), error.getDefaultMessage())
+            );
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        Users user = userService.registerAccount(userDTO,authentication);
         return ResponseEntity.ok(user);
     }
 

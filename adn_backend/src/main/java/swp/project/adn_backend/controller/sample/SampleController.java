@@ -52,7 +52,7 @@ public class SampleController {
     }
 
 
-
+// lấy sample ra xem theo đơn đăng kí
     @GetMapping("/get-all-sample")
     public ResponseEntity<List<AllSampleResponse>> getAllSample(Authentication authentication,
                                                                 @RequestParam long appointmentId) {

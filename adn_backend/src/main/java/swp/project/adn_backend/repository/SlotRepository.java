@@ -7,6 +7,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import swp.project.adn_backend.entity.Kit;
 import swp.project.adn_backend.entity.Location;
 import swp.project.adn_backend.entity.Slot;
+import swp.project.adn_backend.enums.SlotStatus;
 
 import java.sql.Time;
 import java.time.LocalDate;
@@ -22,6 +23,21 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
             "AND (s.slotDate > CURRENT_DATE " +
             "OR (s.slotDate = CURRENT_DATE AND s.startTime > CURRENT_TIME))")
     List<Slot> findAllFutureSlots();
+
+    List<Slot> findBySlotDateAndSlotStatus(LocalDate slotDate, SlotStatus slotStatus);
+
+
+    @Query("SELECT DISTINCT s FROM Slot s JOIN s.staff staff " +
+            "WHERE LOWER(staff.role) = 'STAFF' OR LOWER(staff.role) = 'SAMPLE_COLLECTOR'")
+    List<Slot> findSlotsWithStaffHavingAllowedRoles();
+
+    @Query("SELECT s FROM Slot s WHERE s.slotStatus = :status AND " +
+            "(s.slotDate > :today OR (s.slotDate = :today AND s.endTime > :now))")
+    List<Slot> findAvailableFutureSlots(@Param("status") SlotStatus status,
+                                        @Param("today") LocalDate today,
+                                        @Param("now") LocalTime now);
+
+
 //
 //    @Query(value = """
 //    SELECT CASE

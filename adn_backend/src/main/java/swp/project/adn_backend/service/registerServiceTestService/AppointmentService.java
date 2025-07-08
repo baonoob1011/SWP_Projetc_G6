@@ -528,10 +528,10 @@ public class AppointmentService {
                     RoomAppointmentResponse room = new RoomAppointmentResponse();
                     room.setRoomName(appointment.getSlot().getRoom().getRoomName());
                     // Lọc bệnh nhân có trạng thái REGISTERED
-                    List<Patient> registeredPatients = appointment.getPatients().
-                            stream()
-                            .filter(p -> p.getPatientStatus() == PatientStatus.SAMPLE_COLLECTED)
-                            .collect(Collectors.toList());
+                    List<Patient> registeredPatients = appointment.getPatients();
+//                            stream()
+//                            .filter(p -> p.getPatientStatus() == PatientStatus.SAMPLE_COLLECTED)
+//                            .collect(Collectors.toList());
 
                     // Map các thông tin liên quan
                     List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
@@ -689,11 +689,22 @@ public class AppointmentService {
 
     //staff xem ds cuar slot ddos va lay mau
     // thiếu update
-    public List<AllAppointmentAtCenterResponse> getAppointmentBySlot(long slotId) {
+    public List<AllAppointmentAtCenterResponse> getAppointmentBySlot(long slotId,Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
         Slot slot = slotRepository.findById(slotId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SLOT_NOT_EXISTS));
         if (slot.getSlotStatus() == null) {
             throw new RuntimeException("Không có slot nào được booked");
+        }
+        Staff currentStaff = staffRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+        boolean isAssigned = slot.getStaff().stream()
+                .anyMatch(s -> s.getStaffId()==currentStaff.getStaffId() &&
+                        s.getRole().equals("SAMPLE_COLLECTOR"));
+
+        if (!isAssigned) {
+            throw new RuntimeException("Bạn Không Có Quyền Truy Cập Trang Này");
         }
         List<Appointment> appointmentList = slot.getAppointment();
         List<AllAppointmentAtCenterResponse> responses = new ArrayList<>();
@@ -703,10 +714,11 @@ public class AppointmentService {
                     && appointment.getSlot().getSlotStatus().equals(SlotStatus.BOOKED)) {
 
                 // Lọc bệnh nhân có trạng thái REGISTERED
-                List<Patient> registeredPatients = appointment.getPatients().stream()
-                        .filter(p -> p.getPatientStatus() == PatientStatus.REGISTERED
-                                || p.getPatientStatus() == PatientStatus.SAMPLE_COLLECTED)
-                        .collect(Collectors.toList());
+                List<Patient> registeredPatients = appointment.getPatients();
+//                        .stream()
+//                        .filter(p -> p.getPatientStatus() == PatientStatus.REGISTERED
+//                                || p.getPatientStatus() == PatientStatus.SAMPLE_COLLECTED)
+//                        .collect(Collectors.toList());
 
                 // Map các thông tin liên quan
                 List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
@@ -773,10 +785,10 @@ public class AppointmentService {
             if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
 
                 // Lọc bệnh nhân có trạng thái REGISTERED
-                List<Patient> registeredPatients = appointment.getPatients().
-                        stream()
-                        .filter(p -> p.getPatientStatus() == PatientStatus.REGISTERED)
-                        .collect(Collectors.toList());
+                List<Patient> registeredPatients = appointment.getPatients();
+//                        stream()
+//                        .filter(p -> p.getPatientStatus() == PatientStatus.REGISTERED)
+//                        .collect(Collectors.toList());
 
                 // Map các thông tin liên quan
                 List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
@@ -1083,7 +1095,11 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         appointment.setNote("Bệnh nhân vắng mặt nên không thể hoàn thành việc lấy mẫu");
+        appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
         patient.setPatientStatus(PatientStatus.NO_SHOW);
+        for (Payment payment: appointment.getPayments()){
+            payment.setPaymentStatus(PaymentStatus.REFUNDED);
+        }
     }
     @Transactional
     public void payAppointment(long paymentId, long appointmentId) {

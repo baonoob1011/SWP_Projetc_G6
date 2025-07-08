@@ -23,7 +23,7 @@ public class SendEmailService {
 
     public void sendOtpEmail(String toEmail, String otp) {
         Users user = userRepository.findByEmail(toEmail)
-                .orElseThrow(() -> new RuntimeException("Email does not exist."));
+                .orElseThrow(() -> new RuntimeException("Email ís existed."));
 
         // Check if the last OTP was sent within the last 1 minute
         if (user.getLastOtpSentTime() != null) {

@@ -17,8 +17,9 @@ public class RoomController {
     private RoomService roomService;
 
     @PostMapping("/create-room")
-    public ResponseEntity<Room> createRoom(@RequestBody RoomRequest roomRequest) {
-        return ResponseEntity.ok(roomService.createRoom(roomRequest));
+    public ResponseEntity<Room> createRoom(@RequestBody RoomRequest roomRequest,
+                                           @RequestParam long locationId) {
+        return ResponseEntity.ok(roomService.createRoom(roomRequest,locationId));
     }
 
     @GetMapping("/get-all-room")

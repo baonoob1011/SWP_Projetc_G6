@@ -27,8 +27,9 @@ public class RegisterForConsultationController {
     }
 
     @PutMapping("/update-register-consultation-status")
-    public ResponseEntity<String> updateConsultantStatus(@RequestParam long registerForConsultationId) {
-        registerForConsultationService.updateConsultantStatus(registerForConsultationId);
+    public ResponseEntity<String> updateConsultantStatus(@RequestParam long registerForConsultationId,
+                                                         @RequestBody RegisterConsultationRequest registerConsultationRequest) {
+        registerForConsultationService.updateConsultantStatus(registerForConsultationId,registerConsultationRequest);
         return ResponseEntity.ok("Update Status Successful");
     }
 }

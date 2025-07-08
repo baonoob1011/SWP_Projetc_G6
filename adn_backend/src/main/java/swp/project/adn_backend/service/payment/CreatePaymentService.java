@@ -1,22 +1,18 @@
 package swp.project.adn_backend.service.payment;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
-import swp.project.adn_backend.entity.Appointment;
-import swp.project.adn_backend.entity.Invoice;
-import swp.project.adn_backend.entity.Payment;
-import swp.project.adn_backend.entity.ServiceTest;
-import swp.project.adn_backend.enums.ErrorCodeUser;
-import swp.project.adn_backend.enums.PaymentMethod;
-import swp.project.adn_backend.enums.PaymentStatus;
-import swp.project.adn_backend.enums.TransactionStatus;
+import swp.project.adn_backend.dto.request.payment.WalletRequest;
+import swp.project.adn_backend.entity.*;
+import swp.project.adn_backend.enums.*;
 import swp.project.adn_backend.exception.AppException;
-import swp.project.adn_backend.repository.InvoiceRepository;
-import swp.project.adn_backend.repository.PaymentRepository;
-import swp.project.adn_backend.repository.ServiceTestRepository;
+import swp.project.adn_backend.repository.*;
 import swp.project.adn_backend.service.registerServiceTestService.AppointmentService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -29,13 +25,19 @@ public class CreatePaymentService {
     private final ServiceTestRepository serviceTestRepository;
     private final InvoiceRepository invoiceRepository;
     private AppointmentService appointmentService;
+    private UserRepository userRepository;
+    private final WalletRepository walletRepository;
+    private WalletTransactionRepository walletTransactionRepository;
 
     @Autowired
-    public CreatePaymentService(PaymentRepository paymentRepository, ServiceTestRepository serviceTestRepository, InvoiceRepository invoiceRepository, AppointmentService appointmentService) {
+    public CreatePaymentService(PaymentRepository paymentRepository, ServiceTestRepository serviceTestRepository, InvoiceRepository invoiceRepository, WalletRepository walletRepository, AppointmentService appointmentService, UserRepository userRepository, WalletTransactionRepository walletTransactionRepository) {
         this.paymentRepository = paymentRepository;
         this.serviceTestRepository = serviceTestRepository;
         this.invoiceRepository = invoiceRepository;
+        this.walletRepository = walletRepository;
         this.appointmentService = appointmentService;
+        this.userRepository = userRepository;
+        this.walletTransactionRepository = walletTransactionRepository;
     }
 
     public CreatePaymentRequest createPayment(long paymentId, long serviceId) {
@@ -79,6 +81,49 @@ public class CreatePaymentService {
 
         return createPaymentRequest;
     }
+    public CreatePaymentRequest CreateWallet(Authentication authentication,
+                                             WalletRequest walletRequest) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+
+        Users users = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+        String txnRef = UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+
+        // Lấy ví hiện có hoặc tạo mới nếu chưa có
+        Wallet wallet = walletRepository.findByUser(users).orElse(null);
+        if (wallet == null) {
+            wallet = new Wallet();
+            wallet.setUser(users);
+            wallet.setBalance(walletRequest.getAmount());
+            wallet.setCreatedAt(LocalDate.now());
+        }
+
+        // Cộng tiền nạp
+        wallet.setBalance(wallet.getBalance() + walletRequest.getAmount());
+        wallet.setUpdatedAt(LocalDate.now());
+        walletRepository.save(wallet);
+
+        // Ghi lịch sử giao dịch nạp tiền
+        WalletTransaction walletTransaction = new WalletTransaction();
+        walletTransaction.setWallet(wallet); // ✅ bắt buộc
+        walletTransaction.setType(TransactionType.DEPOSIT);
+        walletTransaction.setAmount(walletRequest.getAmount());
+        walletTransaction.setTimestamp(LocalDateTime.now());
+        walletTransaction.setBankCode(generateRandomBankCode());
+        walletTransaction.setTransactionStatus(TransactionStatus.PENDING);
+        walletTransaction.setTxnRef(txnRef);
+        walletTransactionRepository.save(walletTransaction);
+
+        // Tạo request trả về để gọi VNPay
+        CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
+        createPaymentRequest.setAmount(walletRequest.getAmount());
+        createPaymentRequest.setOrderInfo("Nạp Tiền");
+        createPaymentRequest.setTxnRef(txnRef);
+        createPaymentRequest.setReturnUrlBase("http://localhost:5173/vnpay-payment/wallet");
+        return createPaymentRequest;
+    }
+
 
     private String generateRandomBankCode() {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -110,6 +155,15 @@ public class CreatePaymentService {
         System.out.println("✅ Invoice updated.");
 
     }
+    public void successPaymentWallet(String vnpTxnRef) {
+
+        WalletTransaction walletTransaction = walletTransactionRepository.findByTxnRef(vnpTxnRef)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.INVOICE_NOT_EXISTS));
+        walletTransaction.setTransactionStatus(TransactionStatus.SUCCESS);
+        walletTransaction.setTimestamp(LocalDateTime.now());
+        System.out.println("✅ Invoice updated.");
+
+    }
 
     public void failPayment(String vnpTxnRef, String responseCode) {
         Invoice invoice = invoiceRepository.findByTxnRef(vnpTxnRef)
@@ -129,5 +183,14 @@ public class CreatePaymentService {
         invoiceRepository.save(invoice);
         System.out.println("❌ Invoice marked as FAILED.");
     }
+    public void failPaymentWallet(String vnpTxnRef) {
+        WalletTransaction walletTransaction = walletTransactionRepository.findByTxnRef(vnpTxnRef)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.INVOICE_NOT_EXISTS));
+
+        walletTransaction.setTransactionStatus(TransactionStatus.FAILED);
+        walletTransaction.setTimestamp(LocalDateTime.now());
+        System.out.println("thanh Toán Thất bại");
+    }
+
 }
 

@@ -42,9 +42,11 @@ public class SlotService {
     EntityManager entityManager;
     RoomRepository roomRepository;
     NotificationRepository notificationRepository;
+    LocationRepository locationRepository;
+
 
     @Autowired
-    public SlotService(SlotMapper slotMapper, SlotRepository slotRepository, UserRepository userRepository, StaffRepository staffRepository, EntityManager entityManager, RoomRepository roomRepository, NotificationRepository notificationRepository) {
+    public SlotService(SlotMapper slotMapper, SlotRepository slotRepository, UserRepository userRepository, StaffRepository staffRepository, EntityManager entityManager, RoomRepository roomRepository, NotificationRepository notificationRepository, LocationRepository locationRepository) {
         this.slotMapper = slotMapper;
         this.slotRepository = slotRepository;
         this.userRepository = userRepository;
@@ -52,6 +54,7 @@ public class SlotService {
         this.entityManager = entityManager;
         this.roomRepository = roomRepository;
         this.notificationRepository = notificationRepository;
+        this.locationRepository = locationRepository;
     }
 
     public List<SlotResponse> createSlot(SlotRequest slotRequest, long roomId, List<StaffSlotRequest> staffSlotRequests) {
@@ -142,28 +145,32 @@ public class SlotService {
     }
 
 
-    public List<SlotInfoDTO> getAllUpcomingSlotsForUser() {
+    public List<SlotInfoDTO> getAllUpcomingSlotsForUser(long locationId) {
         LocalDate today = LocalDate.now();
         LocalTime now = LocalTime.now();
 
-        // ✅ Lấy đủ 2 ngày tương lai hợp lệ (bỏ T7/CN)
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.LOCATION_NOT_EXISTS));
+
+        // ✅ Lấy 2 ngày hợp lệ sắp tới (bỏ T7/CN)
         List<LocalDate> validDates = getNextWeekdays(today.plusDays(1), 2);
+        if (validDates.size() < 2) return Collections.emptyList();
 
-        if (validDates.size() < 2) return Collections.emptyList(); // Không đủ 2 ngày
+        List<SlotInfoDTO> result = new ArrayList<>();
 
-        // Không dùng BETWEEN nữa vì 2 ngày có thể không liên tiếp (ví dụ 27 và 30)
-        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.SlotInfoDTO(" +
-                "s.slotId, s.slotDate, s.startTime, s.endTime, s.slotStatus) " +
-                "FROM Slot s " +
-                "WHERE s.slotStatus = :slotStatus " +
-                "AND s.slotDate IN :dates";
+        for (Room room : location.getRooms()) {
+            for (Slot slot : room.getSlots()) {
+                if (slot.getSlotStatus() == SlotStatus.AVAILABLE &&
+                        validDates.contains(slot.getSlotDate())) {
+                    SlotInfoDTO slotInfoDTO=slotMapper.toSlotInfoDto(slot);
+                    result.add(slotInfoDTO);
+                }
+            }
+        }
 
-        TypedQuery<SlotInfoDTO> query = entityManager.createQuery(jpql, SlotInfoDTO.class);
-        query.setParameter("slotStatus", SlotStatus.AVAILABLE);
-        query.setParameter("dates", validDates); // dùng IN thay vì BETWEEN
-
-        return query.getResultList();
+        return result;
     }
+
 
 
     private List<LocalDate> getNextWeekdays(LocalDate fromDate, int count) {
@@ -183,12 +190,20 @@ public class SlotService {
 
 
     public List<GetFullSlotResponse> getAllSlot() {
+//        Jwt jwt = (Jwt) authentication.getPrincipal();
+//        Long userId = jwt.getClaim("id");
+//
+//        Staff staffCheck = staffRepository.findById(userId)
+//                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+//        if(!staffCheck.getRole().equals("STAFF") ||
+//                !staffCheck.getRole().equals("SAMPLE_COLLECTOR") ){
+//            throw new RuntimeException("Bạn không được phân công slot");
+//        }
         List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();
         List<Slot> slotList = slotRepository.findAll();
         GetFullSlotResponse getAllServiceResponse = null;
+
         for (Slot slot : slotList) {
-
-
                 SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
 
                 //lay room

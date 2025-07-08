@@ -20,15 +20,25 @@ public class Location {
     @Column(columnDefinition = "nvarchar(255)")
     String city;
 
-    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
     List<Appointment> appointment;
 
-    public Location(long locationId, String addressLine, String district, String city, List<Appointment> appointment) {
-        this.locationId = locationId;
-        this.addressLine = addressLine;
-        this.district = district;
-        this.city = city;
-        this.appointment = appointment;
+    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    List<Room> rooms;
+
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
     }
 
     public Location() {

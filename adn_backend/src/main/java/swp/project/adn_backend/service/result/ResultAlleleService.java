@@ -12,10 +12,7 @@ import swp.project.adn_backend.dto.request.result.ResultAlleleRequest;
 import swp.project.adn_backend.dto.request.result.ResultRequest;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.PatientAppointmentResponse;
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appointmentResult.SampleAppointmentResponse;
-import swp.project.adn_backend.dto.response.result.PatientAlleleResponse;
-import swp.project.adn_backend.dto.response.result.ResultAlleleResponse;
-import swp.project.adn_backend.dto.response.result.ResultResponse;
-import swp.project.adn_backend.dto.response.result.SampleAlleleResponse;
+import swp.project.adn_backend.dto.response.result.*;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.AlleleStatus;
 import swp.project.adn_backend.enums.ErrorCodeUser;
@@ -95,11 +92,14 @@ private AppointmentMapper appointmentMapper;
         PatientAlleleResponse patientAppointmentResponse=appointmentMapper.toPatientAppointmentResponse(patient);
         List<SampleAlleleResponse> sampleAlleleResponse=appointmentMapper.toSampleAlleleResponses(patient.getSamples());
         List<ResultAlleleResponse> resultAlleleResponseList=new ArrayList<>();
+        LocusResponse locusResponses = null;
         for (ResultAllele resultAllele:patient.getSamples().getFirst().getResultAlleles()){
             ResultAlleleResponse resultAlleleResponse= resultAlleleMapper.toResultAlleleResponse(resultAllele);
+             locusResponses=appointmentMapper.toLocusResponses(resultAllele.getLocus());
             resultAlleleResponseList.add(resultAlleleResponse);
         }
         AllAlleleResponse allAlleleResponse=new AllAlleleResponse();
+        allAlleleResponse.setLocusResponses(locusResponses);
         allAlleleResponse.setPatientAppointmentResponse(patientAppointmentResponse);
         allAlleleResponse.setSampleAlleleResponse(sampleAlleleResponse);
         allAlleleResponse.setResultAlleleResponse(resultAlleleResponseList);

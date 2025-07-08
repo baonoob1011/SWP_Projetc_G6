@@ -55,6 +55,7 @@ public class SecurityConfig {
             "/ws/**",                     // Cho phép WebSocket endpoint nếu dùng STOMP
             "/topic/**",
             "/app/**",
+            "/api/wallet/**",
             "/api/chat/**"
     };
     private final String[] CASHIER_ENDPOINTS = {
@@ -87,6 +88,7 @@ public class SecurityConfig {
             "/api/sample/get-all-sample/**",
             "/api/notification/get-notification/**",
             "/api/appointment/get-appointment-at-home-to-get-sample",
+            "/api/sample/update-status-sample/**",
             "/api/staff/**",
     };
     private final String[] CONSULTANT_PUBLIC = {
@@ -125,7 +127,6 @@ public class SecurityConfig {
             "/api/result-detail/create-result-detail/**",
             "/api/locus/get-all-locus",
             "/api/appointment/update-note",
-            "/api/sample/update-status-sample",
 
     };
     private final String[] MANAGER_ENDPOINTS = {

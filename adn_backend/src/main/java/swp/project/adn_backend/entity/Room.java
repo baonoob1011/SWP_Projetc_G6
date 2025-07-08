@@ -24,7 +24,18 @@ public class Room {
 
     @Column(name = "close_time")
     private LocalTime closeTime;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    @JoinColumn(name = "location_id")
+    Location location;
 
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    })
+    private List<Slot> slots;
 
     public Room() {
     }
@@ -48,12 +59,14 @@ public class Room {
         this.roomStatus = roomStatus;
     }
 
-    @OneToMany(mappedBy = "room", fetch = FetchType.EAGER, cascade = {
-           CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-   })
+    public Location getLocation() {
+        return location;
+    }
 
-    private List<Slot> slots;
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
 
     public long getRoomId() {
         return roomId;

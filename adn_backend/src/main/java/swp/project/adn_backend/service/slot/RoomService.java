@@ -7,11 +7,13 @@ import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.InfoDTO.RoomInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.StaffInfoDTO;
 import swp.project.adn_backend.dto.request.slot.RoomRequest;
+import swp.project.adn_backend.entity.Location;
 import swp.project.adn_backend.entity.Room;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.RoomStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.RoomMapper;
+import swp.project.adn_backend.repository.LocationRepository;
 import swp.project.adn_backend.repository.RoomRepository;
 
 import java.sql.Time;
@@ -22,17 +24,22 @@ public class RoomService {
     private RoomRepository roomRepository;
     private RoomMapper roomMapper;
     private EntityManager entityManager;
+    private LocationRepository locationRepository;
 
     @Autowired
-    public RoomService(RoomRepository roomRepository, RoomMapper roomMapper, EntityManager entityManager) {
+    public RoomService(RoomRepository roomRepository, RoomMapper roomMapper, EntityManager entityManager, LocationRepository locationRepository) {
         this.roomRepository = roomRepository;
         this.roomMapper = roomMapper;
         this.entityManager = entityManager;
+        this.locationRepository = locationRepository;
     }
 
-    public Room createRoom(RoomRequest roomRequest) {
+    public Room createRoom(RoomRequest roomRequest, long locationId) {
+        Location location=locationRepository.findById(locationId)
+                .orElseThrow(()->new AppException(ErrorCodeUser.LOCATION_NOT_EXISTS));
         Room room = roomMapper.toRoom(roomRequest);
         room.setRoomStatus(RoomStatus.AVAILABLE);
+        room.setLocation(location);
         return roomRepository.save(room);
     }
 

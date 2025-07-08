@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo;
 import swp.project.adn_backend.dto.InfoDTO.UserResponse;
+import swp.project.adn_backend.dto.request.account.StaffAccountRequest;
 import swp.project.adn_backend.dto.request.roleRequest.ManagerRequest;
 import swp.project.adn_backend.dto.request.roleRequest.StaffRequest;
 import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
@@ -35,6 +36,7 @@ import swp.project.adn_backend.repository.UserRepository;
 import swp.project.adn_backend.service.authService.SendEmailService;
 import org.springframework.mail.SimpleMailMessage;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -96,6 +98,42 @@ public class UserService {
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
     }
+
+    public Users registerAccount(StaffAccountRequest staffAccountRequest,
+                                 Authentication authentication) {
+        // Generate random username and password
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        Users userRegister = userRepository.findById(userId)
+
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+        String username = "staff_" + generateRandomString(5);
+        String password = generateRandomPassword(5);
+
+        // Create user and set random credentials
+        Users users = userMapper.toAccount(staffAccountRequest);
+        users.setUsername(username);
+        users.setPassword(passwordEncoder.encode(password));
+
+        // Set roles and create date
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Roles.STAFF.name());
+        users.setRoles(roles);
+        users.setCreateAt(LocalDate.now());
+        sendWelcomeEmail(users.getEmail(), users.getUsername(), password);
+        // Save user and return
+        userRepository.save(users);
+        Staff staff= staffMapper.toStaffAccount(staffAccountRequest);
+        staff.setRole("STAFF");
+        staff.setStaffId(users.getUserId());
+        staff.setCreateAt(LocalDate.now());
+        staff.setUsers(userRegister);
+        staffRepository.save(staff);
+        return users;
+
+    }
+
+
 
 
     public Users registerStaffAccount(StaffRequest staffRequest, Authentication authentication) {
@@ -595,6 +633,43 @@ public class UserService {
         if (!errors.isEmpty()) {
             throw new MultiFieldValidationException(errors);
         }
+    }
+    private void sendWelcomeEmail(String email, String username, String password) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Welcome to ADN Medical Center - Staff Account Created");
+        message.setText(
+                "Welcome to ADN Medical Center! Your staff account has been successfully created.\n\n" +
+                        "Your account details:\n" +
+                        "Username: " + username + "\n" +
+                        "Password: " + password + "\n\n" +
+                        "Email: " + email + "\n" +
+                        "You can now log in to the system using your credentials.\n\n" +
+                        "Best regards,\n" +
+                        "ADN Medical Center Team");
+
+        try {
+            sendEmailService.sendEmailCreateAccountSuccessful(email, message.getText());
+        } catch (Exception e) {
+            // Log error or handle email failure
+            throw new RuntimeException("Email send fail");
+        }
+    }
+    // Random string generator
+    private String generateRandomString(int length) {
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) sb.append((char) ('a' + random.nextInt(26)));
+        return sb.toString();
+    }
+
+    // Random password generator
+    private String generateRandomPassword(int length) {
+        SecureRandom random = new SecureRandom();
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+";
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) sb.append(chars.charAt(random.nextInt(chars.length())));
+        return sb.toString();
     }
 
 

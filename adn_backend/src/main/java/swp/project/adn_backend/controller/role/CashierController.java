@@ -47,11 +47,5 @@ public class CashierController {
         return ResponseEntity.ok(appointmentService.getAppointmentOfUser(authentication, userRequest));
     }
 
-    // đánh vắng patient
-    @PutMapping("/check-in-patient")
-    public ResponseEntity<String> checkInPatient(@RequestParam long patientId,
-                                                 @RequestParam long appointmentId) {
-        appointmentService.patientCheckIn(patientId, appointmentId);
-        return ResponseEntity.ok("Bệnh nhân vắng mặt");
-    }
+
 }

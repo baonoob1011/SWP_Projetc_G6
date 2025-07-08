@@ -1,6 +1,7 @@
 package swp.project.adn_backend.service.registerServiceTestService;
 
 import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.PatientAppointmentResponse;
+import swp.project.adn_backend.dto.response.result.LocusResponse;
 import swp.project.adn_backend.dto.response.result.PatientAlleleResponse;
 import swp.project.adn_backend.dto.response.result.ResultAlleleResponse;
 import swp.project.adn_backend.dto.response.result.SampleAlleleResponse;
@@ -11,6 +12,15 @@ public class AllAlleleResponse {
     private List<SampleAlleleResponse> sampleAlleleResponse;
     private PatientAlleleResponse patientAppointmentResponse;
     private List<ResultAlleleResponse> resultAlleleResponse;
+    private LocusResponse locusResponses;
+
+    public LocusResponse getLocusResponses() {
+        return locusResponses;
+    }
+
+    public void setLocusResponses(LocusResponse locusResponses) {
+        this.locusResponses = locusResponses;
+    }
 
     public AllAlleleResponse() {
     }

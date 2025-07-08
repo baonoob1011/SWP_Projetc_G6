@@ -35,7 +35,7 @@ public class SlotController {
     }
 
     @GetMapping("/get-all-slot")
-    public ResponseEntity<List<GetFullSlotResponse>> getAllSlot() {
+    public ResponseEntity<List<GetFullSlotResponse>> getAllSlot( ) {
         return ResponseEntity.ok(slotService.getAllSlot());
     }
 
@@ -45,8 +45,8 @@ public class SlotController {
     }
 
     @GetMapping("/get-all-slot-user")
-    public ResponseEntity<List<SlotInfoDTO>> getAllSlotUser() {
-        return ResponseEntity.ok(slotService.getAllUpcomingSlotsForUser());
+    public ResponseEntity<List<SlotInfoDTO>> getAllSlotUser(@RequestParam long locationId) {
+        return ResponseEntity.ok(slotService.getAllUpcomingSlotsForUser(locationId));
     }
 
     @DeleteMapping("/delete-slot/{slotId}")
