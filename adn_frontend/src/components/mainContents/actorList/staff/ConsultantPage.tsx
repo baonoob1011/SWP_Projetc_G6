@@ -7,6 +7,8 @@ const GetConsultant = () => {
   const [consultants, setConsultants] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
+
+
   const fetchConsultants = async () => {
     setLoading(true);
     try {
@@ -25,9 +27,11 @@ const GetConsultant = () => {
         setConsultants(data);
       } else {
         console.error('Lỗi khi lấy danh sách tư vấn');
+        toast.error('Không thể tải danh sách tư vấn');
       }
     } catch (error) {
       console.error('Lỗi kết nối API:', error);
+      toast.error('Lỗi kết nối mạng');
     } finally {
       setLoading(false);
     }
@@ -50,14 +54,14 @@ const GetConsultant = () => {
       );
 
       if (res.ok) {
-        toast.success('Cập nhật trạng thái thành công');
+        toast.success('Cập nhật trạng thái thành công!');
         fetchConsultants();
       } else {
-        toast.error('Cập nhật thất bại');
+        toast.error('Cập nhật thất bại. Vui lòng thử lại!');
       }
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
-      toast.error('Lỗi kết nối');
+      toast.error('Lỗi kết nối mạng');
     }
   };
 
@@ -72,12 +76,12 @@ const GetConsultant = () => {
       {loading ? (
         <p className={styles.loadingText}>Đang tải dữ liệu...</p>
       ) : consultants.length === 0 ? (
-        <p className={styles.emptyText}>Không có đăng ký nào.</p>
+        <p className={styles.emptyText}>Không có đăng ký tư vấn nào.</p>
       ) : (
         consultants.map((item) => (
           <div key={item.registerForConsultationId} className={styles.card}>
             <p>
-              <strong>Họ Tên:</strong> {item.name}
+               <strong>Họ Tên:</strong> {item.name}
             </p>
             <p>
               <strong>SĐT:</strong> {item.phone}
@@ -94,11 +98,11 @@ const GetConsultant = () => {
                 }
                 className={styles.selectStatus}
               >
-                <option value="PENDING">PENDING</option>
-                <option value="CONFIRMED">CONFIRMED</option>
-                <option value="IN_PROGRESS">IN_PROGRESS</option>
-                <option value="COMPLETED">COMPLETED</option>
-                <option value="CANCELLED">CANCELLED</option>
+                <option value="PENDING"> Chờ xử lý</option>
+                <option value="CONFIRMED"> Đã xác nhận</option>
+                <option value="IN_PROGRESS"> Đang tiến hành</option>
+                <option value="COMPLETED"> Hoàn thành</option>
+                <option value="CANCELLED"> Đã hủy</option>
               </select>
             </p>
           </div>
