@@ -135,6 +135,7 @@ public class AppointmentService {
         appointment.setAppointmentDate(slot.getSlotDate());
         appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
         appointment.setAppointmentType(AppointmentType.CENTER);
+        appointment.setNote("Chưa thanh toán");
         for (Staff staff : slot.getStaff()) {
             if (staff.getRole().equals("SAMPLE_COLLECTOR")) {
                 appointment.setStaff(staff);
@@ -1092,6 +1093,29 @@ public class AppointmentService {
             }
         }
         return appointmentResponses;
+    }
+    public void updateAppointmentToGetSampleAgain(long appointmentId){
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        appointment.setNote("Mẫu của bạn bị hỏng trong quá trình xử lý. bạn vui lòng đến cơ sở để lấy lại mẫu");
+//            appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.PENDING);
+        appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+        appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
+        appointment.setAppointmentType(AppointmentType.CENTER);
+//            appointment.setLocation(appointment.getLocation());
+        // ✅ Tìm slot vào ngày mai
+        LocalDate tomorrow = appointment.getAppointmentDate().plusDays(1);
+        List<Slot> slotsTomorrow = slotRepository.findBySlotDateAndSlotStatus(
+                tomorrow, SlotStatus.AVAILABLE);
+        if (!slotsTomorrow.isEmpty()) {
+            Slot chosenSlot = slotsTomorrow.get(0);
+            appointment.setLocation(chosenSlot.getRoom().getLocation());// Lấy slot đầu tiên ngày mai
+            appointment.setSlot(chosenSlot);
+            appointment.setAppointmentDate(chosenSlot.getSlotDate());
+            chosenSlot.setSlotStatus(SlotStatus.BOOKED);
+        } else {
+            throw new RuntimeException("Không có slot nào");
+        }
     }
 
     @Transactional

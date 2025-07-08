@@ -172,6 +172,12 @@ public class AppointmentController {
                 serviceId));
     }
 
+    @PutMapping("/book-appointment-again")
+    public ResponseEntity<String> updateAppointmentToGetSampleAgain(@RequestParam long appointmentId) {
+        appointmentService.updateAppointmentToGetSampleAgain(appointmentId);
+        return ResponseEntity.ok("update thanh cong");
+    }
+
     // tạo nút update appointment
     @PutMapping("/update-appointment-status")
     public ResponseEntity<String> updateAppointmentStatus(@RequestParam long slotId,

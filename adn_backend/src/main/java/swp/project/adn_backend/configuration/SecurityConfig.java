@@ -130,6 +130,7 @@ public class SecurityConfig {
             "/api/result-detail/create-result-detail/**",
             "/api/locus/get-all-locus",
             "/api/appointment/update-note",
+            "/api/appointment/book-appointment-again",
 
     };
     private final String[] MANAGER_ENDPOINTS = {

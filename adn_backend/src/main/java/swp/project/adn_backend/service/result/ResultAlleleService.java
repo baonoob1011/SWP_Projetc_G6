@@ -17,6 +17,7 @@ import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.AlleleStatus;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.ResultStatus;
+import swp.project.adn_backend.enums.SampleStatus;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.AppointmentMapper;
 import swp.project.adn_backend.mapper.ResultAlleleMapper;
@@ -58,6 +59,9 @@ private AppointmentMapper appointmentMapper;
 
         Sample sample = sampleRepository.findById(sampleId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
+        if(sample.getSampleStatus().equals(SampleStatus.REJECTED)){
+            throw new RuntimeException("Mẫu này bị từ chối");
+        }
         Locus locus = locusRepository.findById(locusId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.LOCUS_NOT_EXISTS));
         List<ResultAlleleResponse> responses = new ArrayList<>();
@@ -79,10 +83,12 @@ private AppointmentMapper appointmentMapper;
         allele2.setLocus(locus);
         resultAlleleRepository.save(allele2);
         responses.add(resultAlleleMapper.toResultAlleleResponse(allele2));
-        System.out.println("Allele1: " + request.getAllele1());  // cần in ra 11.0
-        System.out.println("Allele2: " + request.getAllele2());  // cần in ra 12.0
-        System.out.println("Status: " + request.getAlleleStatus());    // cần in ra ENTERED
-
+//        System.out.println("Allele1: " + request.getAllele1());  // cần in ra 11.0
+//        System.out.println("Allele2: " + request.getAllele2());  // cần in ra 12.0
+//        System.out.println("Status: " + request.getAlleleStatus());    // cần in ra ENTERED
+        if(request.getAlleleStatus().equals(AlleleStatus.INVALID)){
+            sample.setSampleStatus(SampleStatus.REJECTED);
+        }
         return responses;
     }
 

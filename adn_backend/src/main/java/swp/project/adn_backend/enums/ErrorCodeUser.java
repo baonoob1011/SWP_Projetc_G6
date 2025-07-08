@@ -14,6 +14,7 @@ public enum ErrorCodeUser {
     ROOM_TIME_INVALID(1003, "Phòng không hoạt động trong khoảng thời gian đã chọn", HttpStatus.BAD_REQUEST),
     TIME_EXISTED(1004, "Khung giờ bị trùng với một slot đã tồn tại trong cùng phòng", HttpStatus.BAD_REQUEST),
     SLOT_NOT_EXISTS(1005, "Slot không tồn tại", HttpStatus.BAD_REQUEST),
+    INVALID_SAMPLE_STATUS_TRANSITION(1005, "Không được quay lại trạng thái trước của mẫu", HttpStatus.BAD_REQUEST),
     LOCATION_NOT_EXISTS(1006, "Địa điểm không tồn tại", HttpStatus.BAD_REQUEST),
     DISCOUNT_NOT_EXISTS(1006, "Địa điểm không tồn tại", HttpStatus.BAD_REQUEST),
     PRICE_LIST_NOT_FOUND(1007, "Không tìm thấy bảng giá", HttpStatus.BAD_REQUEST),

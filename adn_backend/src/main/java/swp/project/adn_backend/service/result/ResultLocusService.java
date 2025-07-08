@@ -105,6 +105,10 @@ public class ResultLocusService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        if(sample1.getSampleStatus().equals(SampleStatus.REJECTED) ||
+                sample2.getSampleStatus().equals(SampleStatus.REJECTED)){
+            throw new RuntimeException("1 trong 2 mẫu này không hợp lệ");
+        }
         if (appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
             throw new RuntimeException("Đơn đăng kí này đã có kết quả");
         }

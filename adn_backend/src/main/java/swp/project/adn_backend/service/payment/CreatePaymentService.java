@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
 import swp.project.adn_backend.dto.request.payment.WalletRequest;
 import swp.project.adn_backend.entity.*;
@@ -81,6 +82,7 @@ public class CreatePaymentService {
 
         return createPaymentRequest;
     }
+    @Transactional
     public CreatePaymentRequest CreateWallet(Authentication authentication,
                                              WalletRequest walletRequest) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -100,7 +102,6 @@ public class CreatePaymentService {
         }
 
         // Cộng tiền nạp
-        wallet.setBalance(wallet.getBalance() + walletRequest.getAmount());
         wallet.setUpdatedAt(LocalDate.now());
         walletRepository.save(wallet);
 
@@ -136,6 +137,7 @@ public class CreatePaymentService {
         return result.toString();
     }
 
+    @Transactional
     public void successPayment(String vnpTxnRef, String responseCode) {
 
         Invoice invoice1 = invoiceRepository.findByTxnRef(vnpTxnRef)
@@ -155,12 +157,14 @@ public class CreatePaymentService {
         System.out.println("✅ Invoice updated.");
 
     }
+    @Transactional
     public void successPaymentWallet(String vnpTxnRef) {
 
         WalletTransaction walletTransaction = walletTransactionRepository.findByTxnRef(vnpTxnRef)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.INVOICE_NOT_EXISTS));
         walletTransaction.setTransactionStatus(TransactionStatus.SUCCESS);
         walletTransaction.setTimestamp(LocalDateTime.now());
+        walletTransaction.getWallet().setBalance( walletTransaction.getWallet().getBalance()+walletTransaction.getAmount());
         System.out.println("✅ Invoice updated.");
 
     }
@@ -183,6 +187,7 @@ public class CreatePaymentService {
         invoiceRepository.save(invoice);
         System.out.println("❌ Invoice marked as FAILED.");
     }
+    @Transactional
     public void failPaymentWallet(String vnpTxnRef) {
         WalletTransaction walletTransaction = walletTransactionRepository.findByTxnRef(vnpTxnRef)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.INVOICE_NOT_EXISTS));
