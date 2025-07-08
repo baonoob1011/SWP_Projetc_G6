@@ -42,7 +42,7 @@ const RevenueDashboard = () => {
 
       // Gọi API tổng doanh thu
       const revenueRes = await fetch(
-        'http://localhost:8080/api/dashboard/total-revenue',
+        'http://localhost:8080/api/dashboard/weekly-daily-revenue',
         {
           method: 'GET',
           headers: {

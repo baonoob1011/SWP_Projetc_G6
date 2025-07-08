@@ -7,6 +7,14 @@ const AppointmentSchedule = () => {
   const [homeSchedule, setHomeSchedule] = useState<any[]>([]);
   const [loadingHome, setLoadingHome] = useState(false);
   const [loadingRowId, setLoadingRowId] = useState<string | null>(null);
+  const translateCivilStatus = (status: string): string => {
+    switch (status) {
+      case 'CIVIL':
+        return 'Dân sự';
+      default:
+        return status; // fallback nếu không khớp
+    }
+  };
 
   const fetchScheduleAtHome = async () => {
     const token = localStorage.getItem('token');
@@ -129,6 +137,12 @@ const AppointmentSchedule = () => {
                       <p className={styles.infoValue}>
                         {item.showAppointmentResponse.appointmentDate}
                       </p>
+                      <div className={styles.infoItem}>
+                        <p className={styles.infoLabel}>Mã Kit</p>
+                        <p className={styles.infoValue}>
+                          {item.kitAppointmentResponse?.kitCode || '—'}
+                        </p>
+                      </div>
                     </div>
 
                     {/* Trạng thái */}
@@ -137,6 +151,12 @@ const AppointmentSchedule = () => {
                       <p className={styles.infoValue}>
                         {item.showAppointmentResponse.appointmentStatus}
                       </p>
+                      <div className={styles.infoItem}>
+                        <p className={styles.infoLabel}>Tên Kit</p>
+                        <p className={styles.infoValue}>
+                          {item.kitAppointmentResponse?.kitName || '—'}
+                        </p>
+                      </div>
                     </div>
 
                     {/* Ghi chú */}
@@ -145,6 +165,13 @@ const AppointmentSchedule = () => {
                       <p className={styles.infoValue}>
                         {item.showAppointmentResponse.note}
                       </p>
+                      <div className={styles.infoItem}>
+                        <p className={styles.infoLabel}>Số Người</p>
+                        <p className={styles.infoValue}>
+                          {item.kitAppointmentResponse?.targetPersonCount ||
+                            '—'}
+                        </p>
+                      </div>
                     </div>
 
                     {/* Tên dịch vụ */}
@@ -154,56 +181,36 @@ const AppointmentSchedule = () => {
                         {item.serviceAppointmentResponses?.[0]?.serviceName ||
                           '—'}
                       </p>
+                      <div className={styles.infoItem}>
+                        <p className={styles.infoLabel}>Nội Dung Kit</p>
+                        <p className={styles.infoValue}>
+                          {item.kitAppointmentResponse?.contents || '—'}
+                        </p>
+                      </div>
                     </div>
 
                     {/* Loại dịch vụ */}
                     <div className={styles.infoItem}>
                       <p className={styles.infoLabel}>Loại Dịch Vụ</p>
                       <p className={styles.infoValue}>
-                        {item.serviceAppointmentResponses?.[0]?.serviceType ||
-                          '—'}
+                        {translateCivilStatus(
+                          item.serviceAppointmentResponses?.[0]?.serviceType ||
+                            '—'
+                        )}
                       </p>
+                      <div
+                        className={`${styles.infoItem} ${styles.addressItem}`}
+                      >
+                        <p className={styles.infoLabel}>Địa Chỉ</p>
+                        <p className={styles.infoValue}>
+                          {item.userAppointmentResponses?.address || '—'}
+                        </p>
+                      </div>
                     </div>
 
                     {/* Mã kit */}
-                    <div className={styles.infoItem}>
-                      <p className={styles.infoLabel}>Mã Kit</p>
-                      <p className={styles.infoValue}>
-                        {item.kitAppointmentResponse?.kitCode || '—'}
-                      </p>
-                    </div>
 
                     {/* Tên kit */}
-                    <div className={styles.infoItem}>
-                      <p className={styles.infoLabel}>Tên Kit</p>
-                      <p className={styles.infoValue}>
-                        {item.kitAppointmentResponse?.kitName || '—'}
-                      </p>
-                    </div>
-
-                    {/* Số người */}
-                    <div className={styles.infoItem}>
-                      <p className={styles.infoLabel}>Số Người</p>
-                      <p className={styles.infoValue}>
-                        {item.kitAppointmentResponse?.targetPersonCount || '—'}
-                      </p>
-                    </div>
-
-                    {/* Nội dung kit */}
-                    <div className={styles.infoItem}>
-                      <p className={styles.infoLabel}>Nội Dung Kit</p>
-                      <p className={styles.infoValue}>
-                        {item.kitAppointmentResponse?.contents || '—'}
-                      </p>
-                    </div>
-
-                    {/* Địa chỉ - full width */}
-                    <div className={`${styles.infoItem} ${styles.addressItem}`}>
-                      <p className={styles.infoLabel}>Địa Chỉ</p>
-                      <p className={styles.infoValue}>
-                        {item.userAppointmentResponses?.address || '—'}
-                      </p>
-                    </div>
 
                     {/* Người đặt */}
                     <div className={styles.infoItem}>

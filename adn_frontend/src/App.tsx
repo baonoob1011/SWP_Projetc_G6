@@ -68,7 +68,7 @@ import CreateResultAllele from './components/mainContents/actorList/staff/Result
 import BookingAtCenter from './components/mainContents/services/BookingAtCenter';
 import BookingAtHome from './components/mainContents/services/BookingAtHome';
 
-import { CollectSampleAtHome } from './components/mainContents/actorList/staff/CollectSampleAtHome';
+import { CheckAppointment } from './components/mainContents/actorList/staff/CheckAppointment';
 import GetCollector from './components/mainContents/actorList/GetCollector';
 import SignUpCollector from './components/mainContents/actorList/staff/SignUpCollector';
 import CreateBlog from './components/mainContents/services/CreateBlog';
@@ -97,6 +97,7 @@ import CollectSampleAtCenter from './components/mainContents/actorList/staff/Col
 import GetConsultationStaff from './components/mainContents/actorList/GetConsultationStaff';
 import SignUpConsultation from './components/mainContents/actorList/staff/SignUpConsultation';
 import GetConsultant from './components/mainContents/actorList/staff/ConsultantPage';
+import { CollectSampleAtHome } from './components/mainContents/actorList/staff/CollectSampleAtHome';
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
@@ -113,7 +114,8 @@ function App() {
     '/s-page/s-userData',
     '/s-page/s-slot',
     '/s-page/checkBooking',
-    '/s-page/checkAppointment/:slotId',
+    '/s-page/checkAppointmentAtCenter/:slotId',
+    '/s-page/checkAppointmentAtHome/:appointmentId',
     '/s-page/get-appointment/:appointmentId',
     '/s-page/selectorSlot',
     '/s-page/labCheckSample',
@@ -440,10 +442,18 @@ function App() {
                 }
               />
               <Route
-                path="/s-page/checkAppointment/:slotId"
+                path="/s-page/checkAppointmentAtCenter/:slotId"
                 element={
-                  <ProtectedRoute allowedRoles={['STAFF', 'STAFF']}>
+                  <ProtectedRoute allowedRoles={['STAFF']}>
                     <CollectSampleAtCenter />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/s-page/checkAppointmentAtHome/:appointmentId"
+                element={
+                  <ProtectedRoute allowedRoles={['STAFF']}>
+                    <CollectSampleAtHome />
                   </ProtectedRoute>
                 }
               />
@@ -459,7 +469,7 @@ function App() {
                 path="/s-page/selectorSlot"
                 element={
                   <ProtectedRoute allowedRoles={['STAFF']}>
-                    <CollectSampleAtHome />
+                    <CheckAppointment />
                   </ProtectedRoute>
                 }
               />
