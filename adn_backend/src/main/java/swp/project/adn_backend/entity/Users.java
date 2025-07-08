@@ -67,7 +67,7 @@ public class Users {
     LocalDate createAt;
 
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     private Set<String> roles;
@@ -82,17 +82,7 @@ public class Users {
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Appointment> appointments;
 
-    //    @ManyToMany(fetch = FetchType.LAZY, cascade = {
-//            CascadeType.PERSIST, CascadeType.MERGE,
-//            CascadeType.DETACH, CascadeType.REFRESH
-//    })
-//    @ManyToOne(cascade = {
-//            CascadeType.PERSIST, CascadeType.MERGE,
-//            CascadeType.DETACH, CascadeType.REFRESH
-//    })
-//    @JoinColumn(name = "service_id")
-//    ServiceTest services;
-    @OneToMany(mappedBy = "users", fetch = FetchType.EAGER, cascade = {
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = {
             CascadeType.ALL
     })
     List<KitDeliveryStatus> kitDeliveryStatuses;

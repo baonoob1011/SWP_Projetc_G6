@@ -28,6 +28,18 @@ public class KitDeliveryStatus {
     @JoinColumn(name = "user_id") // FK to appointment table
     private Users users;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id") // FK to appointment table
+    private Staff staff;
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
+    }
+
     public Users getUsers() {
         return users;
     }

@@ -197,6 +197,7 @@ public class ResultLocusService {
                         if (civilService.getSampleCollectionMethods().equals(SampleCollectionMethod.AT_CLINIC)) {
                             if (appointment.getSlot() != null) {
                                 appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+                                appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.COMPLETED);
                             }
                             break; // nếu 1 cái là AT_CLINIC thì dừng
                         }

@@ -422,6 +422,7 @@ public class AppointmentService {
         deliveryStatus.setCreateOrderDate(LocalDate.now());
         deliveryStatus.setDeliveryStatus(DeliveryStatus.IN_PROGRESS);
         deliveryStatus.setUsers(userBookAppointment);
+        deliveryStatus.setStaff(selectedStaff);
         kitDeliveryStatusRepository.save(deliveryStatus);
 
         double totalPrice = priceList.getPrice();
@@ -465,7 +466,7 @@ public class AppointmentService {
 
 
     @Transactional
-    public UpdateAppointmentStatusResponse  ConfirmAppointmentAtHome(long appointmentId,
+    public UpdateAppointmentStatusResponse ConfirmAppointmentAtHome(long appointmentId,
                                                                     long userId,
                                                                     long serviceId) {
         Users userBookAppointment = userRepository.findById(userId)
@@ -689,7 +690,7 @@ public class AppointmentService {
 
     //staff xem ds cuar slot ddos va lay mau
     // thiếu update
-    public List<AllAppointmentAtCenterResponse> getAppointmentBySlot(long slotId,Authentication authentication) {
+    public List<AllAppointmentAtCenterResponse> getAppointmentBySlot(long slotId, Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
         Slot slot = slotRepository.findById(slotId)
@@ -700,7 +701,7 @@ public class AppointmentService {
         Staff currentStaff = staffRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
         boolean isAssigned = slot.getStaff().stream()
-                .anyMatch(s -> s.getStaffId()==currentStaff.getStaffId() &&
+                .anyMatch(s -> s.getStaffId() == currentStaff.getStaffId() &&
                         s.getRole().equals("SAMPLE_COLLECTOR"));
 
         if (!isAssigned) {
@@ -771,52 +772,57 @@ public class AppointmentService {
     }
 
     //staff lấy đơn dang kis tai nha nhap mau
-    public List<AllAppointmentAtCenterResponse> getAppointmentAtHomeToRecordResult(Authentication authentication) {
+    public List<AllAppointmentAtCenterResponse> getAppointmentAtHomeToRecordResult(Authentication authentication,
+                                                                                   long appointmentId) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
 
         Staff staff = staffRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+        if(!staff.getRole().equals("STAFF_AT_HOME")){
+            throw new RuntimeException("Chỉ có nhân viên thu mẫu tại nhà mới có thể lấy");
+        }
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
 
-        List<Appointment> appointmentList = staff.getAppointments();
         List<AllAppointmentAtCenterResponse> responses = new ArrayList<>();
 
-        for (Appointment appointment : appointmentList) {
-            if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
 
-                // Lọc bệnh nhân có trạng thái REGISTERED
-                List<Patient> registeredPatients = appointment.getPatients();
+        if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
+
+            // Lọc bệnh nhân có trạng thái REGISTERED
+            List<Patient> registeredPatients = appointment.getPatients();
 //                        stream()
 //                        .filter(p -> p.getPatientStatus() == PatientStatus.REGISTERED)
 //                        .collect(Collectors.toList());
 
-                // Map các thông tin liên quan
-                List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
-                        .map(appointmentMapper::toPatientAppointment)
-                        .collect(Collectors.toList());
+            // Map các thông tin liên quan
+            List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
+                    .map(appointmentMapper::toPatientAppointment)
+                    .collect(Collectors.toList());
 
-                AllAppointmentAtCenterResponse response = new AllAppointmentAtCenterResponse();
-                response.setShowAppointmentResponse(appointmentMapper.toShowAppointmentResponse(appointment));
-                response.setUserAppointmentResponse(
-                        List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()))
-                );
-                response.setStaffAppointmentResponse(
-                        List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()))
-                );
-                response.setServiceAppointmentResponses(
-                        List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()))
-                );
-                response.setPatientAppointmentResponse(patientResponses);
+            AllAppointmentAtCenterResponse response = new AllAppointmentAtCenterResponse();
+            response.setShowAppointmentResponse(appointmentMapper.toShowAppointmentResponse(appointment));
+            response.setUserAppointmentResponse(
+                    List.of(appointmentMapper.toUserAppointmentResponse(appointment.getUsers()))
+            );
+            response.setStaffAppointmentResponse(
+                    List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()))
+            );
+            response.setServiceAppointmentResponses(
+                    List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()))
+            );
+            response.setPatientAppointmentResponse(patientResponses);
 
-                if (appointment.getServices() != null && appointment.getServices().getPriceLists() != null) {
-                    response.setPriceAppointmentResponse(
-                            appointmentMapper.toPriceAppointmentResponse(appointment.getServices().getPriceLists())
-                    );
-                }
-
-                responses.add(response);
+            if (appointment.getServices() != null && appointment.getServices().getPriceLists() != null) {
+                response.setPriceAppointmentResponse(
+                        appointmentMapper.toPriceAppointmentResponse(appointment.getServices().getPriceLists())
+                );
             }
+
+            responses.add(response);
         }
+
 
         return responses;
     }
@@ -1088,8 +1094,9 @@ public class AppointmentService {
         }
         return appointmentResponses;
     }
+
     @Transactional
-    public void patientCheckIn(long patientId, long appointmentId){
+    public void patientCheckIn(long patientId, long appointmentId) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PATIENT_INFO_NOT_EXISTS));
         Appointment appointment = appointmentRepository.findById(appointmentId)
@@ -1097,10 +1104,11 @@ public class AppointmentService {
         appointment.setNote("Bệnh nhân vắng mặt nên không thể hoàn thành việc lấy mẫu");
         appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
         patient.setPatientStatus(PatientStatus.NO_SHOW);
-        for (Payment payment: appointment.getPayments()){
+        for (Payment payment : appointment.getPayments()) {
             payment.setPaymentStatus(PaymentStatus.REFUNDED);
         }
     }
+
     @Transactional
     public void payAppointment(long paymentId, long appointmentId) {
         Payment payment = paymentRepository.findById(paymentId)

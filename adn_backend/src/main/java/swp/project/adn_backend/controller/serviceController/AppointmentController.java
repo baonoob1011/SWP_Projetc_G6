@@ -97,8 +97,9 @@ public class AppointmentController {
 
     //lab lấy mẫu ra dể ghi kết quả
     @GetMapping("/get-appointment-at-home-to-get-sample")
-    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentAtHomeToGetSample(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeToRecordResult(authentication));
+    public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentAtHomeToGetSample(Authentication authentication,
+                                                                                                @RequestParam long appointmentId) {
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeToRecordResult(authentication,appointmentId));
     }
 //    //staff lay appoint de thanh toan tien mat
 //    @GetMapping("/get-appointment-of-user-by-phone")

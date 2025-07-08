@@ -43,6 +43,10 @@ public class Staff {
     @Column(name = "day_of_birth")
     LocalDate dateOfBirth;
 
+    @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY, cascade = {
+            CascadeType.ALL
+    })
+    List<KitDeliveryStatus> kitDeliveryStatuses;
 
     @Column(name = "create_at")
     LocalDate createAt;
@@ -72,6 +76,13 @@ public class Staff {
     })
     private List<Slot> slots;
 
+    public List<KitDeliveryStatus> getKitDeliveryStatuses() {
+        return kitDeliveryStatuses;
+    }
+
+    public void setKitDeliveryStatuses(List<KitDeliveryStatus> kitDeliveryStatuses) {
+        this.kitDeliveryStatuses = kitDeliveryStatuses;
+    }
 
     @OneToOne(mappedBy = "staff", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     // trỏ đến tên biến bên Notification

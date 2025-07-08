@@ -3,7 +3,7 @@ package swp.project.adn_backend.dto.InfoDTO;
 import swp.project.adn_backend.entity.Invoice;
 import java.time.LocalDateTime;
 
-public class InvoiceDTO {
+public class  InvoiceDTO {
     private Long invoiceId;
     private Long amount;
     private LocalDateTime createdDate;

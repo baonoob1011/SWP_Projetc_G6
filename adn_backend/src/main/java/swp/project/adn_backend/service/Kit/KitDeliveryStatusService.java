@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.InfoDTO.KitDeliveryStatusInfoByAppointmentDTO;
+import swp.project.adn_backend.dto.InfoDTO.KitDeliveryStatusInfoStaffDTO;
 import swp.project.adn_backend.dto.request.Kit.KitDeliveryStatusRequest;
 import swp.project.adn_backend.dto.InfoDTO.KitDeliveryStatusInfoDTO;
 import swp.project.adn_backend.dto.response.kit.KitDeliveryStatusResponse;
@@ -59,11 +60,32 @@ public class KitDeliveryStatusService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.KitDeliveryStatusInfoDTO(" +
                 "s.kitDeliveryStatusId, s.deliveryStatus, s.createOrderDate, s.returnDate) " +
-                "FROM KitDeliveryStatus s WHERE s.users.userId = :userId";
-//                "s.deliveryStatus <> :excludedStatus";
+                "FROM KitDeliveryStatus s WHERE s.users.userId = :userId " +
+                "And s.deliveryStatus <> :excludedStatus";
 
         TypedQuery<KitDeliveryStatusInfoDTO> query = entityManager.createQuery(jpql, KitDeliveryStatusInfoDTO.class);
         query.setParameter("userId", userId);
+        query.setParameter("excludedStatus", DeliveryStatus.COMPLETED);
+        return query.getResultList();
+    }
+
+    public List<KitDeliveryStatusInfoStaffDTO> getKitDeliveryStatusStaff(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+        System.out.println("userId from JWT: " + userId);
+        Staff staff = staffRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+        System.out.println("staffId from DB: " + staff.getStaffId());
+        if(!staff.getRole().equals("STAFF_AT_HOME")){
+            throw new RuntimeException("Chỉ có nhân viên thu mẫu tại nhà mới có thể lấy");
+        }
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.KitDeliveryStatusInfoStaffDTO(" +
+                "s.kitDeliveryStatusId, s.deliveryStatus, s.createOrderDate, s.returnDate, s.appointment.appointmentId, s.appointment.appointmentType) " +
+                "FROM KitDeliveryStatus s WHERE s.staff.staffId = :staffId";
+//                "s.deliveryStatus <> :excludedStatus";
+
+        TypedQuery<KitDeliveryStatusInfoStaffDTO> query = entityManager.createQuery(jpql, KitDeliveryStatusInfoStaffDTO.class);
+        query.setParameter("staffId", userId);
 //        query.setParameter("excludedStatus", DeliveryStatus.DONE); // hoặc chuỗi nếu dùng Enum/String
         return query.getResultList();
     }

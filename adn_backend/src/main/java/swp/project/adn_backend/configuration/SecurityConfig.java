@@ -83,12 +83,14 @@ public class SecurityConfig {
             "/api/kit-delivery-status/get-kit-status-user/**",
             "/api/feedback/create-feedback/**",
             "/api/feedback/get-all-feedback-of-service/**",
+            "/api/invoice/get-invoice-of-user/**",
     };
     private final String[] STAFF_PUBLIC = {
             "/api/sample/get-all-sample/**",
             "/api/notification/get-notification/**",
             "/api/appointment/get-appointment-at-home-to-get-sample",
             "/api/sample/update-status-sample/**",
+            "/api/kit-delivery-status/get-kit-status-staff/**",
             "/api/staff/**",
     };
     private final String[] CONSULTANT_PUBLIC = {
