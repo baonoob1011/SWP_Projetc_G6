@@ -25,6 +25,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import swp.project.adn_backend.enums.Roles;
 
@@ -172,7 +174,7 @@ public class SecurityConfig {
                         .requestMatchers(CASHIER_ENDPOINTS).hasAnyRole("CASHIER", "ADMIN")
                         .requestMatchers(CONSULTANT_PUBLIC).hasAnyRole("CONSULTANT", "ADMIN")
                         .requestMatchers(LAB_TECHNICIAN).hasAnyRole("LAB_TECHNICIAN", "ADMIN")
-                        .requestMatchers(STAFF_PUBLIC).hasAnyRole("STAFF", "LAB_TECHNICIAN", "CASHIER", "ADMIN", "MANAGER","CONSULTANT")
+                        .requestMatchers(STAFF_PUBLIC).hasAnyRole("STAFF", "LAB_TECHNICIAN", "CASHIER", "ADMIN", "MANAGER", "CONSULTANT")
 
                         // Quyền STAFF
                         .requestMatchers(STAFF_ENDPOINTS).hasAnyRole("STAFF", "MANAGER", "ADMIN")
@@ -187,7 +189,12 @@ public class SecurityConfig {
 
                         // Các request khác yêu cầu xác thực
                         .anyRequest().authenticated()
-                ).logout(logout -> logout
+                ).oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
+                                .decoder(jwtDecoder())
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .logout(logout -> logout
                         .logoutUrl("/api/logout")
                         .logoutSuccessHandler((request, response, authentication) -> {
                             response.setStatus(HttpServletResponse.SC_OK);
@@ -254,6 +261,17 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:5173")
+                        .allowedMethods("*");
+            }
+        };
     }
 
     @Bean

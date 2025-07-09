@@ -42,6 +42,7 @@ public class Wallet {
         updatedAt = createdAt;
     }
 
+
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDate.now();

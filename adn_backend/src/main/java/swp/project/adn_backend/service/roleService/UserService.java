@@ -22,6 +22,7 @@ import swp.project.adn_backend.dto.response.role.UpdateUserResponse;
 import swp.project.adn_backend.entity.Manager;
 import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
+import swp.project.adn_backend.entity.Wallet;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.enums.Roles;
 import swp.project.adn_backend.enums.StaffStatus;
@@ -30,9 +31,7 @@ import swp.project.adn_backend.exception.MultiFieldValidationException;
 import swp.project.adn_backend.mapper.ManagerMapper;
 import swp.project.adn_backend.mapper.StaffMapper;
 import swp.project.adn_backend.mapper.UserMapper;
-import swp.project.adn_backend.repository.ManagerRepository;
-import swp.project.adn_backend.repository.StaffRepository;
-import swp.project.adn_backend.repository.UserRepository;
+import swp.project.adn_backend.repository.*;
 import swp.project.adn_backend.service.authService.SendEmailService;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -47,7 +46,8 @@ import java.util.Map;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserService {
-
+    WalletRepository walletRepository;
+    WalletTransactionRepository walletTransactionRepository;
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
@@ -59,7 +59,9 @@ public class UserService {
     SendEmailService sendEmailService;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, EntityManager entityManager, StaffRepository staffRepository, ManagerRepository managerRepository, StaffMapper staffMapper, ManagerMapper managerMapper, SendEmailService sendEmailService) {
+    public UserService(WalletRepository walletRepository, WalletTransactionRepository walletTransactionRepository, UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, EntityManager entityManager, StaffRepository staffRepository, ManagerRepository managerRepository, StaffMapper staffMapper, ManagerMapper managerMapper, SendEmailService sendEmailService) {
+        this.walletRepository = walletRepository;
+        this.walletTransactionRepository = walletTransactionRepository;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
@@ -80,7 +82,7 @@ public class UserService {
                 "s.userId, s.fullName, s.phone, s.address, s.email) FROM Users s " +
                 "Where s.userId=:userId";
         TypedQuery<UserResponse> query = entityManager.createQuery(jpql, UserResponse.class);
-        query.setParameter("userId",userId);
+        query.setParameter("userId", userId);
         return query.getSingleResult();
     }
 
@@ -92,11 +94,17 @@ public class UserService {
         Users users = userMapper.toUser(userDTO);
         roles.add(Roles.USER.name());
         users.setRoles(roles);
-
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         // Lưu lại để cascade lưu role
-        return userRepository.save(users);
+        userRepository.save(users);
+        Wallet wallet = new Wallet();
+        wallet.setUser(users);
+        wallet.setBalance(0);
+        wallet.setCreatedAt(LocalDate.now());
+        wallet.setUpdatedAt(LocalDate.now());
+        walletRepository.save(wallet);
+        return users;
     }
 
     public Users registerAccount(StaffAccountRequest staffAccountRequest,
@@ -123,7 +131,7 @@ public class UserService {
         sendWelcomeEmail(users.getEmail(), users.getUsername(), password);
         // Save user and return
         userRepository.save(users);
-        Staff staff= staffMapper.toStaffAccount(staffAccountRequest);
+        Staff staff = staffMapper.toStaffAccount(staffAccountRequest);
         staff.setRole("STAFF");
         staff.setStaffId(users.getUserId());
         staff.setCreateAt(LocalDate.now());
@@ -132,8 +140,6 @@ public class UserService {
         return users;
 
     }
-
-
 
 
     public Users registerStaffAccount(StaffRequest staffRequest, Authentication authentication) {
@@ -634,6 +640,7 @@ public class UserService {
             throw new MultiFieldValidationException(errors);
         }
     }
+
     private void sendWelcomeEmail(String email, String username, String password) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
@@ -655,6 +662,7 @@ public class UserService {
             throw new RuntimeException("Email send fail");
         }
     }
+
     // Random string generator
     private String generateRandomString(int length) {
         SecureRandom random = new SecureRandom();

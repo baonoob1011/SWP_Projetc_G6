@@ -94,16 +94,8 @@ public class CreatePaymentService {
 
         // Lấy ví hiện có hoặc tạo mới nếu chưa có
         Wallet wallet = walletRepository.findByUser(users).orElse(null);
-        if (wallet == null) {
-            wallet = new Wallet();
-            wallet.setUser(users);
-            wallet.setBalance(walletRequest.getAmount());
-            wallet.setCreatedAt(LocalDate.now());
-        }
-
         // Cộng tiền nạp
         wallet.setUpdatedAt(LocalDate.now());
-        walletRepository.save(wallet);
 
         // Ghi lịch sử giao dịch nạp tiền
         WalletTransaction walletTransaction = new WalletTransaction();

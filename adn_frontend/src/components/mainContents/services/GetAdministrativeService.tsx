@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-
+import { useLocation } from 'react-router-dom';
 type PriceItem = {
   time: string;
   price: number;
@@ -59,7 +59,13 @@ const AdministrativeServiceList = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 2;
-
+const { hash } = useLocation();
+  useEffect(() => {
+    if (hash === '#administrative-service-list') {
+      const el = document.getElementById('administrative-service-list');
+      el?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [hash]);
   useEffect(() => {
     const fetchServices = async () => {
       try {
@@ -85,26 +91,26 @@ const AdministrativeServiceList = () => {
     fetchServices();
   }, []);
 
-  if (loading)
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-xl p-8 flex items-center space-x-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
-          <div className="text-lg font-medium text-gray-700">
-            Đang tải danh sách dịch vụ...
-          </div>
-        </div>
-      </div>
-    );
+  // if (loading)
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center">
+  //       <div className="bg-white rounded-2xl shadow-xl p-8 flex items-center space-x-4">
+  //         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+  //         <div className="text-lg font-medium text-gray-700">
+  //           Đang tải danh sách dịch vụ...
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
 
-  if (error)
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-xl p-8 border-l-4 border-red-500">
-          <div className="text-red-700 font-medium">Lỗi: {error}</div>
-        </div>
-      </div>
-    );
+  // if (error)
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-50 flex items-center justify-center">
+  //       <div className="bg-white rounded-2xl shadow-xl p-8 border-l-4 border-red-500">
+  //         <div className="text-red-700 font-medium">Lỗi: {error}</div>
+  //       </div>
+  //     </div>
+  //   );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-100">

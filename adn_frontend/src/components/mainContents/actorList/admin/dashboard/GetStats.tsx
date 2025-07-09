@@ -180,26 +180,26 @@ const Stats = () => {
       value: stats?.totalUsers,
       icon: Users,
     },
-    {
-      label: 'Nhân viên',
-      value: stats?.totalStaff,
-      icon: Stethoscope,
-    },
+    // {
+    //   label: 'Nhân viên',
+    //   value: stats?.totalStaff,
+    //   icon: Stethoscope,
+    // },
     {
       label: 'Hoạt động',
       value: stats?.activeUsers,
       icon: Activity,
     },
-    {
-      label: 'Bệnh nhân',
-      value: stats?.totalPatients,
-      icon: Heart,
-    },
-    {
-      label: 'Quản lý',
-      value: stats?.totalManagers,
-      icon: Shield,
-    },
+    // {
+    //   label: 'Bệnh nhân',
+    //   value: stats?.totalPatients,
+    //   icon: Heart,
+    // },
+    // {
+    //   label: 'Quản lý',
+    //   value: stats?.totalManagers,
+    //   icon: Shield,
+    // },
   ];
 
   return (
@@ -279,11 +279,11 @@ const Stats = () => {
 
 
       {/* Bottom Blue Cards Section */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 mt-10">
         {bottomCards.map((card, idx) => (
           <div
             key={idx}
-            className="bg-white rounded-2xl p-6 text-center shadow-sm"
+            className="bg-white rounded-2xl p-3 text-center shadow-sm"
           >
             <div className="w-14 h-14 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <card.icon className="w-7 h-7 text-white" />

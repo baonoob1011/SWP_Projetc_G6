@@ -244,13 +244,9 @@ const NewProfile = () => {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 bg-clip-text text-transparent">
             Quản lý tài khoản
           </h1>
-          <p className="text-lg text-gray-600 mt-3 max-w-2xl mx-auto">
-            Cá nhân hóa trải nghiệm của bạn với các tùy chọn quản lý tài khoản
-            toàn diện
-          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols- lg:grid-cols-4 gap-8">
           {/* Enhanced Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl overflow-hidden">

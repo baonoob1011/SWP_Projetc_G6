@@ -263,7 +263,7 @@ const Login = ({ setFullName }: LoginProps) => {
             <img
               src={logo}
               alt="Logo"
-              style={{ width: '70px', height: '70px' }}
+              style={{ width: '70px', height: '50px' }}
             />
           </div>
         </div>
