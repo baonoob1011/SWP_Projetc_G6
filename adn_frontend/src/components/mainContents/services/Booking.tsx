@@ -17,7 +17,7 @@ import InvoicePopup from '../actorList/user/PopupInvoice';
 const Booking = () => {
   const [bookingList, setBookingList] = useState<BookingHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
 
   const [showInvoicePopup, setShowInvoicePopup] = useState(false);
   const [invoices, setInvoices] = useState<any[]>([]);
@@ -115,7 +115,7 @@ const Booking = () => {
           .sort((a, b) => b.show.appointmentId - a.show.appointmentId);
 
         if (fullList.length === 0) {
-          setError('Không có dữ liệu cuộc hẹn.');
+          throw new Error('Không có cuộc hẹn nào');
         } else {
           setBookingList(fullList);
           // Reset to page 1 if current page is out of bounds
@@ -126,7 +126,7 @@ const Booking = () => {
         }
       })
       .catch((err) => {
-        setError(err.message);
+        console.log(err);
         setLoading(false);
       });
   };
@@ -201,20 +201,6 @@ const Booking = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
           <p className="text-gray-600 text-lg">Đang tải dữ liệu...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center bg-white p-8 rounded-lg shadow-lg">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            Có lỗi xảy ra
-          </h2>
-          <p className="text-red-600">{error}</p>
         </div>
       </div>
     );
@@ -523,9 +509,6 @@ const Booking = () => {
               Bạn chưa có cuộc hẹn khám bệnh nào. Hãy đặt lịch khám để bắt đầu
               chăm sóc sức khỏe.
             </p>
-            <button className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
-              Đặt lịch khám ngay
-            </button>
           </div>
         )}
       </div>

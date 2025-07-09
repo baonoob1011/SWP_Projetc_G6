@@ -1,68 +1,54 @@
-// import React, { useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from 'react';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
-// type LoginByGoogleProps = {
-//   onLoginSuccess: (fullName: string, token: string) => void;
-// };
+const SignUpByGoogle = () => {
+  const navigate = useNavigate();
 
-// declare global {
-//   interface Window {
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     google: any;
-//   }
-// }
+  const handleLoginSuccess = async (credentialResponse: any) => {
+    try {
+      const idToken = credentialResponse.credential;
+      const decoded: any = jwtDecode(idToken);
+      console.log('Thông tin Google:', decoded);
 
-// const LoginByGoogle = ({ onLoginSuccess }: LoginByGoogleProps) => {
-//   useEffect(() => {
-//     const script = document.createElement("script");
-//     script.src = "http://localhost:8080/login/oauth2/code/google";
-//     script.async = true;
-//     script.defer = true;
-//     document.body.appendChild(script);
+      // Gửi id_token lên backend
+      const response = await fetch('http://localhost:8080/api/auth/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idToken }), // gửi với key là idToken
+      });
 
-//     script.onload = () => {
-//       window.google.accounts.id.initialize({
-//         client_id: "355282163324-n2ko3l829l806cv1tj71em71tnvktvku.apps.googleusercontent.com", // lấy từ Google Cloud Console
-//         callback: handleCallbackResponse,
-//       });
+      if (!response.ok) {
+        throw new Error('Đăng nhập Google thất bại');
+      }
 
-//       window.google.accounts.id.renderButton(
-//         document.getElementById("googleSignInDiv"),
-//         { theme: "outline", size: "large", width: 250 }
-//       );
+      const result = await response.json();
+      console.log('JWT từ backend:', result.token);
 
-//       window.google.accounts.id.prompt(); // hiển thị prompt đăng nhập tự động nếu có thể
-//     };
+      // Lưu token hệ thống vào localStorage
+      localStorage.setItem('token', result.token);
 
-//     return () => {
-//       document.body.removeChild(script);
-//     };
-//   }, []);
+      // Chuyển hướng hoặc xử lý sau khi đăng nhập
+      navigate('/dashboard');
+    } catch (error: any) {
+      console.error('Lỗi đăng nhập:', error.message);
+    }
+  };
 
-//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   const handleCallbackResponse = (response: any) => {
-//     const base64Url = response.credential.split(".")[1];
-//     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-//     const jsonPayload = decodeURIComponent(
-//       atob(base64)
-//         .split("")
-//         .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-//         .join("")
-//     );
+  return (
+    <div className="flex justify-center">
+      <GoogleLogin
+        onSuccess={handleLoginSuccess}
+        onError={() => {
+          console.log('Đăng nhập Google thất bại');
+        }}
+      />
+    </div>
+  );
+};
 
-//     const userObject = JSON.parse(jsonPayload);
-
-//     const fullName = userObject.name;
-//     const token = response.credential;
-
-//     localStorage.setItem("token", token);
-//     localStorage.setItem("fullName", fullName);
-//     localStorage.setItem("email", userObject.email);
-//     localStorage.setItem("picture", userObject.picture);
-
-//     onLoginSuccess(fullName, token);
-//   };
-
-//   return <div id="googleSignInDiv"></div>;
-// };
-
-// export default LoginByGoogle;
+export default SignUpByGoogle;

@@ -98,6 +98,7 @@ import GetConsultationStaff from './components/mainContents/actorList/GetConsult
 import SignUpConsultation from './components/mainContents/actorList/staff/SignUpConsultation';
 import GetConsultant from './components/mainContents/actorList/staff/ConsultantPage';
 import { CollectSampleAtHome } from './components/mainContents/actorList/staff/CollectSampleAtHome';
+import Deposit from './components/mainContents/services/Deposit';
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
@@ -702,6 +703,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <VNPayResult />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="vnpay-payment/wallet/vnpay-payment"
+              element={
+                <ProtectedRoute allowedRoles={['USER']}>
+                  <Deposit />
                 </ProtectedRoute>
               }
             />

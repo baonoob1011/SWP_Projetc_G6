@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Button, Paper, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,6 +12,7 @@ import logo from '../../image/Logo.png';
 import { motion } from 'framer-motion';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
+import { GoogleLogin } from '@react-oauth/google';
 
 type UserInfo = {
   username: string;
@@ -50,6 +52,54 @@ const Login = ({ setFullName }: LoginProps) => {
         setFullName('');
         navigate('/login');
       }, timeleft);
+    }
+  };
+  const handleGoogleLoginSuccess = async (credentialResponse: any) => {
+    try {
+      const idToken = credentialResponse.credential;
+
+      const response = await fetch('http://localhost:8080/api/auth/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idToken }),
+      });
+
+      if (!response.ok) {
+        toast.error('Đăng nhập Google thất bại');
+        return;
+      }
+
+      const data = await response.json();
+      const token = data.token;
+
+      const decoded: {
+        sub: string;
+        exp: number;
+        fullName: string;
+        role: string;
+      } = jwtDecode(token);
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('username', decoded.sub);
+      localStorage.setItem('fullName', decoded.fullName);
+      localStorage.setItem('role', decoded.role);
+
+      setFullName(decoded.fullName);
+      TimeLeftLogout(decoded.exp);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Đăng nhập bằng Google thành công!',
+        showConfirmButton: false,
+        timer: 1300,
+      });
+
+      setTimeout(() => navigate('/'), 1500);
+    } catch (error: any) {
+      console.error('Google login error:', error);
+      Swal.fire('Lỗi!', 'Không thể đăng nhập bằng Google', 'error');
     }
   };
 
@@ -492,6 +542,13 @@ const Login = ({ setFullName }: LoginProps) => {
             >
               Đăng nhập
             </Button>
+            <Box sx={{ mb: 2 }}>
+              <GoogleLogin
+                onSuccess={handleGoogleLoginSuccess}
+                onError={() => toast.error('Đăng nhập Google thất bại')}
+                width="100%"
+              />
+            </Box>
 
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="body2" sx={{ color: '#7f8c8d' }}>
