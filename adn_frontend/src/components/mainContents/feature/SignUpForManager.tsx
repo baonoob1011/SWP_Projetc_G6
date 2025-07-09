@@ -1,21 +1,8 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  FormControlLabel,
-  FormHelperText,
-  Paper,
-  Radio,
-  RadioGroup,
-  TextField,
-  Typography,
-} from '@mui/material';
 import { useEffect, useState } from 'react';
 import CustomSnackBar from '../userinfor/Snackbar';
 import { signUpStaffSchema } from '../userinfor/Validation';
 import { ValidationError } from 'yup';
 import Swal from 'sweetalert2';
-import styles from './Staff.module.css';
 
 type Manager = {
   fullName: string;
@@ -63,6 +50,7 @@ const SignUpManager = () => {
     message: '',
     severity: 'success' as 'success' | 'error',
   });
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     setIsAdmin(localStorage.getItem('role') === 'ADMIN');
@@ -110,7 +98,7 @@ const SignUpManager = () => {
     validateField(name, newValue);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const emptyFields = Object.entries(manager).filter(
@@ -211,145 +199,279 @@ const SignUpManager = () => {
   if (!isAdmin) return null;
 
   return (
-    <div className={styles.container}>
-      <Paper elevation={20} className={styles.paper}>
-        <Box component="form" onSubmit={handleSubmit} noValidate>
-          <Typography variant="h5" gutterBottom className={styles.title}>
-            Thông tin quản lý
-          </Typography>
+    <div className="min-h-screen bg-white ml-10">
+      <div className="max-w-full">
+        {/* Statistics Header */}
+        <div className="bg-[#4162EB] rounded-lg p-6 mb-6 relative">
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="text-white text-lg font-semibold">Quản lý Manager</h2>
+          </div>
+          {/* Breadcrumb */}
+          <div className="flex items-center mb-6 text-blue-100">
+            <span className="text-white font-medium">Admin</span>
+            <span className="mx-2">›</span>
+            <span>Danh sách dữ liệu</span>
+            <span className="mx-2">›</span>
+            <span>Manager</span>
+          </div>
+        </div>
 
-          <TextField
-            fullWidth
-            margin="normal"
-            name="fullName"
-            label="Họ và tên"
-            value={manager.fullName}
-            onChange={handleInput}
-            error={!!error.fullName}
-            helperText={error.fullName}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            name="idCard"
-            label="Nhập CCCD"
-            value={manager.idCard}
-            onChange={handleInput}
-            error={!!error.idCard}
-            helperText={error.idCard}
-            inputProps={{ maxLength: 12 }}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            name="email"
-            label="Địa chỉ email"
-            type="email"
-            value={manager.email}
-            onChange={handleInput}
-            error={!!error.email}
-            helperText={error.email}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            name="username"
-            label="Tên đăng nhập"
-            value={manager.username}
-            onChange={handleInput}
-            error={!!error.username}
-            helperText={error.username}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            name="password"
-            label="Mật khẩu"
-            type="password"
-            value={manager.password}
-            onChange={handleInput}
-            error={!!error.password}
-            helperText={error.password}
-          />
-          <FormHelperText id="rulePass" sx={{ textAlign: 'left' }}>
-            <ul style={{ margin: 0, paddingLeft: 20 }}>
-              <li>Có ít nhất 8 ký tự</li>
-              <li>Có ít nhất 1 chữ thường và hoa</li>
-              <li>Có ít nhất 1 ký tự đặc biệt</li>
-              <li>Có ít nhất 1 chữ số</li>
-            </ul>
-          </FormHelperText>
-          <TextField
-            fullWidth
-            margin="normal"
-            name="confirmPassword"
-            label="Nhập lại mật khẩu"
-            type="password"
-            value={manager.confirmPassword}
-            onChange={handleInput}
-            error={!!error.confirmPassword}
-            helperText={error.confirmPassword}
-          />
-          <RadioGroup
-            row
-            name="gender"
-            value={manager.gender}
-            onChange={handleInput}
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={() => setShowCreateForm(!showCreateForm)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
           >
-            <FormControlLabel value="Male" control={<Radio />} label="Nam" />
-            <FormControlLabel value="Female" control={<Radio />} label="Nữ" />
-          </RadioGroup>
-          <TextField
-            fullWidth
-            margin="normal"
-            name="address"
-            label="Nhập địa chỉ"
-            value={manager.address}
-            onChange={handleInput}
-            error={!!error.address}
-            helperText={error.address}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            name="phone"
-            label="Số điện thoại"
-            type="tel"
-            value={manager.phone}
-            onChange={handleInput}
-            error={!!error.phone}
-            helperText={error.phone}
-            inputProps={{ maxLength: 10 }}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            name="dateOfBirth"
-            label="Ngày sinh"
-            type="date"
-            value={manager.dateOfBirth}
-            onChange={handleInput}
-            error={!!error.dateOfBirth}
-            helperText={error.dateOfBirth}
-            InputLabelProps={{ shrink: true }}
-          />
+            Thêm Manager
+          </button>
+        </div>
 
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}
-            disabled={loading}
-          >
-            {loading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              'Đăng ký nhân viên'
-            )}
-          </Button>
-        </Box>
-      </Paper>
+        {/* Create Form - Collapsible */}
+        {showCreateForm && (
+          <div className="bg-white border border-gray-200 rounded-lg mb-6 shadow-sm">
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-800 mb-4">Thông tin quản lý</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Họ và tên
+                  </label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      error.fullName ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    value={manager.fullName}
+                    onChange={handleInput}
+                    placeholder="Nhập họ và tên"
+                  />
+                  {error.fullName && (
+                    <p className="mt-1 text-sm text-red-600">{error.fullName}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    CCCD
+                  </label>
+                  <input
+                    type="text"
+                    name="idCard"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      error.idCard ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    value={manager.idCard}
+                    onChange={handleInput}
+                    placeholder="Nhập CCCD"
+                    maxLength={12}
+                  />
+                  {error.idCard && (
+                    <p className="mt-1 text-sm text-red-600">{error.idCard}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      error.email ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    value={manager.email}
+                    onChange={handleInput}
+                    placeholder="Nhập địa chỉ email"
+                  />
+                  {error.email && (
+                    <p className="mt-1 text-sm text-red-600">{error.email}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tên đăng nhập
+                  </label>
+                  <input
+                    type="text"
+                    name="username"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      error.username ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    value={manager.username}
+                    onChange={handleInput}
+                    placeholder="Nhập tên đăng nhập"
+                  />
+                  {error.username && (
+                    <p className="mt-1 text-sm text-red-600">{error.username}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Mật khẩu
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      error.password ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    value={manager.password}
+                    onChange={handleInput}
+                    placeholder="Nhập mật khẩu"
+                  />
+                  {error.password && (
+                    <p className="mt-1 text-sm text-red-600">{error.password}</p>
+                  )}
+                  <div className="mt-2 text-xs text-gray-600">
+                    <ul className="list-disc list-inside space-y-1">
+                      <li>Có ít nhất 8 ký tự</li>
+                      <li>Có ít nhất 1 chữ thường và hoa</li>
+                      <li>Có ít nhất 1 ký tự đặc biệt</li>
+                      <li>Có ít nhất 1 chữ số</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nhập lại mật khẩu
+                  </label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      error.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    value={manager.confirmPassword}
+                    onChange={handleInput}
+                    placeholder="Nhập lại mật khẩu"
+                  />
+                  {error.confirmPassword && (
+                    <p className="mt-1 text-sm text-red-600">{error.confirmPassword}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Giới tính
+                  </label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="Male"
+                        checked={manager.gender === 'Male'}
+                        onChange={handleInput}
+                        className="mr-2 text-blue-600 focus:ring-blue-500"
+                      />
+                      Nam
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="Female"
+                        checked={manager.gender === 'Female'}
+                        onChange={handleInput}
+                        className="mr-2 text-blue-600 focus:ring-blue-500"
+                      />
+                      Nữ
+                    </label>
+                  </div>
+                  {error.gender && (
+                    <p className="mt-1 text-sm text-red-600">{error.gender}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Địa chỉ
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      error.address ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    value={manager.address}
+                    onChange={handleInput}
+                    placeholder="Nhập địa chỉ"
+                  />
+                  {error.address && (
+                    <p className="mt-1 text-sm text-red-600">{error.address}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Số điện thoại
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      error.phone ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    value={manager.phone}
+                    onChange={handleInput}
+                    placeholder="Nhập số điện thoại"
+                    maxLength={10}
+                  />
+                  {error.phone && (
+                    <p className="mt-1 text-sm text-red-600">{error.phone}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Ngày sinh
+                  </label>
+                  <input
+                    type="date"
+                    name="dateOfBirth"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      error.dateOfBirth ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    value={manager.dateOfBirth}
+                    onChange={handleInput}
+                  />
+                  {error.dateOfBirth && (
+                    <p className="mt-1 text-sm text-red-600">{error.dateOfBirth}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setShowCreateForm(false)}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={loading}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
+                >
+                  {loading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Đang xử lý...
+                    </div>
+                  ) : (
+                    'Đăng ký quản lý'
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
       <CustomSnackBar
         open={snackbar.open}

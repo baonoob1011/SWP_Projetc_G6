@@ -9,6 +9,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ServiceList from './GetService';
+import ServiceImage from '../../mainContents/feature/featureImage/Service.png'
 
 type FormService = {
   serviceName: string;
@@ -32,6 +33,32 @@ type Kit = {
   targetPersonCount: string;
   price: string;
   contents: string;
+};
+
+// Types for service count
+type PriceItem = {
+  time: string;
+  price: number;
+};
+
+type UserCreateServiceResponse = {
+  fullName: string;
+};
+
+type ServiceRequest = {
+  serviceId: number;
+  serviceName: string;
+  registerDate: string;
+  description: string;
+  serviceType: string;
+  image?: string;
+  active: boolean;
+};
+
+type ServiceItem = {
+  serviceRequest: ServiceRequest;
+  priceListRequest: PriceItem[];
+  userCreateServiceResponse: UserCreateServiceResponse;
 };
 
 const Services = () => {
@@ -60,13 +87,57 @@ const Services = () => {
   const [preview, setPreview] = useState<string>('');
   const fileRef = useRef<HTMLInputElement>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+
+  // State cho service count
+  const [services, setServices] = useState<ServiceItem[]>([]);
+  const [loadingServices, setLoadingServices] = useState(false);
+  const [serviceError, setServiceError] = useState<string | null>(null);
+
+  const token = localStorage.getItem('token');
+
+  // Fetch services count
+  const fetchServicesCount = async () => {
+    setLoadingServices(true);
+    setServiceError(null);
+    try {
+      const res = await fetch(
+        'http://localhost:8080/api/services/get-all-service',
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!res.ok) throw new Error('Không thể lấy dữ liệu dịch vụ');
+
+      const data = await res.json();
+      const fixedData = Array.isArray(data)
+        ? data.map((item) => ({
+            ...item,
+            serviceRequest: {
+              ...item.serviceRequest,
+              serviceId: Number(item.serviceRequest.serviceId) || 0,
+            },
+          }))
+        : [];
+
+      setServices(fixedData);
+    } catch (err: any) {
+      setServiceError(err.message || 'Đã xảy ra lỗi');
+    } finally {
+      setLoadingServices(false);
+    }
+  };
 
   useEffect(() => {
-    setIsAdmin(
-      localStorage.getItem('role') === 'ADMIN' ||
-        localStorage.getItem('role') === 'MANAGER'
-    );
+    const role = localStorage.getItem('role');
+    setIsAdmin(role === 'ADMIN' || role === 'MANAGER');
   }, []);
+
+  useEffect(() => {
+    if (isAdmin) {
+      fetchServicesCount();
+    }
+  }, [isAdmin]);
 
   const fetchKit = async () => {
     try {
@@ -93,17 +164,20 @@ const Services = () => {
       }
 
       const data = await res.json();
+ 
       setKit(data);
     } catch (error) {
       console.error('Fetch locations error:', error);
       toast.error('Không thể lấy kit');
     }
   };
+
   useEffect(() => {
     if (isAdmin) {
       fetchKit();
     }
   }, [isAdmin]);
+
   const handleKitChange = (e: SelectChangeEvent<string>) => {
     const kitId = e.target.value;
     setSelectedKit(kitId);
@@ -113,6 +187,7 @@ const Services = () => {
       type: { someCivilField: '' },
     });
   };
+
   const handleInput = (
     section: 'service' | 'price' | 'type',
     field: string,
@@ -193,6 +268,8 @@ const Services = () => {
         setFile(null);
         setPreview('');
         if (fileRef.current) fileRef.current.value = '';
+        // Refresh service count after creating new service
+        fetchServicesCount();
       } else {
         const error = 'Tên dịch vụ đã tồn tại';
         toast.warning(error);
@@ -206,593 +283,238 @@ const Services = () => {
   if (!isAdmin) return null;
 
   return (
-    <div className="min-vh-100" style={{ backgroundColor: '#f8f9fa' }}>
-      <div className="container py-5">
-        <div className="row justify-content-center">
-          <div className="col-lg-8">
-            {/* Header */}
-            <div
-              className="text-white p-4 mb-0 rounded-top"
-              style={{
-                background: 'linear-gradient(135deg, #4285f4 0%, #1a73e8 100%)',
-                position: 'relative',
-                overflow: 'hidden',
-              }}
-            >
-              <div className="d-flex align-items-center">
-                <div
-                  className="me-3 d-flex align-items-center justify-content-center"
-                  style={{
-                    width: '56px',
-                    height: '56px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                    borderRadius: '16px',
-                    backdropFilter: 'blur(10px)',
-                  }}
-                >
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <circle
-                      cx="9"
-                      cy="7"
-                      r="4"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="mb-1 fw-bold">Thêm Dịch Vụ Mới</h3>
-                  <p className="mb-0 opacity-75">
-                    Điền thông tin chi tiết dịch vụ bên dưới
-                  </p>
-                </div>
-              </div>
+    <div className="min-h-screen bg-white ml-10">
+      <div className="max-w-full">
+
+        {/* Statistics Header */}
+        <div className="bg-[#3667F9] rounded-lg p-6 mb-6 relative">
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="text-white text-lg font-semibold">Quản lý dịch vụ</h2>
+          </div>
+          {/* Breadcrumb */}
+          <div className="flex items-center mb-6 text-blue-100">
+            <span className="text-white font-medium">Admin</span>
+            <span className="mx-2">›</span>
+            <span>Danh sách dịch vụ</span>
+          </div>
+          <div className="bg-green-500 bg-opacity-30 rounded-lg p-2 max-w-xs">
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
             </div>
+            <div className="text-blue-100 text-xl">
+              {loadingServices ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-blue-100 border-t-transparent rounded-full animate-spin"></div>
+                  <span>Đang tải...</span>
+                </div>
+              ) : serviceError ? (
+                <span className="text-red-200">Lỗi: {serviceError}</span>
+              ) : (
+                <span>Tổng số dịch vụ: {services.length}</span>
+              )}
+            </div>
+          </div>
+          {/* Đặt hình ảnh vào trong header */}
+          <div className="absolute right-0 bottom-0 mb-4 mr-40">
+            <img src={ServiceImage} alt="service" className="h-40 object-contain" />
+          </div>
+        </div>
 
-            {/* Form */}
-            <div className="bg-white p-4 rounded-bottom shadow-sm">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={() => setShowCreateForm(!showCreateForm)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
+          >
+            Thêm Dịch Vụ
+          </button>
+        </div>
+
+        {/* Create Form - Collapsible */}
+        {showCreateForm && (
+          <div className="bg-white border border-gray-200 rounded-lg mb-6 shadow-sm">
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-800 mb-4">Thêm Dịch Vụ Mới</h3>
               <form onSubmit={handleSubmit}>
-                <div className="row g-4">
-                  {/* Kit Selection */}
-                  <div className="col-12">
-                    <div className="position-relative">
-                      <div className="d-flex align-items-center mb-3">
-                        <div
-                          className="me-3 d-flex align-items-center justify-content-center"
-                          style={{
-                            width: '40px',
-                            height: '40px',
-                            backgroundColor: '#e3f2fd',
-                            borderRadius: '12px',
-                          }}
-                        >
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M21 16V8C20.9996 7.64928 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64928 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z"
-                              stroke="#4285f4"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M3.27 6.96L12 12.01L20.73 6.96"
-                              stroke="#4285f4"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M12 22.08V12"
-                              stroke="#4285f4"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </div>
-                        <label className="form-label fw-semibold mb-0 text-dark">
-                          Chọn Kit
-                        </label>
-                      </div>
-                      <FormControl fullWidth>
-                        <Select
-                          value={selectedKit}
-                          onChange={handleKitChange}
-                          input={<OutlinedInput />}
-                          displayEmpty
-                          sx={{
-                            '& .MuiOutlinedInput-root': {
-                              borderRadius: '12px',
-                              backgroundColor: '#f8f9fa',
-                              '&:hover': {
-                                backgroundColor: '#e3f2fd',
-                              },
-                              '&.Mui-focused': {
-                                backgroundColor: '#e3f2fd',
-                              },
-                            },
-                          }}
-                        >
-                          <MenuItem value="">
-                            <em style={{ color: '#6c757d' }}>
-                              ----Chọn Kit----
-                            </em>
-                          </MenuItem>
-                          {kit.map((kit) => (
-                            <MenuItem key={kit.kitId} value={kit.kitId}>
-                              {kit.kitCode}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </div>
+                {/* Kit Selection */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Chọn Kit
+                  </label>
+                  <FormControl fullWidth>
+                    <Select
+                      value={selectedKit}
+                      onChange={handleKitChange}
+                      input={<OutlinedInput />}
+                      displayEmpty
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '6px',
+                          border: '1px solid #d1d5db',
+                          '&:hover': {
+                            borderColor: '#9ca3af',
+                          },
+                          '&.Mui-focused': {
+                            borderColor: '#2563eb',
+                            boxShadow: '0 0 0 2px rgba(37, 99, 235, 0.2)',
+                          },
+                        },
+                      }}
+                    >
+                      <MenuItem value="">
+                        <em style={{ color: '#6b7280' }}>
+                          ----Chọn Kit----
+                        </em>
+                      </MenuItem>
+                      {kit.map((kit) => (
+                        <MenuItem key={kit.kitId} value={kit.kitId}>
+                          {kit.kitCode}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                   {/* Service Name */}
-                  <div className="col-md-6">
-                    <div className="position-relative">
-                      <div className="d-flex align-items-center mb-3">
-                        <div
-                          className="me-3 d-flex align-items-center justify-content-center"
-                          style={{
-                            width: '40px',
-                            height: '40px',
-                            backgroundColor: '#e3f2fd',
-                            borderRadius: '12px',
-                          }}
-                        >
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"
-                              stroke="#ff9800"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </div>
-                        <label className="form-label fw-semibold mb-0 text-dark">
-                          Tên Dịch Vụ
-                        </label>
-                      </div>
-                      <input
-                        className="form-control py-3"
-                        value={form.service.serviceName}
-                        onChange={(e) =>
-                          handleInput('service', 'serviceName', e.target.value)
-                        }
-                        placeholder="Nhập tên dịch vụ"
-                        required
-                        style={{
-                          borderRadius: '12px',
-                          backgroundColor: '#f8f9fa',
-                          border: '1px solid #e9ecef',
-                          fontSize: '16px',
-                        }}
-                      />
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tên Dịch Vụ
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={form.service.serviceName}
+                      onChange={(e) =>
+                        handleInput('service', 'serviceName', e.target.value)
+                      }
+                      placeholder="Nhập tên dịch vụ"
+                      required
+                    />
                   </div>
 
                   {/* Service Type */}
-                  <div className="col-md-6">
-                    <div className="position-relative">
-                      <div className="d-flex align-items-center mb-3">
-                        <div
-                          className="me-3 d-flex align-items-center justify-content-center"
-                          style={{
-                            width: '40px',
-                            height: '40px',
-                            backgroundColor: '#f3e5f5',
-                            borderRadius: '12px',
-                          }}
-                        >
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M9 12L11 14L15 10"
-                              stroke="#9c27b0"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                              stroke="#9c27b0"
-                              strokeWidth="2"
-                            />
-                          </svg>
-                        </div>
-                        <label className="form-label fw-semibold mb-0 text-dark">
-                          Loại Dịch Vụ
-                        </label>
-                      </div>
-                      <select
-                        className="form-select py-3"
-                        value={form.service.serviceType}
-                        onChange={(e) =>
-                          handleInput('service', 'serviceType', e.target.value)
-                        }
-                        required
-                        style={{
-                          borderRadius: '12px',
-                          backgroundColor: '#f8f9fa',
-                          border: '1px solid #e9ecef',
-                          fontSize: '16px',
-                        }}
-                      >
-                        <option value="">-- Chọn loại dịch vụ --</option>
-                        <option value="ADMINISTRATIVE">Hành chính</option>
-                        <option value="CIVIL">Dân sự</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Description */}
-                  <div className="col-12">
-                    <div className="position-relative">
-                      <div className="d-flex align-items-center mb-3">
-                        <div
-                          className="me-3 d-flex align-items-center justify-content-center"
-                          style={{
-                            width: '40px',
-                            height: '40px',
-                            backgroundColor: '#e8f5e8',
-                            borderRadius: '12px',
-                          }}
-                        >
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M4 6H20M4 12H20M4 18H16"
-                              stroke="#4caf50"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </div>
-                        <label className="form-label fw-semibold mb-0 text-dark">
-                          Mô Tả
-                        </label>
-                      </div>
-                      <textarea
-                        className="form-control"
-                        value={form.service.description}
-                        onChange={(e) =>
-                          handleInput('service', 'description', e.target.value)
-                        }
-                        placeholder="Nhập mô tả dịch vụ"
-                        required
-                        rows={3}
-                        style={{
-                          borderRadius: '12px',
-                          backgroundColor: '#f8f9fa',
-                          border: '1px solid #e9ecef',
-                          fontSize: '16px',
-                          resize: 'vertical',
-                        }}
-                      />
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Loại Dịch Vụ
+                    </label>
+                    <select
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={form.service.serviceType}
+                      onChange={(e) =>
+                        handleInput('service', 'serviceType', e.target.value)
+                      }
+                      required
+                    >
+                      <option value="">-- Chọn loại dịch vụ --</option>
+                      <option value="ADMINISTRATIVE">Hành chính</option>
+                      <option value="CIVIL">Dân sự</option>
+                    </select>
                   </div>
 
                   {/* Time */}
-                  <div className="col-md-6">
-                    <div className="position-relative">
-                      <div className="d-flex align-items-center mb-3">
-                        <div
-                          className="me-3 d-flex align-items-center justify-content-center"
-                          style={{
-                            width: '40px',
-                            height: '40px',
-                            backgroundColor: '#fff3e0',
-                            borderRadius: '12px',
-                          }}
-                        >
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <circle
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="#ff9800"
-                              strokeWidth="1.5"
-                            />
-                            <path
-                              d="M12 6V12L16 14"
-                              stroke="#ff9800"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </div>
-                        <label className="form-label fw-semibold mb-0 text-dark">
-                          Thời Gian
-                        </label>
-                      </div>
-                      <input
-                        className="form-control py-3"
-                        value={form.price.time}
-                        onChange={(e) =>
-                          handleInput('price', 'time', e.target.value)
-                        }
-                        placeholder="Nhập thời gian thực hiện"
-                        required
-                        style={{
-                          borderRadius: '12px',
-                          backgroundColor: '#f8f9fa',
-                          border: '1px solid #e9ecef',
-                          fontSize: '16px',
-                        }}
-                      />
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Thời Gian
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={form.price.time}
+                      onChange={(e) =>
+                        handleInput('price', 'time', e.target.value)
+                      }
+                      placeholder="Nhập thời gian thực hiện"
+                      required
+                    />
                   </div>
 
                   {/* Price */}
-                  <div className="col-md-6">
-                    <div className="position-relative">
-                      <div className="d-flex align-items-center mb-3">
-                        <div
-                          className="me-3 d-flex align-items-center justify-content-center"
-                          style={{
-                            width: '40px',
-                            height: '40px',
-                            backgroundColor: '#e8f5e8',
-                            borderRadius: '12px',
-                          }}
-                        >
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M12 1V23"
-                              stroke="#4caf50"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M17 5H9.5C8.57174 5 7.6815 5.36875 7.02513 6.02513C6.36875 6.6815 6 7.57174 6 8.5C6 9.42826 6.36875 10.3185 7.02513 10.9749C7.6815 11.6313 8.57174 12 9.5 12H14.5C15.4283 12 16.3185 12.3687 16.9749 13.0251C17.6313 13.6815 18 14.5717 18 15.5C18 16.4283 17.6313 17.3185 16.9749 17.9749C16.3185 18.6313 15.4283 19 14.5 19H6"
-                              stroke="#4caf50"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </div>
-                        <label className="form-label fw-semibold mb-0 text-dark">
-                          Giá Tiền
-                        </label>
-                      </div>
-                      <input
-                        className="form-control py-3"
-                        value={form.price.price}
-                        onChange={(e) =>
-                          handleInput('price', 'price', e.target.value)
-                        }
-                        placeholder="Nhập giá dịch vụ"
-                        required
-                        style={{
-                          borderRadius: '12px',
-                          backgroundColor: '#f8f9fa',
-                          border: '1px solid #e9ecef',
-                          fontSize: '16px',
-                        }}
-                      />
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Giá Tiền
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={form.price.price}
+                      onChange={(e) =>
+                        handleInput('price', 'price', e.target.value)
+                      }
+                      placeholder="Nhập giá dịch vụ"
+                      required
+                    />
                   </div>
 
-                  {/* Image Upload */}
-                  <div className="col-12">
-                    <div className="position-relative">
-                      <div className="d-flex align-items-center mb-3">
-                        <div
-                          className="me-3 d-flex align-items-center justify-content-center"
-                          style={{
-                            width: '40px',
-                            height: '40px',
-                            backgroundColor: '#f3e5f5',
-                            borderRadius: '12px',
-                          }}
-                        >
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <rect
-                              x="3"
-                              y="3"
-                              width="18"
-                              height="18"
-                              rx="2"
-                              ry="2"
-                              stroke="#9c27b0"
-                              strokeWidth="2"
-                            />
-                            <circle
-                              cx="8.5"
-                              cy="8.5"
-                              r="1.5"
-                              stroke="#9c27b0"
-                              strokeWidth="2"
-                            />
-                            <path
-                              d="M21 15L16 10L5 21"
-                              stroke="#9c27b0"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </div>
-                        <label className="form-label fw-semibold mb-0 text-dark">
-                          Hình Ảnh
-                        </label>
-                      </div>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        ref={fileRef}
-                        onChange={handleFile}
-                        className="form-control py-3"
-                        style={{
-                          borderRadius: '12px',
-                          backgroundColor: '#f8f9fa',
-                          border: '1px solid #e9ecef',
-                          fontSize: '16px',
-                        }}
-                      />
-                      {file && (
-                        <div className="mt-2 text-primary fw-medium">
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="me-2"
-                          >
-                            <path
-                              d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4905 2.02168 11.3363C2.16356 9.18206 2.99721 7.13175 4.39828 5.49385C5.79935 3.85595 7.69279 2.71917 9.79619 2.24712C11.8996 1.77507 14.1003 1.98245 16.07 2.83"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M22 4L12 14.01L9 11.01"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                          Đã chọn: {file.name}
-                        </div>
-                      )}
-                    </div>
+                  {/* Description */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Mô Tả
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={form.service.description}
+                      onChange={(e) =>
+                        handleInput('service', 'description', e.target.value)
+                      }
+                      placeholder="Nhập mô tả dịch vụ"
+                      required
+                    />
                   </div>
+                </div>
 
-                  {/* Image Preview */}
-                  {preview && (
-                    <div className="col-12">
-                      <div className="text-center">
-                        <img
-                          src={preview}
-                          alt="preview"
-                          className="img-fluid rounded shadow-sm"
-                          style={{
-                            maxWidth: '300px',
-                            maxHeight: '200px',
-                            objectFit: 'cover',
-                            border: '3px solid #4285f4',
-                          }}
-                        />
-                      </div>
+                {/* Image Upload */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Hình Ảnh
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileRef}
+                    onChange={handleFile}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+                  {file && (
+                    <div className="mt-2 text-sm text-blue-600">
+                      Đã chọn: {file.name}
                     </div>
                   )}
+                </div>
 
-                  {/* Submit Button */}
-                  <div className="col-12">
-                    <button
-                      type="submit"
-                      className="btn btn-primary w-100 py-3 fw-semibold"
-                      style={{
-                        background:
-                          'linear-gradient(135deg, #4285f4 0%, #1a73e8 100%)',
-                        border: 'none',
-                        borderRadius: '12px',
-                        fontSize: '18px',
-                        boxShadow: '0 4px 15px rgba(66, 133, 244, 0.3)',
-                      }}
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="me-2"
-                      >
-                        <path
-                          d="M12 4.5V19.5M4.5 12H19.5"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      Tạo Dịch Vụ
-                    </button>
+                {/* Image Preview */}
+                {preview && (
+                  <div className="mb-4 text-center">
+                    <img
+                      src={preview}
+                      alt="preview"
+                      className="inline-block max-w-xs max-h-48 object-cover rounded-md border border-gray-300"
+                    />
                   </div>
+                )}
+
+                <div className="flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateForm(false)}
+                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  >
+                    Tạo Dịch Vụ
+                  </button>
                 </div>
               </form>
             </div>
           </div>
-        </div>
+        )}
       </div>
       <ServiceList />
     </div>
