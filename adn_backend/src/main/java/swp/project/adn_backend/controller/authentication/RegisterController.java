@@ -68,7 +68,7 @@ public class RegisterController {
 
     @PostMapping("/staff-account")
     public ResponseEntity<?> registerStaffAccount(
-            @RequestBody @Valid StaffRequest staffRequest,
+            @RequestBody  StaffRequest staffRequest,
             BindingResult bindingResult,
             Authentication authentication) {
 
@@ -86,7 +86,7 @@ public class RegisterController {
 
     @PostMapping("/staff-collector-account")
     public ResponseEntity<?> registerStaffCollectorAccount(
-            @RequestBody @Valid StaffRequest staffRequest,
+            @RequestBody  StaffRequest staffRequest,
             BindingResult bindingResult,
             Authentication authentication) {
 
@@ -104,7 +104,7 @@ public class RegisterController {
 
     @PostMapping("/staff-cashier-account")
     public ResponseEntity<?> registerStaffCollectorSampleAccount(
-            @RequestBody @Valid StaffRequest staffRequest,
+            @RequestBody  StaffRequest staffRequest,
             BindingResult bindingResult,
             Authentication authentication) {
 
@@ -123,7 +123,7 @@ public class RegisterController {
 
     @PostMapping("/staff-at-home-account")
     public ResponseEntity<?> registerStaffShippingAccount(
-            @RequestBody @Valid StaffRequest staffRequest,
+            @RequestBody  StaffRequest staffRequest,
             BindingResult bindingResult,
             Authentication authentication) {
 
@@ -141,7 +141,7 @@ public class RegisterController {
 
     @PostMapping("/lab-technician-account")
     public ResponseEntity<?> registerLabTechnicianAccount(
-            @RequestBody @Valid StaffRequest staffRequest,
+            @RequestBody  StaffRequest staffRequest,
             BindingResult bindingResult,
             Authentication authentication) {
 
@@ -158,7 +158,7 @@ public class RegisterController {
     }
     @PostMapping("/consultant-account")
     public ResponseEntity<?> registerConsultantAccount(
-            @RequestBody @Valid StaffRequest staffRequest,
+            @RequestBody  StaffRequest staffRequest,
             BindingResult bindingResult,
             Authentication authentication) {
 
@@ -176,7 +176,7 @@ public class RegisterController {
 
     @PostMapping("/manager-account")
     public ResponseEntity<?> registerManagerAccount(
-            @RequestBody @Valid ManagerRequest managerRequest,
+            @RequestBody  ManagerRequest managerRequest,
             BindingResult bindingResult,
             Authentication authentication) {
 

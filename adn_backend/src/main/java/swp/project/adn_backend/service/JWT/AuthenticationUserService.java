@@ -75,7 +75,7 @@ public class AuthenticationUserService {
                 .build();
     }
 
-    private String generateToken(Users users) {
+    public String generateToken(Users users) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(users.getUsername())

@@ -71,7 +71,8 @@ public class Users {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     private Set<String> roles;
-
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    private Wallet wallet;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Blog> blogs;
@@ -102,6 +103,14 @@ public class Users {
 
     public void setKitDeliveryStatuses(List<KitDeliveryStatus> kitDeliveryStatuses) {
         this.kitDeliveryStatuses = kitDeliveryStatuses;
+    }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
     }
 
     public Set<String> getRoles() {
