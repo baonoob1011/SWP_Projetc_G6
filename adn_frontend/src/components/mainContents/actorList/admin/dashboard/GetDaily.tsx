@@ -91,7 +91,7 @@ const GetDaily = () => {
 
   if (error && !data) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-gray-50 ml-10">
         <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-3xl p-8 mb-6">
           <div className="flex flex-col items-center justify-center h-32 text-white">
             <AlertCircle size={48} className="mb-2" />
@@ -110,7 +110,7 @@ const GetDaily = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 mt-10 ml-10">
       {/* Header Section */}
       <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-3xl p-8 mb-6 relative overflow-hidden">
         {/* Decorative elements */}
@@ -140,7 +140,7 @@ const GetDaily = () => {
           {/* Date selector cards */}
           <div className="flex flex-wrap gap-4">
             <div className="bg-white bg-opacity-10 rounded-2xl p-4 backdrop-blur-sm">
-              <label className="block text-white text-sm font-medium mb-2">
+              <label className="block text-white text-sm font-medium mb-2 mr-2">
                 Từ ngày
               </label>
               <input
@@ -151,7 +151,7 @@ const GetDaily = () => {
               />
             </div>
             <div className="bg-white bg-opacity-10 rounded-2xl p-4 backdrop-blur-sm">
-              <label className="block text-white text-sm font-medium mb-2">
+              <label className="block text-white text-sm font-medium mb-2 mr-2">
                 Đến ngày
               </label>
               <input

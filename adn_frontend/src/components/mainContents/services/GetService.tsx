@@ -196,190 +196,252 @@ const ServiceList = () => {
   };
 
   if (!auth) return null;
-  if (loading) return <div className="text-center mt-4">Đang tải...</div>;
-  if (error)
-    return <div className="text-danger text-center mt-4">Lỗi: {error}</div>;
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white p-6 flex items-center justify-center">
+        <div className="flex items-center gap-4">
+          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-blue-600 font-semibold">Đang tải...</span>
+        </div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p className="text-red-600 font-semibold">Lỗi: {error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div
-      className="container py-4 service-list-container"
-      style={{
-        background: 'linear-gradient(to right, #e3f2fd, #ffffff)',
-        borderRadius: '12px',
-        padding: '25px',
-        boxShadow: '0 0 15px rgba(33, 150, 243, 0.1)',
-      }}
-    >
-      <h2
-        className="mb-4 text-primary text-center"
-        style={{ fontWeight: 700, fontFamily: 'Poppins, sans-serif' }}
-      >
-        Quản lý Dịch vụ
-      </h2>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-full">
 
-      {services.length === 0 ? (
-        <div className="text-muted text-center">Không có dịch vụ nào.</div>
-      ) : (
-        <div className="table-responsive">
-          <table className="table table-bordered table-hover text-center align-middle table-medical">
-            <thead className="table-primary text-start">
-              <tr style={{ fontWeight: '600' }}>
-                <th>Số thứ tự</th>
-                <th>Tên dịch vụ</th>
-                <th>Loại</th>
-                <th>Mô tả</th>
-                <th>Ngày đăng ký</th>
-                <th>Giá hiện tại</th>
-                <th>Hành động</th>
+        {/* Services Table */}
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                  <div className="flex items-center gap-1">
+                    STT
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    </svg>
+                  </div>
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                  <div className="flex items-center gap-1">
+                    Tên Dịch Vụ
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    </svg>
+                  </div>
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                  <div className="flex items-center gap-1">
+                    Loại
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    </svg>
+                  </div>
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                  <div className="flex items-center gap-1">
+                    Mô Tả
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    </svg>
+                  </div>
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                  <div className="flex items-center gap-1">
+                    Ngày Đăng Ký
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    </svg>
+                  </div>
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                  <div className="flex items-center gap-1">
+                    Giá Hiện Tại
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    </svg>
+                  </div>
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                  Thao Tác
+                </th>
               </tr>
             </thead>
-            <tbody className="text-start">
+            <tbody className="divide-y divide-gray-200">
               {services.map((s, index) => {
                 const latestPrice = s.priceListRequest.at(-1);
-                const isEditing =
-                  editingServiceId === s.serviceRequest.serviceId;
+                const isEditing = editingServiceId === s.serviceRequest.serviceId;
 
                 return (
-                  <tr key={s.serviceRequest.serviceId}>
-                    <td>{index + 1}</td>
+                  <tr key={s.serviceRequest.serviceId} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-sm text-blue-600 font-medium border-r border-gray-200">
+                      {index + 1}
+                    </td>
 
                     {/* Tên dịch vụ */}
-                    <td style={{ minWidth: '160px' }}>
+                    <td className="px-4 py-3 border-r border-gray-200">
                       {isEditing ? (
                         <input
-                          className="form-control form-control-sm"
-                          style={{ borderColor: '#0d6efd' }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           value={updatedName}
                           onChange={(e) => setUpdatedName(e.target.value)}
+                          placeholder="Nhập tên dịch vụ"
                         />
                       ) : (
-                        <span style={{ fontWeight: 500, color: '#0d47a1' }}>
+                        <span className="text-sm text-gray-800">
                           {s.serviceRequest.serviceName}
                         </span>
                       )}
                     </td>
 
                     {/* Loại */}
-                    <td style={{ minWidth: '100px' }}>
-                      <span className="badge text-dark">
+                    <td className="px-4 py-3 border-r border-gray-200">
+                      <span className="text-sm text-gray-600">
                         {s.serviceRequest.serviceType}
                       </span>
                     </td>
 
                     {/* Mô tả */}
-                    <td style={{ minWidth: '220px' }}>
+                    <td className="px-4 py-3 border-r border-gray-200">
                       {isEditing ? (
                         <textarea
-                          className="form-control form-control-sm"
-                          style={{ borderColor: '#0d6efd' }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
                           rows={2}
                           value={updatedDescription}
-                          onChange={(e) =>
-                            setUpdatedDescription(e.target.value)
-                          }
+                          onChange={(e) => setUpdatedDescription(e.target.value)}
+                          placeholder="Nhập mô tả"
                         />
                       ) : (
-                        <span>{s.serviceRequest.description}</span>
+                        <span className="text-sm text-gray-600 max-w-xs truncate block">
+                          {s.serviceRequest.description}
+                        </span>
                       )}
                     </td>
 
                     {/* Ngày đăng ký */}
-                    <td style={{ minWidth: '120px', color: '#555' }}>
-                      {new Date(
-                        s.serviceRequest.registerDate
-                      ).toLocaleDateString('vi-VN')}
+                    <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                      {new Date(s.serviceRequest.registerDate).toLocaleDateString('vi-VN')}
                     </td>
 
                     {/* Giá hiện tại */}
-                    <td style={{ minWidth: '160px' }}>
+                    <td className="px-4 py-3 border-r border-gray-200">
                       {isEditing ? (
                         <input
                           type="number"
                           min={0}
-                          className="form-control form-control-sm"
-                          style={{ borderColor: '#0d6efd' }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           value={updatedPrice}
-                          onChange={(e) =>
-                            setUpdatedPrice(Number(e.target.value))
-                          }
+                          onChange={(e) => setUpdatedPrice(Number(e.target.value))}
+                          placeholder="Nhập giá"
                         />
                       ) : latestPrice ? (
-                        <>
-                          <div style={{ fontWeight: 600, color: '#2e7d32' }}>
-                            {latestPrice.price.toLocaleString()} VNĐ
+                        <div>
+                          <div className="text-sm font-medium text-gray-800">
+                            {latestPrice.price.toLocaleString()}đ
                           </div>
-                          <small className="text-muted">
-                            (
-                            {new Date(latestPrice.time).toLocaleDateString(
-                              'vi-VN'
-                            )}
-                            )
+                          <small className="text-xs text-gray-500">
+                            ({new Date(latestPrice.time).toLocaleDateString('vi-VN')})
                           </small>
-                        </>
+                        </div>
                       ) : (
-                        <span className="text-muted">Chưa có</span>
+                        <span className="text-sm text-gray-400 italic">Chưa có</span>
                       )}
                     </td>
 
                     {/* Hành động */}
-                    <td style={{ minWidth: '160px' }}>
+                    <td className="px-4 py-3 whitespace-nowrap">
                       {isEditing ? (
-                        <>
+                        <div className="flex items-center gap-2">
                           <button
-                            className="btn btn-sm btn-outline-success me-1"
-                            onClick={() =>
-                              handleUpdate(s.serviceRequest.serviceId)
-                            }
+                            className="p-2 text-green-600 hover:text-green-800 hover:bg-green-100 rounded-md transition-colors"
+                            onClick={() => handleUpdate(s.serviceRequest.serviceId)}
                           >
-                            💾 Lưu
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
                           </button>
                           <button
-                            className="btn btn-sm btn-outline-danger"
+                            className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-md transition-colors"
                             onClick={() => setEditingServiceId(null)}
                           >
-                            ❌ Huỷ
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
                           </button>
-                        </>
+                        </div>
                       ) : (
-                        <>
+                        <div className="flex items-center gap-2 flex-wrap">
                           <button
-                            className="btn btn-sm btn-outline-primary me-1"
+                            className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-100 rounded-md transition-colors"
                             onClick={() => startEdit(s)}
                           >
-                            ✏️ Sửa
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
                           </button>
                           <button
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() =>
-                              handleDelete(s.serviceRequest.serviceId)
-                            }
+                            className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-md transition-colors"
+                            onClick={() => handleDelete(s.serviceRequest.serviceId)}
                           >
-                            🗑️ Xoá
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
                           </button>
                           <Button
                             component={NavLink}
                             to={`/newPrice/${s.serviceRequest.serviceId}`}
-                            className="btn btn-sm btn-outline-secondary"
+                            className="!p-2 !text-purple-500 hover:!text-purple-700 hover:!bg-purple-100 !rounded-md !transition-colors !min-w-0"
                           >
-                            thêm giá
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
                           </Button>
                           <Button
                             component={NavLink}
                             to={`/discount/${s.serviceRequest.serviceId}`}
-                            className="btn btn-sm btn-outline-secondary"
+                            className="!p-2 !text-orange-500 hover:!text-orange-700 hover:!bg-orange-100 !rounded-md !transition-colors !min-w-0"
                           >
-                            giảm giá
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
                           </Button>
-                        </>
+                        </div>
                       )}
                     </td>
                   </tr>
                 );
               })}
+              
+              {services.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                    Không tìm thấy dịch vụ nào
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
-      )}
+      </div>
+      
       <CustomSnackBar
         open={snackbar.open}
         message={snackbar.message}

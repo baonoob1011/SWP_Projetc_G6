@@ -122,7 +122,7 @@ const RevenueDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-gray-50 ml-10">
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-3xl p-8 mb-6">
           <div className="flex items-center justify-center h-32">
             <div className="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent"></div>
@@ -137,7 +137,7 @@ const RevenueDashboard = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-gray-50 ml-10">
         <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-3xl p-8 mb-6">
           <div className="flex flex-col items-center justify-center h-32 text-white">
             <div className="text-4xl mb-2">⚠️</div>
@@ -181,7 +181,7 @@ const RevenueDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 ml-10">
       {/* Header Section */}
       <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-3xl p-8 mb-6 relative overflow-hidden">
         {/* Decorative elements */}
