@@ -29,6 +29,7 @@ type OldProfile = {
   email: string;
   phone: string;
   address: string;
+  avatarUrl: string;
 };
 
 const NewProfile = () => {
@@ -38,6 +39,7 @@ const NewProfile = () => {
     email: '',
     phone: '',
     address: '',
+    avatarUrl: '',
   });
   const [amount, setAmount] = useState<string>();
   const [editableField, setEditableField] = useState<string | null>(null);
@@ -255,8 +257,12 @@ const NewProfile = () => {
                   <div className="absolute inset-0 bg-black/10 rounded-xl" />
                   <div className="relative flex flex-col items-center text-center text-white">
                     {/* Icon user */}
-                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 ring-4 ring-white/30">
-                      <UserCircle className="w-8 h-8 text-white" />
+                    <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 ring-4 ring-white/30">
+                      <img
+                        src={profile.avatarUrl}
+                        alt="Avatar"
+                        className="w-14 h-14 rounded-full object-cover"
+                      />
                     </div>
 
                     <h3 className="font-bold text-white text-lg mb-1">

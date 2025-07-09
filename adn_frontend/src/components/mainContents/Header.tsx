@@ -17,11 +17,7 @@ import {
   ListItemButton,
 } from '@mui/material';
 
-import {
-  Menu as MenuIcon,
-  ArrowDropDown,
-  AccountCircle,
-} from '@mui/icons-material';
+import { Menu as MenuIcon, ArrowDropDown } from '@mui/icons-material';
 
 import { NavLink } from 'react-router-dom';
 
@@ -667,7 +663,6 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               ) : (
                 <>
                   <Button
-                    startIcon={<AccountCircle />}
                     onClick={(e) => handleOpenMenu(e, 'USER')}
                     endIcon={<ArrowDropDown />}
                     sx={{
