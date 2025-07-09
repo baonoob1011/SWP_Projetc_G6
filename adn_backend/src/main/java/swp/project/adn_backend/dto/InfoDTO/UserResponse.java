@@ -13,13 +13,23 @@ public class UserResponse {
     String phone;
     String address;
     String email;
+    String avatarUrl;
 
-    public UserResponse(long userId, String fullName, String phone, String address, String email) {
+    public UserResponse(long userId, String fullName, String phone, String address, String email, String avatarUrl) {
         this.userId = userId;
         this.fullName = fullName;
         this.phone = phone;
         this.address = address;
         this.email = email;
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public long getUserId() {

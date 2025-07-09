@@ -151,15 +151,27 @@ public class CreatePaymentService {
     }
     @Transactional
     public void successPaymentWallet(String vnpTxnRef) {
-
         WalletTransaction walletTransaction = walletTransactionRepository.findByTxnRef(vnpTxnRef)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.INVOICE_NOT_EXISTS));
+
+        // Nếu đã xử lý rồi thì bỏ qua
+        if (walletTransaction.getTransactionStatus() == TransactionStatus.SUCCESS) {
+            System.out.println("⚠️ Giao dịch đã xử lý rồi, bỏ qua.");
+            return;
+        }
+
+        // Cập nhật ví và trạng thái giao dịch
+        Wallet wallet = walletTransaction.getWallet();
+        System.out.println(wallet.getBalance());
+        System.out.println(walletTransaction.getAmount());
+        wallet.setBalance(wallet.getBalance() + walletTransaction.getAmount());
+
         walletTransaction.setTransactionStatus(TransactionStatus.SUCCESS);
         walletTransaction.setTimestamp(LocalDateTime.now());
-        walletTransaction.getWallet().setBalance( walletTransaction.getWallet().getBalance()+walletTransaction.getAmount());
-        System.out.println("✅ Invoice updated.");
 
+        System.out.println("✅ Invoice updated.");
     }
+
 
     public void failPayment(String vnpTxnRef, String responseCode) {
         Invoice invoice = invoiceRepository.findByTxnRef(vnpTxnRef)

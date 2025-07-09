@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.InfoDTO.InvoiceDTO;
 import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
+import swp.project.adn_backend.dto.request.payment.PaymentRequest;
 import swp.project.adn_backend.entity.Invoice;
 import swp.project.adn_backend.entity.Payment;
 import swp.project.adn_backend.enums.ErrorCodeUser;
@@ -50,6 +51,12 @@ public class PaymentController {
     @GetMapping("/get-all-payment")
     public ResponseEntity<List<PaymentInfoDTO>> getAllPayment(Authentication authentication) {
         return ResponseEntity.ok(paymentService.getAllPayment(authentication));
+    }
+    @PutMapping("/change-payment-method")
+    public ResponseEntity<String> updatePaymentMethod(@RequestParam long paymentId,
+                                                      @RequestBody PaymentRequest paymentRequest) {
+        paymentService.updatePaymentMethod(paymentId,paymentRequest);
+        return ResponseEntity.ok("update payment method thành công");
     }
 
     @PostMapping("/create")

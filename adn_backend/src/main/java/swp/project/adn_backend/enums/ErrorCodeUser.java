@@ -65,6 +65,7 @@ public enum ErrorCodeUser {
     PAYMENT_NOT_EXISTS(1036, "payment không tồn tại", HttpStatus.BAD_REQUEST),
     EMAIL_NOT_EXISTS(10341, "emial không tồn tại", HttpStatus.BAD_REQUEST),
     PAYMENT_INFO_NOT_EXISTS(10341, "payment info không tồn tại", HttpStatus.BAD_REQUEST),
+    WALLET_INFO_NOT_EXISTS(10341, "wallet info không tồn tại", HttpStatus.BAD_REQUEST),
     PATIENT_INFO_NOT_EXISTS(10341, "patient info không tồn tại", HttpStatus.BAD_REQUEST),
     INVOICE_NOT_EXISTS(10341, "invoice không tồn tại", HttpStatus.BAD_REQUEST),
     SLOT_OUTSIDE_ROOM_TIME(10342, "Slot time is outside of room's available time range", HttpStatus.BAD_REQUEST),

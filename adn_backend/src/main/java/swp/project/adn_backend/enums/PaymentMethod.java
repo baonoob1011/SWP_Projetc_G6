@@ -1,5 +1,5 @@
 package swp.project.adn_backend.enums;
 
 public enum PaymentMethod {
-    CASH, CREDIT_CARD, VN_PAY, MOMO, BANK_TRANSFER
+    CASH, CREDIT_CARD, VN_PAY,WALLET, MOMO, BANK_TRANSFER
 }

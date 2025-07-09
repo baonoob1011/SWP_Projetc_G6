@@ -101,20 +101,6 @@ public class AppointmentController {
                                                                                                 @RequestParam long appointmentId) {
         return ResponseEntity.ok(appointmentService.getAppointmentAtHomeToRecordResult(authentication,appointmentId));
     }
-//    //staff lay appoint de thanh toan tien mat
-//    @GetMapping("/get-appointment-of-user-by-phone")
-//    public ResponseEntity<List<AllAppointmentAtCenterUserResponse>> getAppointmentOfUser(@RequestBody UserRequest userRequest,
-//                                                                                         Authentication authentication) {
-//        return ResponseEntity.ok(appointmentService.getAppointmentOfUser(authentication,userRequest));
-//    }
-
-    //thanh toán tiền tại cơ sở
-//    @PutMapping("/get-payment-at-center")
-//    public ResponseEntity<String> getAppointmentOfUser(@RequestParam long paymentId,
-//                                                       @RequestParam long appointmentId) {
-//        appointmentService.payAppointment(paymentId,appointmentId);
-//        return ResponseEntity.ok("thanh toán bằng tiền mặt thành công");
-//    }
 
     @GetMapping("/get-appointment-at-home-by-staff")
     public ResponseEntity<List<AllAppointmentAtHomeResponse>> getAppointmentAtHome(Authentication authentication) {
@@ -175,6 +161,11 @@ public class AppointmentController {
     @PutMapping("/book-appointment-again")
     public ResponseEntity<String> updateAppointmentToGetSampleAgain(@RequestParam long appointmentId) {
         appointmentService.updateAppointmentToGetSampleAgain(appointmentId);
+        return ResponseEntity.ok("update thanh cong");
+    }
+    @PutMapping("/appointment-refund")
+    public ResponseEntity<String> appointmentRefund(@RequestParam long appointmentId) {
+        appointmentService.appointmentRefund(appointmentId);
         return ResponseEntity.ok("update thanh cong");
     }
 

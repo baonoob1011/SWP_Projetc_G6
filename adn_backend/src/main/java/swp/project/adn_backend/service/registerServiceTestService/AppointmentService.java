@@ -39,6 +39,8 @@ import java.util.stream.Collectors;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppointmentService {
+    WalletRepository walletRepository;
+    WalletTransactionRepository walletTransactionRepository;
     AppointmentRepository appointmentRepository;
     AppointmentMapper appointmentMapper;
     UserRepository userRepository;
@@ -60,7 +62,9 @@ public class AppointmentService {
     NotificationRepository notificationRepository;
 
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService, PatientService patientService, PriceListRepository priceListRepository, PaymentRepository paymentRepository, KitRepository kitRepository, PatientRepository patientRepository, KitDeliveryStatusRepository kitDeliveryStatusRepository, InvoiceRepository invoiceRepository, StaffAssignmentTracker staffAssignmentTracker, NotificationRepository notificationRepository) {
+    public AppointmentService(WalletRepository walletRepository, WalletTransactionRepository walletTransactionRepository, AppointmentRepository appointmentRepository, AppointmentMapper appointmentMapper, UserRepository userRepository, ServiceTestRepository serviceTestRepository, EntityManager entityManager, StaffRepository staffRepository, SlotMapper slotMapper, SlotRepository slotRepository, LocationRepository locationRepository, EmailService emailService, PatientService patientService, PriceListRepository priceListRepository, PaymentRepository paymentRepository, KitRepository kitRepository, PatientRepository patientRepository, KitDeliveryStatusRepository kitDeliveryStatusRepository, InvoiceRepository invoiceRepository, StaffAssignmentTracker staffAssignmentTracker, NotificationRepository notificationRepository) {
+        this.walletRepository = walletRepository;
+        this.walletTransactionRepository = walletTransactionRepository;
         this.appointmentRepository = appointmentRepository;
         this.appointmentMapper = appointmentMapper;
         this.userRepository = userRepository;
@@ -180,6 +184,9 @@ public class AppointmentService {
         if (payment.getPaymentMethod().equals(PaymentMethod.CASH)) {
             appointment.setNote("Vui lòng đến quầy thu ngân để thanh toán dịch vụ. " +
                     "Bạn chỉ cần cung cấp số điện thoại đã đăng ký để nhân viên hỗ trợ thanh toán nhanh chóng.");
+        }
+        if (payment.getPaymentMethod().equals(PaymentMethod.CASH)) {
+            appointment.setNote("Bạn hãy kiểm tra số dư trước khi thanh toán");
         }
         //nguoi dat hen
         userBookAppointment.setAppointments(new ArrayList<>(List.of(appointment)));
@@ -434,7 +441,9 @@ public class AppointmentService {
         payment.setUsers(userBookAppointment);
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         paymentRepository.save(payment);
-
+        if (payment.getPaymentMethod().equals(PaymentMethod.CASH)) {
+            appointment.setNote("Bạn hãy kiểm tra số dư trước khi thanh toán");
+        }
         // Lưu appointment
         Appointment saved = appointmentRepository.save(appointment);
 
@@ -780,7 +789,7 @@ public class AppointmentService {
 
         Staff staff = staffRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-        if(!staff.getRole().equals("STAFF_AT_HOME")){
+        if (!staff.getRole().equals("STAFF_AT_HOME")) {
             throw new RuntimeException("Chỉ có nhân viên thu mẫu tại nhà mới có thể lấy");
         }
         Appointment appointment = appointmentRepository.findById(appointmentId)
@@ -1050,14 +1059,24 @@ public class AppointmentService {
     public void cancelledAppointment(long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
-        for (Patient patient : appointment.getPatients()) {
-            patient.setPatientStatus(PatientStatus.CANCELLED);
+        if (appointment.getAppointmentType().equals(AppointmentType.HOME)){
+            for (Patient patient : appointment.getPatients()) {
+                patient.setPatientStatus(PatientStatus.CANCELLED);
+            }
+            appointment.setNote("Đơn đăng ký đã được hủy");
+            appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
+            appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.FAILED);
         }
-        appointment.getSlot().setSlotStatus(SlotStatus.AVAILABLE);
-        appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
+        if(appointment.getAppointmentType().equals(AppointmentType.CENTER)){
+            for (Patient patient : appointment.getPatients()) {
+                patient.setPatientStatus(PatientStatus.CANCELLED);
+            }
+            appointment.setNote("Đơn đăng ký đã được hủy");
+            appointment.getSlot().setSlotStatus(SlotStatus.AVAILABLE);
+            appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
+        }
+
     }
-
-
     //staff lay ra de thanh toan bang tien mat
     public List<AllAppointmentAtCenterUserResponse> getAppointmentOfUser(Authentication authentication, UserPhoneRequest userRequest) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -1094,7 +1113,24 @@ public class AppointmentService {
         }
         return appointmentResponses;
     }
-    public void updateAppointmentToGetSampleAgain(long appointmentId){
+
+    @Transactional
+    public void appointmentRefund(long appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        appointment.setNote("vì lí do mẫu bị hư nên chúng tôi hoàn trả đơn cũng như tiền mong ví khách đăng kí lại để hổ trợ lấy mẫu lại ");
+        appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+        appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
+        Users users = appointment.getUsers();
+        for (Payment payment : appointment.getPayments()) {
+            if (payment.getGetPaymentStatus().equals(PaymentStatus.PAID)) {
+                users.getWallet().setBalance(users.getWallet().getBalance() + (long) payment.getAmount());
+            }
+        }
+    }
+
+    @Transactional
+    public void updateAppointmentToGetSampleAgain(long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         appointment.setNote("Mẫu của bạn bị hỏng trong quá trình xử lý. bạn vui lòng đến cơ sở để lấy lại mẫu");
@@ -1189,6 +1225,83 @@ public class AppointmentService {
 
         return createPaymentRequest;
     }
+
+    @Transactional
+    public CreatePaymentRequest createPaymentByWallet(long paymentId,
+                                                      long serviceId,
+                                                      long appointmentId,
+                                                      Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.PAYMENT_INFO_NOT_EXISTS));
+
+        Wallet wallet = walletRepository.findByUserId(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.WALLET_INFO_NOT_EXISTS));
+
+
+        ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
+
+        if (wallet.getBalance() < payment.getAmount()) {
+            throw new RuntimeException("Số dư trong tài khoản không đủ để thanh toán");
+        }
+
+        // ✅ Tạo mã giao dịch duy nhất
+        String txnRef = UUID.randomUUID().toString().replace("-", "").substring(0, 20); // max 20 ký tự
+
+        // ✅ Trừ số dư ví trước
+        wallet.setBalance(wallet.getBalance() - (long) payment.getAmount());
+        wallet.setUpdatedAt(LocalDate.now());
+
+        // ✅ Tạo hóa đơn (invoice)
+        Invoice invoice = new Invoice();
+        invoice.setTxnRef(txnRef);
+        invoice.setBankCode(generateRandomBankCode());
+        invoice.setAmount((long) payment.getAmount());
+        invoice.setOrderInfo(serviceTest.getServiceName());
+        invoice.setTransactionStatus(TransactionStatus.SUCCESS);
+        invoice.setCreatedDate(LocalDateTime.now());
+        invoice.setPayDate(LocalDateTime.now());
+        invoice.setResponseCode("00");
+        invoice.setPayment(payment);
+        invoice.setServiceTest(serviceTest);
+        if (payment.getAppointment() != null) {
+            invoice.setAppointment(payment.getAppointment());
+        }
+
+        invoiceRepository.save(invoice);
+
+        // ✅ Cập nhật trạng thái appointment & payment
+        appointment.setNote("Đã thanh toán");
+        payment.setPaymentStatus(PaymentStatus.PAID);
+        payment.setTransitionDate(LocalDate.now());
+
+        // ✅ Ghi lại giao dịch trong ví
+        WalletTransaction walletTransaction = new WalletTransaction();
+        walletTransaction.setWallet(wallet);
+        walletTransaction.setType(TransactionType.PAYMENT);
+        walletTransaction.setAmount((long) payment.getAmount());
+        walletTransaction.setTimestamp(LocalDateTime.now());
+        walletTransaction.setBankCode(generateRandomBankCode());
+        walletTransaction.setTransactionStatus(TransactionStatus.SUCCESS);
+        walletTransaction.setTxnRef(txnRef);
+        walletTransactionRepository.save(walletTransaction);
+
+        // ✅ Trả kết quả cho client
+        CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
+        createPaymentRequest.setAmount(payment.getAmount());
+        createPaymentRequest.setOrderInfo(serviceTest.getServiceName());
+        createPaymentRequest.setTxnRef(txnRef);
+        createPaymentRequest.setReturnUrlBase("http://localhost:5173/vnpay-payment");
+
+        return createPaymentRequest;
+    }
+
 
     private String generateRandomBankCode() {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

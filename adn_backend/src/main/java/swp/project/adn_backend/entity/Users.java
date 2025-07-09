@@ -50,6 +50,8 @@ public class Users {
     Boolean enabled = true;
     String otpCode;
     LocalDateTime otpExpiryTime;
+    @Column(name = "avatar_url")
+    private String avatarUrl;
 
     @Column(name = "last_otp_sent_time", nullable = true) // Có thể null
     private LocalDateTime lastOtpSentTime;
@@ -129,6 +131,13 @@ public class Users {
         this.blogs = blogs;
     }
 
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
 
     public List<Payment> getPayments() {
         return payments;

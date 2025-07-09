@@ -35,6 +35,8 @@ import swp.project.adn_backend.repository.*;
 import swp.project.adn_backend.service.authService.SendEmailService;
 import org.springframework.mail.SimpleMailMessage;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -79,7 +81,7 @@ public class UserService {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.UserResponse(" +
-                "s.userId, s.fullName, s.phone, s.address, s.email) FROM Users s " +
+                "s.userId, s.fullName, s.phone, s.address, s.email, s.avatarUrl) FROM Users s " +
                 "Where s.userId=:userId";
         TypedQuery<UserResponse> query = entityManager.createQuery(jpql, UserResponse.class);
         query.setParameter("userId", userId);
@@ -88,6 +90,7 @@ public class UserService {
 
     // Đăng ký User
     public Users registerUserAccount(UserRequest userDTO) {
+
         HashSet<String> roles = new HashSet<>();
         validateUser(userDTO);
         // Tạo user từ DTO và mã hóa mật khẩu
@@ -95,6 +98,9 @@ public class UserService {
         roles.add(Roles.USER.name());
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
+        String seed = URLEncoder.encode(users.getFullName(), StandardCharsets.UTF_8);
+        String avatarUrl = "https://api.dicebear.com/9.x/personas/svg?seed=" + seed;
+        users.setAvatarUrl(avatarUrl);
         users.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         // Lưu lại để cascade lưu role
         userRepository.save(users);
@@ -129,10 +135,14 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         sendWelcomeEmail(users.getEmail(), users.getUsername(), password);
+        String seed = URLEncoder.encode(users.getFullName(), StandardCharsets.UTF_8);
+        String avatarUrl = "https://api.dicebear.com/9.x/personas/svg?seed=" + seed;
+        users.setAvatarUrl(avatarUrl);
         // Save user and return
         userRepository.save(users);
         Staff staff = staffMapper.toStaffAccount(staffAccountRequest);
         staff.setRole("STAFF");
+        staff.setAvatarUrl(avatarUrl);
         staff.setStaffId(users.getUserId());
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);
@@ -157,11 +167,15 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
+        String seed = URLEncoder.encode(users.getFullName(), StandardCharsets.UTF_8);
+        String avatarUrl = "https://api.dicebear.com/9.x/personas/svg?seed=" + seed;
+        users.setAvatarUrl(avatarUrl);
         userRepository.save(users);
         //add vao bang staff
 
         Staff staff = staffMapper.toStaff(staffRequest);
         staff.setRole("STAFF");
+        staff.setAvatarUrl(avatarUrl);
         staff.setStaffId(users.getUserId());
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);
@@ -201,6 +215,9 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
+        String seed = URLEncoder.encode(users.getFullName(), StandardCharsets.UTF_8);
+        String avatarUrl = "https://api.dicebear.com/9.x/personas/svg?seed=" + seed;
+        users.setAvatarUrl(avatarUrl);
         userRepository.save(users);
         //add vao bang staff
 
@@ -208,6 +225,7 @@ public class UserService {
         staff.setRole("LAB_TECHNICIAN");
         staff.setStaffId(users.getUserId());
         staff.setCreateAt(LocalDate.now());
+        staff.setAvatarUrl(avatarUrl);
         staff.setUsers(userRegister);
         staffRepository.save(staff);
 
@@ -245,11 +263,15 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
+        String seed = URLEncoder.encode(users.getFullName(), StandardCharsets.UTF_8);
+        String avatarUrl = "https://api.dicebear.com/9.x/personas/svg?seed=" + seed;
+        users.setAvatarUrl(avatarUrl);
         userRepository.save(users);
         //add vao bang staff
 
         Staff staff = staffMapper.toStaff(staffRequest);
         staff.setRole("CONSULTANT");
+        staff.setAvatarUrl(avatarUrl);
         staff.setStaffId(users.getUserId());
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);
@@ -289,6 +311,9 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
+        String seed = URLEncoder.encode(users.getFullName(), StandardCharsets.UTF_8);
+        String avatarUrl = "https://api.dicebear.com/9.x/personas/svg?seed=" + seed;
+        users.setAvatarUrl(avatarUrl);
         userRepository.save(users);
         //add vao bang staff
 
@@ -296,6 +321,8 @@ public class UserService {
         staff.setRole("SAMPLE_COLLECTOR");
         staff.setStaffId(users.getUserId());
         staff.setCreateAt(LocalDate.now());
+        staff.setAvatarUrl(avatarUrl);
+
         staff.setUsers(userRegister);
         staffRepository.save(staff);
 
@@ -333,6 +360,9 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
+        String seed = URLEncoder.encode(users.getFullName(), StandardCharsets.UTF_8);
+        String avatarUrl = "https://api.dicebear.com/9.x/personas/svg?seed=" + seed;
+        users.setAvatarUrl(avatarUrl);
         userRepository.save(users);
         //add vao bang staff
 
@@ -340,6 +370,8 @@ public class UserService {
         staff.setRole("SAMPLE_COLLECTOR_AT_HOME");
         staff.setStaffId(users.getUserId());
         staff.setCreateAt(LocalDate.now());
+        staff.setAvatarUrl(avatarUrl);
+
         staff.setUsers(userRegister);
         staffRepository.save(staff);
 
@@ -377,12 +409,17 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
+        String seed = URLEncoder.encode(users.getFullName(), StandardCharsets.UTF_8);
+        String avatarUrl = "https://api.dicebear.com/9.x/personas/svg?seed=" + seed;
+        users.setAvatarUrl(avatarUrl);
         userRepository.save(users);
         //add vao bang staff
 
         Staff staff = staffMapper.toStaff(staffRequest);
         staff.setRole("CASHIER");
         staff.setStaffId(users.getUserId());
+        staff.setAvatarUrl(avatarUrl);
+
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);
         staffRepository.save(staff);
@@ -421,12 +458,17 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(staffRequest.getPassword()));
+        String seed = URLEncoder.encode(users.getFullName(), StandardCharsets.UTF_8);
+        String avatarUrl = "https://api.dicebear.com/9.x/personas/svg?seed=" + seed;
+        users.setAvatarUrl(avatarUrl);
         userRepository.save(users);
         //add vao bang staff
 
         Staff staff = staffMapper.toStaff(staffRequest);
         staff.setRole("STAFF_AT_HOME");
         staff.setStaffId(users.getUserId());
+        staff.setAvatarUrl(avatarUrl);
+
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);
         staffRepository.save(staff);
@@ -465,12 +507,17 @@ public class UserService {
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
         users.setPassword(passwordEncoder.encode(managerRequest.getPassword()));
+        String seed = URLEncoder.encode(users.getFullName(), StandardCharsets.UTF_8);
+        String avatarUrl = "https://api.dicebear.com/9.x/personas/svg?seed=" + seed;
+        users.setAvatarUrl(avatarUrl);
         userRepository.save(users);
         //add vao bang staff
         Manager manager = managerMapper.toManager(managerRequest);
         manager.setRole("MANAGER");
         manager.setManagerId(users.getUserId());
         manager.setCreateAt(LocalDate.now());
+        manager.setAvatarUrl(avatarUrl);
+
         manager.setUsers(userRegister);
         managerRepository.save(manager);
 

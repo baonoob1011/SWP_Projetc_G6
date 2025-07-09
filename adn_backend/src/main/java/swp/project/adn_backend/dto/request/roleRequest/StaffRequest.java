@@ -27,20 +27,20 @@ public class StaffRequest {
     @Size(min = 8, message = "USERNAME_INVALID")
     String username;
 
-    @NotBlank(message = "PASSWORD_BLANK")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
-    @Pattern(
-            regexp = "^(?=.*[A-Z]).*$",
-            message = "Password must contain at least one uppercase letter"
-    )
-    @Pattern(
-            regexp = "^(?=.*[0-9]).*$",
-            message = "Password must contain at least one number"
-    )
-    @Pattern(
-            regexp = "^(?=.*[@#$%^&+=!\\-_]).*$",
-            message = "Password must contain at least one special character (@#$%^&+=!\\-_)"
-    )
+//    @NotBlank(message = "PASSWORD_BLANK")
+//    @Size(min = 8, message = "Password must be at least 8 characters long")
+//    @Pattern(
+//            regexp = "^(?=.*[A-Z]).*$",
+//            message = "Password must contain at least one uppercase letter"
+//    )
+//    @Pattern(
+//            regexp = "^(?=.*[0-9]).*$",
+//            message = "Password must contain at least one number"
+//    )
+//    @Pattern(
+//            regexp = "^(?=.*[@#$%^&+=!\\-_]).*$",
+//            message = "Password must contain at least one special character (@#$%^&+=!\\-_)"
+//    )
     String password;
 
     boolean enabled = true;
@@ -105,21 +105,11 @@ public class StaffRequest {
         this.username = username;
     }
 
-    public @NotBlank(message = "PASSWORD_BLANK") 
-           @Size(min = 8, message = "Password must be at least 8 characters long")
-           @Pattern(regexp = "^(?=.*[A-Z]).*$", message = "Password must contain at least one uppercase letter")
-           @Pattern(regexp = "^(?=.*[0-9]).*$", message = "Password must contain at least one number")
-           @Pattern(regexp = "^(?=.*[@#$%^&+=!\\-_]).*$", message = "Password must contain at least one special character (@#$%^&+=!\\-_)")
-           String getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(@NotBlank(message = "PASSWORD_BLANK") 
-                           @Size(min = 8, message = "Password must be at least 8 characters long")
-                           @Pattern(regexp = "^(?=.*[A-Z]).*$", message = "Password must contain at least one uppercase letter")
-                           @Pattern(regexp = "^(?=.*[0-9]).*$", message = "Password must contain at least one number")
-                           @Pattern(regexp = "^(?=.*[@#$%^&+=!\\-_]).*$", message = "Password must contain at least one special character (@#$%^&+=!\\-_)")
-                           String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 

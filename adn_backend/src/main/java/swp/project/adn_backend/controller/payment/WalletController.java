@@ -18,6 +18,7 @@ import swp.project.adn_backend.service.payment.CreatePaymentService;
 import swp.project.adn_backend.service.payment.InvoiceService;
 import swp.project.adn_backend.service.payment.PaymentService;
 import swp.project.adn_backend.service.payment.VNPayService;
+import swp.project.adn_backend.service.registerServiceTestService.AppointmentService;
 import swp.project.adn_backend.service.wallet.WalletService;
 
 import java.util.List;
@@ -31,26 +32,34 @@ public class WalletController {
     private VNPayService vnPayService;
     private PaymentService getPaymentService;
     private CreatePaymentService createPaymentService;
-    private InvoiceService invoiceService;
-    private InvoiceRepository invoiceRepository;
     private WalletTransactionRepository walletTransactionRepository;
     private WalletService walletService;
+    private AppointmentService appointmentService;
 
     @Autowired
-    public WalletController(PaymentService paymentService, VNPayService vnPayService, PaymentService getPaymentService, CreatePaymentService createPaymentService, InvoiceService invoiceService, InvoiceRepository invoiceRepository, WalletTransactionRepository walletTransactionRepository, WalletService walletService) {
+    public WalletController(PaymentService paymentService, VNPayService vnPayService, PaymentService getPaymentService, CreatePaymentService createPaymentService, WalletTransactionRepository walletTransactionRepository, WalletService walletService, AppointmentService appointmentService) {
         this.paymentService = paymentService;
         this.vnPayService = vnPayService;
         this.getPaymentService = getPaymentService;
         this.createPaymentService = createPaymentService;
-        this.invoiceService = invoiceService;
-        this.invoiceRepository = invoiceRepository;
         this.walletTransactionRepository = walletTransactionRepository;
         this.walletService = walletService;
+        this.appointmentService = appointmentService;
     }
 
     @GetMapping("/get-all-payment")
     public ResponseEntity<List<PaymentInfoDTO>> getAllPayment(Authentication authentication) {
         return ResponseEntity.ok(paymentService.getAllPayment(authentication));
+    }
+    @PostMapping("/payment-by-wallet")
+    public ResponseEntity<CreatePaymentRequest> createPaymentByWallet(Authentication authentication,
+                                                                      @RequestParam long appointmentId,
+                                                                      @RequestParam long serviceId,
+                                                                      @RequestParam long paymentId) {
+        return ResponseEntity.ok(appointmentService.createPaymentByWallet(paymentId,
+                serviceId,
+                appointmentId,
+                authentication));
     }
 
     @PostMapping("/create")

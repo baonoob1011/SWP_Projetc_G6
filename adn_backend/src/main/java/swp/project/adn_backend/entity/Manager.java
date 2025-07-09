@@ -20,7 +20,8 @@ public class Manager {
     @Id
     @Column(name = "manager_id")
     long managerId;
-
+    @Column(name = "avatar_url")
+    private String avatarUrl;
     @Column(name = "full_name", columnDefinition = "NVARCHAR(100)")
     String fullName;
     @Column(name = "id_card")
@@ -103,6 +104,13 @@ public class Manager {
         this.email = email;
     }
 
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
 
     public boolean isEnabled() {
         return enabled;

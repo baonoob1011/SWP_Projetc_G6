@@ -42,7 +42,8 @@ public class Staff {
 
     @Column(name = "day_of_birth")
     LocalDate dateOfBirth;
-
+    @Column(name = "avatar_url")
+    private String avatarUrl;
     @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY, cascade = {
             CascadeType.ALL
     })
@@ -87,6 +88,14 @@ public class Staff {
     @OneToOne(mappedBy = "staff", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     // trỏ đến tên biến bên Notification
     private Notification notification;
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
 
     public Notification getNotification() {
         return notification;

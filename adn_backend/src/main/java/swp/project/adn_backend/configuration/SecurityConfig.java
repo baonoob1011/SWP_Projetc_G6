@@ -77,6 +77,8 @@ public class SecurityConfig {
             "/api/kit/view-kit-status",
             "/api/location/get-all-location",
             "/api/payment/get-all-payment",
+            "/api/payment/change-payment-method",
+            "/api/wallet/payment-by-wallet",
             "/api/user/**",
             "/api/payment/**",
             "/api/v1/**",
@@ -133,6 +135,7 @@ public class SecurityConfig {
             "/api/locus/get-all-locus",
             "/api/appointment/update-note",
             "/api/appointment/book-appointment-again",
+            "/api/appointment/appointment-refund",
 
     };
     private final String[] MANAGER_ENDPOINTS = {

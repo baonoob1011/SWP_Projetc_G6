@@ -6,15 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.InfoDTO.KitInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.OrderInfoResponseDTO;
 import swp.project.adn_backend.dto.InfoDTO.PaymentInfoDTO;
 import swp.project.adn_backend.dto.request.payment.PaymentRequest;
+import swp.project.adn_backend.entity.Appointment;
 import swp.project.adn_backend.entity.Payment;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.PaymentMapper;
+import swp.project.adn_backend.repository.AppointmentRepository;
 import swp.project.adn_backend.repository.PaymentRepository;
 import swp.project.adn_backend.repository.UserRepository;
 
@@ -26,13 +29,15 @@ public class PaymentService {
     private PaymentMapper paymentMapper;
     private EntityManager entityManager;
     private UserRepository userRepository;
+    private AppointmentRepository appointmentRepository;
 
     @Autowired
-    public PaymentService(PaymentRepository paymentRepository, PaymentMapper paymentMapper, EntityManager entityManager, UserRepository userRepository) {
+    public PaymentService(PaymentRepository paymentRepository, PaymentMapper paymentMapper, EntityManager entityManager, UserRepository userRepository, AppointmentRepository appointmentRepository) {
         this.paymentRepository = paymentRepository;
         this.paymentMapper = paymentMapper;
         this.entityManager = entityManager;
         this.userRepository = userRepository;
+        this.appointmentRepository = appointmentRepository;
     }
 
     public Payment createPayment(PaymentRequest paymentRequest) {
@@ -63,4 +68,14 @@ public class PaymentService {
         TypedQuery<OrderInfoResponseDTO> query = entityManager.createQuery(jpql, OrderInfoResponseDTO.class);
         return query.getResultList();
     }
+
+    @Transactional
+    public void updatePaymentMethod(long paymentId, PaymentRequest paymentRequest) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.PAYMENT_INFO_NOT_EXISTS));
+
+        payment.setPaymentMethod(paymentRequest.getPaymentMethod());
+
+    }
 }
+
