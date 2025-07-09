@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   FormControl,
   MenuItem,
@@ -9,7 +10,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ServiceList from './GetService';
-import ServiceImage from '../../mainContents/feature/featureImage/Service.png'
+import ServiceImage from '../../mainContents/feature/featureImage/Service.png';
 
 type FormService = {
   serviceName: string;
@@ -164,7 +165,7 @@ const Services = () => {
       }
 
       const data = await res.json();
- 
+
       setKit(data);
     } catch (error) {
       console.error('Fetch locations error:', error);
@@ -285,11 +286,12 @@ const Services = () => {
   return (
     <div className="min-h-screen bg-white ml-10">
       <div className="max-w-full">
-
         {/* Statistics Header */}
         <div className="bg-[#3667F9] rounded-lg p-6 mb-6 relative">
           <div className="flex items-center gap-2 mb-3">
-            <h2 className="text-white text-lg font-semibold">Quản lý dịch vụ</h2>
+            <h2 className="text-white text-lg font-semibold">
+              Quản lý dịch vụ
+            </h2>
           </div>
           {/* Breadcrumb */}
           <div className="flex items-center mb-6 text-blue-100">
@@ -299,8 +301,18 @@ const Services = () => {
           </div>
           <div className="bg-green-500 bg-opacity-30 rounded-lg p-2 max-w-xs">
             <div className="flex items-center gap-2 mb-2">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              <svg
+                className="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                />
               </svg>
             </div>
             <div className="text-blue-100 text-xl">
@@ -318,7 +330,11 @@ const Services = () => {
           </div>
           {/* Đặt hình ảnh vào trong header */}
           <div className="absolute right-0 bottom-0 mb-4 mr-40">
-            <img src={ServiceImage} alt="service" className="h-40 object-contain" />
+            <img
+              src={ServiceImage}
+              alt="service"
+              className="h-40 object-contain"
+            />
           </div>
         </div>
 
@@ -336,7 +352,9 @@ const Services = () => {
         {showCreateForm && (
           <div className="bg-white border border-gray-200 rounded-lg mb-6 shadow-sm">
             <div className="p-6">
-              <h3 className="text-lg font-medium text-gray-800 mb-4">Thêm Dịch Vụ Mới</h3>
+              <h3 className="text-lg font-medium text-gray-800 mb-4">
+                Thêm Dịch Vụ Mới
+              </h3>
               <form onSubmit={handleSubmit}>
                 {/* Kit Selection */}
                 <div className="mb-4">
@@ -364,9 +382,7 @@ const Services = () => {
                       }}
                     >
                       <MenuItem value="">
-                        <em style={{ color: '#6b7280' }}>
-                          ----Chọn Kit----
-                        </em>
+                        <em style={{ color: '#6b7280' }}>----Chọn Kit----</em>
                       </MenuItem>
                       {kit.map((kit) => (
                         <MenuItem key={kit.kitId} value={kit.kitId}>

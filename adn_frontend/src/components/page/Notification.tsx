@@ -63,7 +63,7 @@ const Notification: React.FC<NotificationProps> = ({
         <div className="flex justify-center gap-4">
           {/* Nút Hành Chính với hiệu ứng nâng cao */}
           <NavLink
-            to="/service/administrative"
+            to="/service/administrative#administrative-service-list"
             className="group relative px-8 py-4 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 w-full text-center overflow-hidden"
             onClick={onClose}
           >
@@ -89,7 +89,7 @@ const Notification: React.FC<NotificationProps> = ({
 
           {/* Nút Dân Sự với hiệu ứng nâng cao */}
           <NavLink
-            to="/service/civil"
+            to="/service/civil#civil-service-list"
             className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 w-full text-center overflow-hidden"
             onClick={onClose}
           >
