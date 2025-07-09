@@ -89,7 +89,7 @@ const Deposit = () => {
         <table className="table table-bordered bg-white mt-5">
           <tbody>
             <tr>
-              <th>Mã ngân hàng</th>
+              <th>Mã hóa đơn</th>
               <td>{invoice.bankCode}</td>
             </tr>
             <tr>

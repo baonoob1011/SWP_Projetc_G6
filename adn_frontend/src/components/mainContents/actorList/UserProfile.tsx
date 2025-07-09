@@ -297,6 +297,7 @@ const NewProfile = () => {
                       className="flex flex-col items-center gap-2 w-full max-w-xs"
                     >
                       <input
+                        id="amount"
                         type="text"
                         inputMode="numeric"
                         pattern="[0-9]*"
@@ -318,6 +319,7 @@ const NewProfile = () => {
                       <button
                         type="submit"
                         className="px-4 py-2 w-full rounded-lg bg-white text-blue-700 font-semibold hover:bg-blue-100 transition"
+                        disabled={!amount}
                       >
                         Nạp tiền
                       </button>

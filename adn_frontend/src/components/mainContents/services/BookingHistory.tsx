@@ -26,6 +26,22 @@ const BookingHistory = () => {
   // Pagination state
   const [centerPage, setCenterPage] = useState(1);
   const [homePage, setHomePage] = useState(1);
+  const translate = (status: string) => {
+    switch (status) {
+      case 'PENDING':
+        return 'Chờ xác nhận';
+      case 'CONFIRMED':
+        return 'Đã xác nhận';
+      case 'COMPLETED':
+        return 'Hoàn thành';
+      case 'CANCELLED':
+        return 'Đã hủy';
+      case 'RATED':
+        return 'Đã đánh giá';
+      default:
+        return 'Không xác định';
+    }
+  };
 
   const fetchHistory = async () => {
     try {
@@ -59,22 +75,6 @@ const BookingHistory = () => {
     setTabIndex(newValue);
   };
 
-  const renderPaymentStatus = (status: string | null) => {
-    if (!status) return <Chip label="Chưa thanh toán" color="default" />;
-    return (
-      <Chip
-        label={status}
-        color={
-          status === 'PAID'
-            ? 'success'
-            : status === 'PENDING'
-            ? 'warning'
-            : 'default'
-        }
-      />
-    );
-  };
-
   // Pagination logic
   const centerTotalPages = Math.ceil(centerHistory.length / ITEMS_PER_PAGE);
   const homeTotalPages = Math.ceil(homeHistory.length / ITEMS_PER_PAGE);
@@ -88,14 +88,26 @@ const BookingHistory = () => {
   // Empty state
   const renderEmpty = (msg: string) => (
     <Box textAlign="center" py={6}>
-      <Typography variant="h6" color="textSecondary">{msg}</Typography>
+      <Typography variant="h6" color="textSecondary">
+        {msg}
+      </Typography>
     </Box>
   );
 
   // Pagination controls
-  const renderPagination = (page: number, totalPages: number, setPage: (p: number) => void) => (
+  const renderPagination = (
+    page: number,
+    totalPages: number,
+    setPage: (p: number) => void
+  ) =>
     totalPages > 1 && (
-      <Box display="flex" justifyContent="center" alignItems="center" mt={3} gap={2}>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        mt={3}
+        gap={2}
+      >
         <button
           onClick={() => setPage(Math.max(page - 1, 1))}
           disabled={page === 1}
@@ -106,7 +118,7 @@ const BookingHistory = () => {
             background: page === 1 ? '#f3f3f3' : '#fff',
             color: page === 1 ? '#aaa' : '#333',
             cursor: page === 1 ? 'not-allowed' : 'pointer',
-            fontWeight: 500
+            fontWeight: 500,
           }}
         >
           Trang trước
@@ -124,7 +136,7 @@ const BookingHistory = () => {
                 color: page === p ? '#fff' : '#333',
                 fontWeight: page === p ? 700 : 500,
                 cursor: 'pointer',
-                margin: 0
+                margin: 0,
               }}
             >
               {p}
@@ -141,14 +153,13 @@ const BookingHistory = () => {
             background: page === totalPages ? '#f3f3f3' : '#fff',
             color: page === totalPages ? '#aaa' : '#333',
             cursor: page === totalPages ? 'not-allowed' : 'pointer',
-            fontWeight: 500
+            fontWeight: 500,
           }}
         >
           Trang sau
         </button>
       </Box>
-    )
-  );
+    );
 
   return (
     <Box className="max-w-7xl mx-auto px-4 py-6">
@@ -173,10 +184,11 @@ const BookingHistory = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>Ngày</TableCell>
-                    <TableCell>Giờ</TableCell>
                     <TableCell>Dịch vụ</TableCell>
                     <TableCell>Phòng</TableCell>
                     <TableCell>Địa điểm</TableCell>
+                    <TableCell>Số tiền</TableCell>
+                    <TableCell>Phương thúc thanh toán</TableCell>
                     <TableCell>Trạng thái</TableCell>
                     <TableCell>Thanh toán</TableCell>
                   </TableRow>
@@ -184,7 +196,6 @@ const BookingHistory = () => {
                 <TableBody>
                   {centerCurrent.map((item, index) => {
                     const a = item.showAppointmentResponse;
-                    const s = item.slotAppointmentResponse?.[0];
                     const service = item.serviceAppointmentResponses?.[0];
                     const loc = item.locationAppointmentResponses?.[0];
                     const room = item.roomAppointmentResponse;
@@ -192,9 +203,6 @@ const BookingHistory = () => {
                     return (
                       <TableRow key={index}>
                         <TableCell>{a?.appointmentDate}</TableCell>
-                        <TableCell>
-                          {s?.startTime?.slice(0, 5)} - {s?.endTime?.slice(0, 5)}
-                        </TableCell>
                         <TableCell>{service?.serviceName}</TableCell>
                         <TableCell>{room?.roomName}</TableCell>
                         <TableCell>
@@ -202,9 +210,14 @@ const BookingHistory = () => {
                             ? `${loc.addressLine}, ${loc.district}, ${loc.city}`
                             : '-'}
                         </TableCell>
+
+                        <TableCell>
+                          {payment.amount?.toLocaleString('vi-VN')} VND
+                        </TableCell>
+                        <TableCell>{payment.paymentMethod} </TableCell>
                         <TableCell>
                           <Chip
-                            label={a?.appointmentStatus}
+                            label={translate(a?.appointmentStatus)}
                             color={
                               a?.appointmentStatus === 'CONFIRMED'
                                 ? 'success'
@@ -213,7 +226,9 @@ const BookingHistory = () => {
                           />
                         </TableCell>
                         <TableCell>
-                          {renderPaymentStatus(payment?.getPaymentStatus)}
+                          {payment?.getPaymentStatus === 'PAID'
+                            ? 'Đã thanh toán'
+                            : 'Chưa thanh toán'}
                         </TableCell>
                       </TableRow>
                     );
@@ -224,61 +239,61 @@ const BookingHistory = () => {
             {renderPagination(centerPage, centerTotalPages, setCenterPage)}
           </>
         )
+      ) : homeHistory.length === 0 ? (
+        renderEmpty('Không có lịch sử đặt lịch tại nhà')
       ) : (
-        homeHistory.length === 0 ? (
-          renderEmpty('Không có lịch sử đặt lịch tại nhà')
-        ) : (
-          <>
-            <TableContainer component={Paper} className="shadow-md rounded-xl">
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Ngày</TableCell>
-                    <TableCell>Dịch vụ</TableCell>
-                    <TableCell>Ghi chú</TableCell>
-                    <TableCell>Mã kit</TableCell>
-                    <TableCell>Số người</TableCell>
-                    <TableCell>Nội dung</TableCell>
-                    <TableCell>Trạng thái</TableCell>
-                    <TableCell>Thanh toán</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {homeCurrent.map((item, index) => {
-                    const a = item.showAppointmentResponse;
-                    const service = item.serviceAppointmentResponses?.[0];
-                    const kit = item.kitAppointmentResponse;
-                    const payment = item.paymentAppointmentResponses?.[0];
-                    return (
-                      <TableRow key={index}>
-                        <TableCell>{a?.appointmentDate}</TableCell>
-                        <TableCell>{service?.serviceName}</TableCell>
-                        <TableCell>{a?.note || '-'}</TableCell>
-                        <TableCell>{kit?.kitCode}</TableCell>
-                        <TableCell>{kit?.targetPersonCount}</TableCell>
-                        <TableCell>{kit?.contents}</TableCell>
-                        <TableCell>
-                          <Chip
-                            label={a?.appointmentStatus}
-                            color={
-                              a?.appointmentStatus === 'COMPLETED'
-                                ? 'success'
-                                : 'default'
-                            }
-                          />
-                        </TableCell>
-                        <TableCell>
-                          {renderPaymentStatus(payment?.getPaymentStatus)}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            {renderPagination(homePage, homeTotalPages, setHomePage)}
-          </>
-        )
+        <>
+          <TableContainer component={Paper} className="shadow-md rounded-xl">
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Ngày</TableCell>
+                  <TableCell>Dịch vụ</TableCell>
+                  <TableCell>Tên kit</TableCell>
+                  <TableCell>Số tiền</TableCell>
+                  <TableCell>Phương thúc thanh toán</TableCell>
+                  <TableCell>Trạng thái</TableCell>
+                  <TableCell>Thanh toán</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {homeCurrent.map((item, index) => {
+                  const a = item.showAppointmentResponse;
+                  const kit = item.kitAppointmentResponse;
+                  const payment = item.paymentAppointmentResponses?.[0];
+                  return (
+                    <TableRow key={index}>
+                      <TableCell>{a?.appointmentDate}</TableCell>
+                      <TableCell>{a?.note || '-'}</TableCell>
+                      <TableCell>{kit.kitName}</TableCell>
+                      <TableCell>
+                        {payment.amount?.toLocaleString('vi-VN')} VND
+                      </TableCell>
+                      <TableCell>{payment.paymentMethod} </TableCell>
+
+                      <TableCell>
+                        <Chip
+                          label={translate(a?.appointmentStatus)}
+                          color={
+                            a?.appointmentStatus === 'COMPLETED'
+                              ? 'success'
+                              : 'default'
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {payment?.getPaymentStatus === 'PAID'
+                          ? 'Đã thanh toán'
+                          : 'Chưa thanh toán'}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {renderPagination(homePage, homeTotalPages, setHomePage)}
+        </>
       )}
     </Box>
   );

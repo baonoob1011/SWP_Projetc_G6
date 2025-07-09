@@ -316,23 +316,13 @@ const BookingAtCenter = () => {
       }
 
       if (!res.ok) {
-        let errorMessage = 'Không thể tạo'; // mặc định
-
-        const contentType = res.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const errorData = await res.json();
-          errorMessage = errorData.message || JSON.stringify(errorData);
-        } else {
-          errorMessage = await res.text();
-        }
-
         setSnackbar({
           open: true,
-          message: errorMessage,
+          message: 'Kiểm tra và điền thông tin hợp lệ',
           severity: 'error',
         });
       } else {
-        navigate(`/`);
+        navigate(`/u-profile`);
         toast.success('Đặt lịch thành công');
         setSelectedSlot('');
       }
@@ -533,6 +523,7 @@ const BookingAtCenter = () => {
                 >
                   <MenuItem value="VN_PAY">VN PAY</MenuItem>
                   <MenuItem value="CASH">Tiền mặt</MenuItem>
+                  <MenuItem value="WALLET">Ví cá nhân</MenuItem>
                 </Select>
               </FormControl>
             </Box>

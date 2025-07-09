@@ -52,6 +52,10 @@ const BookingAtHome = () => {
     relationship: '',
     birthCertificate: '',
   });
+  const payment = [
+    { label: 'Ví cá nhân', value: 'WALLET' },
+    { label: 'VNPay', value: 'VN_PAY' },
+  ];
 
   const [patientTwo, setPatientTwo] = useState<Patient>({
     fullName: '',
@@ -238,19 +242,9 @@ const BookingAtHome = () => {
       );
 
       if (!res.ok) {
-        let errorMessage = 'Không thể tạo'; // mặc định
-
-        const contentType = res.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const errorData = await res.json();
-          errorMessage = errorData.message || JSON.stringify(errorData);
-        } else {
-          errorMessage = await res.text();
-        }
-
         setSnackbar({
           open: true,
-          message: errorMessage,
+          message: 'Kiểm tra và điền thông tin hợp lệ',
           severity: 'error',
         });
       } else {
@@ -388,12 +382,16 @@ const BookingAtHome = () => {
                     },
                   }}
                 >
-                  <MenuItem value="VN_PAY">
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Payment sx={{ fontSize: 20 }} />
-                      VN PAY
-                    </Box>
-                  </MenuItem>
+                  {payment.map((method) => (
+                    <MenuItem key={method.value} value={method.value}>
+                      <Box
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                      >
+                        <Payment sx={{ fontSize: 20 }} />
+                        {method.label}
+                      </Box>
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Box>

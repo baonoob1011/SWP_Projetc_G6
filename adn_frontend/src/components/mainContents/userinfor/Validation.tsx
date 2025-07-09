@@ -71,7 +71,6 @@ export const signUpStaffSchema = baseSchema.pick([
   'fullName',
   'username',
   'email',
-  'password',
   'confirmPassword',
   'phone',
   'idCard',

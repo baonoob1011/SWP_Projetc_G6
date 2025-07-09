@@ -52,7 +52,7 @@ const GetSampleInfo = () => {
   const handleBookingAgain = async () => {
     try {
       const res = await fetch(
-        `http://localhost:8080/api/appointment/book-appointment-again?appointmentId=${appointmentId}`,
+        `http://localhost:8080/api/appointment/appointment-refund?appointmentId=${appointmentId}`,
         {
           method: 'PUT',
           headers: {
@@ -263,7 +263,7 @@ const GetSampleInfo = () => {
               onClick={handleBookingAgain}
               className={styles.submitButton}
             >
-              Đặt lại lịch
+              Hoàn trả
             </button>
           </div>
         </>
