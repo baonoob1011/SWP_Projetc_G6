@@ -10,7 +10,6 @@ import {
   ShoppingBag,
   BaggageClaim,
   Newspaper,
-  Phone,
 } from 'lucide-react';
 
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -23,12 +22,12 @@ const AdminSidebar = () => {
   const [activeItem, setActiveItem] = useState('dashboard');
   const [fullName, setFullName] = useState<string>('');
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const storeName = localStorage.getItem('fullName') || '';
     setFullName(storeName);
   }, []);
-  
+
   const TimeLeftLogout = (exp: number) => {
     const now = Date.now() / 1000;
     const timeleft = (exp - now) * 1000;
@@ -57,7 +56,7 @@ const AdminSidebar = () => {
       return null;
     }
   }
-  
+
   useEffect(() => {
     const storeName = localStorage.getItem('fullName') || '';
     setFullName(storeName);
@@ -145,16 +144,9 @@ const AdminSidebar = () => {
             <Menu className="h-5 w-5" />
           </button>
           <div className="flex items-center space-x-2">
-            <div className="h-8 w-8 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-              <Shield className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-semibold text-white">Admin Panel</span>
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-3">
-          <div className="h-9 w-9 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-            <User className="h-5 w-5 text-white" />
+            <span className="font-semibold text-white">
+              Trang quản trị viên
+            </span>
           </div>
         </div>
       </div>
@@ -191,8 +183,15 @@ const AdminSidebar = () => {
                 <Shield className="h-6 w-6 text-white" />
               </div>
               <div>
-                <span className="text-xl font-bold text-gray-800">Admin Panel</span>
-                <div className="text-xs text-gray-500 font-medium">Management System</div>
+                <span
+                  className="text-xl font-bold text-gray-800"
+                  style={{ fontSize: 14 }}
+                >
+                  Trang quản trị viên
+                </span>
+                <div className="text-xs text-gray-500 font-medium">
+                  Quản lý hệ thống
+                </div>
               </div>
             </div>
 
@@ -211,8 +210,9 @@ const AdminSidebar = () => {
               <User className="h-6 w-6 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-gray-800 truncate">{fullName}</div>
-              <div className="text-xs text-blue-600 font-medium">Department Admin</div>
+              <div className="text-sm font-semibold text-gray-800 truncate">
+                {fullName}
+              </div>
             </div>
           </div>
         </div>
@@ -239,16 +239,25 @@ const AdminSidebar = () => {
                   `}
                 >
                   <div className="flex items-center space-x-4 px-4 py-4 w-full justify-start">
-                    <div className={`
+                    <div
+                      className={`
                       p-2.5 rounded-xl transition-all duration-200
-                      ${isActive 
-                        ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-md' 
-                        : 'bg-gray-100 hover:bg-gray-200'
+                      ${
+                        isActive
+                          ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-md'
+                          : 'bg-gray-100 hover:bg-gray-200'
                       }
-                    `}>
-                      <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-gray-500'}`} />
+                    `}
+                    >
+                      <Icon
+                        className={`h-5 w-5 ${
+                          isActive ? 'text-white' : 'text-gray-500'
+                        }`}
+                      />
                     </div>
-                    <span className="font-medium text-sm flex-1 truncate">{item.label}</span>
+                    <span className="font-medium text-sm flex-1 truncate">
+                      {item.label}
+                    </span>
                   </div>
                 </Button>
               </div>

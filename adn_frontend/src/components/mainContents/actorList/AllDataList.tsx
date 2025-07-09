@@ -1,8 +1,15 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Users, UserCheck, Shield, Crown, Calendar, Home, CreditCard, FlaskConical } from 'lucide-react';
-import dataImage from '../../mainContents/actorList/actorList_Image/dataImage.png'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Users,
+  UserCheck,
+  Shield,
+  Home,
+  CreditCard,
+  FlaskConical,
+} from 'lucide-react';
+import dataImage from '../../mainContents/actorList/actorList_Image/dataImage.png';
 const DataList = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -11,11 +18,31 @@ const DataList = () => {
     { path: '/admin/user', label: 'Danh sách người dùng', icon: Users },
     { path: '/admin/manager', label: 'Danh sách quản lý', icon: Shield },
     { path: '/admin/staff', label: 'Danh sách nhân viên', icon: UserCheck },
-    { path: '/admin/collector', label: 'Danh sách nhân viên thu mẫu', icon: FlaskConical },
-    { path: '/admin/staff-at-home', label: 'Danh sách nhân viên dịch vụ tại nhà', icon: Home },
-    { path: '/admin/cashier', label: 'Danh sách nhân viên thu ngân', icon: CreditCard },
-    { path: '/admin/technical', label: 'Danh sách nhân viên phòng lab', icon: FlaskConical },
-    { path: '/admin/appointment', label: 'Danh sách lịch hẹn', icon: Calendar },
+    {
+      path: '/admin/collector',
+      label: 'Danh sách nhân viên thu mẫu',
+      icon: FlaskConical,
+    },
+    {
+      path: '/admin/staff-at-home',
+      label: 'Danh sách nhân viên dịch vụ tại nhà',
+      icon: Home,
+    },
+    {
+      path: '/admin/cashier',
+      label: 'Danh sách nhân viên thu ngân',
+      icon: CreditCard,
+    },
+    {
+      path: '/admin/technical',
+      label: 'Danh sách nhân viên phòng lab',
+      icon: FlaskConical,
+    },
+    {
+      path: '/admin/consultant',
+      label: 'Danh sách nhân viên tư vấn',
+      icon: FlaskConical,
+    },
   ];
 
   const handleDropdownChange = (event: SelectChangeEvent<string>) => {
@@ -44,11 +71,10 @@ const DataList = () => {
             <span>Danh sách dữ liệu</span>
           </div>
         </div>
-         {/* Đặt hình ảnh vào trong header */}
-          <div className="absolute right-0 bottom-0 mb-3 mr-40">
-            <img src={dataImage} alt="data" className="h-40 object-contain" />
-          </div>
-        
+        {/* Đặt hình ảnh vào trong header */}
+        <div className="absolute right-0 bottom-0 mb-3 mr-40">
+          <img src={dataImage} alt="data" className="h-40 object-contain" />
+        </div>
       </div>
 
       {/* Navigation Section */}
@@ -63,7 +89,9 @@ const DataList = () => {
         </div>
 
         <FormControl fullWidth variant="outlined">
-          <InputLabel id="admin-nav-select-label">Chọn danh sách quản lý</InputLabel>
+          <InputLabel id="admin-nav-select-label">
+            Chọn danh sách quản lý
+          </InputLabel>
           <Select
             labelId="admin-nav-select-label"
             value={location.pathname}
@@ -84,8 +112,14 @@ const DataList = () => {
             {adminNavItems.map((item) => (
               <MenuItem key={item.path} value={item.path}>
                 <div className="flex items-center space-x-3 py-1">
-                  <item.icon size={24} className="text-gray-700" strokeWidth={2} />
-                  <span className="text-base font-medium text-gray-800">{item.label}</span>
+                  <item.icon
+                    size={24}
+                    className="text-gray-700"
+                    strokeWidth={2}
+                  />
+                  <span className="text-base font-medium text-gray-800">
+                    {item.label}
+                  </span>
                 </div>
               </MenuItem>
             ))}
@@ -156,7 +190,9 @@ export const DataList2 = () => {
                 key={idx}
                 onClick={() => navigate(item.path)}
                 className={`bg-white bg-opacity-25 backdrop-blur-sm rounded-2xl p-6 cursor-pointer transition-all duration-200 hover:bg-opacity-35 hover:scale-105 border border-white border-opacity-20 ${
-                  location.pathname === item.path ? 'bg-opacity-35 ring-2 ring-white shadow-lg' : ''
+                  location.pathname === item.path
+                    ? 'bg-opacity-35 ring-2 ring-white shadow-lg'
+                    : ''
                 }`}
               >
                 <div className="text-white mb-4 flex justify-center">
@@ -183,7 +219,9 @@ export const DataList2 = () => {
         </div>
 
         <FormControl fullWidth variant="outlined">
-          <InputLabel id="manager-nav-select-label">Chọn danh sách quản lý</InputLabel>
+          <InputLabel id="manager-nav-select-label">
+            Chọn danh sách quản lý
+          </InputLabel>
           <Select
             labelId="manager-nav-select-label"
             value={location.pathname}
@@ -204,8 +242,14 @@ export const DataList2 = () => {
             {managerNavItems.map((item) => (
               <MenuItem key={item.path} value={item.path}>
                 <div className="flex items-center space-x-3 py-1">
-                  <item.icon size={24} className="text-gray-700" strokeWidth={2} />
-                  <span className="text-base font-medium text-gray-800">{item.label}</span>
+                  <item.icon
+                    size={24}
+                    className="text-gray-700"
+                    strokeWidth={2}
+                  />
+                  <span className="text-base font-medium text-gray-800">
+                    {item.label}
+                  </span>
                 </div>
               </MenuItem>
             ))}
@@ -219,7 +263,9 @@ export const DataList2 = () => {
               key={idx}
               onClick={() => navigate(item.path)}
               className={`bg-gray-50 rounded-2xl p-6 cursor-pointer transition-all duration-200 hover:bg-green-50 hover:scale-105 border border-gray-200 ${
-                location.pathname === item.path ? 'bg-green-50 ring-2 ring-green-300 shadow-md' : ''
+                location.pathname === item.path
+                  ? 'bg-green-50 ring-2 ring-green-300 shadow-md'
+                  : ''
               }`}
             >
               <div className="w-18 h-18 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">

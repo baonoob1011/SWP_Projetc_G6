@@ -229,7 +229,9 @@ const SignUpStaff = () => {
         {/* Statistics Header */}
         <div className="bg-[#4162EB] rounded-lg p-6 mb-6 relative">
           <div className="flex items-center gap-2 mb-3">
-            <h2 className="text-white text-lg font-semibold">Quản lý Nhân viên</h2>
+            <h2 className="text-white text-lg font-semibold">
+              Quản lý Nhân viên
+            </h2>
           </div>
           {/* Breadcrumb */}
           <div className="flex items-center mb-6 text-blue-100">
@@ -255,7 +257,9 @@ const SignUpStaff = () => {
         {showCreateForm && (
           <div className="bg-white border border-gray-200 rounded-lg mb-6 shadow-sm">
             <div className="p-6">
-              <h3 className="text-lg font-medium text-gray-800 mb-4">Thông tin nhân viên</h3>
+              <h3 className="text-lg font-medium text-gray-800 mb-4">
+                Thông tin nhân viên
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -272,7 +276,9 @@ const SignUpStaff = () => {
                     placeholder="Nhập họ và tên"
                   />
                   {error.fullName && (
-                    <p className="mt-1 text-sm text-red-600">{error.fullName}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {error.fullName}
+                    </p>
                   )}
                 </div>
 
@@ -330,7 +336,9 @@ const SignUpStaff = () => {
                     placeholder="Nhập tên đăng nhập"
                   />
                   {error.username && (
-                    <p className="mt-1 text-sm text-red-600">{error.username}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {error.username}
+                    </p>
                   )}
                 </div>
 
@@ -341,24 +349,11 @@ const SignUpStaff = () => {
                   <input
                     type="password"
                     name="password"
-                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                      error.password ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
                     value={staff.password}
                     onChange={handleInput}
                     placeholder="Nhập mật khẩu"
                   />
-                  {error.password && (
-                    <p className="mt-1 text-sm text-red-600">{error.password}</p>
-                  )}
-                  <div className="mt-2 text-xs text-gray-600">
-                    <ul className="list-disc list-inside space-y-1">
-                      <li>Có ít nhất 8 ký tự</li>
-                      <li>Có ít nhất 1 chữ thường và hoa</li>
-                      <li>Có ít nhất 1 ký tự đặc biệt</li>
-                      <li>Có ít nhất 1 chữ số</li>
-                    </ul>
-                  </div>
                 </div>
 
                 <div>
@@ -369,14 +364,18 @@ const SignUpStaff = () => {
                     type="password"
                     name="confirmPassword"
                     className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                      error.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                      error.confirmPassword
+                        ? 'border-red-500'
+                        : 'border-gray-300'
                     }`}
                     value={staff.confirmPassword}
                     onChange={handleInput}
                     placeholder="Nhập lại mật khẩu"
                   />
                   {error.confirmPassword && (
-                    <p className="mt-1 text-sm text-red-600">{error.confirmPassword}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {error.confirmPassword}
+                    </p>
                   )}
                 </div>
 
@@ -466,7 +465,9 @@ const SignUpStaff = () => {
                     onChange={handleInput}
                   />
                   {error.dateOfBirth && (
-                    <p className="mt-1 text-sm text-red-600">{error.dateOfBirth}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {error.dateOfBirth}
+                    </p>
                   )}
                 </div>
               </div>

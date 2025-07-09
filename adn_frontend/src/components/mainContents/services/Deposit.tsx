@@ -1,20 +1,32 @@
 import { useEffect, useState } from 'react';
 
 type Invoice = {
-  invoiceId: number;
+  walletTransactionId: number;
   amount: number;
-  createdDate: string;
-  serviceName: string;
-  userFullName: string;
+  type: string;
+  transactionStatus: string;
+  timestamp: string; // ISO format
   bankCode: string;
 };
 
-const VNPayResult = () => {
+const Deposit = () => {
   const [status, setStatus] = useState<'pending' | 'success' | 'fail'>(
     'pending'
   );
   const [invoice, setInvoice] = useState<Invoice | null>(null);
 
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'DEPOSIT':
+        return 'Nạp Tiền';
+      case 'SUCCESS':
+        return 'THÀNH CÔNG';
+      case 'FAIL':
+        return 'THẤT BẠI';
+      default:
+        return 'Chờ xác nhận';
+    }
+  };
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const queryParams: Record<string, string> = {};
@@ -28,7 +40,7 @@ const VNPayResult = () => {
       const queryString = new URLSearchParams(queryParams).toString();
       const token = localStorage.getItem('token'); // 🔐 Lấy token từ localStorage
 
-      fetch(`http://localhost:8080/api/payment/vnpay-return?${queryString}`, {
+      fetch(`http://localhost:8080/api/wallet/vnpay-return?${queryString}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`, //
@@ -70,43 +82,43 @@ const VNPayResult = () => {
   return (
     <div className="container" style={{ marginTop: 150 }}>
       <div className="alert alert-success text-center" role="alert">
-        Thanh toán thành công!
+        Nạp tiền thành công!
       </div>
 
       {invoice && (
         <table className="table table-bordered bg-white mt-5">
           <tbody>
             <tr>
-              <th>Mã hóa đơn</th>
+              <th>Mã ngân hàng</th>
               <td>{invoice.bankCode}</td>
-            </tr>
-            <tr>
-              <th>Dịch vụ</th>
-              <td>{invoice.serviceName}</td>
-            </tr>
-            <tr>
-              <th>Khách hàng</th>
-              <td>{invoice.userFullName}</td>
             </tr>
             <tr>
               <th>Số tiền</th>
               <td>{invoice.amount.toLocaleString()} VNĐ</td>
             </tr>
             <tr>
-              <th>Ngày thanh toán</th>
-              <td>{new Date(invoice.createdDate).toLocaleString()}</td>
+              <th>Loại giao dịch</th>
+              <td>{getStatusText(invoice.type)}</td>
+            </tr>
+            <tr>
+              <th>Trạng thái</th>
+              <td>{getStatusText(invoice.transactionStatus)}</td>
+            </tr>
+            <tr>
+              <th>Thời gian</th>
+              <td>{new Date(invoice.timestamp).toLocaleString()}</td>
             </tr>
           </tbody>
         </table>
       )}
 
       <div className="text-center mt-4">
-        <a href="/" className="btn btn-primary">
-          Quay về trang chủ
+        <a href="/u-profile" className="btn btn-primary">
+          Quay về hồ sơ cá nhân
         </a>
       </div>
     </div>
   );
 };
 
-export default VNPayResult;
+export default Deposit;

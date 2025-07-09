@@ -14,7 +14,7 @@ type Locus = {
 const CreateResultAllele = () => {
   const [allele1, setAllele1] = useState('');
   const [allele2, setAllele2] = useState('');
-  const [alleleStatus, setAlleleStatus] = useState('ENTERED');
+  const [alleleStatus, setAlleleStatus] = useState('VALID');
   const [locusList, setLocusList] = useState<Locus[]>([]);
   const [selectedLocus, setSelectedLocus] = useState('');
   const { sampleId } = useParams();
@@ -170,11 +170,8 @@ const CreateResultAllele = () => {
               onChange={(e) => setAlleleStatus(e.target.value)}
               required
             >
-              <option value="ENTERED">Đã nhập</option>
-              <option value="NOT_ENTERED">Chưa nhập</option>
-              <option value="SUSPECT">Nghi ngờ</option>
               <option value="VALID">Hợp lệ</option>
-              <option value="DONE">Hoàn thành</option>
+              <option value="INVALID">Không hợp lệ</option>
             </select>
           </div>
 
@@ -273,15 +270,11 @@ const CreateResultAllele = () => {
                         <td>{allele.allelePosition}</td>
                         <td>
                           <span className="badge bg-success">
-                            {allele.status === 'ENTERED'
+                            {allele.alleleStatus === 'INVALID'
                               ? 'Đã nhập'
-                              : allele.status === 'VALID'
+                              : allele.alleleStatus === 'VALID'
                               ? 'Hợp lệ'
-                              : allele.status === 'DONE'
-                              ? 'Hoàn thành'
-                              : allele.status === 'SUSPECT'
-                              ? 'Nghi ngờ'
-                              : allele.status || 'Đã xác nhận'}
+                              : allele.alleleStatus || 'Đã xác nhận'}
                           </span>
                         </td>
                       </tr>
@@ -305,7 +298,7 @@ const CreateResultAllele = () => {
                   <div className="p-3 bg-light rounded">
                     <h5 className="text-success">
                       {alleleResultData.resultAlleleResponse?.filter(
-                        (a: any) => a.status === 'VALID' || a.status === 'DONE'
+                        (a: any) => a.alleleStatus === 'VALID'
                       ).length || 0}
                     </h5>
                     <small className="text-muted">Hợp lệ</small>
@@ -315,10 +308,10 @@ const CreateResultAllele = () => {
                   <div className="p-3 bg-light rounded">
                     <h5 className="text-warning">
                       {alleleResultData.resultAlleleResponse?.filter(
-                        (a: any) => a.status === 'SUSPECT'
+                        (a: any) => a.alleleStatus === 'INVALID'
                       ).length || 0}
                     </h5>
-                    <small className="text-muted">Nghi ngờ</small>
+                    <small className="text-muted">Không hợp lệ</small>
                   </div>
                 </div>
               </div>
