@@ -49,45 +49,67 @@ const GetSampleInfo = () => {
       console.log(error);
     }
   };
-  const handleUpdate = async (sampleId: string, sampleStatus: string) => {
+  const handleBookingAgain = async () => {
     try {
       const res = await fetch(
-        `http://localhost:8080/api/sample/update-status-sample?sampleId=${sampleId}&appointmentId=${appointmentId}`,
+        `http://localhost:8080/api/appointment/book-appointment-again?appointmentId=${appointmentId}`,
         {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
-          body: JSON.stringify({
-            sampleStatus: sampleStatus,
-          }),
+          body: JSON.stringify({}),
         }
       );
-
       if (!res.ok) {
-        toast.error('Không đúng định dạng hoặc cập nhật thất bại');
+        toast.error('Không đúng định dạng');
       } else {
-        toast.success('Cập nhật trạng thái thành công');
-        setSamples((prevSamples) =>
-          prevSamples.map((s) =>
-            s.sampleResponse.sampleId === sampleId
-              ? {
-                  ...s,
-                  sampleResponse: {
-                    ...s.sampleResponse,
-                    sampleStatus: sampleStatus,
-                  },
-                }
-              : s
-          )
-        );
+        toast.success('thành công');
       }
     } catch (error) {
       console.log(error);
-      toast.error('Lỗi khi cập nhật trạng thái mẫu');
     }
   };
+  // const handleUpdate = async (sampleId: string, sampleStatus: string) => {
+  //   try {
+  //     const res = await fetch(
+  //       `http://localhost:8080/api/sample/update-status-sample?sampleId=${sampleId}&appointmentId=${appointmentId}`,
+  //       {
+  //         method: 'PUT',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           Authorization: `Bearer ${localStorage.getItem('token')}`,
+  //         },
+  //         body: JSON.stringify({
+  //           sampleStatus: sampleStatus,
+  //         }),
+  //       }
+  //     );
+
+  //     if (!res.ok) {
+  //       toast.error('Không đúng định dạng hoặc cập nhật thất bại');
+  //     } else {
+  //       toast.success('Cập nhật trạng thái thành công');
+  //       setSamples((prevSamples) =>
+  //         prevSamples.map((s) =>
+  //           s.sampleResponse.sampleId === sampleId
+  //             ? {
+  //                 ...s,
+  //                 sampleResponse: {
+  //                   ...s.sampleResponse,
+  //                   sampleStatus: sampleStatus,
+  //                 },
+  //               }
+  //             : s
+  //         )
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error('Lỗi khi cập nhật trạng thái mẫu');
+  //   }
+  // };
 
   useEffect(() => {
     const fetchSamples = async () => {
@@ -120,12 +142,12 @@ const GetSampleInfo = () => {
 
   // Helper function to get gender badge class
 
-  const sampleStatusOptions = [
-    { value: 'TESTING', label: 'Đang xét nghiệm' },
-    { value: 'COMPLETED', label: 'Đã xét nghiệm xong' },
-    { value: 'DAMAGED', label: 'Mẫu bị hỏng' },
-    { value: 'REJECTED', label: 'Mẫu bị từ chối' },
-  ];
+  // const sampleStatusOptions = [
+  //   { value: 'TESTING', label: 'Đang xét nghiệm' },
+  //   { value: 'COMPLETED', label: 'Đã xét nghiệm xong' },
+  //   { value: 'DAMAGED', label: 'Mẫu bị hỏng' },
+  //   { value: 'REJECTED', label: 'Mẫu bị từ chối' },
+  // ];
 
   return (
     <div className={styles.container}>
@@ -165,7 +187,7 @@ const GetSampleInfo = () => {
                   <th className={styles.tableHeaderCell}>Quan hệ</th>
                   <th className={styles.tableHeaderCell}>Loại mẫu</th>
                   <th className={styles.tableHeaderCell}>Mã mẫu</th>
-                  <th className={styles.tableHeaderCell}>Trạng thái mẫu</th>
+                  {/* <th className={styles.tableHeaderCell}>Trạng thái mẫu</th> */}
                   <th className={styles.tableHeaderCell}>Thao tác</th>
                 </tr>
               </thead>
@@ -189,7 +211,7 @@ const GetSampleInfo = () => {
                         {item.sampleResponse.sampleCode}
                       </span>
                     </td>
-                    <td className={styles.tableCell}>
+                    {/* <td className={styles.tableCell}>
                       <select
                         className={styles.statusSelect}
                         value={item.sampleResponse?.sampleStatus}
@@ -206,7 +228,7 @@ const GetSampleInfo = () => {
                           </option>
                         ))}
                       </select>
-                    </td>
+                    </td> */}
 
                     <td className={styles.tableCell}>
                       <NavLink
@@ -228,13 +250,20 @@ const GetSampleInfo = () => {
             </table>
           </div>
 
-          <div className={styles.submitContainer}>
+          <div className={styles.submitContainerWrapper}>
             <button
               type="button"
               onClick={handleResult}
               className={styles.submitButton}
             >
               Gửi kết quả
+            </button>
+            <button
+              type="button"
+              onClick={handleBookingAgain}
+              className={styles.submitButton}
+            >
+              Đặt lại lịch
             </button>
           </div>
         </>

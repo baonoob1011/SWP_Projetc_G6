@@ -14,6 +14,9 @@ import {
   Calendar,
   PackageSearch,
   History,
+  EyeOff,
+  Eye,
+  Wallet,
 } from 'lucide-react';
 import OldPassWord from '../feature/OldPassword';
 import Booking from '../services/Booking';
@@ -36,9 +39,12 @@ const NewProfile = () => {
     phone: '',
     address: '',
   });
-  // const [amount, setAmount] = useState<number>();
+  const [amount, setAmount] = useState<string>();
   const [editableField, setEditableField] = useState<string | null>(null);
+  const [money, setMoney] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showBalance, setShowBalance] = useState(false);
+
   const [activeTab, setActiveTab] = useState<
     'profile' | 'changePassword' | 'appointment' | 'follow' | 'history'
   >('appointment');
@@ -56,26 +62,27 @@ const NewProfile = () => {
       }
     }
   }, []);
-  // const handleFund = async () => {
-  //   try {
-  //     const res = await fetch(`http://localhost:8080/api/wallet/create`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: `Bearer ${localStorage.getItem('token')}`,
-  //       },
-  //       body: JSON.stringify({ amount }), // Example amount
-  //     });
-  //     const redirectUrl = await res.text();
-  //     if (res.ok) {
-  //       window.location.href = redirectUrl;
-  //     } else {
-  //       toast.error('bị lỗi');
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const handleDeposit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const res = await fetch(`http://localhost:8080/api/wallet/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ amount }), // Example amount
+      });
+      const redirectUrl = await res.text();
+      if (res.ok) {
+        window.location.href = redirectUrl;
+      } else {
+        toast.error('bị lỗi');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -135,9 +142,34 @@ const NewProfile = () => {
       toast.error('❌ Lỗi kết nối với hệ thống');
     }
   };
+  const fetchMoneyData = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/api/wallet/get-amount', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        toast.error('❌ Cập nhật thất bại: ' + errorText);
+        return;
+      }
+
+      const data = await res.json();
+      setMoney(data);
+    } catch (error) {
+      console.error(error);
+      toast.error('❌ Lỗi kết nối với hệ thống');
+    }
+  };
 
   useEffect(() => {
     fetchData();
+  }, []);
+  useEffect(() => {
+    fetchMoneyData();
   }, []);
 
   const tabConfig = [
@@ -222,17 +254,74 @@ const NewProfile = () => {
           {/* Enhanced Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl overflow-hidden">
-              {profile && (
-                <div className="relative p-6 bg-gradient-to-r from-blue-600 to-indigo-700">
-                  <div className="absolute inset-0 bg-black/10"></div>
-                  <div className="relative flex flex-col items-center text-center">
+              {profile && money && (
+                <div className="relative p-6 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-lg">
+                  <div className="absolute inset-0 bg-black/10 rounded-xl" />
+                  <div className="relative flex flex-col items-center text-center text-white">
+                    {/* Icon user */}
                     <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 ring-4 ring-white/30">
                       <UserCircle className="w-8 h-8 text-white" />
                     </div>
+
                     <h3 className="font-bold text-white text-lg mb-1">
-                      {profile?.fullName}
+                      {profile.fullName}
                     </h3>
-                    <p className="text-blue-100 text-sm">{profile?.email}</p>
+                    <p className="text-blue-100 text-sm">{profile.email}</p>
+
+                    {/* Số dư */}
+                    <div className="mt-4 mb-4">
+                      <div className="flex items-center gap-2">
+                        <Wallet className="w-5 h-5 text-white/80" />
+                        <span className="text-xl font-semibold tracking-wide transition-all select-none">
+                          {showBalance
+                            ? `${money.balance.toLocaleString()} VND`
+                            : '•••••••••'}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setShowBalance(!showBalance)}
+                          className="text-white/80 hover:text-white"
+                        >
+                          {showBalance ? (
+                            <EyeOff size={20} />
+                          ) : (
+                            <Eye size={20} />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Form nạp tiền */}
+                    <form
+                      onSubmit={handleDeposit}
+                      className="flex flex-col items-center gap-2 w-full max-w-xs"
+                    >
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        value={amount}
+                        name="amount"
+                        placeholder="Nhập số tiền"
+                        onChange={(e) => {
+                          const onlyNums = e.target.value.replace(/\D/g, ''); // Chỉ giữ số
+                          setAmount(onlyNums);
+                        }}
+                        className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white"
+                        style={{
+                          MozAppearance: 'textfield',
+                          appearance: 'none',
+                          WebkitAppearance: 'none',
+                        }}
+                      />
+
+                      <button
+                        type="submit"
+                        className="px-4 py-2 w-full rounded-lg bg-white text-blue-700 font-semibold hover:bg-blue-100 transition"
+                      >
+                        Nạp tiền
+                      </button>
+                    </form>
                   </div>
                 </div>
               )}

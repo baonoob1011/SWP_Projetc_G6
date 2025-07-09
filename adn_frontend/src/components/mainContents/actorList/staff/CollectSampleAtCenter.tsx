@@ -44,7 +44,10 @@ const CollectSampleAtCenter = () => {
         return 'Không rõ trạng thái';
     }
   };
-
+  const [confirmDelete, setConfirmDelete] = useState<{
+    appointmentId: string;
+    sampleId: string;
+  } | null>(null);
   const fetchAppointment = async () => {
     try {
       setLoading(true);
@@ -69,7 +72,7 @@ const CollectSampleAtCenter = () => {
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error('Không thể lấy dữ liệu mẫu');
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -144,8 +147,7 @@ const CollectSampleAtCenter = () => {
       );
 
       if (!res.ok) {
-        const err = await res.text();
-        toast.error(`Cập nhật thất bại: ${err}`);
+        toast.error('Không thể cập nhật trạng thái cũ');
       } else {
         toast.success('Cập nhật trạng thái thành công');
         // cập nhật local state
@@ -219,9 +221,31 @@ const CollectSampleAtCenter = () => {
         } else {
           errorMessage = await res.text();
         }
-
+        fetchSampleData(appointmentId);
         toast.error(errorMessage);
       } else {
+        toast.success('Thu mẫu thành công');
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Lỗi khi gửi mẫu');
+    }
+  };
+  const handleDelete = async (appointmentId: string, sampleId: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/sample/delete-sample?sampleId=${sampleId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        throw new Error('Không thể xóa mẫu');
+      } else {
+        fetchSampleData(appointmentId);
         toast.success('Thu mẫu thành công');
       }
     } catch (error) {
@@ -251,12 +275,6 @@ const CollectSampleAtCenter = () => {
       console.error('Error checking in patient:', error);
     }
   };
-  const findSampleIdByPatientId = (patientId: string): string | undefined => {
-    const matchedSample = sample.find(
-      (s) => s.patientSampleResponse.patientId === patientId
-    );
-    return matchedSample?.sampleResponse?.sampleId;
-  };
 
   const sampleStatus = appointments.map(
     (a) =>
@@ -283,7 +301,6 @@ const CollectSampleAtCenter = () => {
                 <th className={styles.tableHeaderCell}>Ngày sinh</th>
                 <th className={styles.tableHeaderCell}>Giới tính</th>
                 <th className={styles.tableHeaderCell}>Quan hệ</th>
-                <th className={styles.tableHeaderCell}>Trạng thái mẫu</th>
                 <th className={styles.tableHeaderCell}>Ghi chú</th>
                 <th className={styles.tableHeaderCell}>Vật xét nghiệm</th>
 
@@ -304,7 +321,7 @@ const CollectSampleAtCenter = () => {
                     const key = `${appointmentId}_${patient.patientId}`;
                     const isPaid =
                       appointmentItem.showAppointmentResponse?.note ===
-                      'Đã thanh toán';
+                      'Chưa thanh toán';
 
                     return (
                       <tr key={key} className={styles.tableRow}>
@@ -316,39 +333,6 @@ const CollectSampleAtCenter = () => {
                         <td className={styles.tableCell}>
                           {patient.relationship}
                         </td>
-                        <td className={styles.tableCell}>
-                          <select
-                            value={
-                              findSampleIdByPatientId(patient.patientId)
-                                ? sample.find(
-                                    (s) =>
-                                      s.patientSampleResponse.patientId ===
-                                      patient.patientId
-                                  )?.sampleResponse?.sampleStatus || ''
-                                : ''
-                            }
-                            onChange={(e) => {
-                              const sampleId = findSampleIdByPatientId(
-                                patient.patientId
-                              );
-                              if (sampleId) {
-                                handleUpdate(sampleId, e.target.value);
-                              } else {
-                                toast.error(
-                                  'Không tìm thấy mẫu để cập nhật trạng thái'
-                                );
-                              }
-                            }}
-                            className={styles.sampleSelect}
-                          >
-                            <option value="">Chọn trạng thái</option>
-                            {sampleStatusOptions.map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        </td>
 
                         <td className={styles.tableCell}>
                           {Translation(patient.patientStatus)}
@@ -356,7 +340,7 @@ const CollectSampleAtCenter = () => {
 
                         {
                           <td className={styles.tableCell}>
-                            {isPaid ? (
+                            {!isPaid ? (
                               <div className={styles.actionsContainer}>
                                 <select
                                   className={styles.sampleSelect}
@@ -425,32 +409,106 @@ const CollectSampleAtCenter = () => {
             <thead>
               <tr>
                 <th>Họ tên</th>
-                <th>Giới tính</th>
-                <th>Ngày sinh</th>
                 <th>Quan hệ</th>
                 <th>Loại mẫu</th>
+                <th>Trạng thái mẫu</th>
                 <th>Mã mẫu</th>
                 <th>Ngày thu</th>
                 <th>Người thu</th>
+                <th>thao tác</th>
               </tr>
             </thead>
             <tbody>
               {sample.map((item: any, index: number) => (
                 <tr key={index}>
                   <td>{item.patientSampleResponse.fullName}</td>
-                  <td>{item.patientSampleResponse.gender}</td>
-                  <td>{item.patientSampleResponse.dateOfBirth}</td>
                   <td>{item.patientSampleResponse.relationship}</td>
                   <td>{item.sampleResponse.sampleType}</td>
+                  <td>
+                    <select
+                      value={item.sampleResponse.sampleStatus}
+                      onChange={(e) =>
+                        handleUpdate(
+                          item.sampleResponse.sampleId,
+                          e.target.value
+                        )
+                      }
+                      className={styles.sampleSelect}
+                    >
+                      <option value="">Chọn trạng thái</option>
+                      {sampleStatusOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+
                   <td>{item.sampleResponse.sampleCode}</td>
                   <td>{item.sampleResponse.collectionDate}</td>
                   <td>{item.staffSampleResponse.fullName}</td>
+                  <td>
+                    <button
+                      type="submit"
+                      onClick={() => {
+                        const matchedAppointment = appointments.find((a) =>
+                          a.patientAppointmentResponse.some(
+                            (p: any) =>
+                              p.patientId ===
+                              item.patientSampleResponse.patientId
+                          )
+                        );
+                        const appointmentId =
+                          matchedAppointment?.showAppointmentResponse
+                            ?.appointmentId;
+                        if (appointmentId) {
+                          setConfirmDelete({
+                            appointmentId,
+                            sampleId: item.sampleResponse.sampleId,
+                          });
+                        } else {
+                          toast.error(
+                            'Không tìm thấy appointmentId cho mẫu này'
+                          );
+                        }
+                      }}
+                    >
+                      xóa
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       ) : null}
+      {confirmDelete && (
+        <div className={styles.confirmOverlay}>
+          <div className={styles.confirmModal}>
+            <p>Bạn có chắc chắn muốn xóa mẫu này?</p>
+            <div className={styles.confirmActions}>
+              <button
+                className={styles.confirmBtn}
+                onClick={() => {
+                  handleDelete(
+                    confirmDelete.appointmentId,
+                    confirmDelete.sampleId
+                  ); // ✅ gọi API
+                  setConfirmDelete(null);
+                }}
+              >
+                Đồng ý
+              </button>
+              <button
+                className={styles.cancelBtn}
+                onClick={() => setConfirmDelete(null)}
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

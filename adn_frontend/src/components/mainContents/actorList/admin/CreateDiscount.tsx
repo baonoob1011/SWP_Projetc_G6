@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Paper } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 
@@ -11,6 +10,7 @@ const CreateDiscount = () => {
     endDate: '',
   });
   const { serviceId } = useParams<string>();
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -48,6 +48,7 @@ const CreateDiscount = () => {
         startDate: '',
         endDate: '',
       });
+      setShowCreateForm(false);
     } catch (error) {
       console.log(error);
       toast.error('Đã xảy ra lỗi khi tạo giảm giá');
@@ -55,57 +56,132 @@ const CreateDiscount = () => {
   };
 
   return (
-    <Paper elevation={3} sx={{ padding: 4, margin: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Tạo chương trình giảm giá
-      </Typography>
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        display="flex"
-        flexDirection="column"
-        gap={2}
-        mt={2}
-      >
-        <TextField
-          label="Tên chương trình"
-          name="discountName"
-          value={discount.discountName}
-          onChange={handleChange}
-          required
-        />
-        <TextField
-          label="Giá trị giảm (%)"
-          name="discountValue"
-          type="number"
-          inputProps={{ min: 0, max: 100, step: 0.1 }}
-          value={discount.discountValue}
-          onChange={handleChange}
-          required
-        />
-        <TextField
-          label="Ngày bắt đầu"
-          name="startDate"
-          type="date"
-          InputLabelProps={{ shrink: true }}
-          value={discount.startDate}
-          onChange={handleChange}
-          required
-        />
-        <TextField
-          label="Ngày kết thúc"
-          name="endDate"
-          type="date"
-          InputLabelProps={{ shrink: true }}
-          value={discount.endDate}
-          onChange={handleChange}
-          required
-        />
-        <Button type="submit" variant="contained" color="primary">
-          Tạo giảm giá
-        </Button>
-      </Box>
-    </Paper>
+    <div className="min-h-screen bg-white ml-10">
+      <div className="max-w-full">
+        {/* Statistics Header */}
+        <div className="bg-[#4162EB] rounded-lg p-6 mb-6 relative">
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="text-white text-lg font-semibold">Quản lý chương trình giảm giá</h2>
+          </div>
+          {/* Breadcrumb */}
+          <div className="flex items-center mb-6 text-blue-100">
+            <span className="text-white font-medium">Admin</span>
+            <span className="mx-2">›</span>
+            <span>Discount</span>
+          </div>
+        </div>
+
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={() => setShowCreateForm(!showCreateForm)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
+          >
+            Thêm Giảm Giá
+          </button>
+        </div>
+
+        {/* Create Form - Collapsible */}
+        {showCreateForm && (
+          <div className="bg-white border border-gray-200 rounded-lg mb-6 shadow-sm">
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-800 mb-4">Thêm chương trình giảm giá mới</h3>
+              <form onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tên chương trình
+                    </label>
+                    <input
+                      type="text"
+                      name="discountName"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={discount.discountName}
+                      onChange={handleChange}
+                      placeholder="Nhập tên chương trình giảm giá"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Giá trị giảm (%)
+                    </label>
+                    <input
+                      type="number"
+                      name="discountValue"
+                      min="0"
+                      max="100"
+                      step="0.1"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={discount.discountValue}
+                      onChange={handleChange}
+                      placeholder="Nhập giá trị giảm (0-100%)"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Ngày bắt đầu
+                    </label>
+                    <input
+                      type="date"
+                      name="startDate"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={discount.startDate}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Ngày kết thúc
+                    </label>
+                    <input
+                      type="date"
+                      name="endDate"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={discount.endDate}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateForm(false)}
+                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  >
+                    Tạo Giảm Giá
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Information Section */}
+        <div className="bg-white border border-gray-200 rounded-lg p-6">
+          <h3 className="text-lg font-medium text-gray-800 mb-4">Thông tin chương trình giảm giá</h3>
+          <div className="text-gray-600">
+            <p className="mb-2">• Chương trình giảm giá sẽ được áp dụng cho dịch vụ được chọn</p>
+            <p className="mb-2">• Giá trị giảm tính theo phần trăm từ 0% đến 100%</p>
+            <p className="mb-2">• Ngày bắt đầu phải trước ngày kết thúc</p>
+            <p>• Chương trình sẽ tự động kích hoạt trong khoảng thời gian đã chọn</p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

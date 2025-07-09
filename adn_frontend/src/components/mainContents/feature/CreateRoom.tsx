@@ -5,6 +5,8 @@ import { Button } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import type { Location } from '../type/FillFormType';
+import RoomImage from '../../mainContents/feature/featureImage/Room.png'
+
 
 type Room = {
   roomName: string;
@@ -32,6 +34,7 @@ const CreateRoom = () => {
   const navigate = useNavigate();
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [locations, setLocations] = useState<Location[]>([]);
+
   useEffect(() => {
     setAuth(
       localStorage.getItem('role') === 'ADMIN' ||
@@ -148,6 +151,7 @@ const CreateRoom = () => {
       }
     }
   };
+
   const handleLocationChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -212,159 +216,89 @@ const CreateRoom = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Quản Lý phòng xét nghiệm
-            </h1>
-            <p className="text-sm text-slate-600 mt-2 flex items-center gap-2">
-              <svg
-                className="w-4 h-4 text-blue-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                />
-              </svg>
-              Quản lý và tổ chức dữ liệu phòng xét nghiệm một cách hiệu quả
-            </p>
+    <div className="min-h-screen bg-white ml-10">
+      <div className="max-w-full">
+        
+        {/* Statistics Header */}
+        <div className="bg-[#3F61E9] rounded-lg p-6 mb-6 relative">
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="text-white text-lg font-semibold">Quản lý phòng xét nghiệm</h2>
           </div>
-          <div className="flex items-center gap-4">
-            <Button
-              component={NavLink}
-              to="/schedule"
-              className="!bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 !text-white !font-semibold !py-3 !px-6 !rounded-xl !transition-all !duration-300 !transform hover:!scale-105 !shadow-lg hover:!shadow-xl !flex !items-center !gap-2"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
+          {/* Breadcrumb */}
+          <div className="flex items-center mb-6 text-blue-100">
+            <span className="text-white font-medium">Admin</span>
+            <span className="mx-2">›</span>
+            <span>phòng xét nghiệm</span>
+          </div>
+          <div className="bg-green-500 bg-opacity-30 rounded-lg p-2 max-w-xs">
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
-              <span>Tạo thời khóa biểu</span>
+            </div>
+            <div className="text-blue-100 text-xl">Tổng số phòng: {isRoom.length}</div>
+          </div>
+              {/* Đặt hình ảnh vào trong header */}
+          <div className="absolute right-0 bottom-0 mb-4 mr-40">
+            <img src={RoomImage} alt="Room" className="h-40 object-contain" />
+          </div>
+        </div>
+
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <Button 
+              component={NavLink} 
+              to="/schedule"
+              className="!bg-green-600 hover:!bg-green-700 !text-white !font-medium !py-2 !px-4 !rounded-md !transition-colors"
+            >
+              Tạo thời khóa biểu
             </Button>
             <button
               onClick={() => setShowCreateForm(!showCreateForm)}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                />
-              </svg>
-              {showCreateForm ? 'Ẩn Form' : 'Thêm Phòng'}
+              Thêm phòng
             </button>
           </div>
         </div>
 
         {/* Create Form - Collapsible */}
-        <div
-          className={`transition-all duration-500 ease-in-out ${
-            showCreateForm
-              ? 'opacity-100 max-h-[500px] transform translate-y-0'
-              : 'opacity-0 max-h-0 overflow-hidden transform -translate-y-4'
-          }`}
-        >
-          <div className="bg-white rounded-2xl border border-blue-100 shadow-xl shadow-blue-100/50">
-            <div className="border-b border-blue-50 px-8 py-6 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-t-2xl">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                    />
-                  </svg>
-                </div>
+        {showCreateForm && (
+          <div className="bg-white border border-gray-200 rounded-lg mb-6 shadow-sm">
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-800 mb-4">Thêm phòng mới</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-white">
-                    Thêm Phòng Mới
-                  </h3>
-                  <p className="text-blue-100 text-sm">
-                    Điền thông tin chi tiết phòng xét nghiệm bên dưới
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="space-y-3">
-                  <label className="block text-sm font-semibold text-slate-700">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-6 h-6 bg-gradient-to-br from-blue-100 to-sky-100 rounded-lg flex items-center justify-center">
-                        <svg
-                          className="w-4 h-4 text-blue-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                          />
-                        </svg>
-                      </div>
-                      Tên Phòng
-                    </div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Chọn Địa Điểm
                   </label>
-                  <div className="form-group">
-                    <label htmlFor="locationSelect">Chọn Địa Điểm</label>
-                    <select
-                      id="locationSelect"
-                      value={selectedLocation}
-                      onChange={handleLocationChange}
-                      className="form-control"
-                    >
-                      <option value="">-- Chọn địa điểm --</option>
-                      {locations.map((location) => (
-                        <option
-                          key={location.locationId}
-                          value={location.locationId}
-                        >
-                          {`${location.addressLine}, ${location.district}, ${location.city}`}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <select
+                    value={selectedLocation}
+                    onChange={handleLocationChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="">-- Chọn địa điểm --</option>
+                    {locations.map((location) => (
+                      <option
+                        key={location.locationId}
+                        value={location.locationId}
+                      >
+                        {`${location.addressLine}, ${location.district}, ${location.city}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tên Phòng
+                  </label>
                   <select
                     name="roomName"
                     value={room.roomName}
                     onChange={handleSelectChange}
-                    className="w-full px-4 py-3 border-2 border-blue-100 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-slate-700 bg-blue-50/30 hover:border-blue-200"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="">-- Chọn phòng --</option>
                     <option value="P.101">P.101</option>
@@ -375,263 +309,138 @@ const CreateRoom = () => {
                     <option value="P.106">P.106</option>
                   </select>
                 </div>
+              </div>
 
-                <div className="space-y-3">
-                  <label className="block text-sm font-semibold text-slate-700">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-6 h-6 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg flex items-center justify-center">
-                        <svg
-                          className="w-4 h-4 text-green-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                          />
-                        </svg>
-                      </div>
-                      Giờ Mở Cửa
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Giờ Mở Cửa
                   </label>
                   <input
                     type="time"
                     name="openTime"
-                    className="w-full px-4 py-3 border-2 border-blue-100 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-slate-700 placeholder-slate-400 bg-blue-50/30 hover:border-blue-200"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={room.openTime}
                     onChange={handleInput}
                   />
                 </div>
 
-                <div className="space-y-3">
-                  <label className="block text-sm font-semibold text-slate-700">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-6 h-6 bg-gradient-to-br from-red-100 to-rose-100 rounded-lg flex items-center justify-center">
-                        <svg
-                          className="w-4 h-4 text-red-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                          />
-                        </svg>
-                      </div>
-                      Giờ Đóng Cửa
-                    </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Giờ Đóng Cửa
                   </label>
                   <input
                     type="time"
                     name="closeTime"
-                    className="w-full px-4 py-3 border-2 border-blue-100 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-slate-700 placeholder-slate-400 bg-blue-50/30 hover:border-blue-200"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={room.closeTime}
                     onChange={handleInput}
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end mt-10 pt-6 border-t border-blue-50">
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setShowCreateForm(false)}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
                 <button
                   onClick={handleSubmit}
-                  className="flex items-center gap-3 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
                   Tạo Phòng
                 </button>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Table */}
-        <div className="bg-white rounded-2xl border border-blue-100 shadow-xl shadow-blue-100/50 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
-            <h2 className="text-xl font-bold text-white">Danh Sách Phòng</h2>
-            <p className="text-blue-100 text-sm mt-1">
-              Tất cả phòng đã đăng ký
-            </p>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-blue-50/50 border-b border-blue-100">
-                  <th className="px-8 py-5 text-left text-xs font-bold text-blue-700 uppercase tracking-wider">
-                    <div className="flex items-center gap-2">
-                      STT
-                      <svg
-                        className="w-4 h-4 text-blue-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                  <div className="flex items-center gap-1">
+                    STT
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    </svg>
+                  </div>
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                  <div className="flex items-center gap-1">
+                    Tên Phòng
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    </svg>
+                  </div>
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                  <div className="flex items-center gap-1">
+                    Giờ Mở Cửa
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    </svg>
+                  </div>
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                  <div className="flex items-center gap-1">
+                    Giờ Đóng Cửa
+                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    </svg>
+                  </div>
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                  Thao Tác
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {isRoom.map((room, index) => (
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 text-sm text-blue-600 font-medium border-r border-gray-200">
+                    #{String(index + 1).padStart(4, '0')}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-800 border-r border-gray-200">
+                    {room.roomName}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                    {room.openTime}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                    {room.closeTime}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleDelete(room.roomId)}
+                        className="p-1 text-red-500 hover:bg-red-50 rounded border border-red-200 hover:border-red-300 transition-colors"
+                        title="Delete"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-                        />
-                      </svg>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
                     </div>
-                  </th>
-                  <th className="px-8 py-5 text-left text-xs font-bold text-blue-700 uppercase tracking-wider">
-                    <div className="flex items-center gap-2">
-                      Tên Phòng
-                      <svg
-                        className="w-4 h-4 text-blue-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-                        />
-                      </svg>
-                    </div>
-                  </th>
-                  <th className="px-8 py-5 text-left text-xs font-bold text-blue-700 uppercase tracking-wider">
-                    <div className="flex items-center gap-2">
-                      Giờ Mở Cửa
-                      <svg
-                        className="w-4 h-4 text-blue-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-                        />
-                      </svg>
-                    </div>
-                  </th>
-                  <th className="px-8 py-5 text-left text-xs font-bold text-blue-700 uppercase tracking-wider">
-                    <div className="flex items-center gap-2">
-                      Giờ Đóng Cửa
-                      <svg
-                        className="w-4 h-4 text-blue-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-                        />
-                      </svg>
-                    </div>
-                  </th>
-                  <th className="px-8 py-5 text-left text-xs font-bold text-blue-700 uppercase tracking-wider">
-                    Thao Tác
-                  </th>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-blue-50">
-                {isRoom.map((room, index) => (
-                  <tr
-                    key={index}
-                    className="hover:bg-blue-50/50 transition-colors duration-200"
-                  >
-                    <td className="px-8 py-6 whitespace-nowrap">
-                      <span className="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-sm font-bold rounded-full shadow-lg">
-                        {index + 1}
-                      </span>
-                    </td>
-                    <td className="px-8 py-6 text-sm text-slate-900 font-semibold">
-                      {room.roomName}
-                    </td>
-                    <td className="px-8 py-6 text-sm text-slate-600 font-medium">
-                      {room.openTime}
-                    </td>
-                    <td className="px-8 py-6 text-sm text-slate-600 font-medium">
-                      {room.closeTime}
-                    </td>
-                    <td className="px-8 py-6 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => handleDelete(room.roomId)}
-                          className="p-3 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-xl transition-all duration-200 transform hover:scale-110"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                {isRoom.length === 0 && (
-                  <tr>
-                    <td colSpan={5} className="px-8 py-20 text-center">
-                      <div className="flex flex-col items-center gap-4">
-                        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center shadow-lg">
-                          <svg
-                            className="w-8 h-8 text-white"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                            />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="text-slate-700 font-bold text-lg">
-                            Không tìm thấy phòng nào
-                          </p>
-                          <p className="text-sm text-slate-500 mt-1">
-                            Bắt đầu bằng cách tạo phòng đầu tiên của bạn
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+              ))}
+              {isRoom.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                    Không tìm thấy phòng nào
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
-
+      
       <CustomSnackBar
         open={snackbar.open}
         message={snackbar.message}

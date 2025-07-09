@@ -38,6 +38,10 @@ export const CollectSampleAtHome = () => {
     { value: 'DONE', label: 'Kit đã được nhận về' },
   ];
 
+  const [confirmDelete, setConfirmDelete] = useState<{
+    appointmentId: string;
+    sampleId: string;
+  } | null>(null);
   const fetchAppointmentAtHome = async () => {
     try {
       setLoading(true);
@@ -261,7 +265,28 @@ export const CollectSampleAtHome = () => {
       toast.error('Lỗi khi cập nhật trạng thái');
     }
   };
-
+  const handleDelete = async (appointmentId: string, sampleId: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/sample/delete-sample?sampleId=${sampleId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        throw new Error('Không thể xóa mẫu');
+      } else {
+        fetchSampleData([appointmentId]);
+        toast.success('Thu mẫu thành công');
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Lỗi khi gửi mẫu');
+    }
+  };
   if (loading) {
     return (
       <div className={styles.loading}>
@@ -317,7 +342,6 @@ export const CollectSampleAtHome = () => {
                       <th className={styles.tableHeaderCell}>Giới tính</th>
                       <th className={styles.tableHeaderCell}>Quan hệ</th>
                       <th className={styles.tableHeaderCell}>Thu mẫu</th>
-                      <th className={styles.tableHeaderCell}>Trạng thái mẫu</th>
                       <th className={styles.tableHeaderCell}>Trạng thái Kit</th>
                     </tr>
                   </thead>
@@ -327,9 +351,6 @@ export const CollectSampleAtHome = () => {
                         patient.patientId,
                         appointmentId
                       );
-                      const sampleId = sampleData?.sampleResponse?.sampleId;
-                      const currentSampleStatus =
-                        sampleData?.sampleResponse?.sampleStatus || '';
 
                       const key = `${appointmentId}_${patient.patientId}`;
                       const isFirstPatient = index === 0;
@@ -380,32 +401,6 @@ export const CollectSampleAtHome = () => {
                                 <Check fontSize="small" />
                               </button>
                             </div>
-                          </td>
-                          <td className={styles.tableCell}>
-                            <select
-                              value={currentSampleStatus}
-                              onChange={(e) => {
-                                if (sampleId && appointmentId) {
-                                  handleUpdate(
-                                    sampleId,
-                                    e.target.value,
-                                    appointmentId
-                                  );
-                                } else {
-                                  toast.error(
-                                    'Không đủ thông tin để cập nhật trạng thái'
-                                  );
-                                }
-                              }}
-                              className={styles.sampleSelect}
-                            >
-                              <option value="">Chọn trạng thái</option>
-                              {sampleStatusOptions.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                  {option.label}
-                                </option>
-                              ))}
-                            </select>
                           </td>
 
                           {isFirstPatient && (
@@ -460,26 +455,73 @@ export const CollectSampleAtHome = () => {
                 <thead>
                   <tr>
                     <th>Họ tên</th>
-                    <th>Giới tính</th>
-                    <th>Ngày sinh</th>
-                    <th>Quan hệ</th>
                     <th>Loại mẫu</th>
                     <th>Mã mẫu</th>
                     <th>Ngày thu</th>
                     <th>Người thu</th>
+                    <th>Trạng thái mẫu</th>
+                    <th>Thao tác</th>
                   </tr>
                 </thead>
                 <tbody>
                   {sample.map((item: any, index: number) => (
                     <tr key={index}>
                       <td>{item.patientSampleResponse.fullName}</td>
-                      <td>{item.patientSampleResponse.gender}</td>
-                      <td>{item.patientSampleResponse.dateOfBirth}</td>
-                      <td>{item.patientSampleResponse.relationship}</td>
                       <td>{item.sampleResponse.sampleType}</td>
                       <td>{item.sampleResponse.sampleCode}</td>
                       <td>{item.sampleResponse.collectionDate}</td>
                       <td>{item.staffSampleResponse.fullName}</td>
+
+                      {/* THÊM dropdown trạng thái mẫu ở đây */}
+                      <td>
+                        <select
+                          value={item.sampleResponse.sampleStatus || ''}
+                          onChange={(e) =>
+                            handleUpdate(
+                              item.sampleResponse.sampleId,
+                              e.target.value,
+                              item.appointmentSampleResponse.appointmentId
+                            )
+                          }
+                          className={styles.sampleSelect}
+                        >
+                          <option value="">Chọn trạng thái</option>
+                          {sampleStatusOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td>
+                        <button
+                          type="submit"
+                          onClick={() => {
+                            const matchedAppointment = appointments.find((a) =>
+                              a.patientAppointmentResponse.some(
+                                (p: any) =>
+                                  p.patientId ===
+                                  item.patientSampleResponse.patientId
+                              )
+                            );
+                            const appointmentId =
+                              matchedAppointment?.showAppointmentResponse
+                                ?.appointmentId;
+                            if (appointmentId) {
+                              setConfirmDelete({
+                                appointmentId,
+                                sampleId: item.sampleResponse.sampleId,
+                              });
+                            } else {
+                              toast.error(
+                                'Không tìm thấy appointmentId cho mẫu này'
+                              );
+                            }
+                          }}
+                        >
+                          xóa
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -488,6 +530,33 @@ export const CollectSampleAtHome = () => {
           </div>
         ) : null}
       </div>
+      {confirmDelete && (
+        <div className={styles.confirmOverlay}>
+          <div className={styles.confirmModal}>
+            <p>Bạn có chắc chắn muốn xóa mẫu này?</p>
+            <div className={styles.confirmActions}>
+              <button
+                className={styles.confirmBtn}
+                onClick={() => {
+                  handleDelete(
+                    confirmDelete.appointmentId,
+                    confirmDelete.sampleId
+                  ); // ✅ gọi API
+                  setConfirmDelete(null);
+                }}
+              >
+                Đồng ý
+              </button>
+              <button
+                className={styles.cancelBtn}
+                onClick={() => setConfirmDelete(null)}
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

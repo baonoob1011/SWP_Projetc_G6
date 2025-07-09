@@ -118,7 +118,7 @@ function GetStaffByAdmin() {
           onChange={(e) => setSearch(e.target.value)}
           sx={{ margin: '10px 5px' }}
         />
-        <Table sx={{ fontSize: '13px' }}>
+        <Table sx={{ fontSize: '1px' }}>
           <TableHead>
             <TableRow>
               {/** Dòng tiêu đề với border */}
@@ -188,16 +188,6 @@ function GetStaffByAdmin() {
                     onClick={() => handleDelete(user.phone, user.fullName)}
                   >
                     <Trash2 size={10} />
-                  </Button>
-                  <Button
-                    variant="contained"
-                    component={NavLink}
-                    to={`/s-slot/${user.staffId}`}
-                    color="error"
-                    size="small"
-                    sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}
-                  >
-                    <Plus size={10} />
                   </Button>
                 </TableCell>
               </TableRow>

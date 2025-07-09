@@ -9,7 +9,7 @@ import {
   List,
   ShoppingBag,
   BaggageClaim,
-  Newspaper, // Icon cho Blog và Tin tức
+  Newspaper,
 } from 'lucide-react';
 
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -22,10 +22,12 @@ const AdminSidebar = () => {
   const [activeItem, setActiveItem] = useState('dashboard');
   const [fullName, setFullName] = useState<string>('');
   const navigate = useNavigate();
+
   useEffect(() => {
     const storeName = localStorage.getItem('fullName') || '';
     setFullName(storeName);
   }, []);
+
   const TimeLeftLogout = (exp: number) => {
     const now = Date.now() / 1000;
     const timeleft = (exp - now) * 1000;
@@ -54,6 +56,7 @@ const AdminSidebar = () => {
       return null;
     }
   }
+
   useEffect(() => {
     const storeName = localStorage.getItem('fullName') || '';
     setFullName(storeName);
@@ -65,42 +68,42 @@ const AdminSidebar = () => {
   }, []);
 
   const menuItems = [
-    { id: 'dashboard', icon: Home, label: 'Home', path: '' },
+    { id: 'dashboard', icon: Home, label: 'Tổng quan', path: '' },
     { id: 'data', icon: List, label: 'Danh sách', path: 'admin/data' },
     {
       id: 'location',
       icon: LocationCity,
-      label: 'Tạo địa chỉ mới',
+      label: 'Địa chỉ',
       path: 'location',
     },
     {
       id: 'room',
       icon: Room,
-      label: 'Tạo phòng',
+      label: 'Phòng lab',
       path: 'room',
     },
     {
       id: 'kit',
       icon: BaggageClaim,
-      label: 'Tạo kit',
+      label: 'kit test',
       path: 'kit',
     },
     {
       id: 'services',
       icon: RoomService,
-      label: 'Tạo Dịch vụ',
+      label: 'Dịch vụ',
       path: 'services',
     },
     {
       id: 'blog',
       icon: Newspaper,
-      label: 'Tạo Blog/Tin tức',
+      label: 'Blog/Tin tức',
       path: 'create-blog',
     },
     {
       id: 'createLocus',
       icon: ShoppingBag,
-      label: 'Tạo locus',
+      label: 'Locus',
       path: 'create-locus',
     },
   ];
@@ -132,25 +135,18 @@ const AdminSidebar = () => {
   return (
     <>
       {/* Mobile Top Bar */}
-      <div className="lg:hidden bg-white shadow-sm border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+      <div className="lg:hidden bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg border-b border-blue-800 px-4 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <button
             onClick={() => setIsMobileOpen(!isMobileOpen)}
-            className="p-2 text-gray-600 hover:text-blue-600 transition-colors"
+            className="p-2 text-white hover:bg-white hover:bg-opacity-20 rounded-xl transition-all duration-200"
           >
             <Menu className="h-5 w-5" />
           </button>
           <div className="flex items-center space-x-2">
-            <div className="h-6 w-6 bg-blue-600 rounded flex items-center justify-center">
-              <Shield className="h-4 w-4 text-white" />
-            </div>
-            <span className="font-semibold text-gray-900">Admin Panel</span>
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-3">
-          <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
-            <User className="h-4 w-4 text-gray-600" />
+            <span className="font-semibold text-white">
+              Trang quản trị viên
+            </span>
           </div>
         </div>
       </div>
@@ -158,7 +154,7 @@ const AdminSidebar = () => {
       {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40 backdrop-blur-sm"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -167,107 +163,124 @@ const AdminSidebar = () => {
       <div
         className={`
           fixed lg:static inset-y-0 left-0 z-50 
-          w-64
+          w-72
           ${
             isMobileOpen
               ? 'translate-x-0'
               : '-translate-x-full lg:translate-x-0'
           }
-          bg-white shadow-lg border-r border-gray-200 transition-all duration-300 ease-in-out
+          bg-white shadow-2xl border-r border-gray-200 transition-all duration-300 ease-in-out
           flex flex-col
           h-screen
           overflow-y-auto 
         `}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <div className="flex items-center space-x-2">
-            <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Shield className="h-5 w-5 text-white" />
+        {/* Header with User Profile */}
+        <div className="p-6 border-b border-gray-100 bg-gradient-to-br from-blue-50 to-indigo-50">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <div className="h-12 w-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
+                <Shield className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <span
+                  className="text-xl font-bold text-gray-800"
+                  style={{ fontSize: 14 }}
+                >
+                  Trang quản trị viên
+                </span>
+                <div className="text-xs text-gray-500 font-medium">
+                  Quản lý hệ thống
+                </div>
+              </div>
             </div>
-            <span className="text-xl font-bold text-gray-900">Admin Panel</span>
+
+            {/* Close Button - Mobile only */}
+            <button
+              onClick={() => setIsMobileOpen(false)}
+              className="lg:hidden p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-all duration-200"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
 
-          {/* Close Button - Mobile only */}
-          <button
-            onClick={() => handleLogout()}
-            className="lg:hidden p-1 text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X className="h-5 w-5" />
-          </button>
+          {/* User Profile Section */}
+          <div className="flex items-center space-x-4 p-4 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+            <div className="h-12 w-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-md">
+              <User className="h-6 w-6 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold text-gray-800 truncate">
+                {fullName}
+              </div>
+            </div>
+          </div>
         </div>
+
         {/* Navigation Menu */}
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 px-4 py-6 space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeItem === item.id;
 
             return (
-              <Button
-                component={NavLink}
-                to={`/${item.path}`}
-                key={item.id}
-                onClick={() => setActiveItem(item.id)}
-                className={`
-                    px-0 py-0 normal-case rounded-lg transition-all duration-200 w-full text-left
+              <div key={item.id}>
+                <Button
+                  component={NavLink}
+                  to={`/${item.path}`}
+                  onClick={() => setActiveItem(item.id)}
+                  className={`
+                    px-0 py-0 normal-case rounded-2xl transition-all duration-200 w-full text-left
+                    ${
+                      isActive
+                        ? 'bg-gradient-to-r from-blue-100 to-blue-50 text-blue-900 border-r-4 border-blue-600 shadow-sm'
+                        : 'text-gray-600 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-50 hover:text-gray-700'
+                    }
+                  `}
+                >
+                  <div className="flex items-center space-x-4 px-4 py-4 w-full justify-start">
+                    <div
+                      className={`
+                      p-2.5 rounded-xl transition-all duration-200
                       ${
                         isActive
-                          ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600'
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'
+                          ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-md'
+                          : 'bg-gray-100 hover:bg-gray-200'
                       }
-                  `}
-              >
-                <div className="flex items-center space-x-3 px-3 py-3 w-full justify-start">
-                  <Icon className="h-5 w-5 flex-shrink-0" />
-                  <span className="font-medium">{item.label}</span>
-                </div>
-              </Button>
+                    `}
+                    >
+                      <Icon
+                        className={`h-5 w-5 ${
+                          isActive ? 'text-white' : 'text-gray-500'
+                        }`}
+                      />
+                    </div>
+                    <span className="font-medium text-sm flex-1 truncate">
+                      {item.label}
+                    </span>
+                  </div>
+                </Button>
+              </div>
             );
           })}
         </nav>
 
-        {/* Bottom Section */}
-        <div className="border-t border-gray-200 p-4 space-y-2">
-          {/* Notifications */}
-          {/* <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">
-              <div className="relative">
-                <Bell className="h-5 w-5" />
-                {notifications > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                    {notifications}
-                  </span>
-                )}
-              </div>
-              <span className="font-medium">Thông báo</span>
-            </button> */}
-
-          {/* Settings
-            <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">
-              <Settings className="h-5 w-5" />
-              <span className="font-medium">Cài đặt</span>
-            </button> */}
-
-          {/* User Profile */}
-          <div className="flex items-center space-x-3 px-3 py-3 rounded-lg bg-gray-50">
-            <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
-              <User className="h-4 w-4 text-gray-600" />
-            </div>
-            <span className="text-sm text-gray-700">{fullName}</span>
-          </div>
-
-          {/* Logout */}
+        {/* Logout Section */}
+        <div className="p-4 border-t border-gray-100">
           <button
             onClick={() => handleLogout()}
-            className="flex items-center space-x-3 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-all duration-200 w-full"
+            className="flex items-center space-x-4 px-4 py-4 rounded-2xl text-gray-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-50 hover:text-red-600 transition-all duration-200 w-full group"
           >
-            <LogOut className="h-5 w-5" />
-            <span className="font-medium">Đăng xuất</span>
+            <div className="p-2.5 rounded-xl bg-gray-100 group-hover:bg-red-100 transition-all duration-200">
+              <LogOut className="h-5 w-5" />
+            </div>
+            <span className="font-medium text-sm">Đăng xuất</span>
           </button>
         </div>
       </div>
 
       {/* Main Content Area Spacer */}
-      <div className="hidden lg:block w-64 flex-shrink-0" />
+      <div className="hidden lg:block w-72 flex-shrink-0" />
     </>
   );
 };
