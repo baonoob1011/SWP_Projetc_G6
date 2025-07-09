@@ -7,10 +7,11 @@ import TrungThuc from '../../image/TrungThuc.png';
 import geneLinkImage from '../../image/Intro_image.png';
 import { Swiper, SwiperSlide, type SwiperRef } from 'swiper/react'; // <-- thêm SwiperRef
 import { Autoplay, Scrollbar } from 'swiper/modules';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './Home.module.css';
 import banner_video from '../../image/Banner_video.mp4';
 import { FaPhoneAlt } from 'react-icons/fa';
+import dayjs from 'dayjs';
 // import { FaFacebookMessenger } from 'react-icons/fa';
 // import { SiZalo } from 'react-icons/si';
 import Notification from './Notification';
@@ -34,7 +35,13 @@ type Consultation = {
   phone: string;
   name: string;
 };
-
+interface Blog {
+  blogId: number;
+  title: string;
+  content: string;
+  image: string;
+  createAt: string;
+}
 export default function Home() {
   // ref đúng type SwiperRef
 
@@ -43,6 +50,7 @@ export default function Home() {
     name: '',
   });
 
+  const [blogs, setBlogs] = useState<Blog[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // Để kiểm soát việc mở/đóng modal
   const consultationRef = useRef<HTMLDivElement | null>(null);
 
@@ -76,6 +84,20 @@ export default function Home() {
       [name]: value,
     }));
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('http://localhost:8080/api/blog/get-all-blog');
+        if (!res.ok) throw new Error('Không thể lấy danh sách blog');
+        const data: Blog[] = await res.json();
+        setBlogs(data);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        console.log(e);
+      }
+    })();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -234,34 +256,6 @@ export default function Home() {
       icon: '💼',
       text: 'Hợp tác với các tổ chức y tế uy tín',
       desc: 'GeneLink hợp tác với nhiều bệnh viện, trung tâm y tế và phòng thí nghiệm quốc tế nhằm nâng cao chất lượng dịch vụ và cập nhật công nghệ tiên tiến.',
-    },
-  ];
-
-  const newsData = [
-    {
-      title: 'Công nghệ AI mới trong xét nghiệm ADN',
-      desc: 'Ứng dụng trí tuệ nhân tạo giúp tăng độ chính xác lên 99.9999%',
-      date: '05/06/2025',
-    },
-    {
-      title: 'Mở rộng dịch vụ xét nghiệm di truyền',
-      desc: 'Ra mắt gói xét nghiệm toàn diện và chính xác cho gia đình',
-      date: '01/06/2025',
-    },
-    {
-      title: 'Hợp tác với phòng xét nghiệm Nhật Bản',
-      desc: 'Nâng cao chất lượng dịch vụ theo tiêu chuẩn quốc tế',
-      date: '28/05/2025',
-    },
-    {
-      title: 'Giải thưởng xuất sắc năm 2024',
-      desc: 'Nhận giải thưởng công nghệ y tế tiên tiến nhất',
-      date: '15/05/2025',
-    },
-    {
-      title: 'Khánh thành chi nhánh mới',
-      desc: 'Mở rộng mạng lưới phục vụ khách hàng toàn quốc',
-      date: '10/05/2025',
     },
   ];
 
@@ -850,35 +844,49 @@ export default function Home() {
               640: { slidesPerView: 2 },
               1024: { slidesPerView: 3 },
             }}
-            className="rounded-3xl pb-12"
+            className="rounded-3xl pb-12 no-underline"
           >
-            {newsData.map(({ title, desc, date }, i) => (
-              <SwiperSlide key={i} className="group">
-                <div className="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl cursor-pointer transform hover:-translate-y-2 transition-all duration-500 border border-gray-100 h-full flex flex-col">
-                  {/* News icon */}
-                  <div className="w-12 h-12 bg-gradient-to-br from-teal-100 to-blue-100 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300">
-                    <span className="text-2xl">📰</span>
-                  </div>
+            {[...blogs]
+              .sort(
+                (a, b) =>
+                  new Date(b.createAt).getTime() -
+                  new Date(a.createAt).getTime()
+              ) // mới nhất trước
+              .slice(0, 5)
+              .map((blog) => (
+                <SwiperSlide key={blog.blogId} className="group">
+                  <NavLink
+                    to={`/blog-detail/${blog.blogId}`}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <div className="bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl cursor-pointer transform hover:-translate-y-2 transition-all duration-500 border border-gray-100 h-full flex flex-col">
+                      {/* Thumbnail image */}
+                      <img
+                        src={`data:image/*;base64,${blog.image}`}
+                        alt={blog.title}
+                        className="w-full h-40 object-cover rounded-xl mb-4"
+                      />
 
-                  <h3 className="font-bold mb-4 text-xl text-gray-800 group-hover:text-teal-700 transition-colors line-clamp-2">
-                    {title}
-                  </h3>
+                      {/* Tiêu đề */}
+                      <h3 className="font-bold mb-3 text-xl text-gray-800 group-hover:text-teal-700 transition-colors line-clamp-2">
+                        {blog.title}
+                      </h3>
 
-                  <p className="text-gray-600 mb-6 flex-grow leading-relaxed group-hover:text-gray-700 transition-colors line-clamp-3">
-                    {desc}
-                  </p>
+                      {/* Mô tả ngắn */}
+                      <p className="text-gray-600 mb-6 flex-grow leading-relaxed group-hover:text-gray-700 transition-colors line-clamp-3">
+                        {blog.content}
+                      </p>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                    <span className="text-sm text-gray-400 group-hover:text-gray-500 transition-colors">
-                      {date}
-                    </span>
-                    <span className="text-teal-600 font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      Đọc thêm →
-                    </span>
-                  </div>
-                </div>
-              </SwiperSlide>
-            ))}
+                      {/* Ngày đăng và link */}
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <span className="text-sm text-gray-400">
+                          {dayjs(blog.createAt).format('DD/MM/YYYY')}
+                        </span>
+                      </div>
+                    </div>
+                  </NavLink>
+                </SwiperSlide>
+              ))}
           </Swiper>
 
           {/* Custom scrollbar */}

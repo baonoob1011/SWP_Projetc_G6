@@ -648,6 +648,7 @@ function App() {
             <Route path="/branch-and-map" element={<BranchAndMap />} />
             <Route path="/map" element={<Map />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/blog-detail/:blogId" element={<GetBlogById />} />
 
             {/* USER, STAFF, MANAGER DÙNG DEFAULT */}
             <Route
@@ -679,14 +680,6 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['USER']}>
                   <PatientRequest />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/blog-detail/:blogId"
-              element={
-                <ProtectedRoute allowedRoles={['USER']}>
-                  <GetBlogById />
                 </ProtectedRoute>
               }
             />
