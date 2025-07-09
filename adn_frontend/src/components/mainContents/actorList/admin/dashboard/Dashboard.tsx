@@ -7,11 +7,10 @@ import RevenueDashboard from './GetTotalRevenue';
 export const DashBoard = () => {
   return (
     <div>
-      <RevenueDashboard />
       <Stats />
       <GetAppointmentPercentage />
+      <RevenueDashboard />
       <GetRating />
-
       <GetDaily />
     </div>
   );
