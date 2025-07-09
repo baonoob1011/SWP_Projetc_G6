@@ -126,9 +126,6 @@ const GetDaily = () => {
 
         <div className="relative z-10">
           <div className="flex items-center mb-4">
-            <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-4">
-              <Calendar className="w-6 h-6 text-white" />
-            </div>
             <h1 className="text-white text-3xl font-bold">
               Tra cứu doanh thu theo ngày
             </h1>
