@@ -18,7 +18,6 @@ const Booking = () => {
   const [bookingList, setBookingList] = useState<BookingHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   // const [error, setError] = useState<string | null>(null);
-
   const [showInvoicePopup, setShowInvoicePopup] = useState(false);
   const [invoices, setInvoices] = useState<any[]>([]);
 
@@ -134,7 +133,32 @@ const Booking = () => {
   useEffect(() => {
     fetchData();
   }, []);
+  const handlePaymentByWallet = async (
+    appointmentId: number,
+    serviceId: number,
+    paymentId: number
+  ) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/wallet/payment-by-wallet?appointmentId=${appointmentId}&serviceId=${serviceId}&paymentId=${paymentId}`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
 
+      if (!res.ok) {
+        toast.error('Số dư không đủ');
+      } else {
+        toast.success('Thanh toán thành công!');
+        fetchData(); // Refresh lại danh sách sau khi thanh toán
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleCanceled = async (appointmentId: string) => {
     try {
       const res = await fetch(
@@ -153,6 +177,34 @@ const Booking = () => {
         fetchData();
       } else {
         toast.error('Hủy cuộc hẹn thất bại');
+      }
+    } catch (error) {
+      console.log('❌ Lỗi hệ thống khi gửi request:', error);
+      toast.error('Lỗi hệ thống');
+    }
+  };
+  const handleChangMethod = async (
+    paymentId: number,
+    paymentMethod: string
+  ) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/payment/change-payment-method?paymentId=${paymentId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+          body: JSON.stringify({ paymentMethod }),
+        }
+      );
+
+      if (res.ok) {
+        toast.success('Đổi phương thức thành công');
+        fetchData();
+      } else {
+        toast.error('Cập nhật thát bại');
       }
     } catch (error) {
       console.log('❌ Lỗi hệ thống khi gửi request:', error);
@@ -233,16 +285,9 @@ const Booking = () => {
                 {/* Header Row */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-blue-600 font-bold text-sm">
-                          #{startIndex + idx + 1}
-                        </span>
-                      </div>
-                    </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        Cuộc hẹn #{item.show.appointmentId}
+                      <h3 className="text-blue-600 font-bold text-sm">
+                        Số thứ tự {startIndex + idx + 1}
                       </h3>
                       <p className="text-sm text-gray-500">
                         Mã đặt khám: {item.show.appointmentId}
@@ -309,6 +354,34 @@ const Booking = () => {
                       </p>
                     </div>
                   </div>
+                  {item.payments[0].getPaymentStatus === 'PENDING' && (
+                    <div>
+                      <p>Đổi phương thức thanh toán</p>
+                      <select
+                        defaultValue={item.payments[0].paymentMethod || 'VNPAY'}
+                        onChange={(e) =>
+                          handleChangMethod(
+                            item.payments[0].paymentId,
+                            e.target.value
+                          )
+                        }
+                        className="border rounded px-2 py-1"
+                      >
+                        {item.show.appointmentType === 'CENTER' ? (
+                          <>
+                            <option value="VN_PAY">VNPAY</option>
+                            <option value="CASH">Tiền mặt</option>
+                            <option value="WALLET">Ví cá nhân</option>
+                          </>
+                        ) : (
+                          <>
+                            <option value="VN_PAY">VNPAY</option>
+                            <option value="WALLET">Ví cá nhân</option>
+                          </>
+                        )}
+                      </select>
+                    </div>
+                  )}
                 </div>
 
                 {/* Payment Info */}
@@ -385,19 +458,38 @@ const Booking = () => {
                   {/* Payment Button */}
                   {item.payments.length > 0 &&
                     (!item.payments[0].getPaymentStatus ||
-                      (item.payments[0].getPaymentStatus === 'PENDING' &&
-                        item.payments[0].paymentMethod !== 'CASH')) &&
+                      item.payments[0].getPaymentStatus === 'PENDING') &&
                     item.payments[0].paymentId &&
                     item.services.length > 0 &&
                     item.services[0].serviceId &&
-                    (item.show.appointmentStatus === 'CONFIRMED' ||
-                      item.show.appointmentType === 'HOME') && (
+                    item.payments[0].paymentMethod === 'VN_PAY' && (
                       <button
                         className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
                         onClick={() =>
                           handlePayment(
                             item.payments[0].paymentId,
                             item.services[0].serviceId
+                          )
+                        }
+                      >
+                        <FaMoneyBillWave className="mr-2" />
+                        Thanh toán
+                      </button>
+                    )}
+                  {item.payments.length > 0 &&
+                    (!item.payments[0].getPaymentStatus ||
+                      item.payments[0].getPaymentStatus === 'PENDING') &&
+                    item.payments[0].paymentId &&
+                    item.services.length > 0 &&
+                    item.services[0].serviceId &&
+                    item.payments[0].paymentMethod === 'WALLET' && (
+                      <button
+                        className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
+                        onClick={() =>
+                          handlePaymentByWallet(
+                            item.show.appointmentId,
+                            item.services[0].serviceId,
+                            item.payments[0].paymentId
                           )
                         }
                       >

@@ -65,7 +65,7 @@ const InvoicePopup: React.FC<Props> = ({ visible, onClose, invoices }) => {
                 {new Date(invoice.payDate).toLocaleString('vi-VN')}
               </p>
               <p>
-                <span className="font-medium text-gray-700">Mã ngân hàng:</span>{' '}
+                <span className="font-medium text-gray-700">Mã hóa đơn:</span>{' '}
                 {invoice.bankCode}
               </p>
               <p>
@@ -77,7 +77,9 @@ const InvoicePopup: React.FC<Props> = ({ visible, onClose, invoices }) => {
                       : 'text-red-600'
                   }`}
                 >
-                  {invoice.transactionStatus}
+                  {invoice.transactionStatus === 'SUCCESS'
+                    ? 'Đã thanh toán'
+                    : 'Chưa thanh toán'}
                 </span>
               </p>
             </div>

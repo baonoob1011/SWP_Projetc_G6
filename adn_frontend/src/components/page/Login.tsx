@@ -56,14 +56,14 @@ const Login = ({ setFullName }: LoginProps) => {
   };
   const handleGoogleLoginSuccess = async (credentialResponse: any) => {
     try {
-      const idToken = credentialResponse.credential;
+      const id_token = credentialResponse.credential;
 
       const response = await fetch('http://localhost:8080/api/auth/google', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ idToken }),
+        body: JSON.stringify({ id_token }),
       });
 
       if (!response.ok) {
