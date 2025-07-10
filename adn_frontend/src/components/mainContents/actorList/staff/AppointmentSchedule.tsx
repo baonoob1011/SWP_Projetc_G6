@@ -15,7 +15,18 @@ const AppointmentSchedule = () => {
         return status; // fallback nếu không khớp
     }
   };
-
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'CONFIRMED':
+        return 'Đã xác nhận';
+      case 'COMPLETED':
+        return 'Hoàn thành';
+      case 'CANCELLED':
+        return 'Đã hủy';
+      default:
+        return 'Chờ xác nhận';
+    }
+  };
   const fetchScheduleAtHome = async () => {
     const token = localStorage.getItem('token');
     setLoadingHome(true);
@@ -111,21 +122,18 @@ const AppointmentSchedule = () => {
                   {/* Header with appointment info */}
                   <div className={styles.cardHeader}>
                     <div className={styles.headerLeft}>
-                      <div className={styles.appointmentIcon}>
-                        <span className={styles.appointmentNumber}>
-                          #{index + 1}
-                        </span>
-                      </div>
                       <div className={styles.headerInfo}>
                         <h3>
-                          Lịch hẹn #{item.showAppointmentResponse.appointmentId}
+                          Đơn hàng {item.showAppointmentResponse.appointmentId}
                         </h3>
                         <p>{item.showAppointmentResponse.appointmentDate}</p>
                       </div>
                     </div>
 
                     <span className={styles.statusBadge}>
-                      {item.showAppointmentResponse.appointmentStatus}
+                      {getStatusText(
+                        item.showAppointmentResponse.appointmentStatus
+                      )}
                     </span>
                   </div>
 

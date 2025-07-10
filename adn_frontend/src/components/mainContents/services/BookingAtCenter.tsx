@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   Box,
@@ -34,6 +35,7 @@ import {
   LocationOn,
   AttachMoney,
 } from '@mui/icons-material';
+import { book } from '../userinfor/Validation';
 
 const BookingAtCenter = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
@@ -87,20 +89,40 @@ const BookingAtCenter = () => {
     severity: 'success' as 'success' | 'error',
   });
 
+  const [patientOneErrors, setPatientOneErrors] = useState<{
+    [key: string]: string;
+  }>({});
+  const [patientTwoErrors, setPatientTwoErrors] = useState<{
+    [key: string]: string;
+  }>({});
+  const validateField = async (field: string, value: string, setError: any) => {
+    if (!book.fields || !(book.fields as any)[field]) {
+      setError((prev: any) => ({ ...prev, [field]: '' }));
+      return;
+    }
+    try {
+      await (book.fields as any)[field].validate(value);
+      setError((prev: any) => ({ ...prev, [field]: '' }));
+    } catch (err: any) {
+      setError((prev: any) => ({ ...prev, [field]: err.message }));
+    }
+  };
   const handleInputPatientOne = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setPatientOne((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setPatientOne((prev) => {
+      const updated = { ...prev, [name]: value };
+      validateField(name, value, setPatientOneErrors);
+      return updated;
+    });
   };
 
   const handleInputPatientTwo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setPatientTwo((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setPatientTwo((prev) => {
+      const updated = { ...prev, [name]: value };
+      validateField(name, value, setPatientTwoErrors);
+      return updated;
+    });
   };
 
   // Fetch all locations when component mounts
@@ -605,6 +627,8 @@ const BookingAtCenter = () => {
                     InputLabelProps={
                       type === 'date' ? { shrink: true } : undefined
                     }
+                    error={!!patientOneErrors[name]}
+                    helperText={patientOneErrors[name]}
                     sx={{
                       minWidth: '250px',
                       flex: '1 1 300px',
@@ -738,6 +762,8 @@ const BookingAtCenter = () => {
                     InputLabelProps={
                       type === 'date' ? { shrink: true } : undefined
                     }
+                    error={!!patientTwoErrors[name]}
+                    helperText={patientTwoErrors[name]}
                     sx={{
                       minWidth: '250px',
                       flex: '1 1 300px',

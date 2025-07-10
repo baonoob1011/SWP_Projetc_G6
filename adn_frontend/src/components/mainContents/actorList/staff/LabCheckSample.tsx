@@ -8,7 +8,6 @@ import styles from './CollectorSlot.module.css';
 
 export const LabCheckSample = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
-  const [sampleType, setSampleType] = useState<{ [key: string]: string }>({});
   const [selectedStatus, setSelectedStatus] = useState<{
     [key: string]: string;
   }>({});
@@ -134,8 +133,8 @@ export const LabCheckSample = () => {
                     <thead className={styles.tableHeader}>
                       <tr>
                         <th className={styles.tableHeaderCell}>Họ tên</th>
-                        <th className={styles.tableHeaderCell}>Ngày sinh</th>
-                        <th className={styles.tableHeaderCell}>Giới tính</th>
+                        <th className={styles.tableHeaderCell}>Mã Kit</th>
+                        <th className={styles.tableHeaderCell}>Tên kit</th>
                         <th className={styles.tableHeaderCell}>Quan hệ</th>
                         <th className={styles.tableHeaderCell}>Tên dịch vụ</th>
                         <th className={styles.tableHeaderCell}>Thao tác</th>
@@ -158,10 +157,10 @@ export const LabCheckSample = () => {
                                 {patient.fullName}
                               </td>
                               <td className={styles.tableCell}>
-                                {patient.dateOfBirth}
+                                {appointmentItem.kitAppointmentResponse.kitCode}
                               </td>
                               <td className={styles.tableCell}>
-                                {patient.gender}
+                                {appointmentItem.kitAppointmentResponse.kitName}
                               </td>
                               <td className={styles.tableCell}>
                                 {patient.relationship}

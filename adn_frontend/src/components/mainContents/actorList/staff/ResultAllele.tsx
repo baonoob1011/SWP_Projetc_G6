@@ -261,7 +261,7 @@ const CreateResultAllele = () => {
                         <td>{index + 1}</td>
                         <td>
                           <span className="badge bg-primary">
-                            {alleleResultData.locusResponses.locusName || 'N/A'}
+                            {allele.locusResponse.locusName || 'N/A'}
                           </span>
                         </td>
                         <td>
