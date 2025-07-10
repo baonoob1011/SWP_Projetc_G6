@@ -45,7 +45,7 @@ const baseSchema = yup.object().shape({
 
   gender: yup.string().trim().required('Không được bỏ trống'),
 
-  identityNumber: yup
+  idCard: yup
     .string()
     .matches(/^\d{12}$/, 'Số CCCD không hợp lệ')
     .trim()
@@ -76,7 +76,7 @@ export const signUpStaffSchema = baseSchema.pick([
   'email',
   'confirmPassword',
   'phone',
-  'identityNumber',
+  'idCard',
   'address',
   'gender',
   'dateOfBirth',
