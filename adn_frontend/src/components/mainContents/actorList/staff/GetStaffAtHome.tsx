@@ -1,19 +1,8 @@
-import {
-  Button,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-} from '@mui/material';
 import { Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import { showErrorSnackbar, showSuccessAlert } from '../utils/notifications';
 import Swal from 'sweetalert2';
+import '../styles/swal-custom.css';
 
 type Staff = {
   idCard: string;
@@ -113,109 +102,164 @@ function GetStaffAtHome() {
   };
 
   if (!isAdmin) {
-    return;
+    return null;
   }
 
   const searchByphone = account.filter((user) => user.phone.includes(search));
+
   return (
-    <>
+    <div className="bg-white">
       {error && showErrorSnackbar(error)}
-      <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
-        <TextField
-          label="Nhập số điện thoại"
-          variant="outlined"
-          size="small"
+      
+      {/* Search Input */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Nhập số điện thoại"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          sx={{ margin: '10px 5px' }}
+          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <Table sx={{ fontSize: '13px' }}>
-          <TableHead>
-            <TableRow>
-              {/** Dòng tiêu đề với border */}
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                ID
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Họ tên
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                CCCD
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Ngày sinh
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Giới tính
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Email
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                SĐT
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Địa chỉ
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>
-                Thao tác
-              </TableCell>
-            </TableRow>
-          </TableHead>
+      </div>
 
-          <TableBody>
+      {/* Table */}
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  ID
+                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  Họ tên
+                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  CCCD
+                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  Ngày sinh
+                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  Giới tính
+                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  Email
+                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  SĐT
+                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  Địa chỉ
+                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                Hành động
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
             {searchByphone.map((user, index) => (
-              <TableRow key={index}>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
-                  {index + 1}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
+              <tr key={index} className="hover:bg-gray-50">
+                <td className="px-4 py-3 text-sm text-blue-600 font-medium border-r border-gray-200">
+                  #{String(index + 1).padStart(4, '0')}
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-800 border-r border-gray-200">
                   {user.fullName}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
                   {user.idCard}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
                   {user.dateOfBirth}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
                   {user.gender}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
                   {user.email}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
                   {user.phone}
-                </TableCell>
-                <TableCell sx={{ fontSize: '10px', border: '1px solid #ccc' }}>
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
                   {user.address}
-                </TableCell>
-                <TableCell sx={{ border: '1px solid #ccc', gap: 10 }}>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    size="small"
-                    sx={{ minWidth: 0, padding: '6px', borderRadius: '4px' }}
-                    onClick={() => handleDelete(user.phone, user.fullName)}
-                  >
-                    <Trash2 size={10} />
-                  </Button>
-                </TableCell>
-              </TableRow>
+                </td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleDelete(user.phone, user.fullName)}
+                      className="p-1 text-red-500 hover:bg-red-50 rounded border border-red-200 hover:border-red-300 transition-colors"
+                      title="Xóa nhân viên"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
             ))}
-          </TableBody>
-        </Table>
-        <></>
-      </TableContainer>
-      <Button
-        component={NavLink}
-        to="/signup-staff-at-home"
-        className="normal-case"
-        style={{ textDecoration: 'none' }}
-      >
-        <Plus size={20} />
-      </Button>
-    </>
+            {searchByphone.length === 0 && (
+              <tr>
+                <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
+                  Không tìm thấy nhân viên nào
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Add Staff Button */}
+      <div className="mt-4">
+        <button
+          onClick={() => {
+            window.location.href = '/signup-staff-at-home';
+          }}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 transition-colors"
+        >
+          <Plus size={20} />
+          Thêm nhân viên tại nhà
+        </button>
+      </div>
+    </div>
   );
 }
 
