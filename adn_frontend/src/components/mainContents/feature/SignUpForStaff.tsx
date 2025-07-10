@@ -58,34 +58,34 @@ const SignUpStaff = () => {
     );
   }, []);
 
-  const validateField = async (name: string, value: any) => {
-    try {
-      await signUpStaffSchema.validateAt(name, { ...staff, [name]: value });
-      setError((prev) => ({ ...prev, [name]: '' }));
-    } catch (err) {
-      if (err instanceof ValidationError) {
-        if (value === '') {
-          setSnackbar({
-            open: true,
-            message: 'Vui lòng điền đầy đủ thông tin',
-            severity: 'error',
-          });
-          return;
-        }
+  // const validateField = async (name: string, value: any) => {
+  //   try {
+  //     await signUpStaffSchema.validateAt(name, { ...staff, [name]: value });
+  //     setError((prev) => ({ ...prev, [name]: '' }));
+  //   } catch (err) {
+  //     if (err instanceof ValidationError) {
+  //       if (value === '') {
+  //         setSnackbar({
+  //           open: true,
+  //           message: 'Vui lòng điền đầy đủ thông tin',
+  //           severity: 'error',
+  //         });
+  //         return;
+  //       }
 
-        if (name === 'phone') {
-          setSnackbar({
-            open: true,
-            message: 'Vui lòng nhập số điện thoại',
-            severity: 'error',
-          });
-          return;
-        }
+  //       if (name === 'phone') {
+  //         setSnackbar({
+  //           open: true,
+  //           message: 'Vui lòng nhập số điện thoại',
+  //           severity: 'error',
+  //         });
+  //         return;
+  //       }
 
-        setError((prev) => ({ ...prev, [name]: err.message }));
-      }
-    }
-  };
+  //       setError((prev) => ({ ...prev, [name]: err.message }));
+  //     }
+  //   }
+  // };
 
   const handleInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -102,7 +102,7 @@ const SignUpStaff = () => {
       [name]: newValue,
     }));
 
-    validateField(name, newValue);
+    // validateField(name, newValue);
   };
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {

@@ -15,7 +15,6 @@ type User = {
 
 function GetUserByAdmin() {
   const [account, setAccount] = useState<User[]>([]);
-  const [isAdmin, setIsAdmin] = useState(true);
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -102,22 +101,16 @@ function GetUserByAdmin() {
 
   // ✅ Khởi động
   useEffect(() => {
-    const role = localStorage.getItem('role');
-    setIsAdmin(role === 'ADMIN');
     fetchData();
   }, []);
 
-  // ✅ Không có quyền
-  if (!isAdmin) {
-    return null;
-  }
-
-  const searchByPhone = account.filter((user) => user.phone.includes(search));
-
+  const searchByPhone = account.filter((user) =>
+    (user.phone || '').includes(search)
+  );
   return (
     <div className="bg-white">
       {error && showErrorSnackbar(error)}
-      
+
       {/* Search Input */}
       <div className="mb-4">
         <input
@@ -137,32 +130,72 @@ function GetUserByAdmin() {
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                 <div className="flex items-center gap-1">
                   ID
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                  <svg
+                    className="w-3 h-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                    />
                   </svg>
                 </div>
               </th>
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                 <div className="flex items-center gap-1">
                   Họ tên
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                  <svg
+                    className="w-3 h-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                    />
                   </svg>
                 </div>
               </th>
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                 <div className="flex items-center gap-1">
                   Email
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                  <svg
+                    className="w-3 h-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                    />
                   </svg>
                 </div>
               </th>
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                 <div className="flex items-center gap-1">
                   SĐT
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                  <svg
+                    className="w-3 h-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                    />
                   </svg>
                 </div>
               </th>

@@ -140,7 +140,7 @@ const SignUpConsultation = () => {
       }
 
       const response = await fetch(
-        'http://localhost:8080/api/register/lab-technician-account',
+        'http://localhost:8080/api/register/consultant-account',
         {
           method: 'POST',
           headers: {
