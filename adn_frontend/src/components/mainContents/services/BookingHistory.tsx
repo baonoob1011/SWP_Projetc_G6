@@ -1,20 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
-import {
-  Box,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Chip,
-  Tabs,
-  Tab,
-} from '@mui/material';
 import { toast } from 'react-toastify';
+import styles from './BookingHistory.module.css';
 
 const ITEMS_PER_PAGE = 3;
 
@@ -87,11 +74,9 @@ const BookingHistory = () => {
 
   // Empty state
   const renderEmpty = (msg: string) => (
-    <Box textAlign="center" py={6}>
-      <Typography variant="h6" color="textSecondary">
-        {msg}
-      </Typography>
-    </Box>
+    <div className={styles.emptyState}>
+      <h3>{msg}</h3>
+    </div>
   );
 
   // Pagination controls
@@ -101,141 +86,139 @@ const BookingHistory = () => {
     setPage: (p: number) => void
   ) =>
     totalPages > 1 && (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        mt={3}
-        gap={2}
-      >
+      <div className={styles.paginationContainer}>
         <button
           onClick={() => setPage(Math.max(page - 1, 1))}
           disabled={page === 1}
-          style={{
-            padding: '8px 16px',
-            borderRadius: 8,
-            border: '1px solid #ccc',
-            background: page === 1 ? '#f3f3f3' : '#fff',
-            color: page === 1 ? '#aaa' : '#333',
-            cursor: page === 1 ? 'not-allowed' : 'pointer',
-            fontWeight: 500,
-          }}
+          className={styles.paginationButton}
         >
           Trang trước
         </button>
-        <Box display="flex" gap={1}>
+        <div className={styles.paginationNumbers}>
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
             <button
               key={p}
               onClick={() => setPage(p)}
-              style={{
-                padding: '8px 12px',
-                borderRadius: 8,
-                border: '1px solid #ccc',
-                background: page === p ? '#2563eb' : '#fff',
-                color: page === p ? '#fff' : '#333',
-                fontWeight: page === p ? 700 : 500,
-                cursor: 'pointer',
-                margin: 0,
-              }}
+              className={`${styles.paginationButton} ${
+                page === p ? styles.paginationButtonActive : ''
+              }`}
             >
               {p}
             </button>
           ))}
-        </Box>
+        </div>
         <button
           onClick={() => setPage(Math.min(page + 1, totalPages))}
           disabled={page === totalPages}
-          style={{
-            padding: '8px 16px',
-            borderRadius: 8,
-            border: '1px solid #ccc',
-            background: page === totalPages ? '#f3f3f3' : '#fff',
-            color: page === totalPages ? '#aaa' : '#333',
-            cursor: page === totalPages ? 'not-allowed' : 'pointer',
-            fontWeight: 500,
-          }}
+          className={styles.paginationButton}
         >
           Trang sau
         </button>
-      </Box>
+      </div>
     );
 
   return (
-    <Box className="max-w-7xl mx-auto px-4 py-6">
-      <Typography variant="h5" gutterBottom>
-        Lịch Sử Đặt Lịch
-      </Typography>
-
-      <Tabs value={tabIndex} onChange={handleTabChange} className="mb-4">
-        <Tab label="Tại trung tâm" />
-        <Tab label="Tại nhà" />
-      </Tabs>
+    <div className={styles.container}>
+      <div className={styles.tabsContainer}>
+        <div className={styles.tabsList}>
+          <button
+            className={`${styles.tab} ${tabIndex === 0 ? styles.tabActive : ''}`}
+            onClick={() => handleTabChange(null, 0)}
+          >
+            Tại trung tâm
+          </button>
+          <button
+            className={`${styles.tab} ${tabIndex === 1 ? styles.tabActive : ''}`}
+            onClick={() => handleTabChange(null, 1)}
+          >
+            Tại nhà
+          </button>
+        </div>
+      </div>
 
       {loading ? (
-        <Typography>Đang tải dữ liệu...</Typography>
+        <div className={styles.loadingContainer}>
+          <span className={styles.loadingText}>Đang tải dữ liệu...</span>
+        </div>
       ) : tabIndex === 0 ? (
         centerHistory.length === 0 ? (
           renderEmpty('Không có lịch sử đặt lịch tại trung tâm')
         ) : (
           <>
-            <TableContainer component={Paper} className="shadow-md rounded-xl">
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Ngày</TableCell>
-                    <TableCell>Dịch vụ</TableCell>
-                    <TableCell>Phòng</TableCell>
-                    <TableCell>Địa điểm</TableCell>
-                    <TableCell>Số tiền</TableCell>
-                    <TableCell>Phương thúc thanh toán</TableCell>
-                    <TableCell>Trạng thái</TableCell>
-                    <TableCell>Thanh toán</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
+            <div className={`${styles.tableContainer} ${styles.centerTable}`}>
+              <table className={styles.table}>
+                <thead className={styles.tableHeader}>
+                  <tr>
+                    <th className={styles.tableHeaderCell}>Ngày</th>
+                    <th className={styles.tableHeaderCell}>Dịch vụ</th>
+                    <th className={styles.tableHeaderCell}>Phòng</th>
+                    <th className={styles.tableHeaderCell}>Địa điểm</th>
+                    <th className={styles.tableHeaderCell}>Số tiền</th>
+                    <th className={styles.tableHeaderCell}>Phương thức</th>
+                    <th className={styles.tableHeaderCell}>Trạng thái</th>
+                    <th className={styles.tableHeaderCell}>Thanh toán</th>
+                  </tr>
+                </thead>
+                <tbody>
                   {centerCurrent.map((item, index) => {
                     const a = item.showAppointmentResponse;
                     const service = item.serviceAppointmentResponses?.[0];
                     const loc = item.locationAppointmentResponses?.[0];
                     const room = item.roomAppointmentResponse;
                     const payment = item.paymentAppointmentResponse?.[0];
+                    
+                    // Helper function to get status badge class
+                    const getStatusBadgeClass = (status: string) => {
+                      switch (status) {
+                        case 'CONFIRMED':
+                        case 'COMPLETED':
+                          return `${styles.statusBadge} ${styles.statusBadgeSuccess}`;
+                        case 'PENDING':
+                          return `${styles.statusBadge} ${styles.statusBadgeWarning}`;
+                        case 'CANCELLED':
+                          return `${styles.statusBadge} ${styles.statusBadgeDanger}`;
+                        case 'RATED':
+                          return `${styles.statusBadge} ${styles.statusBadgeInfo}`;
+                        default:
+                          return `${styles.statusBadge} ${styles.statusBadgeSecondary}`;
+                      }
+                    };
+
                     return (
-                      <TableRow key={index}>
-                        <TableCell>{a?.appointmentDate}</TableCell>
-                        <TableCell>{service?.serviceName}</TableCell>
-                        <TableCell>{room?.roomName}</TableCell>
-                        <TableCell>
+                      <tr key={index} className={styles.tableRow}>
+                        <td className={styles.tableCell}>{a?.appointmentDate}</td>
+                        <td className={styles.tableCell}>{service?.serviceName}</td>
+                        <td className={styles.tableCell}>{room?.roomName}</td>
+                        <td className={styles.tableCell}>
                           {loc
                             ? `${loc.addressLine}, ${loc.district}, ${loc.city}`
                             : '-'}
-                        </TableCell>
-
-                        <TableCell>
+                        </td>
+                        <td className={styles.tableCell}>
                           {payment.amount?.toLocaleString('vi-VN')} VND
-                        </TableCell>
-                        <TableCell>{payment.paymentMethod} </TableCell>
-                        <TableCell>
-                          <Chip
-                            label={translate(a?.appointmentStatus)}
-                            color={
-                              a?.appointmentStatus === 'CONFIRMED'
-                                ? 'success'
-                                : 'default'
-                            }
-                          />
-                        </TableCell>
-                        <TableCell>
-                          {payment?.getPaymentStatus === 'PAID'
-                            ? 'Đã thanh toán'
-                            : 'Chưa thanh toán'}
-                        </TableCell>
-                      </TableRow>
+                        </td>
+                        <td className={styles.tableCell}>{payment.paymentMethod}</td>
+                        <td className={styles.tableCell}>
+                          <span className={getStatusBadgeClass(a?.appointmentStatus)}>
+                            {translate(a?.appointmentStatus)}
+                          </span>
+                        </td>
+                        <td className={styles.tableCell}>
+                          <span className={payment?.getPaymentStatus === 'PAID' 
+                            ? styles.paymentStatusPaid 
+                            : styles.paymentStatusUnpaid
+                          }>
+                            {payment?.getPaymentStatus === 'PAID'
+                              ? 'Đã thanh toán'
+                              : 'Chưa thanh toán'}
+                          </span>
+                        </td>
+                      </tr>
                     );
                   })}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                </tbody>
+              </table>
+            </div>
             {renderPagination(centerPage, centerTotalPages, setCenterPage)}
           </>
         )
@@ -243,59 +226,76 @@ const BookingHistory = () => {
         renderEmpty('Không có lịch sử đặt lịch tại nhà')
       ) : (
         <>
-          <TableContainer component={Paper} className="shadow-md rounded-xl">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Ngày</TableCell>
-                  <TableCell>Dịch vụ</TableCell>
-                  <TableCell>Tên kit</TableCell>
-                  <TableCell>Số tiền</TableCell>
-                  <TableCell>Phương thúc thanh toán</TableCell>
-                  <TableCell>Trạng thái</TableCell>
-                  <TableCell>Thanh toán</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
+          <div className={`${styles.tableContainer} ${styles.homeTable}`}>
+            <table className={styles.table}>
+              <thead className={styles.tableHeader}>
+                <tr>
+                  <th className={styles.tableHeaderCell}>Ngày</th>
+                  <th className={styles.tableHeaderCell}>Dịch vụ</th>
+                  <th className={styles.tableHeaderCell}>Tên kit</th>
+                  <th className={styles.tableHeaderCell}>Số tiền</th>
+                  <th className={styles.tableHeaderCell}>Phương thức</th>
+                  <th className={styles.tableHeaderCell}>Trạng thái</th>
+                  <th className={styles.tableHeaderCell}>Thanh toán</th>
+                </tr>
+              </thead>
+              <tbody>
                 {homeCurrent.map((item, index) => {
                   const a = item.showAppointmentResponse;
                   const kit = item.kitAppointmentResponse;
                   const payment = item.paymentAppointmentResponses?.[0];
-                  return (
-                    <TableRow key={index}>
-                      <TableCell>{a?.appointmentDate}</TableCell>
-                      <TableCell>{a?.note || '-'}</TableCell>
-                      <TableCell>{kit.kitName}</TableCell>
-                      <TableCell>
-                        {payment.amount?.toLocaleString('vi-VN')} VND
-                      </TableCell>
-                      <TableCell>{payment.paymentMethod} </TableCell>
+                  
+                  // Helper function to get status badge class
+                  const getStatusBadgeClass = (status: string) => {
+                    switch (status) {
+                      case 'CONFIRMED':
+                      case 'COMPLETED':
+                        return `${styles.statusBadge} ${styles.statusBadgeSuccess}`;
+                      case 'PENDING':
+                        return `${styles.statusBadge} ${styles.statusBadgeWarning}`;
+                      case 'CANCELLED':
+                        return `${styles.statusBadge} ${styles.statusBadgeDanger}`;
+                      case 'RATED':
+                        return `${styles.statusBadge} ${styles.statusBadgeInfo}`;
+                      default:
+                        return `${styles.statusBadge} ${styles.statusBadgeSecondary}`;
+                    }
+                  };
 
-                      <TableCell>
-                        <Chip
-                          label={translate(a?.appointmentStatus)}
-                          color={
-                            a?.appointmentStatus === 'COMPLETED'
-                              ? 'success'
-                              : 'default'
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {payment?.getPaymentStatus === 'PAID'
-                          ? 'Đã thanh toán'
-                          : 'Chưa thanh toán'}
-                      </TableCell>
-                    </TableRow>
+                  return (
+                    <tr key={index} className={styles.tableRow}>
+                      <td className={styles.tableCell}>{a?.appointmentDate}</td>
+                      <td className={styles.tableCell}>{a?.note || '-'}</td>
+                      <td className={styles.tableCell}>{kit.kitName}</td>
+                      <td className={styles.tableCell}>
+                        {payment.amount?.toLocaleString('vi-VN')} VND
+                      </td>
+                      <td className={styles.tableCell}>{payment.paymentMethod}</td>
+                      <td className={styles.tableCell}>
+                        <span className={getStatusBadgeClass(a?.appointmentStatus)}>
+                          {translate(a?.appointmentStatus)}
+                        </span>
+                      </td>
+                      <td className={styles.tableCell}>
+                        <span className={payment?.getPaymentStatus === 'PAID' 
+                          ? styles.paymentStatusPaid 
+                          : styles.paymentStatusUnpaid
+                        }>
+                          {payment?.getPaymentStatus === 'PAID'
+                            ? 'Đã thanh toán'
+                            : 'Chưa thanh toán'}
+                        </span>
+                      </td>
+                    </tr>
                   );
                 })}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              </tbody>
+            </table>
+          </div>
           {renderPagination(homePage, homeTotalPages, setHomePage)}
         </>
       )}
-    </Box>
+    </div>
   );
 };
 
