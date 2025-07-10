@@ -408,83 +408,85 @@ const CollectSampleAtCenter = () => {
       )}
 
       {sample.length > 0 ? (
-        <div className={styles.tableContainer}>
+        <div className={styles.collectedSamplesContainer}>
           <h2 className={styles.subTitle}>Danh sách mẫu đã nhập</h2>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Họ tên</th>
-                <th>Mã Kit</th>
-                <th>Loại mẫu</th>
-                <th>Trạng thái mẫu</th>
-                <th>Mã mẫu</th>
-                <th>Ngày thu</th>
-                <th>Người thu</th>
-                <th>thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sample.map((item: any, index: number) => (
-                <tr key={index}>
-                  <td>{item.patientSampleResponse.fullName}</td>
-                  <td>{item.kitAppointmentResponse.kitCode}</td>
-                  <td>{item.sampleResponse.sampleType}</td>
-                  <td>
-                    <select
-                      value={item.sampleResponse.sampleStatus}
-                      onChange={(e) =>
-                        handleUpdate(
-                          item.sampleResponse.sampleId,
-                          e.target.value
-                        )
-                      }
-                      className={styles.sampleSelect}
-                    >
-                      <option value="">Chọn trạng thái</option>
-                      {sampleStatusOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-
-                  <td>{item.sampleResponse.sampleCode}</td>
-                  <td>{item.sampleResponse.collectionDate}</td>
-                  <td>{item.staffSampleResponse.fullName}</td>
-                  <td>
-                    <button
-                      type="submit"
-                      onClick={() => {
-                        const matchedAppointment = appointments.find((a) =>
-                          a.patientAppointmentResponse.some(
-                            (p: any) =>
-                              p.patientId ===
-                              item.patientSampleResponse.patientId
-                          )
-                        );
-                        const appointmentId =
-                          matchedAppointment?.showAppointmentResponse
-                            ?.appointmentId;
-                        if (appointmentId) {
-                          setConfirmDelete({
-                            appointmentId,
-                            sampleId: item.sampleResponse.sampleId,
-                          });
-                        } else {
-                          toast.error(
-                            'Không tìm thấy appointmentId cho mẫu này'
-                          );
-                        }
-                      }}
-                    >
-                      xóa
-                    </button>
-                  </td>
+          <div className={`${styles.tableContainer} ${styles.collectedSamplesTable}`}>
+            <table className={styles.table}>
+              <thead className={styles.tableHeader}>
+                <tr>
+                  <th className={styles.tableHeaderCell}>Họ tên</th>
+                  <th className={styles.tableHeaderCell}>Mã Kit</th>
+                  <th className={styles.tableHeaderCell}>Loại mẫu</th>
+                  <th className={styles.tableHeaderCell}>Trạng thái mẫu</th>
+                  <th className={styles.tableHeaderCell}>Mã mẫu</th>
+                  <th className={styles.tableHeaderCell}>Ngày thu</th>
+                  <th className={styles.tableHeaderCell}>Người thu</th>
+                  <th className={styles.tableHeaderCell}>Thao tác</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {sample.map((item: any, index: number) => (
+                  <tr key={index} className={styles.tableRow}>
+                    <td className={styles.tableCell}>{item.patientSampleResponse.fullName}</td>
+                    <td className={styles.tableCell}>{item.kitAppointmentResponse.kitCode}</td>
+                    <td className={styles.tableCell}>{item.sampleResponse.sampleType}</td>
+                    <td className={styles.tableCell}>
+                      <select
+                        value={item.sampleResponse.sampleStatus}
+                        onChange={(e) =>
+                          handleUpdate(
+                            item.sampleResponse.sampleId,
+                            e.target.value
+                          )
+                        }
+                        className={styles.sampleSelect}
+                      >
+                        <option value="">Chọn trạng thái</option>
+                        {sampleStatusOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className={styles.tableCell}>{item.sampleResponse.sampleCode}</td>
+                    <td className={styles.tableCell}>{item.sampleResponse.collectionDate}</td>
+                    <td className={styles.tableCell}>{item.staffSampleResponse.fullName}</td>
+                    <td className={styles.tableCell}>
+                      <button
+                        type="submit"
+                        className={styles.submitBtn}
+                        onClick={() => {
+                          const matchedAppointment = appointments.find((a) =>
+                            a.patientAppointmentResponse.some(
+                              (p: any) =>
+                                p.patientId ===
+                                item.patientSampleResponse.patientId
+                            )
+                          );
+                          const appointmentId =
+                            matchedAppointment?.showAppointmentResponse
+                              ?.appointmentId;
+                          if (appointmentId) {
+                            setConfirmDelete({
+                              appointmentId,
+                              sampleId: item.sampleResponse.sampleId,
+                            });
+                          } else {
+                            toast.error(
+                              'Không tìm thấy appointmentId cho mẫu này'
+                            );
+                          }
+                        }}
+                      >
+                        <Delete fontSize="small" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       ) : null}
       {confirmDelete && (
