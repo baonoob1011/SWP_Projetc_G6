@@ -79,7 +79,7 @@ const AdminSidebar = () => {
     {
       id: 'room',
       icon: Room,
-      label: 'Phòng lab',
+      label: 'Phòng',
       path: 'room',
     },
     {

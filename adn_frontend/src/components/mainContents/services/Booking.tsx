@@ -12,6 +12,7 @@ import {
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import InvoicePopup from '../actorList/user/PopupInvoice';
+import Swal from 'sweetalert2';
 
 // ==== COMPONENT ====
 const Booking = () => {
@@ -354,33 +355,37 @@ const Booking = () => {
                       </p>
                     </div>
                   </div>
-                  {item.payments[0].getPaymentStatus === 'PENDING' && (
-                    <div>
-                      <p>Đổi phương thức thanh toán</p>
-                      <select
-                        defaultValue={item.payments[0].paymentMethod || 'VNPAY'}
-                        onChange={(e) =>
-                          handleChangMethod(
-                            item.payments[0].paymentId,
-                            e.target.value
-                          )
-                        }
-                        className="border rounded px-2 py-1"
-                      >
-                        {item.show.appointmentType === 'CENTER' ? (
-                          <>
-                            <option value="VN_PAY">VNPAY</option>
-                            <option value="CASH">Tiền mặt</option>
-                            <option value="WALLET">Ví cá nhân</option>
-                          </>
-                        ) : (
-                          <>
-                            <option value="VN_PAY">VNPAY</option>
-                            <option value="WALLET">Ví cá nhân</option>
-                          </>
-                        )}
-                      </select>
-                    </div>
+                  {item.payments.map(
+                    (payment) =>
+                      (!payment.getPaymentStatus ||
+                        payment.getPaymentStatus === 'PENDING') && (
+                        <div key={payment.paymentId} className="mb-4">
+                          <p>Đổi phương thức thanh toán</p>
+                          <select
+                            defaultValue={payment.paymentMethod || 'VNPAY'}
+                            onChange={(e) =>
+                              handleChangMethod(
+                                payment.paymentId,
+                                e.target.value
+                              )
+                            }
+                            className="border rounded px-2 py-1"
+                          >
+                            {item.show.appointmentType === 'CENTER' ? (
+                              <>
+                                <option value="VN_PAY">VNPAY</option>
+                                <option value="CASH">Tiền mặt</option>
+                                <option value="WALLET">Ví cá nhân</option>
+                              </>
+                            ) : (
+                              <>
+                                <option value="VN_PAY">VNPAY</option>
+                                <option value="WALLET">Ví cá nhân</option>
+                              </>
+                            )}
+                          </select>
+                        </div>
+                      )
                   )}
                 </div>
 
@@ -446,9 +451,22 @@ const Booking = () => {
                       <button
                         type="button"
                         className="inline-flex items-center px-4 py-2 border border-red-300 text-red-700 bg-white rounded-lg hover:bg-red-50 transition-colors duration-200 text-sm font-medium"
-                        onClick={() =>
-                          handleCanceled(item.show.appointmentId.toString())
-                        }
+                        onClick={async () => {
+                          const result = await Swal.fire({
+                            title: 'Xác nhận hủy cuộc hẹn',
+                            text: 'Bạn có chắc chắn muốn hủy cuộc hẹn này?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Có, hủy cuộc hẹn',
+                            cancelButtonText: 'Không',
+                          });
+
+                          if (result.isConfirmed) {
+                            handleCanceled(item.show.appointmentId.toString());
+                          }
+                        }}
                       >
                         <FaTimes className="mr-2" />
                         Hủy cuộc hẹn
@@ -485,18 +503,32 @@ const Booking = () => {
                     item.payments[0].paymentMethod === 'WALLET' && (
                       <button
                         className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
-                        onClick={() =>
-                          handlePaymentByWallet(
-                            item.show.appointmentId,
-                            item.services[0].serviceId,
-                            item.payments[0].paymentId
-                          )
-                        }
+                        onClick={async () => {
+                          const result = await Swal.fire({
+                            title: 'Xác nhận thanh toán',
+                            text: 'Bạn có chắc chắn muốn thanh toán hóa đơn này?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Có, thanh toán!',
+                            cancelButtonText: 'Hủy',
+                          });
+
+                          if (result.isConfirmed) {
+                            handlePaymentByWallet(
+                              item.show.appointmentId,
+                              item.services[0].serviceId,
+                              item.payments[0].paymentId
+                            );
+                          }
+                        }}
                       >
                         <FaMoneyBillWave className="mr-2" />
                         Thanh toán
                       </button>
                     )}
+
                   {item.payments.length > 0 &&
                     item.payments[0].getPaymentStatus === 'PAID' && (
                       <button

@@ -181,9 +181,6 @@ const CollectSampleAtCenter = () => {
       [key]: value,
     }));
   };
-  useEffect(() => {
-    fetchAppointment();
-  }, []);
 
   const handleSendSample = async (
     patientId: string,
@@ -221,10 +218,10 @@ const CollectSampleAtCenter = () => {
         } else {
           errorMessage = await res.text();
         }
-        fetchSampleData(appointmentId);
         toast.error(errorMessage);
       } else {
         toast.success('Thu mẫu thành công');
+        fetchSampleData(appointmentId);
       }
     } catch (error) {
       console.log(error);
@@ -281,7 +278,9 @@ const CollectSampleAtCenter = () => {
       a.patientAppointmentResponse.patientStatus ===
       'Đã đăng ký lịch xét nghiệm'
   );
-
+  useEffect(() => {
+    fetchAppointment();
+  }, []);
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -298,8 +297,8 @@ const CollectSampleAtCenter = () => {
             <thead className={styles.tableHeader}>
               <tr>
                 <th className={styles.tableHeaderCell}>Họ tên</th>
-                <th className={styles.tableHeaderCell}>Ngày sinh</th>
-                <th className={styles.tableHeaderCell}>Giới tính</th>
+                <th className={styles.tableHeaderCell}>Tên dịch vụ</th>
+                <th className={styles.tableHeaderCell}>Tên Kit</th>
                 <th className={styles.tableHeaderCell}>Quan hệ</th>
                 <th className={styles.tableHeaderCell}>Ghi chú</th>
                 <th className={styles.tableHeaderCell}>Vật xét nghiệm</th>
@@ -327,9 +326,15 @@ const CollectSampleAtCenter = () => {
                       <tr key={key} className={styles.tableRow}>
                         <td className={styles.tableCell}>{patient.fullName}</td>
                         <td className={styles.tableCell}>
-                          {patient.dateOfBirth}
+                          {
+                            appointmentItem.serviceAppointmentResponses?.[0]
+                              .serviceName
+                          }
                         </td>
-                        <td className={styles.tableCell}>{patient.gender}</td>
+                        <td className={styles.tableCell}>
+                          {appointmentItem.kitAppointmentResponse.kitName}
+                        </td>
+
                         <td className={styles.tableCell}>
                           {patient.relationship}
                         </td>
@@ -409,7 +414,7 @@ const CollectSampleAtCenter = () => {
             <thead>
               <tr>
                 <th>Họ tên</th>
-                <th>Quan hệ</th>
+                <th>Mã Kit</th>
                 <th>Loại mẫu</th>
                 <th>Trạng thái mẫu</th>
                 <th>Mã mẫu</th>
@@ -422,7 +427,7 @@ const CollectSampleAtCenter = () => {
               {sample.map((item: any, index: number) => (
                 <tr key={index}>
                   <td>{item.patientSampleResponse.fullName}</td>
-                  <td>{item.patientSampleResponse.relationship}</td>
+                  <td>{item.kitAppointmentResponse.kitCode}</td>
                   <td>{item.sampleResponse.sampleType}</td>
                   <td>
                     <select
