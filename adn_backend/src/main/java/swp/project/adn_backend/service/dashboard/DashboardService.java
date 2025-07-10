@@ -8,12 +8,7 @@ import swp.project.adn_backend.dto.response.ServiceRatingStatsResponse;
 import swp.project.adn_backend.dto.response.TotalUsersCompletedResponse;
 import swp.project.adn_backend.dto.response.TotalCancelledAppointmentsResponse;
 import swp.project.adn_backend.dto.response.AppointmentStatusPercentageResponse;
-import swp.project.adn_backend.repository.UserRepository;
-import swp.project.adn_backend.repository.InvoiceRepository;
-import swp.project.adn_backend.repository.FeedbackRepository;
-import swp.project.adn_backend.repository.ServiceTestRepository;
-import swp.project.adn_backend.repository.AppointmentRepository;
-import swp.project.adn_backend.repository.PatientRepository;
+import swp.project.adn_backend.repository.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,17 +27,21 @@ public class DashboardService {
     private final ServiceTestRepository serviceTestRepository;
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
-    
+    private  StaffRepository staffRepository;
+
+
+
     @Autowired
     public DashboardService(UserRepository userRepository, InvoiceRepository invoiceRepository,
                           FeedbackRepository feedbackRepository, ServiceTestRepository serviceTestRepository,
-                          AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
+                          AppointmentRepository appointmentRepository, PatientRepository patientRepository,StaffRepository staffRepository) {
         this.userRepository = userRepository;
         this.invoiceRepository = invoiceRepository;
         this.feedbackRepository = feedbackRepository;
         this.serviceTestRepository = serviceTestRepository;
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
+        this.staffRepository=staffRepository;
     }
     
     
@@ -51,7 +50,7 @@ public class DashboardService {
         long activeUsers = userRepository.countActiveUsers();
         long inactiveUsers = userRepository.countInactiveUsers();
         long totalPatients = userRepository.countUsersByPatientRole();
-        long totalStaff = userRepository.countUsersByStaffRole();
+        long totalStaff = staffRepository.countUsersByStaffRole();
         long totalManagers = userRepository.countUsersByManagerRole();
         long totalAdmins = userRepository.countUsersByAdminRole();
         long totalUsersRegisteredService = appointmentRepository.countDistinctUsersRegisteredService();

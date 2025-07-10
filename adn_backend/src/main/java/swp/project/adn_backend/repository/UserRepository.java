@@ -31,8 +31,8 @@ public interface UserRepository extends JpaRepository<Users,Long> {
     @Query("SELECT COUNT(u) FROM Users u WHERE 'PATIENT' MEMBER OF u.roles")
     long countUsersByPatientRole();
     
-    @Query("SELECT COUNT(u) FROM Users u WHERE 'STAFF' MEMBER OF u.roles")
-    long countUsersByStaffRole();
+//    @Query("SELECT COUNT(u) FROM Users u WHERE 'STAFF' MEMBER OF u.roles")
+//    long countUsersByStaffRole();
     
     @Query("SELECT COUNT(u) FROM Users u WHERE 'MANAGER' MEMBER OF u.roles")
     long countUsersByManagerRole();

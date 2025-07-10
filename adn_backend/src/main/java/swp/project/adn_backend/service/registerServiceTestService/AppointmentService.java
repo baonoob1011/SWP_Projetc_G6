@@ -439,6 +439,7 @@ public class AppointmentService {
         payment.setAmount(amountAsDouble); // dùng tổng giá
         payment.setAppointment(appointment);
         payment.setUsers(userBookAppointment);
+        payment.setPaymentStatus(PaymentStatus.PENDING);
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         paymentRepository.save(payment);
         if (payment.getPaymentMethod().equals(PaymentMethod.CASH)) {
@@ -562,10 +563,10 @@ public class AppointmentService {
 
                     ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
                     List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
-                    List<Patient> registeredPatients = appointment.getPatients().
-                            stream()
-                            .filter(p -> p.getPatientStatus() == PatientStatus.SAMPLE_COLLECTED)
-                            .collect(Collectors.toList());
+                    List<Patient> registeredPatients = appointment.getPatients();
+//                           '' stream()
+//                            .filter(p -> p.getPatientStatus() == PatientStatus.SAMPLE_COLLECTED)
+//                            .collect(Collectors.toList());
 
                     // Map các thông tin liên quan
                     List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
