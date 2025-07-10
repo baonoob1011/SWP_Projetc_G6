@@ -26,13 +26,7 @@ const GetBlogById = () => {
     const fetchData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8080/api/blog/get-blog?blogId=${blogId}`,
-          {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-          }
+          `http://localhost:8080/api/blog/get-blog?blogId=${blogId}`
         );
         if (!res.ok) throw new Error('Không lấy được dữ liệu');
         const data = await res.json();
