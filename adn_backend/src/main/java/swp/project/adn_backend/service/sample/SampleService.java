@@ -8,6 +8,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.request.sample.SampleRequest;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.KitAppointmentResponse;
+import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.ServiceAppointmentResponse;
 import swp.project.adn_backend.dto.response.sample.*;
 import swp.project.adn_backend.entity.*;
 import swp.project.adn_backend.enums.*;
@@ -155,11 +157,15 @@ public class SampleService {
                 StaffSampleResponse staffSampleResponse = allSampleResponseMapper.toStaffSampleResponse(sample.getStaff());
                 PatientSampleResponse patientSampleResponse = allSampleResponseMapper.toPatientSampleResponse(sample.getPatient());
                 AppointmentSampleResponse appointmentSampleResponse = appointmentMapper.toAppointmentSampleResponse(appointment);
+                KitAppointmentResponse kitAppointmentResponse=appointmentMapper.toKitAppointmentResponse(appointment.getServices().getKit());
+                ServiceAppointmentResponse serviceAppointmentResponse=appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
                 AllSampleResponse allSampleResponse = new AllSampleResponse();
+                allSampleResponse.setKitAppointmentResponse(kitAppointmentResponse);
                 allSampleResponse.setAppointmentSampleResponse(appointmentSampleResponse);
                 allSampleResponse.setSampleResponse(sampleResponse);
                 allSampleResponse.setStaffSampleResponse(staffSampleResponse);
                 allSampleResponse.setPatientSampleResponse(patientSampleResponse);
+                allSampleResponse.setServiceAppointmentResponse(serviceAppointmentResponse);
                 allSampleResponseList.add(allSampleResponse);
             }
         }

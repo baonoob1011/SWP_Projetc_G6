@@ -12,13 +12,13 @@ public class AllAlleleResponse {
     private List<SampleAlleleResponse> sampleAlleleResponse;
     private PatientAlleleResponse patientAppointmentResponse;
     private List<ResultAlleleResponse> resultAlleleResponse;
-    private LocusResponse locusResponses;
+    private List<LocusResponse> locusResponses;
 
-    public LocusResponse getLocusResponses() {
+    public List<LocusResponse> getLocusResponses() {
         return locusResponses;
     }
 
-    public void setLocusResponses(LocusResponse locusResponses) {
+    public void setLocusResponses(List<LocusResponse> locusResponses) {
         this.locusResponses = locusResponses;
     }
 

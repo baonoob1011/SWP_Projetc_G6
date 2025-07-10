@@ -1,5 +1,6 @@
 package swp.project.adn_backend.dto.response.result;
 
+import swp.project.adn_backend.entity.Locus;
 import swp.project.adn_backend.enums.AlleleStatus;
 
 public class ResultAlleleResponse {
@@ -7,6 +8,16 @@ public class ResultAlleleResponse {
     private double alleleValue;
     private String allelePosition;
     private AlleleStatus alleleStatus;
+    private LocusResponse locusResponse;
+
+    public LocusResponse getLocusResponse() {
+        return locusResponse;
+    }
+
+    public void setLocusResponse(LocusResponse locusResponse) {
+        this.locusResponse = locusResponse;
+    }
+
     public long getAlleleId() {
         return alleleId;
     }

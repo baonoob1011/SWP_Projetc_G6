@@ -76,23 +76,17 @@ public class SlotService {
             Integer roomOverlap = slotRepository.isSlotOverlappingNative(
                     roomId, currentDate, slotRequest.getStartTime(), slotRequest.getEndTime());
             if (roomOverlap != null && roomOverlap == 1) {
-                System.out.println("⚠️ Slot bị trùng trong phòng ngày " + currentDate + ", bỏ qua.");
-                currentDate = currentDate.plusDays(1);
-                continue;
+                throw new RuntimeException("Slot bị trùng trong phòng ngày " + currentDate);
             }
 
             // Kiểm tra giờ hoạt động của phòng
             if (slotRequest.getStartTime().isBefore(room.getOpenTime()) ||
                     slotRequest.getEndTime().isAfter(room.getCloseTime())) {
-                System.out.println("❌ Slot ngoài giờ hoạt động ngày " + currentDate + ", bỏ qua.");
-                currentDate = currentDate.plusDays(1);
-                continue;
+                throw new RuntimeException("Slot ngoài giờ hoạt động ngày " + currentDate);
             }
 
             // Danh sách nhân viên hợp lệ
             List<Staff> staffList = new ArrayList<>();
-            boolean conflictFound = false;
-
             for (StaffSlotRequest staffSlotRequest : staffSlotRequests) {
                 Staff staff = staffRepository.findById(staffSlotRequest.getStaffId())
                         .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
@@ -100,24 +94,17 @@ public class SlotService {
                 Integer staffOverlap = slotRepository.isStaffOverlappingSlot(
                         staff.getStaffId(), currentDate, slotRequest.getStartTime(), slotRequest.getEndTime());
                 if (staffOverlap != null && staffOverlap > 0) {
-                    System.out.println("⛔ Staff " + staff.getStaffId() + " đã có lịch ngày " + currentDate + ", bỏ qua slot.");
-                    conflictFound = true;
-                    break; // Không tạo slot nếu có bất kỳ nhân viên nào bị trùng
+                    throw new RuntimeException("Nhân viên này đã có lịch ngày " + currentDate);
                 }
 
                 staffList.add(staff);
-            }
-
-            if (conflictFound) {
-                currentDate = currentDate.plusDays(1);
-                continue;
             }
 
             // Tạo slot mới
             Slot slot = slotMapper.toSlot(slotRequest);
             slot.setSlotDate(currentDate);
             slot.setRoom(room);
-            slot.setStaff(staffList); // set staff trước khi xử lý role
+            slot.setStaff(staffList);
             slot.setSlotStatus(SlotStatus.AVAILABLE);
             createdSlots.add(slotRepository.save(slot));
             currentDate = currentDate.plusDays(1);
@@ -125,6 +112,7 @@ public class SlotService {
 
         return slotMapper.toSlotResponses(createdSlots);
     }
+
 
     @Transactional
     public void addMoreStaffToSlot(long slotId, long staffId) {
@@ -244,8 +232,7 @@ public class SlotService {
 
         Staff staffCheck = staffRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-        if(!staffCheck.getRole().equals("STAFF") ||
-                !staffCheck.getRole().equals("SAMPLE_COLLECTOR") ){
+        if (!List.of("STAFF", "SAMPLE_COLLECTOR").contains(staffCheck.getRole())) {
             throw new RuntimeException("Bạn không được phân công slot");
         }
         List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();
@@ -253,37 +240,30 @@ public class SlotService {
         GetFullSlotResponse getAllServiceResponse = null;
 
         for (Slot slot : slotList) {
-                SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
+                    SlotResponse slotResponse = slotMapper.toSlotResponse(slot);
 
-                //lay room
-                RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
-                roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
-                roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
-                roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
-                roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
+                    //lay room
+                    RoomSlotResponse roomSlotResponse = new RoomSlotResponse();
+                    roomSlotResponse.setRoomId(slot.getRoom().getRoomId());
+                    roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
+                    roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
+                    roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
 
-//                //lay staff
-//                StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
-//                staffSlotResponse.setStaffId(slot.getStaff().getFirst().getStaffId());
-//                staffSlotResponse.setFullName(slot.getStaff().getFirst().getFullName());
-
-                List<StaffSlotResponse> staffSlotResponses = new ArrayList<>();
-                for (Staff staff : slot.getStaff()) {
-                    StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
-                    staffSlotResponse.setStaffId(staff.getStaffId());
-                    staffSlotResponse.setFullName(staff.getFullName());
-                    staffSlotResponses.add(staffSlotResponse);
-                }
-                GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
-                getFullSlotResponse.setSlotResponse(slotResponse);
-                getFullSlotResponse.setStaffSlotResponses(staffSlotResponses);
-                getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
+                    List<StaffSlotResponse> staffSlotResponses = new ArrayList<>();
+                    for (Staff staff : slot.getStaff()) {
+                        StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
+                        staffSlotResponse.setStaffId(staff.getStaffId());
+                        staffSlotResponse.setFullName(staff.getFullName());
+                        staffSlotResponses.add(staffSlotResponse);
+                    }
+                    GetFullSlotResponse getFullSlotResponse = new GetFullSlotResponse();
+                    getFullSlotResponse.setSlotResponse(slotResponse);
+                    getFullSlotResponse.setStaffSlotResponses(staffSlotResponses);
+                    getFullSlotResponse.setRoomSlotResponse(roomSlotResponse);
 
 
-                //lay full response
-                fullSlotResponses.add(getFullSlotResponse);
-
-
+                    //lay full response
+                    fullSlotResponses.add(getFullSlotResponse);
         }
         return fullSlotResponses;
     }

@@ -187,6 +187,14 @@ public class ResultLocusService {
         result.setResultStatus(ResultStatus.COMPLETED);
 
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
+        appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+        appointment.setNote("Đã có kết quả xét nghiệm");
+        //trả lại cho staff lấy mẫu
+        for (Staff staff:appointment.getSlot().getStaff()){
+            if(staff.getRole().equals("SAMPLE_COLLECTOR")){
+                appointment.setStaff(staff);
+            }
+        }
         Notification notification = appointment.getStaff().getNotification();
         if (notification != null && notification.getNumOfNotification() > 0) {
             notification.setNumOfNotification(notification.getNumOfNotification() - 1);

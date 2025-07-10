@@ -139,7 +139,7 @@ public class AppointmentService {
         appointment.setAppointmentDate(slot.getSlotDate());
         appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
         appointment.setAppointmentType(AppointmentType.CENTER);
-        appointment.setNote("Chưa thanh toán");
+        appointment.setNote("Đơn đăng ký đã được xác nhận");
         for (Staff staff : slot.getStaff()) {
             if (staff.getRole().equals("SAMPLE_COLLECTOR")) {
                 appointment.setStaff(staff);
@@ -548,11 +548,12 @@ public class AppointmentService {
                     List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
                             .map(appointmentMapper::toPatientAppointment)
                             .collect(Collectors.toList());
-
+                    KitAppointmentResponse kitAppointmentResponse =appointmentMapper.toKitAppointmentResponse(appointment.getServices().getKit());
                     AllAppointmentAtCenterResponse centerResponse = new AllAppointmentAtCenterResponse();
                     centerResponse.setShowAppointmentResponse(show);
                     centerResponse.setServiceAppointmentResponses(services);
                     centerResponse.setPatientAppointmentResponse(patientResponses);
+                    centerResponse.setKitAppointmentResponse(kitAppointmentResponse);
                     centerList.add(centerResponse);
 
                 } else if (
@@ -570,10 +571,12 @@ public class AppointmentService {
                     List<PatientAppointmentResponse> patientResponses = registeredPatients.stream()
                             .map(appointmentMapper::toPatientAppointment)
                             .collect(Collectors.toList());
+                    KitAppointmentResponse kitAppointmentResponse =appointmentMapper.toKitAppointmentResponse(appointment.getServices().getKit());
                     AllAppointmentAtHomeResponse homeResponse = new AllAppointmentAtHomeResponse();
                     homeResponse.setShowAppointmentResponse(show);
                     homeResponse.setServiceAppointmentResponses(services);
                     homeResponse.setPatientAppointmentResponse(patientResponses);
+                    homeResponse.setKitAppointmentResponse(kitAppointmentResponse);
                     homeList.add(homeResponse);
                 }
             }

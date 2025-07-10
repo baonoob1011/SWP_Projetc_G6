@@ -26,7 +26,9 @@ import swp.project.adn_backend.repository.*;
 import swp.project.adn_backend.service.registerServiceTestService.AllAlleleResponse;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ResultAlleleService {
@@ -54,18 +56,20 @@ private AppointmentMapper appointmentMapper;
     @Transactional
     public List<ResultAlleleResponse> createAllelePair(AllelePairRequest request,
                                                        long sampleId,
-                                                       long locusId
-    ) {
+                                                       long locusId) {
 
         Sample sample = sampleRepository.findById(sampleId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
-        if(sample.getSampleStatus().equals(SampleStatus.REJECTED)){
-            throw new RuntimeException("Mẫu này bị từ chối");
+        if (sample.getSampleStatus().equals(SampleStatus.REJECTED)) {
+            throw new RuntimeException("Mẫu này đã bị từ chối.");
         }
+
         Locus locus = locusRepository.findById(locusId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.LOCUS_NOT_EXISTS));
+
         List<ResultAlleleResponse> responses = new ArrayList<>();
 
+        // Allele 1
         ResultAllele allele1 = new ResultAllele();
         allele1.setAlleleValue(request.getAllele1());
         allele1.setAllelePosition("1");
@@ -75,6 +79,7 @@ private AppointmentMapper appointmentMapper;
         resultAlleleRepository.save(allele1);
         responses.add(resultAlleleMapper.toResultAlleleResponse(allele1));
 
+        // Allele 2
         ResultAllele allele2 = new ResultAllele();
         allele2.setAlleleValue(request.getAllele2());
         allele2.setAllelePosition("2");
@@ -83,32 +88,56 @@ private AppointmentMapper appointmentMapper;
         allele2.setLocus(locus);
         resultAlleleRepository.save(allele2);
         responses.add(resultAlleleMapper.toResultAlleleResponse(allele2));
-//        System.out.println("Allele1: " + request.getAllele1());  // cần in ra 11.0
-//        System.out.println("Allele2: " + request.getAllele2());  // cần in ra 12.0
-//        System.out.println("Status: " + request.getAlleleStatus());    // cần in ra ENTERED
-        if(request.getAlleleStatus().equals(AlleleStatus.INVALID)){
+
+        // Đếm số allele INVALID của sample hiện tại
+        int invalidCount = resultAlleleRepository.countBySample_SampleIdAndAlleleStatus(sampleId, AlleleStatus.INVALID);
+
+        if (invalidCount >= 3) {
             sample.setSampleStatus(SampleStatus.REJECTED);
         }
+
         return responses;
     }
 
+    @Transactional
     public AllAlleleResponse getAllAlleleOfSample(long patientId) {
+        // 1. Tìm thông tin bệnh nhân
         Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(()->new AppException(ErrorCodeUser.PATIENT_INFO_NOT_EXISTS));
-        PatientAlleleResponse patientAppointmentResponse=appointmentMapper.toPatientAppointmentResponse(patient);
-        List<SampleAlleleResponse> sampleAlleleResponse=appointmentMapper.toSampleAlleleResponses(patient.getSamples());
-        List<ResultAlleleResponse> resultAlleleResponseList=new ArrayList<>();
-        LocusResponse locusResponses = null;
-        for (ResultAllele resultAllele:patient.getSamples().getFirst().getResultAlleles()){
-            ResultAlleleResponse resultAlleleResponse= resultAlleleMapper.toResultAlleleResponse(resultAllele);
-             locusResponses=appointmentMapper.toLocusResponses(resultAllele.getLocus());
-            resultAlleleResponseList.add(resultAlleleResponse);
+                .orElseThrow(() -> new AppException(ErrorCodeUser.PATIENT_INFO_NOT_EXISTS));
+
+        // 2. Lấy thông tin bệnh nhân, mẫu, v.v.
+        PatientAlleleResponse patientAppointmentResponse = appointmentMapper.toPatientAppointmentResponse(patient);
+        List<SampleAlleleResponse> sampleAlleleResponse = appointmentMapper.toSampleAlleleResponses(patient.getSamples());
+
+        List<ResultAlleleResponse> resultAlleleResponseList = new ArrayList<>();
+        List<LocusResponse> locusResponses = new ArrayList<>();
+        Set<Long> addedLocusIds = new HashSet<>();
+
+        // 3. Giả định lấy mẫu đầu tiên của bệnh nhân để duyệt allele
+        if (!patient.getSamples().isEmpty()) {
+            Sample sample = patient.getSamples().getFirst();
+            for (ResultAllele resultAllele : sample.getResultAlleles()) {
+                ResultAlleleResponse resultAlleleResponse = resultAlleleMapper.toResultAlleleResponse(resultAllele);
+
+                // Gắn locus vào response
+                Locus locus = resultAllele.getLocus();
+                if (locus != null) {
+                    LocusResponse locusResponse = appointmentMapper.toLocusResponses(locus);
+                    resultAlleleResponse.setLocusResponse(locusResponse);
+                }
+
+                resultAlleleResponseList.add(resultAlleleResponse);
+            }
+
         }
-        AllAlleleResponse allAlleleResponse=new AllAlleleResponse();
-        allAlleleResponse.setLocusResponses(locusResponses);
+
+        // 4. Trả kết quả
+        AllAlleleResponse allAlleleResponse = new AllAlleleResponse();
         allAlleleResponse.setPatientAppointmentResponse(patientAppointmentResponse);
         allAlleleResponse.setSampleAlleleResponse(sampleAlleleResponse);
         allAlleleResponse.setResultAlleleResponse(resultAlleleResponseList);
+        allAlleleResponse.setLocusResponses(locusResponses);
         return allAlleleResponse;
     }
+
 }
