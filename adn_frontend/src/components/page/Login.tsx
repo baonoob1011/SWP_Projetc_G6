@@ -85,6 +85,7 @@ const Login = ({ setFullName }: LoginProps) => {
       localStorage.setItem('username', decoded.sub);
       localStorage.setItem('fullName', decoded.fullName);
       localStorage.setItem('role', decoded.role);
+      localStorage.setItem('avatarUrl', decoded.role);
 
       setFullName(decoded.fullName);
       TimeLeftLogout(decoded.exp);

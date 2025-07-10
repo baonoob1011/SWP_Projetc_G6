@@ -30,7 +30,7 @@ const StaffSlot = () => {
       if (!token) throw new Error('No token');
 
       const res = await fetch(
-        'http://localhost:8080/api/slot/get-all-slot-staff',
+        'http://localhost:8080/api/slot/get-all-slot-staff-collector',
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -78,10 +78,7 @@ const StaffSlot = () => {
         filteredSlots.map((slot) => `${slot.startTime} - ${slot.endTime}`)
       )
     ).sort();
-    // Add default time slot if empty
-    if (timeSlots.length === 0) {
-      timeSlots.push('06:00:00 - 18:00:00');
-    }
+
     timeSlots.forEach((time) => {
       scheduleMap[time] = daysOfWeek.map((day) => {
         return (

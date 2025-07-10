@@ -23,6 +23,7 @@ export const CollectSampleAtHome = () => {
     { value: 'IN_TRANSIT', label: 'Đang vận chuyển' },
     { value: 'RECEIVED', label: 'Đã nhận tại phòng xét nghiệm' },
   ];
+
   const [loading, setLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<{
     [key: string]: string;

@@ -9,9 +9,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { BarChart3, DollarSign, TrendingUp, Calendar } from 'lucide-react';
+import { BarChart3, DollarSign, TrendingUp } from 'lucide-react';
 import { FaMoneyBill } from 'react-icons/fa';
-
 
 interface RevenueStats {
   totalRevenue: number;
@@ -127,12 +126,15 @@ const RevenueDashboard = () => {
   }
 
   // Calculate some derived stats for display
-  const averageRevenue = revenue?.dailyRevenues?.length 
-    ? revenue.totalRevenue / revenue.dailyRevenues.length 
+  const averageRevenue = revenue?.dailyRevenues?.length
+    ? revenue.totalRevenue / revenue.dailyRevenues.length
     : 0;
-  
-  const highestDayRevenue = revenue?.dailyRevenues?.reduce((max, day) => 
-    day.revenue > max ? day.revenue : max, 0) || 0;
+
+  const highestDayRevenue =
+    revenue?.dailyRevenues?.reduce(
+      (max, day) => (day.revenue > max ? day.revenue : max),
+      0
+    ) || 0;
 
   // Header cards with colored backgrounds (matching Stats component)
   // const headerCards = [
@@ -279,7 +281,8 @@ const RevenueDashboard = () => {
               </div>
               <div className="ml-4">
                 <div className="text-4xl font-bold text-gray-900 mb-2">
-                  {typeof stat.value === 'number' && stat.label.includes('doanh thu') 
+                  {typeof stat.value === 'number' &&
+                  stat.label.includes('doanh thu')
                     ? formatCurrency(stat.value)
                     : stat.value?.toLocaleString() || 0}
                 </div>
@@ -302,9 +305,7 @@ const RevenueDashboard = () => {
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
-            <YAxis
-              tickFormatter={(value) => `${(value / 1000).toFixed(1)}K`}
-            />
+            <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(1)}K`} />
             <Tooltip
               formatter={(value) => [
                 formatCurrencyTooltip(Number(value)),

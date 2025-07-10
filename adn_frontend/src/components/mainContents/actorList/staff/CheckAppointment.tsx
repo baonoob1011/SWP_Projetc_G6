@@ -17,7 +17,7 @@ export const CheckAppointment = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        'http://localhost:8080/api/slot/get-all-slot-of-staff',
+        'http://localhost:8080/api/slot/get-all-slot-staff-collector',
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -127,7 +127,8 @@ export const CheckAppointment = () => {
                       )
                     }
                   >
-                    <div>Slot {slot.slotResponse.slotId}</div>
+                    <div>Ngày: {slot.slotResponse.slotDate}</div>
+                    <div>Phòng: {slot.roomSlotResponse.roomName}</div>
                     <div>
                       {slot.slotResponse.startTime} ~{' '}
                       {slot.slotResponse.endTime}

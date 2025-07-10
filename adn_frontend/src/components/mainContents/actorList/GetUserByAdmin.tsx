@@ -1,14 +1,4 @@
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
-  TextField,
-} from '@mui/material';
+import { Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
 import Swal from 'sweetalert2';
@@ -25,7 +15,6 @@ type User = {
 
 function GetUserByAdmin() {
   const [account, setAccount] = useState<User[]>([]);
-  const [isAdmin, setIsAdmin] = useState(true);
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -112,88 +101,148 @@ function GetUserByAdmin() {
 
   // ✅ Khởi động
   useEffect(() => {
-    const role = localStorage.getItem('role');
-    setIsAdmin(role === 'ADMIN');
     fetchData();
   }, []);
 
-  // ✅ Không có quyền
-  if (!isAdmin) {
-    return null;
-  }
-
-  const searchByPhone = account.filter((user) => user.phone.includes(search));
-
+  const searchByPhone = account.filter((user) =>
+    (user.phone || '').includes(search)
+  );
   return (
-    <>
+    <div className="bg-white">
       {error && showErrorSnackbar(error)}
-      <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
-        <TextField
-          label="Nhập số điện thoại"
-          variant="outlined"
-          size="small"
+
+      {/* Search Input */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Nhập số điện thoại"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          sx={{ margin: '10px 5px' }}
+          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <Table
-          sx={{
-            fontSize: '13px',
-            borderCollapse: 'collapse',
-            width: '100%',
-          }}
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ fontSize: '13px', border: '1px solid #ccc' }}>
-                <strong>ID</strong>
-              </TableCell>
-              <TableCell sx={{ fontSize: '13px', border: '1px solid #ccc' }}>
-                <strong>Họ tên</strong>
-              </TableCell>
-              <TableCell sx={{ fontSize: '13px', border: '1px solid #ccc' }}>
-                <strong>Email</strong>
-              </TableCell>
-              <TableCell sx={{ fontSize: '13px', border: '1px solid #ccc' }}>
-                <strong>SĐT</strong>
-              </TableCell>
-              <TableCell sx={{ fontSize: '13px', border: '1px solid #ccc' }}>
-                <strong>Thao tác</strong>
-              </TableCell>
-            </TableRow>
-          </TableHead>
+      </div>
 
-          <TableBody>
-            {searchByPhone.map((user, index) => (
-              <TableRow key={index}>
-                <TableCell sx={{ fontSize: '12px', border: '1px solid #ccc' }}>
-                  {index + 1}
-                </TableCell>
-                <TableCell sx={{ fontSize: '12px', border: '1px solid #ccc' }}>
-                  {user.fullName}
-                </TableCell>
-                <TableCell sx={{ fontSize: '12px', border: '1px solid #ccc' }}>
-                  {user.email}
-                </TableCell>
-                <TableCell sx={{ fontSize: '12px', border: '1px solid #ccc' }}>
-                  {user.phone}
-                </TableCell>
-                <TableCell sx={{ border: '1px solid #ccc' }}>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    size="small"
-                    onClick={() => handleDelete(user.phone, user.fullName)}
+      {/* Table */}
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  ID
+                  <svg
+                    className="w-3 h-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    Xóa
-                  </Button>
-                </TableCell>
-              </TableRow>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                    />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  Họ tên
+                  <svg
+                    className="w-3 h-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                    />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  Email
+                  <svg
+                    className="w-3 h-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                    />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  SĐT
+                  <svg
+                    className="w-3 h-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                    />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                Hành động
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {searchByPhone.map((user, index) => (
+              <tr key={index} className="hover:bg-gray-50">
+                <td className="px-4 py-3 text-sm text-blue-600 font-medium border-r border-gray-200">
+                  #{String(index + 1).padStart(4, '0')}
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-800 border-r border-gray-200">
+                  {user.fullName}
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                  {user.email}
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                  {user.phone}
+                </td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleDelete(user.phone, user.fullName)}
+                      className="p-1 text-red-500 hover:bg-red-50 rounded border border-red-200 hover:border-red-300 transition-colors"
+                      title="Xóa người dùng"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+            {searchByPhone.length === 0 && (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                  Không tìm thấy người dùng nào
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 

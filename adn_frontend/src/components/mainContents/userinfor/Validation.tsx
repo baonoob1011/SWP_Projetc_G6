@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
 const noSpace = /^\S+$/;
-const today = new Date().getTime();
+const today = new Date();
 
 const baseSchema = yup.object().shape({
   fullName: yup
@@ -52,10 +52,13 @@ const baseSchema = yup.object().shape({
     .required('Không được bỏ trống'),
 
   dateOfBirth: yup
-    .string()
+    .date()
+    .transform((_, originalValue) => {
+      return originalValue ? new Date(originalValue) : null;
+    })
+    .typeError('Vui lòng nhập đúng định dạng ngày')
     .required('Vui lòng chọn ngày sinh')
-    .matches(/^\d{4}-\d{2}-\d{2}$/, 'Ngày không đúng định dạng')
-    .max(today, 'Ngày sinh không được vượt quá hôm nay'),
+    .max(today, 'Ngày sinh không được ở tương lai'),
 });
 
 export const signUpSchema = baseSchema.pick([
@@ -74,6 +77,14 @@ export const signUpStaffSchema = baseSchema.pick([
   'confirmPassword',
   'phone',
   'idCard',
+  'address',
+  'gender',
+  'dateOfBirth',
+]);
+export const book = baseSchema.pick([
+  'fullName',
+  'email',
+  'phone',
   'address',
   'gender',
   'dateOfBirth',
