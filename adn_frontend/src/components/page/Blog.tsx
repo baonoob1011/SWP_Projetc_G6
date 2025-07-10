@@ -106,7 +106,7 @@ const BlogList = () => {
         ></div>
       </div>
 
-      {/* Header */}
+      {/* Header Section */}
       <div className="relative bg-gradient-to-r from-blue-800 via-blue-600 to-cyan-500 text-white py-20 mt-20 overflow-hidden">
         {/* Header Background Pattern */}
         <div className="absolute inset-0 opacity-10">
@@ -166,25 +166,102 @@ const BlogList = () => {
           </svg>
         </div>
       </div>
-      {blogs.map((blog, index) => (
-        <div key={index} className="p-6 max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
-            <img
-              src={`data:image/*;base64,${blog.image}`}
-              className="w-full h-64 lg:h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              alt={blog.title}
-            />
-            <div className="p-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                {blog.title}
-              </h2>
-              <p className="text-gray-600 mb-4 line-clamp-3">{blog.content}</p>
-              <div className="text-sm text-gray-400"></div>
-            </div>
-            <NavLink to={`/blog-detail/${blog.blogId}`}>Đọc thêm</NavLink>
+
+      {/* Blog Grid Section */}
+      <div className="relative py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Bài viết mới nhất
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto rounded-full"></div>
           </div>
+
+          {/* Blog Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {blogs.map((blog, index) => (
+              <article
+                key={blog.blogId}
+                className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+              >
+                {/* Blog Image */}
+                <div className="relative overflow-hidden">
+                  <img
+                    src={`data:image/*;base64,${blog.image}`}
+                    className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
+                    alt={blog.title}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+
+                {/* Blog Content */}
+                <div className="p-6">
+                  {/* Blog Title */}
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
+                    {blog.title}
+                  </h3>
+
+                  {/* Blog Content Preview */}
+                  <p className="text-gray-600 mb-4 line-clamp-3 text-sm leading-relaxed">
+                    {blog.content}
+                  </p>
+
+                  {/* Blog Meta Info */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center text-gray-500 text-sm">
+                      <svg
+                        className="w-4 h-4 mr-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                      <span>{blog.createAt}</span>
+                    </div>
+                  </div>
+
+                  {/* Read More Button */}
+                  <NavLink
+                    to={`/blog-detail/${blog.blogId}`}
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold text-sm group/link transition-colors duration-300"
+                  >
+                    Đọc thêm
+                    <svg
+                      className="w-4 h-4 ml-1 transform group-hover/link:translate-x-1 transition-transform duration-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </NavLink>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {/* Load More Button (if needed) */}
+          {blogs.length > 0 && (
+            <div className="text-center mt-12">
+              <button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+                Xem thêm bài viết
+              </button>
+            </div>
+          )}
         </div>
-      ))}
+      </div>
     </div>
   );
 };
