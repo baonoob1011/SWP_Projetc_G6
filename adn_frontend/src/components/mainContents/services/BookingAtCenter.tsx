@@ -1,21 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Button,
-  Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  OutlinedInput,
-  type SelectChangeEvent,
-  TextField,
-  Paper,
-  Typography,
-  Container,
-  Card,
-  CardContent,
-  Divider,
-} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -27,14 +10,6 @@ import {
   type SlotInfo,
 } from '../type/FillFormType';
 import CustomSnackBar from '../userinfor/Snackbar';
-import {
-  Business,
-  Person,
-  Payment,
-  Schedule,
-  LocationOn,
-  AttachMoney,
-} from '@mui/icons-material';
 import { book } from '../userinfor/Validation';
 
 const BookingAtCenter = () => {
@@ -47,6 +22,7 @@ const BookingAtCenter = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [selectedSlot, setSelectedSlot] = useState<string>('');
   const [selectedPrice, setSelectedPrice] = useState<string>('');
+  const [selectedDate, setSelectedDate] = useState<string>(''); // Thêm state cho ngày được chọn
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const relationshipOption = [
@@ -95,6 +71,7 @@ const BookingAtCenter = () => {
   const [patientTwoErrors, setPatientTwoErrors] = useState<{
     [key: string]: string;
   }>({});
+
   const validateField = async (field: string, value: string, setError: any) => {
     if (!book.fields || !(book.fields as any)[field]) {
       setError((prev: any) => ({ ...prev, [field]: '' }));
@@ -107,6 +84,7 @@ const BookingAtCenter = () => {
       setError((prev: any) => ({ ...prev, [field]: err.message }));
     }
   };
+
   const handleInputPatientOne = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPatientOne((prev) => {
@@ -186,9 +164,6 @@ const BookingAtCenter = () => {
       }
 
       const data = await res.json();
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-
       setSlots(data);
     } catch (error) {
       console.error('Fetch slots error:', error);
@@ -227,7 +202,6 @@ const BookingAtCenter = () => {
       }
 
       const data = await res.json();
-
       setPrice(data);
     } catch (error) {
       console.error('Fetch slots error:', error);
@@ -238,10 +212,11 @@ const BookingAtCenter = () => {
     }
   };
 
-  const handleLocationChange = (event: SelectChangeEvent<string>) => {
+  const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const locationId = event.target.value;
     setSelectedLocation(locationId);
     setSelectedSlot(''); // Reset selected slot when location changes
+    setSelectedDate(''); // Reset selected date when location changes
 
     if (locationId) {
       fetchSlots(locationId);
@@ -250,15 +225,22 @@ const BookingAtCenter = () => {
     }
   };
 
-  const handleSlotChange = (event: SelectChangeEvent<string>) => {
-    const slotId = event.target.value;
+  const handleSlotChange = (slotId: string) => {
     setSelectedSlot(slotId);
   };
 
-  const handlePriceChange = (event: SelectChangeEvent<string>) => {
+  const handlePriceChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const priceId = event.target.value;
     setSelectedPrice(priceId);
   };
+
+  // Thêm handler cho việc thay đổi ngày
+  const handleDateChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const date = event.target.value;
+    setSelectedDate(date);
+    setSelectedSlot(''); // Reset selected slot when date changes
+  };
+
   const calculateAge = (dob: string): number => {
     const birthDate = new Date(dob);
     const today = new Date();
@@ -356,6 +338,20 @@ const BookingAtCenter = () => {
     }
   };
 
+  // Group slots by date
+  const groupSlotsByDate = (slots: SlotInfo[]) => {
+    return slots.reduce((acc, slot) => {
+      const date = slot.slotDate;
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(slot);
+      return acc;
+    }, {} as Record<string, SlotInfo[]>);
+  };
+
+  const groupedSlots = groupSlotsByDate(slots);
+
   useEffect(() => {
     fetchLocations();
   }, []);
@@ -364,553 +360,336 @@ const BookingAtCenter = () => {
   }, []);
 
   return (
-    <Box
-      sx={{
-        backgroundColor: '#f8faff',
-        minHeight: '100vh',
-        pt: 12,
-        pb: 4,
-      }}
-    >
-      <Container maxWidth="lg">
+    <div className="bg-gray-50 min-h-screen pt-12 pb-4">
+      <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
-        <Paper
-          elevation={1}
-          sx={{
-            p: 3,
-            mb: 4,
-            backgroundColor: '#fff',
-            borderRadius: 3,
-            borderLeft: '4px solid #2196f3',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Business sx={{ color: '#2196f3', fontSize: 32 }} />
-            <Typography
-              variant="h4"
-              sx={{
-                color: '#1976d2',
-                fontWeight: 600,
-                fontSize: { xs: '1.5rem', md: '2rem' },
-              }}
-            >
+        <div className="bg-white shadow-sm p-6 mb-6 mt-15 rounded-lg border-l-4 border-blue-500">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10z"/>
+              </svg>
+            </div>
+            <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">
               Đặt Lịch Dịch Vụ Tại Trung Tâm
-            </Typography>
-          </Box>
-        </Paper>
+            </h1>
+          </div>
+        </div>
 
         {/* Service Configuration Section */}
-        <Paper
-          elevation={1}
-          sx={{
-            p: 4,
-            mb: 4,
-            backgroundColor: '#fff',
-            borderRadius: 3,
-          }}
-        >
-          <Typography
-            variant="h6"
-            sx={{
-              mb: 3,
-              color: '#1976d2',
-              fontWeight: 600,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-            }}
-          >
-            <LocationOn /> Thông Tin Dịch Vụ
-          </Typography>
+        <div className="bg-white shadow-sm p-6 mb-6 rounded-lg">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+            Thông Tin Dịch Vụ
+          </h2>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <div className="space-y-6">
             {/* Location Selection */}
-            <FormControl fullWidth>
-              <InputLabel>Chọn Địa Điểm</InputLabel>
-              <Select
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Chọn Địa Điểm
+              </label>
+              <select
                 value={selectedLocation}
                 onChange={handleLocationChange}
-                input={<OutlinedInput label="Chọn Địa Điểm" />}
-                sx={{
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#2196f3',
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#1976d2',
-                  },
-                }}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <MenuItem value="">
-                  <em>-- Chọn địa điểm --</em>
-                </MenuItem>
+                <option value="">-- Chọn địa điểm --</option>
                 {locations.map((location) => (
-                  <MenuItem
-                    key={location.locationId}
-                    value={location.locationId}
-                  >
+                  <option key={location.locationId} value={location.locationId}>
                     {`${location.addressLine}, ${location.district}, ${location.city}`}
-                  </MenuItem>
+                  </option>
                 ))}
-              </Select>
-            </FormControl>
+              </select>
+            </div>
 
-            <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-              {/* Slot Selection */}
-              <FormControl sx={{ minWidth: 200, flex: 1 }}>
-                <InputLabel>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Schedule sx={{ fontSize: 20 }} />
-                    Chọn Slot
-                  </Box>
-                </InputLabel>
-                <Select
-                  value={selectedSlot}
-                  onChange={handleSlotChange}
-                  input={<OutlinedInput label="Chọn Slot" />}
-                  disabled={selectedLocation === ''}
-                  sx={{
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#2196f3',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1976d2',
-                    },
-                  }}
-                >
-                  <MenuItem value="">
-                    <em>
-                      {isLoadingSlots
-                        ? '-- Đang tải slot --'
-                        : '-- Chọn slot --'}
-                    </em>
-                  </MenuItem>
-                  {slots.map((slot) => (
-                    <MenuItem key={slot.slotId} value={slot.slotId}>
-                      {`${slot.slotDate} - ${slot.startTime} đến ${slot.endTime}`}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+            {/* Date and Slot Selection */}
+            {selectedLocation && (
+              <div className="space-y-4">
+                {isLoadingSlots ? (
+                  <div className="text-center py-8">
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                    <p className="mt-2 text-gray-600">Đang tải danh sách thời gian...</p>
+                  </div>
+                ) : Object.keys(groupedSlots).length === 0 ? (
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-center">
+                    <p className="text-amber-700">Không có slot nào khả dụng cho địa điểm này</p>
+                  </div>
+                ) : (
+                  <>
+                    {/* Date Selection Dropdown */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Chọn Ngày
+                      </label>
+                      <select
+                        value={selectedDate}
+                        onChange={handleDateChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="">-- Chọn ngày --</option>
+                        {Object.keys(groupedSlots).map((date) => (
+                          <option key={date} value={date}>
+                            {date}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
+                    {/* Slot Selection */}
+                    {selectedDate && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                          Chọn Thời Gian
+                        </label>
+                        <div className="border border-gray-200 rounded-lg overflow-hidden">
+                          <div className="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                            <h3 className="font-medium text-gray-800">{selectedDate}</h3>
+                          </div>
+                          <div className="p-4">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                              {groupedSlots[selectedDate].map((slot) => (
+                                <button
+                                  key={slot.slotId}
+                                  onClick={() => handleSlotChange(slot.slotId)}
+                                  className={`p-3 rounded-lg border text-sm font-medium transition-colors ${
+                                    selectedSlot === slot.slotId
+                                      ? 'bg-blue-500 text-white border-blue-500'
+                                      : 'bg-white text-gray-700 border-gray-300 hover:bg-blue-50 hover:border-blue-300'
+                                  }`}
+                                >
+                                  {`${slot.startTime} - ${slot.endTime}`}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Price Selection */}
-              <FormControl sx={{ minWidth: 200, flex: 1 }}>
-                <InputLabel>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <AttachMoney sx={{ fontSize: 20 }} />
-                    Chọn Giá
-                  </Box>
-                </InputLabel>
-                <Select
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Chọn Giá
+                </label>
+                <select
                   value={selectedPrice}
                   onChange={handlePriceChange}
-                  input={<OutlinedInput label="Chọn Giá" />}
                   disabled={selectedSlot === ''}
-                  sx={{
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#2196f3',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1976d2',
-                    },
-                  }}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 >
+                  <option value="">-- Chọn giá --</option>
                   {price.map((priceItem) => (
-                    <MenuItem key={priceItem.priceId} value={priceItem.priceId}>
+                    <option key={priceItem.priceId} value={priceItem.priceId}>
                       {`${priceItem.price} : ${priceItem.time}`}
-                    </MenuItem>
+                    </option>
                   ))}
-                </Select>
-              </FormControl>
+                </select>
+              </div>
 
               {/* Payment Method */}
-              <FormControl sx={{ minWidth: 200, flex: 1 }}>
-                <InputLabel>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Payment sx={{ fontSize: 20 }} />
-                    Phương thức thanh toán
-                  </Box>
-                </InputLabel>
-                <Select
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phương thức thanh toán
+                </label>
+                <select
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value)}
-                  input={<OutlinedInput label="Phương thức thanh toán" />}
-                  sx={{
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#2196f3',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1976d2',
-                    },
-                  }}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <MenuItem value="VN_PAY">VN PAY</MenuItem>
-                  <MenuItem value="CASH">Tiền mặt</MenuItem>
-                  <MenuItem value="WALLET">Ví cá nhân</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-
-            {/* No slots message */}
-            {selectedLocation && !isLoadingSlots && slots.length === 0 && (
-              <Paper
-                sx={{
-                  p: 2,
-                  textAlign: 'center',
-                  backgroundColor: '#fff3cd',
-                  border: '1px solid #ffeaa7',
-                  borderRadius: 2,
-                }}
-              >
-                <Typography color="#856404">
-                  Không có slot nào khả dụng cho địa điểm này
-                </Typography>
-              </Paper>
-            )}
-          </Box>
-        </Paper>
+                  <option value="">-- Chọn phương thức --</option>
+                  <option value="VN_PAY">VN PAY</option>
+                  <option value="CASH">Tiền mặt</option>
+                  <option value="WALLET">Ví cá nhân</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Patient Information Section */}
-        <Typography
-          variant="h6"
-          sx={{
-            mb: 3,
-            color: '#1976d2',
-            fontWeight: 600,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-          }}
-        >
-          <Person /> Thông Tin Bệnh Nhân
-        </Typography>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+          Thông Tin Bệnh Nhân
+        </h2>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <div className="space-y-6">
           {/* Patient One */}
-          <Card
-            elevation={2}
-            sx={{
-              backgroundColor: '#f0f8ff',
-              border: '2px solid #e3f2fd',
-              borderRadius: 3,
-              '&:hover': {
-                boxShadow: '0 8px 25px rgba(33, 150, 243, 0.15)',
-              },
-            }}
-          >
-            <CardContent sx={{ p: 3 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  color: '#1976d2',
-                  fontWeight: 600,
-                  mb: 3,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                }}
-              >
-                <Person sx={{ fontSize: 24 }} />
-                Người Thứ Nhất
-              </Typography>
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+              Người Thứ Nhất
+            </h3>
 
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
-                {fieldLabels.map(({ name, label, type }) => (
-                  <TextField
-                    key={`one-${name}`}
-                    size="small"
-                    label={label}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+              {fieldLabels.map(({ name, label, type }) => (
+                <div key={`one-${name}`}>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {label}
+                  </label>
+                  <input
                     type={type || 'text'}
                     name={name}
                     value={patientOne[name]}
                     onChange={handleInputPatientOne}
-                    variant="outlined"
-                    InputLabelProps={
-                      type === 'date' ? { shrink: true } : undefined
-                    }
-                    error={!!patientOneErrors[name]}
-                    helperText={patientOneErrors[name]}
-                    sx={{
-                      minWidth: '250px',
-                      flex: '1 1 300px',
-                      '& .MuiOutlinedInput-root': {
-                        backgroundColor: '#fff',
-                        '&:hover fieldset': {
-                          borderColor: '#2196f3',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: '#1976d2',
-                        },
-                      },
-                    }}
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      patientOneErrors[name] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                   />
-                ))}
-                <FormControl
-                  size="small"
-                  sx={{
-                    minWidth: '250px',
-                    flex: '1 1 300px',
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: '#fff',
-                      '&:hover fieldset': {
-                        borderColor: '#2196f3',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: '#1976d2',
-                      },
-                    },
-                  }}
+                  {patientOneErrors[name] && (
+                    <p className="mt-1 text-sm text-red-600">{patientOneErrors[name]}</p>
+                  )}
+                </div>
+              ))}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mối quan hệ
+                </label>
+                <select
+                  value={patientOne.relationship}
+                  onChange={(e) =>
+                    setPatientOne((prev) => ({
+                      ...prev,
+                      relationship: e.target.value,
+                    }))
+                  }
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <InputLabel>Mối quan hệ</InputLabel>
-                  <Select
-                    value={patientOne.relationship}
-                    onChange={(e) =>
-                      setPatientOne((prev) => ({
-                        ...prev,
-                        relationship: e.target.value,
-                      }))
-                    }
-                    input={
-                      <OutlinedInput label="Quan hệ với người xét nghiệm" />
-                    }
-                  >
-                    {relationshipOption.map((relation) => (
-                      <MenuItem key={relation} value={relation}>
-                        {' '}
-                        {relation}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-
-              <Box>
-                <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-                  Giới tính
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  {['Nam', 'Nữ'].map((gender) => (
-                    <Box
-                      key={`one-gender-${gender}`}
-                      sx={{ display: 'flex', alignItems: 'center' }}
-                    >
-                      <input
-                        type="radio"
-                        name="gender"
-                        id={`one-gender-${gender}`}
-                        value={gender}
-                        checked={patientOne.gender === gender}
-                        onChange={handleInputPatientOne}
-                        style={{
-                          accentColor: '#1976d2',
-                          marginRight: '8px',
-                          transform: 'scale(1.2)',
-                        }}
-                      />
-                      <Typography
-                        component="label"
-                        htmlFor={`one-gender-${gender}`}
-                        sx={{ cursor: 'pointer', fontWeight: 500 }}
-                      >
-                        {gender}
-                      </Typography>
-                    </Box>
+                  <option value="">-- Chọn mối quan hệ --</option>
+                  {relationshipOption.map((relation) => (
+                    <option key={relation} value={relation}>
+                      {relation}
+                    </option>
                   ))}
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Giới tính
+              </label>
+              <div className="flex gap-4">
+                {['Nam', 'Nữ'].map((gender) => (
+                  <label key={`one-gender-${gender}`} className="flex items-center cursor-pointer">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value={gender}
+                      checked={patientOne.gender === gender}
+                      onChange={handleInputPatientOne}
+                      className="mr-2 text-blue-500 focus:ring-blue-500"
+                    />
+                    <span className="text-gray-700">{gender}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
 
           {/* Patient Two */}
-          <Card
-            elevation={2}
-            sx={{
-              backgroundColor: '#f0f8ff',
-              border: '2px solid #e3f2fd',
-              borderRadius: 3,
-              '&:hover': {
-                boxShadow: '0 8px 25px rgba(33, 150, 243, 0.15)',
-              },
-            }}
-          >
-            <CardContent sx={{ p: 3 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  color: '#1976d2',
-                  fontWeight: 600,
-                  mb: 3,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                }}
-              >
-                <Person sx={{ fontSize: 24 }} />
-                Người Thứ Hai
-              </Typography>
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+              Người Thứ Hai
+            </h3>
 
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
-                {fieldLabels.map(({ name, label, type }) => (
-                  <TextField
-                    key={`two-${name}`}
-                    size="small"
-                    label={label}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+              {fieldLabels.map(({ name, label, type }) => (
+                <div key={`two-${name}`}>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {label}
+                  </label>
+                  <input
                     type={type || 'text'}
                     name={name}
                     value={patientTwo[name]}
                     onChange={handleInputPatientTwo}
-                    variant="outlined"
-                    InputLabelProps={
-                      type === 'date' ? { shrink: true } : undefined
-                    }
-                    error={!!patientTwoErrors[name]}
-                    helperText={patientTwoErrors[name]}
-                    sx={{
-                      minWidth: '250px',
-                      flex: '1 1 300px',
-                      '& .MuiOutlinedInput-root': {
-                        backgroundColor: '#fff',
-                        '&:hover fieldset': {
-                          borderColor: '#2196f3',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: '#1976d2',
-                        },
-                      },
-                    }}
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      patientTwoErrors[name] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                   />
-                ))}
-                <FormControl
-                  size="small"
-                  sx={{
-                    minWidth: '250px',
-                    flex: '1 1 300px',
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: '#fff',
-                      '&:hover fieldset': {
-                        borderColor: '#2196f3',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: '#1976d2',
-                      },
-                    },
-                  }}
+                  {patientTwoErrors[name] && (
+                    <p className="mt-1 text-sm text-red-600">{patientTwoErrors[name]}</p>
+                  )}
+                </div>
+              ))}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mối quan hệ
+                </label>
+                <select
+                  value={patientTwo.relationship}
+                  onChange={(e) =>
+                    setPatientTwo((prev) => ({
+                      ...prev,
+                      relationship: e.target.value,
+                    }))
+                  }
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <InputLabel>Mối quan hệ</InputLabel>
-                  <Select
-                    value={patientTwo.relationship}
-                    onChange={(e) =>
-                      setPatientTwo((prev) => ({
-                        ...prev,
-                        relationship: e.target.value,
-                      }))
-                    }
-                    input={
-                      <OutlinedInput label="Quan hệ với người xét nghiệm" />
-                    }
-                  >
-                    {relationshipOption.map((relation) => (
-                      <MenuItem key={relation} value={relation}>
-                        {' '}
-                        {relation}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-
-              <Box>
-                <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-                  Giới tính
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  {['Nam', 'Nữ'].map((gender) => (
-                    <Box
-                      key={`two-gender-${gender}`}
-                      sx={{ display: 'flex', alignItems: 'center' }}
-                    >
-                      <input
-                        type="radio"
-                        name="gender2"
-                        id={`two-gender-${gender}`}
-                        value={gender}
-                        checked={patientTwo.gender === gender}
-                        onChange={(e) =>
-                          setPatientTwo((prev) => ({
-                            ...prev,
-                            gender: e.target.value,
-                          }))
-                        }
-                        style={{
-                          accentColor: '#1976d2',
-                          marginRight: '8px',
-                          transform: 'scale(1.2)',
-                        }}
-                      />
-                      <Typography
-                        component="label"
-                        htmlFor={`two-gender-${gender}`}
-                        sx={{ cursor: 'pointer', fontWeight: 500 }}
-                      >
-                        {gender}
-                      </Typography>
-                    </Box>
+                  <option value="">-- Chọn mối quan hệ --</option>
+                  {relationshipOption.map((relation) => (
+                    <option key={relation} value={relation}>
+                      {relation}
+                    </option>
                   ))}
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Giới tính
+              </label>
+              <div className="flex gap-4">
+                {['Nam', 'Nữ'].map((gender) => (
+                  <label key={`two-gender-${gender}`} className="flex items-center cursor-pointer">
+                    <input
+                      type="radio"
+                      name="gender2"
+                      value={gender}
+                      checked={patientTwo.gender === gender}
+                      onChange={(e) =>
+                        setPatientTwo((prev) => ({
+                          ...prev,
+                          gender: e.target.value,
+                        }))
+                      }
+                      className="mr-2 text-blue-500 focus:ring-blue-500"
+                    />
+                    <span className="text-gray-700">{gender}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Action Buttons Section */}
-        <Paper
-          elevation={1}
-          sx={{
-            p: 4,
-            mt: 4,
-            backgroundColor: '#fff',
-            borderRadius: 3,
-            textAlign: 'center',
-          }}
-        >
-          <Divider sx={{ mb: 3 }} />
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 2,
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-            }}
+        <div className="bg-white shadow-sm p-6 mt-6 rounded-lg text-center">
+          <button
+            onClick={handleSubmit}
+            disabled={!selectedSlot || isSubmitting}
+            className={`px-8 py-3 rounded-lg font-semibold text-lg ${
+              !selectedSlot || isSubmitting
+                ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
           >
-            <Button
-              variant="contained"
-              size="large"
-              onClick={handleSubmit}
-              disabled={!selectedSlot || isSubmitting}
-              sx={{
-                backgroundColor: '#1976d2',
-                fontSize: '18px',
-                fontWeight: 600,
-                px: 6,
-                py: 2,
-                borderRadius: 2,
-                textTransform: 'none',
-                boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
-                '&:hover': {
-                  backgroundColor: '#1565c0',
-                  boxShadow: '0 6px 16px rgba(25, 118, 210, 0.4)',
-                  transform: 'translateY(-2px)',
-                },
-                '&:active': {
-                  transform: 'translateY(0)',
-                },
-                transition: 'all 0.2s ease-in-out',
-              }}
-            >
-              {isSubmitting ? 'Đang đăng ký...' : 'Đăng Ký Slot'}
-            </Button>
-          </Box>
-        </Paper>
-      </Container>
+            {isSubmitting ? 'Đang đăng ký...' : 'Đăng Ký Slot'}
+          </button>
+        </div>
+      </div>
 
       <CustomSnackBar
         open={snackbar.open}
@@ -918,7 +697,7 @@ const BookingAtCenter = () => {
         severity={snackbar.severity}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
       />
-    </Box>
+    </div>
   );
 };
 

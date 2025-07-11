@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import styles from './BookingHistory.module.css';
+import { FaHospital, FaHome, FaServicestack, FaCalendarAlt, FaMoneyBillWave, FaChevronLeft, FaChevronRight, FaClock, FaMapMarkerAlt, FaUser } from 'react-icons/fa';
 
 const ITEMS_PER_PAGE = 3;
 
@@ -13,6 +13,7 @@ const BookingHistory = () => {
   // Pagination state
   const [centerPage, setCenterPage] = useState(1);
   const [homePage, setHomePage] = useState(1);
+  
   const translate = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -27,6 +28,21 @@ const BookingHistory = () => {
         return 'Đã đánh giá';
       default:
         return 'Không xác định';
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'CONFIRMED':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'COMPLETED':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'CANCELLED':
+        return 'bg-red-100 text-red-800 border-red-200';
+      case 'RATED':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
+      default:
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
     }
   };
 
@@ -74,8 +90,11 @@ const BookingHistory = () => {
 
   // Empty state
   const renderEmpty = (msg: string) => (
-    <div className={styles.emptyState}>
-      <h3>{msg}</h3>
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+      <h3 className="text-xl font-semibold text-gray-900 mb-2">{msg}</h3>
+      <p className="text-gray-600">
+        Bạn chưa có lịch sử đặt lịch nào. Hãy đặt lịch khám để bắt đầu chăm sóc sức khỏe.
+      </p>
     </div>
   );
 
@@ -86,215 +105,346 @@ const BookingHistory = () => {
     setPage: (p: number) => void
   ) =>
     totalPages > 1 && (
-      <div className={styles.paginationContainer}>
+      <div className="mt-8 flex items-center justify-center space-x-4">
         <button
           onClick={() => setPage(Math.max(page - 1, 1))}
           disabled={page === 1}
-          className={styles.paginationButton}
+          className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
+            page === 1
+              ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+          }`}
         >
+          <FaChevronLeft className="mr-2" />
           Trang trước
         </button>
-        <div className={styles.paginationNumbers}>
+
+        <div className="flex items-center space-x-2">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
             <button
               key={p}
               onClick={() => setPage(p)}
-              className={`${styles.paginationButton} ${
-                page === p ? styles.paginationButtonActive : ''
+              className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
+                page === p
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
               }`}
             >
               {p}
             </button>
           ))}
         </div>
+
         <button
           onClick={() => setPage(Math.min(page + 1, totalPages))}
           disabled={page === totalPages}
-          className={styles.paginationButton}
+          className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
+            page === totalPages
+              ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+          }`}
         >
           Trang sau
+          <FaChevronRight className="ml-2" />
         </button>
       </div>
     );
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.tabsContainer}>
-        <div className={styles.tabsList}>
-          <button
-            className={`${styles.tab} ${tabIndex === 0 ? styles.tabActive : ''}`}
-            onClick={() => handleTabChange(null, 0)}
+  // Center cards component
+  const renderCenterCards = () => (
+    <div className="space-y-6">
+      {centerCurrent.map((item, index) => {
+        const a = item.showAppointmentResponse;
+        const service = item.serviceAppointmentResponses?.[0];
+        const loc = item.locationAppointmentResponses?.[0];
+        const room = item.roomAppointmentResponse;
+        const payment = item.paymentAppointmentResponse?.[0];
+        
+        return (
+          <div
+            key={index}
+            className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
           >
-            Tại trung tâm
-          </button>
-          <button
-            className={`${styles.tab} ${tabIndex === 1 ? styles.tabActive : ''}`}
-            onClick={() => handleTabChange(null, 1)}
+            <div className="p-6">
+              {/* Header Row */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <FaHospital className="text-blue-600" />
+                  <div>
+                    <h3 className="text-blue-600 font-bold text-sm">
+                      Lịch sử #{centerStart + index + 1}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Tại trung tâm
+                    </p>
+                  </div>
+                </div>
+
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(a?.appointmentStatus)}`}
+                >
+                  {translate(a?.appointmentStatus)}
+                </span>
+              </div>
+
+              {/* Info Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                {/* Ngày khám */}
+                <div className="flex items-center space-x-3">
+                  <FaCalendarAlt className="text-gray-400" />
+                  <div>
+                    <p className="text-sm text-gray-500">Ngày khám</p>
+                    <p className="font-medium text-gray-900">
+                      {a?.appointmentDate || '-'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Dịch vụ */}
+                <div className="flex items-center space-x-3">
+                  <FaServicestack className="text-gray-400" />
+                  <div>
+                    <p className="text-sm text-gray-500">Dịch vụ</p>
+                    <p className="font-medium text-gray-900">
+                      {service?.serviceName || '-'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Phòng */}
+                <div className="flex items-center space-x-3">
+                  <FaUser className="text-gray-400" />
+                  <div>
+                    <p className="text-sm text-gray-500">Phòng</p>
+                    <p className="font-medium text-gray-900">
+                      {room?.roomName || '-'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Địa điểm */}
+                <div className="flex items-start space-x-3 col-span-1 md:col-span-2 lg:col-span-3">
+                  <FaMapMarkerAlt className="text-gray-400 mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-500">Địa điểm</p>
+                    <p className="font-medium text-gray-900">
+                      {loc
+                        ? `${loc.addressLine}, ${loc.district}, ${loc.city}`
+                        : '-'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Info */}
+              {payment && (
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-500">Số tiền</p>
+                      <p className="font-medium text-gray-900">
+                        {payment.amount ? `${payment.amount.toLocaleString('vi-VN')} VND` : '-'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Phương thức</p>
+                      <p className="font-medium text-gray-900">
+                        {payment.paymentMethod || '-'}
+                      </p>
+                    </div>
+                    <div className="md:text-right">
+                      <p className="text-sm text-gray-500">Thanh toán</p>
+                      <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                        payment.getPaymentStatus === 'PAID'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {payment.getPaymentStatus === 'PAID'
+                          ? 'Đã thanh toán'
+                          : 'Chưa thanh toán'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  // Home cards component
+  const renderHomeCards = () => (
+    <div className="space-y-6">
+      {homeCurrent.map((item, index) => {
+        const a = item.showAppointmentResponse;
+        const kit = item.kitAppointmentResponse;
+        const payment = item.paymentAppointmentResponses?.[0];
+        
+        return (
+          <div
+            key={index}
+            className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
           >
-            Tại nhà
-          </button>
+            <div className="p-6">
+              {/* Header Row */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <FaHome className="text-blue-600" />
+                  <div>
+                    <h3 className="text-blue-600 font-bold text-sm">
+                      Lịch sử #{homeStart + index + 1}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Tại nhà
+                    </p>
+                  </div>
+                </div>
+
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(a?.appointmentStatus)}`}
+                >
+                  {translate(a?.appointmentStatus)}
+                </span>
+              </div>
+
+              {/* Info Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                {/* Ngày khám */}
+                <div className="flex items-center space-x-3">
+                  <FaCalendarAlt className="text-gray-400" />
+                  <div>
+                    <p className="text-sm text-gray-500">Ngày khám</p>
+                    <p className="font-medium text-gray-900">
+                      {a?.appointmentDate || '-'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Tên kit */}
+                <div className="flex items-center space-x-3">
+                  <FaServicestack className="text-gray-400" />
+                  <div>
+                    <p className="text-sm text-gray-500">Tên kit</p>
+                    <p className="font-medium text-gray-900">
+                      {kit?.kitName || '-'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Ghi chú */}
+                <div className="flex items-start space-x-3 col-span-1 md:col-span-2 lg:col-span-1">
+                  <FaUser className="text-gray-400 mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-500">Ghi chú</p>
+                    <p className="font-medium text-gray-900">
+                      {a?.note || '-'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Info */}
+              {payment && (
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-500">Số tiền</p>
+                      <p className="font-medium text-gray-900">
+                        {payment.amount ? `${payment.amount.toLocaleString('vi-VN')} VND` : '-'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Phương thức</p>
+                      <p className="font-medium text-gray-900">
+                        {payment.paymentMethod || '-'}
+                      </p>
+                    </div>
+                    <div className="md:text-right">
+                      <p className="text-sm text-gray-500">Thanh toán</p>
+                      <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                        payment.getPaymentStatus === 'PAID'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {payment.getPaymentStatus === 'PAID'
+                          ? 'Đã thanh toán'
+                          : 'Chưa thanh toán'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+          <p className="text-gray-600 text-lg">Đang tải dữ liệu...</p>
         </div>
       </div>
+    );
+  }
 
-      {loading ? (
-        <div className={styles.loadingContainer}>
-          <span className={styles.loadingText}>Đang tải dữ liệu...</span>
+  return (
+    <div className="min-h-screen py-1">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-sm p-3 mb-6">
+          {/* Tab Navigation */}
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+            <button
+              onClick={() => handleTabChange(null, 0)}
+              className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                tabIndex === 0
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <FaHospital className="mr-2" />
+              Tại trung tâm
+            </button>
+            <button
+              onClick={() => handleTabChange(null, 1)}
+              className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                tabIndex === 1
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <FaHome className="mr-2" />
+              Tại nhà
+            </button>
+          </div>
         </div>
-      ) : tabIndex === 0 ? (
-        centerHistory.length === 0 ? (
-          renderEmpty('Không có lịch sử đặt lịch tại trung tâm')
+
+        {/* Content */}
+        {tabIndex === 0 ? (
+          centerHistory.length === 0 ? (
+            renderEmpty('Không có lịch sử đặt lịch tại trung tâm')
+          ) : (
+            <>
+              {renderCenterCards()}
+              {renderPagination(centerPage, centerTotalPages, setCenterPage)}
+            </>
+          )
+        ) : homeHistory.length === 0 ? (
+          renderEmpty('Không có lịch sử đặt lịch tại nhà')
         ) : (
           <>
-            <div className={`${styles.tableContainer} ${styles.centerTable}`}>
-              <table className={styles.table}>
-                <thead className={styles.tableHeader}>
-                  <tr>
-                    <th className={styles.tableHeaderCell}>Ngày</th>
-                    <th className={styles.tableHeaderCell}>Dịch vụ</th>
-                    <th className={styles.tableHeaderCell}>Phòng</th>
-                    <th className={styles.tableHeaderCell}>Địa điểm</th>
-                    <th className={styles.tableHeaderCell}>Số tiền</th>
-                    <th className={styles.tableHeaderCell}>Phương thức</th>
-                    <th className={styles.tableHeaderCell}>Trạng thái</th>
-                    <th className={styles.tableHeaderCell}>Thanh toán</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {centerCurrent.map((item, index) => {
-                    const a = item.showAppointmentResponse;
-                    const service = item.serviceAppointmentResponses?.[0];
-                    const loc = item.locationAppointmentResponses?.[0];
-                    const room = item.roomAppointmentResponse;
-                    const payment = item.paymentAppointmentResponse?.[0];
-                    
-                    // Helper function to get status badge class
-                    const getStatusBadgeClass = (status: string) => {
-                      switch (status) {
-                        case 'CONFIRMED':
-                        case 'COMPLETED':
-                          return `${styles.statusBadge} ${styles.statusBadgeSuccess}`;
-                        case 'PENDING':
-                          return `${styles.statusBadge} ${styles.statusBadgeWarning}`;
-                        case 'CANCELLED':
-                          return `${styles.statusBadge} ${styles.statusBadgeDanger}`;
-                        case 'RATED':
-                          return `${styles.statusBadge} ${styles.statusBadgeInfo}`;
-                        default:
-                          return `${styles.statusBadge} ${styles.statusBadgeSecondary}`;
-                      }
-                    };
-
-                    return (
-                      <tr key={index} className={styles.tableRow}>
-                        <td className={styles.tableCell}>{a?.appointmentDate}</td>
-                        <td className={styles.tableCell}>{service?.serviceName}</td>
-                        <td className={styles.tableCell}>{room?.roomName}</td>
-                        <td className={styles.tableCell}>
-                          {loc
-                            ? `${loc.addressLine}, ${loc.district}, ${loc.city}`
-                            : '-'}
-                        </td>
-                        <td className={styles.tableCell}>
-                          {payment.amount?.toLocaleString('vi-VN')} VND
-                        </td>
-                        <td className={styles.tableCell}>{payment.paymentMethod}</td>
-                        <td className={styles.tableCell}>
-                          <span className={getStatusBadgeClass(a?.appointmentStatus)}>
-                            {translate(a?.appointmentStatus)}
-                          </span>
-                        </td>
-                        <td className={styles.tableCell}>
-                          <span className={payment?.getPaymentStatus === 'PAID' 
-                            ? styles.paymentStatusPaid 
-                            : styles.paymentStatusUnpaid
-                          }>
-                            {payment?.getPaymentStatus === 'PAID'
-                              ? 'Đã thanh toán'
-                              : 'Chưa thanh toán'}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-            {renderPagination(centerPage, centerTotalPages, setCenterPage)}
+            {renderHomeCards()}
+            {renderPagination(homePage, homeTotalPages, setHomePage)}
           </>
-        )
-      ) : homeHistory.length === 0 ? (
-        renderEmpty('Không có lịch sử đặt lịch tại nhà')
-      ) : (
-        <>
-          <div className={`${styles.tableContainer} ${styles.homeTable}`}>
-            <table className={styles.table}>
-              <thead className={styles.tableHeader}>
-                <tr>
-                  <th className={styles.tableHeaderCell}>Ngày</th>
-                  <th className={styles.tableHeaderCell}>Dịch vụ</th>
-                  <th className={styles.tableHeaderCell}>Tên kit</th>
-                  <th className={styles.tableHeaderCell}>Số tiền</th>
-                  <th className={styles.tableHeaderCell}>Phương thức</th>
-                  <th className={styles.tableHeaderCell}>Trạng thái</th>
-                  <th className={styles.tableHeaderCell}>Thanh toán</th>
-                </tr>
-              </thead>
-              <tbody>
-                {homeCurrent.map((item, index) => {
-                  const a = item.showAppointmentResponse;
-                  const kit = item.kitAppointmentResponse;
-                  const payment = item.paymentAppointmentResponses?.[0];
-                  
-                  // Helper function to get status badge class
-                  const getStatusBadgeClass = (status: string) => {
-                    switch (status) {
-                      case 'CONFIRMED':
-                      case 'COMPLETED':
-                        return `${styles.statusBadge} ${styles.statusBadgeSuccess}`;
-                      case 'PENDING':
-                        return `${styles.statusBadge} ${styles.statusBadgeWarning}`;
-                      case 'CANCELLED':
-                        return `${styles.statusBadge} ${styles.statusBadgeDanger}`;
-                      case 'RATED':
-                        return `${styles.statusBadge} ${styles.statusBadgeInfo}`;
-                      default:
-                        return `${styles.statusBadge} ${styles.statusBadgeSecondary}`;
-                    }
-                  };
-
-                  return (
-                    <tr key={index} className={styles.tableRow}>
-                      <td className={styles.tableCell}>{a?.appointmentDate}</td>
-                      <td className={styles.tableCell}>{a?.note || '-'}</td>
-                      <td className={styles.tableCell}>{kit.kitName}</td>
-                      <td className={styles.tableCell}>
-                        {payment.amount?.toLocaleString('vi-VN')} VND
-                      </td>
-                      <td className={styles.tableCell}>{payment.paymentMethod}</td>
-                      <td className={styles.tableCell}>
-                        <span className={getStatusBadgeClass(a?.appointmentStatus)}>
-                          {translate(a?.appointmentStatus)}
-                        </span>
-                      </td>
-                      <td className={styles.tableCell}>
-                        <span className={payment?.getPaymentStatus === 'PAID' 
-                          ? styles.paymentStatusPaid 
-                          : styles.paymentStatusUnpaid
-                        }>
-                          {payment?.getPaymentStatus === 'PAID'
-                            ? 'Đã thanh toán'
-                            : 'Chưa thanh toán'}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-          {renderPagination(homePage, homeTotalPages, setHomePage)}
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 };

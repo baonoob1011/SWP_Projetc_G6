@@ -9,6 +9,13 @@ import {
   FaStar,
   FaChevronLeft,
   FaChevronRight,
+  FaHome,
+  FaHospital,
+  FaCalendarAlt,
+  FaClock,
+  FaMapMarkerAlt,
+  FaUser,
+  FaServicestack,
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import InvoicePopup from '../actorList/user/PopupInvoice';
@@ -18,18 +25,20 @@ import Swal from 'sweetalert2';
 const Booking = () => {
   const [bookingList, setBookingList] = useState<BookingHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
   const [showInvoicePopup, setShowInvoicePopup] = useState(false);
   const [invoices, setInvoices] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<'CENTER' | 'HOME' | 'ALL'>('ALL');
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 2;
+  const itemsPerPage = 3;
   const navigate = useNavigate();
+
   const translateAppointmentType = (type: string) => {
     if (type === 'CENTER') return 'Lấy mẫu tại cơ sở';
     if (type === 'HOME') return 'Lấy mẫu tại nhà';
     return 'Không xác định';
   };
+
   const handleViewInvoice = async (appoinmentId: string) => {
     try {
       const res = await fetch(
@@ -95,7 +104,6 @@ const Booking = () => {
 
         const fullList: BookingHistoryItem[] = [...centerList, ...homeList]
           .map(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (res: any) => ({
               show: res.showAppointmentResponse,
               patients: res.patientAppointmentResponse || [],
@@ -107,9 +115,9 @@ const Booking = () => {
               room: res.roomAppointmentResponse || null,
               payments:
                 res.paymentAppointmentResponse ||
-                res.paymentAppointmentResponses || // <- dành cho atHome
+                res.paymentAppointmentResponses ||
                 [],
-              kit: res.kitAppointmentResponse || null, // <- nếu có ở lịch hẹn tại nhà
+              kit: res.kitAppointmentResponse || null,
             })
           )
           .sort((a, b) => b.show.appointmentId - a.show.appointmentId);
@@ -118,7 +126,6 @@ const Booking = () => {
           throw new Error('Không có cuộc hẹn nào');
         } else {
           setBookingList(fullList);
-          // Reset to page 1 if current page is out of bounds
           const totalPages = Math.ceil(fullList.length / itemsPerPage);
           if (currentPage > totalPages) {
             setCurrentPage(1);
@@ -134,6 +141,7 @@ const Booking = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
   const handlePaymentByWallet = async (
     appointmentId: number,
     serviceId: number,
@@ -154,12 +162,13 @@ const Booking = () => {
         toast.error('Số dư không đủ');
       } else {
         toast.success('Thanh toán thành công!');
-        fetchData(); // Refresh lại danh sách sau khi thanh toán
+        fetchData();
       }
     } catch (error) {
       console.log(error);
     }
   };
+
   const handleCanceled = async (appointmentId: string) => {
     try {
       const res = await fetch(
@@ -184,6 +193,7 @@ const Booking = () => {
       toast.error('Lỗi hệ thống');
     }
   };
+
   const handleChangMethod = async (
     paymentId: number,
     paymentMethod: string
@@ -236,16 +246,28 @@ const Booking = () => {
     }
   };
 
+  // Filter bookings based on active tab
+  const filteredBookings = bookingList.filter((item) => {
+    if (activeTab === 'ALL') return true;
+    return item.show.appointmentType === activeTab;
+  });
+
   // Pagination logic
-  const totalPages = Math.ceil(bookingList.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = bookingList.slice(startIndex, endIndex);
+  const currentItems = filteredBookings.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  // Reset to page 1 when changing tabs
+  const handleTabChange = (tab: 'CENTER' | 'HOME' | 'ALL') => {
+    setActiveTab(tab);
+    setCurrentPage(1);
   };
 
   if (loading) {
@@ -257,22 +279,49 @@ const Booking = () => {
         </div>
       </div>
     );
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-1">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <p className="text-gray-600">
-            Quản lý và theo dõi các cuộc hẹn khám bệnh của bạn
-          </p>
-          {bookingList.length > 0 && (
-            <p className="text-sm text-gray-500 mt-2">
-              Hiển thị {startIndex + 1}-{Math.min(endIndex, bookingList.length)}{' '}
-              trong tổng số {bookingList.length} cuộc hẹn
-            </p>
-          )}
+        <div className="bg-white rounded-lg shadow-sm p-3 mb-6">
+          {/* Tab Navigation */}
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+            <button
+              onClick={() => handleTabChange('ALL')}
+              className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'ALL'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <FaServicestack className="mr-2" />
+              Tất cả
+            </button>
+            <button
+              onClick={() => handleTabChange('CENTER')}
+              className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'CENTER'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <FaHospital className="mr-2" />
+              Tại trung tâm
+            </button>
+            <button
+              onClick={() => handleTabChange('HOME')}
+              className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'HOME'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <FaHome className="mr-2" />
+              Tại nhà
+            </button>
+          </div>
         </div>
 
         {/* Booking Cards */}
@@ -355,38 +404,6 @@ const Booking = () => {
                       </p>
                     </div>
                   </div>
-                  {item.payments.map(
-                    (payment) =>
-                      (!payment.getPaymentStatus ||
-                        payment.getPaymentStatus === 'PENDING') && (
-                        <div key={payment.paymentId} className="mb-4">
-                          <p>Đổi phương thức thanh toán</p>
-                          <select
-                            defaultValue={payment.paymentMethod || 'VNPAY'}
-                            onChange={(e) =>
-                              handleChangMethod(
-                                payment.paymentId,
-                                e.target.value
-                              )
-                            }
-                            className="border rounded px-2 py-1"
-                          >
-                            {item.show.appointmentType === 'CENTER' ? (
-                              <>
-                                <option value="VN_PAY">VNPAY</option>
-                                <option value="CASH">Tiền mặt</option>
-                                <option value="WALLET">Ví cá nhân</option>
-                              </>
-                            ) : (
-                              <>
-                                <option value="VN_PAY">VNPAY</option>
-                                <option value="WALLET">Ví cá nhân</option>
-                              </>
-                            )}
-                          </select>
-                        </div>
-                      )
-                  )}
                 </div>
 
                 {/* Payment Info */}
@@ -415,6 +432,40 @@ const Booking = () => {
                         </span>
                       </div>
                     </div>
+
+                    {/* Payment Method Change */}
+                    {item.payments.map(
+                      (payment) =>
+                        (!payment.getPaymentStatus ||
+                          payment.getPaymentStatus === 'PENDING') && (
+                          <div key={payment.paymentId} className="mb-4">
+                            <p className="text-sm text-gray-500 mb-2">Đổi phương thức thanh toán</p>
+                            <select
+                              defaultValue={payment.paymentMethod || 'VNPAY'}
+                              onChange={(e) =>
+                                handleChangMethod(
+                                  payment.paymentId,
+                                  e.target.value
+                                )
+                              }
+                              className="border rounded px-2 py-1 text-sm"
+                            >
+                              {item.show.appointmentType === 'CENTER' ? (
+                                <>
+                                  <option value="VN_PAY">VNPAY</option>
+                                  <option value="CASH">Tiền mặt</option>
+                                  <option value="WALLET">Ví cá nhân</option>
+                                </>
+                              ) : (
+                                <>
+                                  <option value="VN_PAY">VNPAY</option>
+                                  <option value="WALLET">Ví cá nhân</option>
+                                </>
+                              )}
+                            </select>
+                          </div>
+                        )
+                    )}
 
                     {/* Note và Tên nhân viên */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -473,62 +524,60 @@ const Booking = () => {
                       </button>
                     )}
 
-                  {/* Payment Button */}
+                  {/* Payment Buttons */}
                   {item.payments.length > 0 &&
                     (!item.payments[0].getPaymentStatus ||
                       item.payments[0].getPaymentStatus === 'PENDING') &&
                     item.payments[0].paymentId &&
                     item.services.length > 0 &&
-                    item.services[0].serviceId &&
-                    item.payments[0].paymentMethod === 'VN_PAY' && (
-                      <button
-                        className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
-                        onClick={() =>
-                          handlePayment(
-                            item.payments[0].paymentId,
-                            item.services[0].serviceId
-                          )
-                        }
-                      >
-                        <FaMoneyBillWave className="mr-2" />
-                        Thanh toán
-                      </button>
-                    )}
-                  {item.payments.length > 0 &&
-                    (!item.payments[0].getPaymentStatus ||
-                      item.payments[0].getPaymentStatus === 'PENDING') &&
-                    item.payments[0].paymentId &&
-                    item.services.length > 0 &&
-                    item.services[0].serviceId &&
-                    item.payments[0].paymentMethod === 'WALLET' && (
-                      <button
-                        className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
-                        onClick={async () => {
-                          const result = await Swal.fire({
-                            title: 'Xác nhận thanh toán',
-                            text: 'Bạn có chắc chắn muốn thanh toán hóa đơn này?',
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Có, thanh toán!',
-                            cancelButtonText: 'Hủy',
-                          });
+                    item.services[0].serviceId && (
+                      <>
+                        {item.payments[0].paymentMethod === 'VN_PAY' && (
+                          <button
+                            className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
+                            onClick={() =>
+                              handlePayment(
+                                item.payments[0].paymentId,
+                                item.services[0].serviceId
+                              )
+                            }
+                          >
+                            <FaMoneyBillWave className="mr-2" />
+                            Thanh toán
+                          </button>
+                        )}
+                        {item.payments[0].paymentMethod === 'WALLET' && (
+                          <button
+                            className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
+                            onClick={async () => {
+                              const result = await Swal.fire({
+                                title: 'Xác nhận thanh toán',
+                                text: 'Bạn có chắc chắn muốn thanh toán hóa đơn này?',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Có, thanh toán!',
+                                cancelButtonText: 'Hủy',
+                              });
 
-                          if (result.isConfirmed) {
-                            handlePaymentByWallet(
-                              item.show.appointmentId,
-                              item.services[0].serviceId,
-                              item.payments[0].paymentId
-                            );
-                          }
-                        }}
-                      >
-                        <FaMoneyBillWave className="mr-2" />
-                        Thanh toán
-                      </button>
+                              if (result.isConfirmed) {
+                                handlePaymentByWallet(
+                                  item.show.appointmentId,
+                                  item.services[0].serviceId,
+                                  item.payments[0].paymentId
+                                );
+                              }
+                            }}
+                          >
+                            <FaMoneyBillWave className="mr-2" />
+                            Thanh toán
+                          </button>
+                        )}
+                      </>
                     )}
 
+                  {/* Invoice Button */}
                   {item.payments.length > 0 &&
                     item.payments[0].getPaymentStatus === 'PAID' && (
                       <button
@@ -574,7 +623,7 @@ const Booking = () => {
         </div>
 
         {/* Pagination */}
-        {bookingList.length > itemsPerPage && (
+        {filteredBookings.length > itemsPerPage && (
           <div className="mt-8 flex items-center justify-center space-x-4">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
@@ -623,19 +672,26 @@ const Booking = () => {
         )}
 
         {/* Empty State */}
-        {bookingList.length === 0 && (
+        {filteredBookings.length === 0 && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-            <div className="text-gray-400 text-6xl mb-4">📅</div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Chưa có cuộc hẹn nào
+              {activeTab === 'CENTER' 
+                ? 'Không có lịch hẹn tại trung tâm' 
+                : activeTab === 'HOME' 
+                ? 'Không có lịch hẹn tại nhà'
+                : 'Chưa có cuộc hẹn nào'}
             </h3>
             <p className="text-gray-600 mb-6">
-              Bạn chưa có cuộc hẹn khám bệnh nào. Hãy đặt lịch khám để bắt đầu
-              chăm sóc sức khỏe.
+              {activeTab === 'CENTER' 
+                ? 'Bạn chưa có cuộc hẹn khám tại trung tâm nào.' 
+                : activeTab === 'HOME' 
+                ? 'Bạn chưa có cuộc hẹn lấy mẫu tại nhà nào.'
+                : 'Bạn chưa có cuộc hẹn khám bệnh nào. Hãy đặt lịch khám để bắt đầu chăm sóc sức khỏe.'}
             </p>
           </div>
         )}
       </div>
+      
       <InvoicePopup
         visible={showInvoicePopup}
         onClose={() => setShowInvoicePopup(false)}
