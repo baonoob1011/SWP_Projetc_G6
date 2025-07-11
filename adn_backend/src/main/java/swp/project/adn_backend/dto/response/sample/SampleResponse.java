@@ -22,6 +22,10 @@ public class SampleResponse {
         this.sampleCode = sampleCode;
     }
 
+    public SampleResponse() {
+
+    }
+
     public long getSampleId() {
         return sampleId;
     }

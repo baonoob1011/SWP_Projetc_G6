@@ -28,6 +28,10 @@ public class SlotResponse {
         this.endTime = endTime;
     }
 
+    public SlotResponse() {
+
+    }
+
     public SlotStatus getSlotStatus() {
         return slotStatus;
     }

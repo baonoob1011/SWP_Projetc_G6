@@ -22,6 +22,10 @@ public class RoomInfoDTO {
         this.closeTime = closeTime;
     }
 
+    public RoomInfoDTO() {
+
+    }
+
     public long getRoomId() {
         return roomId;
     }

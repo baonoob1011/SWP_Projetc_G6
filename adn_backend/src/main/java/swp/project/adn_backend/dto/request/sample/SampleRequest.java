@@ -17,6 +17,10 @@ public class SampleRequest {
         this.sampleStatus = sampleStatus;
     }
 
+    public SampleRequest() {
+
+    }
+
     public String getSampleCode() {
         return sampleCode;
     }

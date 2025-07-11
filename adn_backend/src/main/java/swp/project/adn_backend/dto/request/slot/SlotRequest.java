@@ -35,6 +35,10 @@ public class SlotRequest {
         this.endTime = endTime;
     }
 
+    public SlotRequest() {
+
+    }
+
     public @NotNull(message = "Slot date must not be null") @FutureOrPresent(message = "Slot date must be today or in the future") LocalDate getSlotDate() {
         return slotDate;
     }

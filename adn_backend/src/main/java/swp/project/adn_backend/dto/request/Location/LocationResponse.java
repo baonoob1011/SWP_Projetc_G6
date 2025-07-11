@@ -18,6 +18,10 @@ public class LocationResponse {
         this.city = city;
     }
 
+    public LocationResponse() {
+
+    }
+
     public long getLocationId() {
         return locationId;
     }

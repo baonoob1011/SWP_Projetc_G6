@@ -105,6 +105,26 @@ public class Appointment {
     @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<ResultLocus> resultLoci;
 
+    public Appointment(long appointmentId, LocalDate appointmentDate, AppointmentStatus appointmentStatus, String note, AppointmentType appointmentType, Users users, Staff staff, List<Invoice> invoices, List<Patient> patients, List<Result> results, List<Sample> sampleList, Slot slot, ServiceTest services, Location location, KitDeliveryStatus kitDeliveryStatus, List<Payment> payments, List<ResultLocus> resultLoci) {
+        this.appointmentId = appointmentId;
+        this.appointmentDate = appointmentDate;
+        this.appointmentStatus = appointmentStatus;
+        this.note = note;
+        this.appointmentType = appointmentType;
+        this.users = users;
+        this.staff = staff;
+        this.invoices = invoices;
+        this.patients = patients;
+        this.results = results;
+        this.sampleList = sampleList;
+        this.slot = slot;
+        this.services = services;
+        this.location = location;
+        this.kitDeliveryStatus = kitDeliveryStatus;
+        this.payments = payments;
+        this.resultLoci = resultLoci;
+    }
+
     public List<Sample> getSampleList() {
         return sampleList;
     }

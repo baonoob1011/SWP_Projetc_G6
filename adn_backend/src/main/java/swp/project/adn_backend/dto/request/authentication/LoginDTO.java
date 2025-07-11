@@ -5,8 +5,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginDTO {
     @NotBlank(message = "USERNAME_BLANK")
@@ -14,6 +12,14 @@ public class LoginDTO {
 
     @NotBlank(message = "PASSWORD_BLANK")
     private String password;
+
+    public LoginDTO() {
+    }
+
+    public LoginDTO(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     public @NotBlank(message = "USERNAME_BLANK") String getUsername() {
         return username;

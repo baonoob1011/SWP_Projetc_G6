@@ -377,7 +377,151 @@ public class AppointmentServiceTest {
         verify(appointmentMapper, atLeastOnce()).toKitAppointmentResponse(any());
     }
 
+    @Test
+    void getAllAppointments_success() {
+        // Arrange
+        long userId = 10L;
+        Authentication authentication = mock(Authentication.class);
+        Jwt jwt = mock(Jwt.class);
 
+        when(authentication.getPrincipal()).thenReturn(jwt);
+        when(jwt.getClaim("id")).thenReturn(userId);
+
+        Users user = new Users();
+        user.setUserId(userId);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        Appointment centerAppointment = new Appointment();
+        centerAppointment.setAppointmentType(AppointmentType.CENTER);
+        centerAppointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
+        centerAppointment.setUsers(user);
+        centerAppointment.setSlot(new Slot()); // you may mock slot and room name if needed
+        centerAppointment.setLocation(new Location());
+        centerAppointment.setStaff(new Staff());
+        centerAppointment.setServices(new ServiceTest());
+        centerAppointment.setPayments(new ArrayList<>());
+
+        Appointment homeAppointment = new Appointment();
+        homeAppointment.setAppointmentType(AppointmentType.HOME);
+        homeAppointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
+        homeAppointment.setUsers(user);
+        ServiceTest homeService = new ServiceTest();
+        homeService.setServiceType(ServiceType.CIVIL);
+        homeService.setKit(new Kit());
+        homeAppointment.setServices(homeService);
+        homeAppointment.setStaff(new Staff());
+        homeAppointment.setPayments(new ArrayList<>());
+
+        when(appointmentRepository.findByUsers_UserId(userId))
+                .thenReturn(new ArrayList<>(List.of(centerAppointment, homeAppointment))); // ✅ mutable
+
+
+        // Mock mapping responses
+        when(appointmentMapper.toShowAppointmentResponse(any())).thenReturn(new ShowAppointmentResponse());
+        when(appointmentMapper.toStaffAppointmentResponse(any())).thenReturn(new StaffAppointmentResponse());
+        when(appointmentMapper.toSlotAppointmentResponse(any())).thenReturn(new SlotAppointmentResponse());
+        when(appointmentMapper.toServiceAppointmentResponse(any())).thenReturn(new ServiceAppointmentResponse());
+        when(appointmentMapper.toLocationAppointmentResponse(any())).thenReturn(new LocationAppointmentResponse());
+        when(appointmentMapper.toKitAppointmentResponse(any())).thenReturn(new KitAppointmentResponse());
+        when(appointmentMapper.toPaymentAppointmentResponse(any())).thenReturn(new ArrayList<>());
+
+        // Act
+        AllAppointmentResponse response = appointmentService.getAllAppointments(authentication);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(1, response.getAllAppointmentAtCenterResponse().size());
+        assertEquals(1, response.getAllAppointmentAtHomeResponse().size());
+
+        verify(appointmentRepository).findByUsers_UserId(userId);
+        verify(userRepository).findById(userId);
+    }
+
+    @Test
+    void testGetAppointmentOfUser_success() {
+        // Arrange
+        Long staffId = 1L;
+        Long userId = 2L;
+        String phone = "0987654321";
+
+        Authentication authentication = mock(Authentication.class);
+        Jwt jwt = mock(Jwt.class);
+        when(authentication.getPrincipal()).thenReturn(jwt);
+        when(jwt.getClaim("id")).thenReturn(staffId);
+
+        Staff staff = new Staff();
+        staff.setRole("CASHIER");
+        when(staffRepository.findById(staffId)).thenReturn(Optional.of(staff));
+
+        Users user = new Users();
+        user.setPhone(phone);
+        user.setUserId(userId);
+
+        Appointment appointment = new Appointment();
+        appointment.setAppointmentType(AppointmentType.CENTER);
+        appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
+        appointment.setUsers(user);
+        appointment.setServices(new ServiceTest());
+
+        Payment payment = new Payment();
+        payment.setPaymentStatus(PaymentStatus.PENDING);
+        appointment.setPayments(List.of(payment));
+        user.setAppointments(List.of(appointment));
+
+        when(userRepository.findByPhone(phone)).thenReturn(Optional.of(user));
+
+        // Mocks for mappers
+        when(appointmentMapper.toShowAppointmentResponse(any())).thenReturn(new ShowAppointmentResponse());
+        when(appointmentMapper.toServiceAppointmentResponse(any())).thenReturn(new ServiceAppointmentResponse());
+        when(appointmentMapper.toUserAppointmentResponse(any())).thenReturn(new UserAppointmentResponse());
+        when(appointmentMapper.toPriceAppointmentResponse(any())).thenReturn(List.of(new PriceAppointmentResponse()));
+        when(appointmentMapper.toPaymentAppointmentResponse(any())).thenReturn(List.of(new PaymentAppointmentResponse()));
+
+        UserPhoneRequest userPhoneRequest = new UserPhoneRequest();
+        userPhoneRequest.setPhone(phone);
+
+        // Act
+        List<AllAppointmentAtCenterUserResponse> responses =
+                appointmentService.getAppointmentOfUser(authentication, userPhoneRequest);
+
+        // Assert
+        assertNotNull(responses);
+        assertEquals(1, responses.size());
+        verify(userRepository).findByPhone(phone);
+        verify(staffRepository).findById(staffId);
+    }
+    @Test
+    void testUpdateAppointmentToGetSampleAgain_success() {
+        // Arrange
+        long appointmentId = 1L;
+        Room room = new Room();
+        Location location = new Location();
+        room.setLocation(location);
+
+        Slot newSlot = new Slot();
+        newSlot.setSlotDate(LocalDate.now().plusDays(1));
+        newSlot.setSlotStatus(SlotStatus.AVAILABLE);
+        newSlot.setRoom(room);
+
+        Appointment appointment = new Appointment();
+        appointment.setAppointmentId(appointmentId);
+        appointment.setAppointmentDate(LocalDate.now());
+        appointment.setSlot(new Slot());
+
+        when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+        when(slotRepository.findBySlotDateAndSlotStatus(any(), eq(SlotStatus.AVAILABLE)))
+                .thenReturn(List.of(newSlot));
+
+        // Act
+        appointmentService.updateAppointmentToGetSampleAgain(appointmentId);
+
+        // Assert
+        assertEquals(AppointmentType.CENTER, appointment.getAppointmentType());
+        assertEquals(AppointmentStatus.CONFIRMED, appointment.getAppointmentStatus());
+        assertEquals(location, appointment.getLocation());
+        assertEquals(newSlot, appointment.getSlot());
+        assertEquals(SlotStatus.BOOKED, newSlot.getSlotStatus());
+    }
 
 }
 

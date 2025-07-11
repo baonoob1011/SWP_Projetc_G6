@@ -896,7 +896,7 @@ public class AppointmentService {
         Users userRegister = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
 
-        List<Appointment> appointmentList = appointmentRepository.findByUsers_UserId(userId);
+        List<Appointment> appointmentList = new ArrayList<>(appointmentRepository.findByUsers_UserId(userId));
         appointmentList.sort(Comparator.comparingInt(a -> {
             return switch (a.getAppointmentStatus()) {
                 case PENDING -> 0;
@@ -905,6 +905,7 @@ public class AppointmentService {
                 default -> 3;
             };
         }));
+
         List<AllAppointmentAtCenterResponse> centerList = new ArrayList<>();
         List<AllAppointmentAtHomeResponse> homeList = new ArrayList<>();
 
@@ -920,9 +921,12 @@ public class AppointmentService {
                     List<LocationAppointmentResponse> locations = List.of(appointmentMapper.toLocationAppointmentResponse(appointment.getLocation()));
                     List<PaymentAppointmentResponse> payments = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
 
-
                     RoomAppointmentResponse room = new RoomAppointmentResponse();
-                    room.setRoomName(appointment.getSlot().getRoom().getRoomName());
+                    if (appointment.getSlot() != null && appointment.getSlot().getRoom() != null) {
+                        room.setRoomName(appointment.getSlot().getRoom().getRoomName());
+                    } else {
+                        room.setRoomName("Unknown Room"); // hoặc giữ null tùy yêu cầu
+                    }
 
                     AllAppointmentAtCenterResponse centerResponse = new AllAppointmentAtCenterResponse();
                     centerResponse.setShowAppointmentResponse(show);

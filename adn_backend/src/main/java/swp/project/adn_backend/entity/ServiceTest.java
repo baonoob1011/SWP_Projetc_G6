@@ -101,21 +101,7 @@ public class ServiceTest {
     public ServiceTest() {
     }
 
-    public ServiceTest(long serviceId, String serviceName, LocalDate registerDate, String description, ServiceType serviceType, boolean isActive, String image, List<Appointment> appointments, List<CivilService> civilServices, List<AdministrativeService> administrativeService, List<Feedback> feedbacks, List<PriceList> priceLists, List<Discount> discounts) {
-        this.serviceId = serviceId;
-        this.serviceName = serviceName;
-        this.registerDate = registerDate;
-        this.description = description;
-        this.serviceType = serviceType;
-        this.isActive = isActive;
-        this.image = image;
-        this.appointments = appointments;
-        this.civilServices = civilServices;
-        this.administrativeService = administrativeService;
-        this.feedbacks = feedbacks;
-        this.priceLists = priceLists;
-        this.discounts = discounts;
-    }
+
 
     public List<Invoice> getInvoices() {
         return invoices;

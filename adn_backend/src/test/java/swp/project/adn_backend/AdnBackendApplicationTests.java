@@ -13,10 +13,43 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class AdnBackendApplicationTests {
 
 
-	@Test
-	public void AppointmentServiceTest() {
-	}
-	@Test
-	public void ServiceTestServiceTest() {
-	}
+    @Test
+    public void AppointmentServiceTest() {
+    }
+
+    @Test
+    public void ServiceTestServiceTest() {
+    }
+
+    @Test
+    public void ResultAlleleServiceTest() {
+    }
+
+    @Test
+    public void ResultDetailServiceTest() {
+    }
+
+    @Test
+    public void ResultLocusServiceTest() {
+    }
+
+    @Test
+    public void SampleServiceTest() {
+    }
+
+    @Test
+    public void SlotServiceTest() {
+    }
+
+    @Test
+    public void RoomServiceTest() {
+    }
+
+    @Test
+    public void LocationServiceTest() {
+    }
+
+    @Test
+    public void AuthenticationUserServiceTest() {
+    }
 }

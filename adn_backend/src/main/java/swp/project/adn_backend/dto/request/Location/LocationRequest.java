@@ -22,6 +22,10 @@ public class LocationRequest {
         this.city = city;
     }
 
+    public LocationRequest() {
+
+    }
+
     public long getLocationId() {
         return locationId;
     }
