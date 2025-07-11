@@ -50,6 +50,6 @@ class AdnBackendApplicationTests {
     }
 
     @Test
-    public void AuthenticationUserServiceTest() {
+    public void JWTServiceTest() {
     }
 }

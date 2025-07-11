@@ -23,7 +23,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class AuthenticationUserServiceTest {
+class JWTServiceTest {
 
     @InjectMocks
     private AuthenticationUserService authenticationUserService;

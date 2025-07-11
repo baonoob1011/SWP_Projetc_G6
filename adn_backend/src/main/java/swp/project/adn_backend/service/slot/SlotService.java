@@ -142,7 +142,7 @@ public class SlotService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.LOCATION_NOT_EXISTS));
 
         // ✅ Lấy 2 ngày hợp lệ sắp tới (bỏ T7/CN)
-        List<LocalDate> validDates = getNextWeekdays(today.plusDays(1), 2);
+        List<LocalDate> validDates = getNextWeekdays(today.plusDays(1), 4);
         if (validDates.size() < 2) return Collections.emptyList();
 
         List<SlotInfoDTO> result = new ArrayList<>();
