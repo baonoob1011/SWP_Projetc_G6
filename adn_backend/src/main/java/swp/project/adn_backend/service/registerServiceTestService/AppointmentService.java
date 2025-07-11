@@ -140,12 +140,15 @@ public class AppointmentService {
         appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
         appointment.setAppointmentType(AppointmentType.CENTER);
         appointment.setNote("Đơn đăng ký đã được xác nhận");
-        for (Staff staff : slot.getStaff()) {
-            if (staff.getRole().equals("SAMPLE_COLLECTOR")) {
-                appointment.setStaff(staff);
-                break;
+        if (slot.getStaff() != null) {
+            for (Staff staff : slot.getStaff()) {
+                if ("SAMPLE_COLLECTOR".equals(staff.getRole())) {
+                    appointment.setStaff(staff);
+                    break;
+                }
             }
         }
+
         appointment.setServices(serviceTest);
         appointment.setLocation(location);
         appointment.setUsers(userBookAppointment);
@@ -465,11 +468,19 @@ public class AppointmentService {
         // Gộp kết quả
         AllAppointmentAtHomeResponse emailResponse = new AllAppointmentAtHomeResponse();
         emailResponse.setShowAppointmentResponse(showAppointmentResponse);
-        emailResponse.setUserAppointmentResponse(List.of(userAppointmentResponse));
-        emailResponse.setServiceAppointmentResponses(List.of(serviceAppointmentResponse));
-        emailResponse.setPatientAppointmentResponse(patientAppointmentResponses);
+        emailResponse.setUserAppointmentResponse(
+                userAppointmentResponse != null ? List.of(userAppointmentResponse) : Collections.emptyList()
+        );
+        emailResponse.setServiceAppointmentResponses(
+                serviceAppointmentResponse != null ? List.of(serviceAppointmentResponse) : Collections.emptyList()
+        );
+        emailResponse.setPatientAppointmentResponse(
+                patientAppointmentResponses != null ? patientAppointmentResponses : Collections.emptyList()
+        );
         emailResponse.setKitAppointmentResponse(kitAppointmentResponse);
-        emailResponse.setPriceAppointmentResponse(priceAppointmentResponsesList);
+        emailResponse.setPriceAppointmentResponse(
+                priceAppointmentResponsesList != null ? priceAppointmentResponsesList : Collections.emptyList()
+        );
 
         appointmentMapper.toAppointmentResponse(saved);
         return emailResponse;
@@ -725,6 +736,11 @@ public class AppointmentService {
         List<AllAppointmentAtCenterResponse> responses = new ArrayList<>();
 
         for (Appointment appointment : appointmentList) {
+            for (Payment payment:appointment.getPayments()){
+                if(!payment.getPaymentStatus().equals(PaymentStatus.PAID)){
+                    throw new RuntimeException("Đơn đăn ký chưa được thanh toán");
+                }
+            }
             if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)
                     && appointment.getSlot().getSlotStatus().equals(SlotStatus.BOOKED)) {
 

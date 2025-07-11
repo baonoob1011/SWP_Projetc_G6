@@ -3,8 +3,8 @@ package swp.project.adn_backend.dto.response.appointment.AppointmentResponse;
 import java.util.List;
 
 public class AllAppointmentResponse {
- private List<AllAppointmentAtCenterResponse> allAppointmentAtCenterResponse;
- private List<AllAppointmentAtHomeResponse> allAppointmentAtHomeResponse;
+ public List<AllAppointmentAtCenterResponse> allAppointmentAtCenterResponse;
+ public List<AllAppointmentAtHomeResponse> allAppointmentAtHomeResponse;
 
     public AllAppointmentResponse(List<AllAppointmentAtCenterResponse> allAppointmentAtCenterResponse, List<AllAppointmentAtHomeResponse> allAppointmentAtHomeResponse) {
         this.allAppointmentAtCenterResponse = allAppointmentAtCenterResponse;

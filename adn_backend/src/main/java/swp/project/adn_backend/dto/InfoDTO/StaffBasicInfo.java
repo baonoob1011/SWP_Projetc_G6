@@ -10,12 +10,13 @@ public class StaffBasicInfo {
     private String avatarUrl;
     private String gender;
     private String idCard;
+    private String address;
     private LocalDate dateOfBirth;
 
     // Constructor dùng trong JPQL new ...
 
 
-    public StaffBasicInfo(Long staffId, String fullName, String phone, String email, String avatarUrl, String gender, String idCard, LocalDate dateOfBirth) {
+    public StaffBasicInfo(Long staffId, String fullName, String phone, String email, String avatarUrl, String gender, String idCard, String address, LocalDate dateOfBirth) {
         this.staffId = staffId;
         this.fullName = fullName;
         this.phone = phone;
@@ -23,7 +24,16 @@ public class StaffBasicInfo {
         this.avatarUrl = avatarUrl;
         this.gender = gender;
         this.idCard = idCard;
+        this.address = address;
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getGender() {
