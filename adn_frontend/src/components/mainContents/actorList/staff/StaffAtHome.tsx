@@ -49,7 +49,6 @@ const SignUpStaffAtHome = () => {
     message: '',
     severity: 'success' as 'success' | 'error',
   });
-  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     setIsAdmin(
@@ -243,18 +242,10 @@ const SignUpStaffAtHome = () => {
           </div>
         </div>
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={() => setShowCreateForm(!showCreateForm)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
-          >
-            Thêm Nhân viên tại nhà
-          </button>
-        </div>
+       
 
         {/* Create Form - Collapsible */}
-        {showCreateForm && (
+      
           <div className="bg-white border border-gray-200 rounded-lg mb-6 shadow-sm">
             <div className="p-6">
               <h3 className="text-lg font-medium text-gray-800 mb-4">
@@ -474,12 +465,6 @@ const SignUpStaffAtHome = () => {
 
               <div className="flex justify-end gap-3">
                 <button
-                  onClick={() => setShowCreateForm(false)}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
                   onClick={handleSubmit}
                   disabled={loading}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
@@ -496,7 +481,6 @@ const SignUpStaffAtHome = () => {
               </div>
             </div>
           </div>
-        )}
       </div>
 
       <CustomSnackBar

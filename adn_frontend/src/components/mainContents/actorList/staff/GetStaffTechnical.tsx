@@ -116,73 +116,33 @@ function GetStaffTechnical() {
       {/* Table */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <table className="w-full">
-          <thead className="bg-gray-50">
+        <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
-                <div className="flex items-center gap-1">
-                  ID
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-                  </svg>
-                </div>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                ID
               </th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
-                <div className="flex items-center gap-1">
-                  Họ tên
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-                  </svg>
-                </div>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                Họ tên
               </th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
-                <div className="flex items-center gap-1">
-                  CCCD
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-                  </svg>
-                </div>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                CCCD
               </th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
-                <div className="flex items-center gap-1">
-                  Ngày sinh
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-                  </svg>
-                </div>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                Ngày sinh
               </th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
-                <div className="flex items-center gap-1">
-                  Giới tính
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-                  </svg>
-                </div>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                Giới tính
               </th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
-                <div className="flex items-center gap-1">
-                  Email
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-                  </svg>
-                </div>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                Email
               </th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
-                <div className="flex items-center gap-1">
-                  SĐT
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-                  </svg>
-                </div>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                SĐT
               </th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
-                <div className="flex items-center gap-1">
-                  Địa chỉ
-                  <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-                  </svg>
-                </div>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                Địa chỉ
               </th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600">
                 Hành động
               </th>
             </tr>
@@ -190,31 +150,31 @@ function GetStaffTechnical() {
           <tbody className="divide-y divide-gray-200">
             {searchByphone.map((user, index) => (
               <tr key={index} className="hover:bg-gray-50">
-                <td className="px-4 py-3 text-sm text-blue-600 font-medium border-r border-gray-200">
+                <td className="px-2 py-3 text-sm text-blue-600 font-medium border-r border-gray-200">
                   #{String(index + 1).padStart(4, '0')}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-800 border-r border-gray-200">
+                <td className="px-2 py-3 text-sm text-gray-800 border-r border-gray-200">
                   {user.fullName}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                <td className="px-2 py-3 text-sm text-gray-600 border-r border-gray-200">
                   {user.idCard}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                <td className="px-2 py-3 text-sm text-gray-600 border-r border-gray-200">
                   {user.dateOfBirth}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                <td className="px-2 py-3 text-sm text-gray-600 border-r border-gray-200">
                   {user.gender}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                <td className="px-2 py-3 text-sm text-gray-600 border-r border-gray-200">
                   {user.email}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                <td className="px-2 py-3 text-sm text-gray-600 border-r border-gray-200">
                   {user.phone}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                <td className="px-2 py-3 text-sm text-gray-600 border-r border-gray-200">
                   {user.address}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2 py-3">
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleDelete(user.phone, user.fullName)}
