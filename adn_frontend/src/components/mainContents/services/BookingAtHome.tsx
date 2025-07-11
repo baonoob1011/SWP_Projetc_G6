@@ -1,26 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Button,
-  Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  OutlinedInput,
-  type SelectChangeEvent,
-  TextField,
-  Paper,
-  Typography,
-  Container,
-  Card,
-  CardContent,
-  Divider,
-} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { fieldLabels, type Patient, type Price } from '../type/FillFormType';
-import { Home, Person, Payment, LocationOn } from '@mui/icons-material';
 import CustomSnackBar from '../userinfor/Snackbar';
 import { book } from '../userinfor/Validation';
 
@@ -109,7 +91,6 @@ const BookingAtHome = () => {
       return updated;
     });
   };
-  // Kiểm tra token và auth
 
   const fetchPrice = async () => {
     try {
@@ -147,7 +128,7 @@ const BookingAtHome = () => {
     }
   };
 
-  const handlePriceChange = (event: SelectChangeEvent<string>) => {
+  const handlePriceChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const priceId = event.target.value;
     setSelectedPrice(priceId);
   };
@@ -285,480 +266,272 @@ const BookingAtHome = () => {
   }, []);
 
   return (
-    <Box
-      sx={{
-        backgroundColor: '#f8faff',
-        minHeight: '100vh',
-        pt: 12,
-        pb: 4,
-      }}
-    >
-      <Container maxWidth="lg">
+    <div className="bg-gray-50 min-h-screen pt-12 pb-4">
+      <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
-        <Paper
-          elevation={1}
-          sx={{
-            p: 3,
-            mb: 4,
-            backgroundColor: '#fff',
-            borderRadius: 3,
-            borderLeft: '4px solid #2196f3',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Home sx={{ color: '#2196f3', fontSize: 32 }} />
-            <Typography
-              variant="h4"
-              sx={{
-                color: '#1976d2',
-                fontWeight: 600,
-                fontSize: { xs: '1.5rem', md: '2rem' },
-              }}
-            >
+        <div className="bg-white shadow-sm p-6 mb-6 mt-15 rounded-lg border-l-4 border-blue-500">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              </svg>
+            </div>
+            <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">
               Đặt Lịch Dịch Vụ Tại Nhà
-            </Typography>
-          </Box>
-        </Paper>
+            </h1>
+          </div>
+        </div>
 
         {/* Service Configuration Section */}
-        <Paper
-          elevation={1}
-          sx={{
-            p: 4,
-            mb: 4,
-            backgroundColor: '#fff',
-            borderRadius: 3,
-          }}
-        >
-          <Typography
-            variant="h6"
-            sx={{
-              mb: 3,
-              color: '#1976d2',
-              fontWeight: 600,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-            }}
-          >
-            <LocationOn /> Thông Tin Dịch Vụ
-          </Typography>
+        <div className="bg-white shadow-sm p-6 mb-6 rounded-lg">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+            Thông Tin Dịch Vụ
+          </h2>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <TextField
-              fullWidth
-              label="Địa chỉ nhà"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Nhập địa chỉ chi tiết"
-              variant="outlined"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  '&:hover fieldset': {
-                    borderColor: '#2196f3',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#1976d2',
-                  },
-                },
-              }}
-            />
+          <div className="space-y-6">
+            {/* Address Input */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Địa chỉ nhà
+              </label>
+              <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Nhập địa chỉ chi tiết"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
 
-            <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-              <FormControl sx={{ minWidth: 200, flex: 1 }}>
-                <InputLabel>Chọn Gói Giá</InputLabel>
-                <Select
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Price Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Chọn Gói Giá
+                </label>
+                <select
                   value={selectedPrice}
                   onChange={handlePriceChange}
-                  input={<OutlinedInput label="Chọn Gói Giá" />}
-                  sx={{
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#2196f3',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1976d2',
-                    },
-                  }}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
+                  <option value="">-- Chọn gói giá --</option>
                   {price.map((priceItem) => (
-                    <MenuItem key={priceItem.priceId} value={priceItem.priceId}>
+                    <option key={priceItem.priceId} value={priceItem.priceId}>
                       {`${priceItem.price} - ${priceItem.time}`}
-                    </MenuItem>
+                    </option>
                   ))}
-                </Select>
-              </FormControl>
+                </select>
+              </div>
 
-              <FormControl sx={{ minWidth: 200, flex: 1 }}>
-                <InputLabel>Phương thức thanh toán</InputLabel>
-                <Select
+              {/* Payment Method */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phương thức thanh toán
+                </label>
+                <select
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value)}
-                  input={<OutlinedInput label="Phương thức thanh toán" />}
-                  sx={{
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#2196f3',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1976d2',
-                    },
-                  }}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
+                  <option value="">-- Chọn phương thức --</option>
                   {payment.map((method) => (
-                    <MenuItem key={method.value} value={method.value}>
-                      <Box
-                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-                      >
-                        <Payment sx={{ fontSize: 20 }} />
-                        {method.label}
-                      </Box>
-                    </MenuItem>
+                    <option key={method.value} value={method.value}>
+                      {method.label}
+                    </option>
                   ))}
-                </Select>
-              </FormControl>
-            </Box>
-          </Box>
-        </Paper>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <Typography
-          variant="h6"
-          sx={{
-            mb: 3,
-            color: '#1976d2',
-            fontWeight: 600,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-          }}
-        >
-          <Person /> Thông Tin Bệnh Nhân
-        </Typography>
+        {/* Patient Information Section */}
+        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+          Thông Tin Bệnh Nhân
+        </h2>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <div className="space-y-6">
           {/* Patient One */}
-          <Card
-            elevation={2}
-            sx={{
-              backgroundColor: '#f0f8ff',
-              border: '2px solid #e3f2fd',
-              borderRadius: 3,
-              '&:hover': {
-                boxShadow: '0 8px 25px rgba(33, 150, 243, 0.15)',
-              },
-            }}
-          >
-            <CardContent sx={{ p: 3 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  color: '#1976d2',
-                  fontWeight: 600,
-                  mb: 3,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                }}
-              >
-                <Person sx={{ fontSize: 24 }} />
-                Người Thứ Nhất
-              </Typography>
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+              Người Thứ Nhất
+            </h3>
 
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
-                {fieldLabels.map(({ name, label, type }) => (
-                  <TextField
-                    key={`one-${name}`}
-                    size="small"
-                    label={label}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+              {fieldLabels.map(({ name, label, type }) => (
+                <div key={`one-${name}`}>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {label}
+                  </label>
+                  <input
                     type={type || 'text'}
                     name={name}
                     value={patientOne[name]}
                     onChange={handleInputPatientOne}
-                    variant="outlined"
-                    InputLabelProps={
-                      type === 'date' ? { shrink: true } : undefined
-                    }
-                    error={!!patientOneErrors[name]}
-                    helperText={patientOneErrors[name]}
-                    sx={{
-                      minWidth: '250px',
-                      flex: '1 1 300px',
-                      '& .MuiOutlinedInput-root': {
-                        backgroundColor: '#fff',
-                        '&:hover fieldset': {
-                          borderColor: '#2196f3',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: '#1976d2',
-                        },
-                      },
-                    }}
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      patientOneErrors[name] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                   />
-                ))}
-                <FormControl
-                  size="small"
-                  sx={{
-                    minWidth: '250px',
-                    flex: '1 1 300px',
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: '#fff',
-                      '&:hover fieldset': {
-                        borderColor: '#2196f3',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: '#1976d2',
-                      },
-                    },
-                  }}
+                  {patientOneErrors[name] && (
+                    <p className="mt-1 text-sm text-red-600">{patientOneErrors[name]}</p>
+                  )}
+                </div>
+              ))}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mối quan hệ
+                </label>
+                <select
+                  value={patientOne.relationship}
+                  onChange={(e) =>
+                    setPatientOne((prev) => ({
+                      ...prev,
+                      relationship: e.target.value,
+                    }))
+                  }
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <InputLabel>Mối quan hệ</InputLabel>
-                  <Select
-                    value={patientOne.relationship}
-                    onChange={(e) =>
-                      setPatientOne((prev) => ({
-                        ...prev,
-                        relationship: e.target.value,
-                      }))
-                    }
-                    input={
-                      <OutlinedInput label="Quan hệ với người xét nghiệm" />
-                    }
-                  >
-                    {relationshipOption.map((relation) => (
-                      <MenuItem key={relation} value={relation}>
-                        {' '}
-                        {relation}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-
-              <Box>
-                <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-                  Giới tính
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  {['Nam', 'Nữ'].map((gender) => (
-                    <Box
-                      key={`one-gender-${gender}`}
-                      sx={{ display: 'flex', alignItems: 'center' }}
-                    >
-                      <input
-                        type="radio"
-                        name="gender"
-                        id={`one-gender-${gender}`}
-                        value={gender}
-                        checked={patientOne.gender === gender}
-                        onChange={handleInputPatientOne}
-                        style={{
-                          accentColor: '#1976d2',
-                          marginRight: '8px',
-                          transform: 'scale(1.2)',
-                        }}
-                      />
-                      <Typography
-                        component="label"
-                        htmlFor={`one-gender-${gender}`}
-                        sx={{ cursor: 'pointer', fontWeight: 500 }}
-                      >
-                        {gender}
-                      </Typography>
-                    </Box>
+                  <option value="">-- Chọn mối quan hệ --</option>
+                  {relationshipOption.map((relation) => (
+                    <option key={relation} value={relation}>
+                      {relation}
+                    </option>
                   ))}
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Giới tính
+              </label>
+              <div className="flex gap-4">
+                {['Nam', 'Nữ'].map((gender) => (
+                  <label key={`one-gender-${gender}`} className="flex items-center cursor-pointer">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value={gender}
+                      checked={patientOne.gender === gender}
+                      onChange={handleInputPatientOne}
+                      className="mr-2 text-blue-500 focus:ring-blue-500"
+                    />
+                    <span className="text-gray-700">{gender}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
 
           {/* Patient Two */}
-          <Card
-            elevation={2}
-            sx={{
-              backgroundColor: '#f0f8ff',
-              border: '2px solid #e3f2fd',
-              borderRadius: 3,
-              '&:hover': {
-                boxShadow: '0 8px 25px rgba(33, 150, 243, 0.15)',
-              },
-            }}
-          >
-            <CardContent sx={{ p: 3 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  color: '#1976d2',
-                  fontWeight: 600,
-                  mb: 3,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                }}
-              >
-                <Person sx={{ fontSize: 24 }} />
-                Người Thứ Hai
-              </Typography>
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+              Người Thứ Hai
+            </h3>
 
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
-                {fieldLabels.map(({ name, label, type }) => (
-                  <TextField
-                    key={`two-${name}`}
-                    size="small"
-                    label={label}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+              {fieldLabels.map(({ name, label, type }) => (
+                <div key={`two-${name}`}>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {label}
+                  </label>
+                  <input
                     type={type || 'text'}
                     name={name}
                     value={patientTwo[name]}
                     onChange={handleInputPatientTwo}
-                    variant="outlined"
-                    InputLabelProps={
-                      type === 'date' ? { shrink: true } : undefined
-                    }
-                    error={!!patientTwoErrors[name]}
-                    helperText={patientTwoErrors[name]}
-                    sx={{
-                      minWidth: '250px',
-                      flex: '1 1 300px',
-                      '& .MuiOutlinedInput-root': {
-                        backgroundColor: '#fff',
-                        '&:hover fieldset': {
-                          borderColor: '#2196f3',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: '#1976d2',
-                        },
-                      },
-                    }}
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      patientTwoErrors[name] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                   />
-                ))}
-                <FormControl
-                  size="small"
-                  sx={{
-                    minWidth: '250px',
-                    flex: '1 1 300px',
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: '#fff',
-                      '&:hover fieldset': {
-                        borderColor: '#2196f3',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: '#1976d2',
-                      },
-                    },
-                  }}
+                  {patientTwoErrors[name] && (
+                    <p className="mt-1 text-sm text-red-600">{patientTwoErrors[name]}</p>
+                  )}
+                </div>
+              ))}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mối quan hệ
+                </label>
+                <select
+                  value={patientTwo.relationship}
+                  onChange={(e) =>
+                    setPatientTwo((prev) => ({
+                      ...prev,
+                      relationship: e.target.value,
+                    }))
+                  }
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <InputLabel>Mối quan hệ</InputLabel>
-                  <Select
-                    value={patientTwo.relationship}
-                    onChange={(e) =>
-                      setPatientTwo((prev) => ({
-                        ...prev,
-                        relationship: e.target.value,
-                      }))
-                    }
-                    input={
-                      <OutlinedInput label="Quan hệ với người xét nghiệm" />
-                    }
-                  >
-                    {relationshipOption.map((relation) => (
-                      <MenuItem key={relation} value={relation}>
-                        {' '}
-                        {relation}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-
-              <Box>
-                <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-                  Giới tính
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  {['Nam', 'Nữ'].map((gender) => (
-                    <Box
-                      key={`two-gender-${gender}`}
-                      sx={{ display: 'flex', alignItems: 'center' }}
-                    >
-                      <input
-                        type="radio"
-                        name="gender2"
-                        id={`two-gender-${gender}`}
-                        value={gender}
-                        checked={patientTwo.gender === gender}
-                        onChange={(e) =>
-                          setPatientTwo((prev) => ({
-                            ...prev,
-                            gender: e.target.value,
-                          }))
-                        }
-                        style={{
-                          accentColor: '#1976d2',
-                          marginRight: '8px',
-                          transform: 'scale(1.2)',
-                        }}
-                      />
-
-                      <Typography
-                        component="label"
-                        htmlFor={`two-gender-${gender}`}
-                        sx={{ cursor: 'pointer', fontWeight: 500 }}
-                      >
-                        {gender}
-                      </Typography>
-                    </Box>
+                  <option value="">-- Chọn mối quan hệ --</option>
+                  {relationshipOption.map((relation) => (
+                    <option key={relation} value={relation}>
+                      {relation}
+                    </option>
                   ))}
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
+                </select>
+              </div>
+            </div>
 
-        {/* Submit Section */}
-        <Paper
-          elevation={1}
-          sx={{
-            p: 4,
-            mt: 4,
-            backgroundColor: '#fff',
-            borderRadius: 3,
-            textAlign: 'center',
-          }}
-        >
-          <Divider sx={{ mb: 3 }} />
-          <Button
-            variant="contained"
-            size="large"
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Giới tính
+              </label>
+              <div className="flex gap-4">
+                {['Nam', 'Nữ'].map((gender) => (
+                  <label key={`two-gender-${gender}`} className="flex items-center cursor-pointer">
+                    <input
+                      type="radio"
+                      name="gender2"
+                      value={gender}
+                      checked={patientTwo.gender === gender}
+                      onChange={(e) =>
+                        setPatientTwo((prev) => ({
+                          ...prev,
+                          gender: e.target.value,
+                        }))
+                      }
+                      className="mr-2 text-blue-500 focus:ring-blue-500"
+                    />
+                    <span className="text-gray-700">{gender}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons Section */}
+        <div className="bg-white shadow-sm p-6 mt-6 rounded-lg text-center">
+          <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            sx={{
-              backgroundColor: '#1976d2',
-              fontSize: '18px',
-              fontWeight: 600,
-              px: 6,
-              py: 2,
-              borderRadius: 2,
-              textTransform: 'none',
-              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
-              '&:hover': {
-                backgroundColor: '#1565c0',
-                boxShadow: '0 6px 16px rgba(25, 118, 210, 0.4)',
-                transform: 'translateY(-2px)',
-              },
-              '&:active': {
-                transform: 'translateY(0)',
-              },
-              transition: 'all 0.2s ease-in-out',
-            }}
+            className={`px-8 py-3 rounded-lg font-semibold text-lg ${
+              isSubmitting
+                ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
           >
             {isSubmitting ? 'Đang xử lý...' : 'Đăng Ký Dịch Vụ'}
-          </Button>
-        </Paper>
-      </Container>
+          </button>
+        </div>
+      </div>
+
       <CustomSnackBar
         open={snackbar.open}
         message={snackbar.message}
         severity={snackbar.severity}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
       />
-    </Box>
+    </div>
   );
 };
 
