@@ -35,7 +35,7 @@ const Notification: React.FC<NotificationProps> = ({
 
         {/* Header với icon */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl shadow-lg mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg mb-4">
             <svg
               className="w-8 h-8 text-white"
               fill="none"
@@ -90,7 +90,7 @@ const Notification: React.FC<NotificationProps> = ({
           {/* Nút Dân Sự với hiệu ứng nâng cao */}
           <NavLink
             to="/service/civil#civil-service-list"
-            className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 w-full text-center overflow-hidden"
+            className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 w-full text-center overflow-hidden"
             onClick={onClose}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

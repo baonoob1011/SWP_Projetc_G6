@@ -144,9 +144,9 @@ const Forget = () => {
           >
             GENELINK
           </Typography>
-          <div
+           <div
             style={{
-              width: '70px',
+              width: '100px',
               height: '70px',
               backgroundColor: 'white',
               borderRadius: '8px',
@@ -158,7 +158,7 @@ const Forget = () => {
             <img
               src={logo}
               alt="Logo"
-              style={{ width: '70px', height: '70px' }}
+              style={{ width: '100px', height: '50px' }}
             />
           </div>
         </div>

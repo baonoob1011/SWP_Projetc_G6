@@ -358,7 +358,6 @@ const BookingAtCenter = () => {
   useEffect(() => {
     fetchPrice();
   }, []);
-// Thêm vào trong component, trước return:
 const formatTime = (time: string) => {
   const [hour, minute] = time.split(':');
   // parseInt để bỏ số 0 đứng trước ở giờ, ví dụ "08" → "8"
