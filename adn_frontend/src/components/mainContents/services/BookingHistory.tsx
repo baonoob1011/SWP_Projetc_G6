@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { FaHospital, FaHome, FaServicestack, FaCalendarAlt, FaMoneyBillWave, FaChevronLeft, FaChevronRight, FaClock, FaMapMarkerAlt, FaUser } from 'react-icons/fa';
+import { FaHospital, FaHome, FaServicestack, FaCalendarAlt, FaMoneyBillWave, FaChevronLeft, FaChevronRight, FaClock, FaMapMarkerAlt, FaUser, FaDoorOpen, FaStickyNote } from 'react-icons/fa';
 
 const ITEMS_PER_PAGE = 3;
 
@@ -115,7 +115,7 @@ const BookingHistory = () => {
               : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
           }`}
         >
-          <FaChevronLeft className="mr-2" />
+          <FaChevronLeft className="mr-2 w-3 h-3" />
           Trang trước
         </button>
 
@@ -145,7 +145,7 @@ const BookingHistory = () => {
           }`}
         >
           Trang sau
-          <FaChevronRight className="ml-2" />
+          <FaChevronRight className="ml-2 w-3 h-3" />
         </button>
       </div>
     );
@@ -167,15 +167,17 @@ const BookingHistory = () => {
           >
             <div className="p-6">
               {/* Header Row */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
-                  <FaHospital className="text-blue-600" />
+                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <FaHospital className="text-blue-600 w-5 h-5" />
+                  </div>
                   <div>
-                    <h3 className="text-blue-600 font-bold text-sm">
+                    <h3 className="text-blue-600 font-bold text-lg">
                       Lịch sử #{centerStart + index + 1}
                     </h3>
                     <p className="text-sm text-gray-500">
-                      Tại trung tâm
+                      Khám tại trung tâm
                     </p>
                   </div>
                 </div>
@@ -188,13 +190,15 @@ const BookingHistory = () => {
               </div>
 
               {/* Info Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 {/* Ngày khám */}
                 <div className="flex items-center space-x-3">
-                  <FaCalendarAlt className="text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Ngày khám</p>
-                    <p className="font-medium text-gray-900">
+                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <FaCalendarAlt className="text-gray-600 w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm text-gray-500 font-medium">Ngày khám</p>
+                    <p className="font-semibold text-gray-900 truncate">
                       {a?.appointmentDate || '-'}
                     </p>
                   </div>
@@ -202,10 +206,12 @@ const BookingHistory = () => {
 
                 {/* Dịch vụ */}
                 <div className="flex items-center space-x-3">
-                  <FaServicestack className="text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Dịch vụ</p>
-                    <p className="font-medium text-gray-900">
+                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <FaServicestack className="text-gray-600 w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm text-gray-500 font-medium">Dịch vụ</p>
+                    <p className="font-semibold text-gray-900 truncate">
                       {service?.serviceName || '-'}
                     </p>
                   </div>
@@ -213,21 +219,25 @@ const BookingHistory = () => {
 
                 {/* Phòng */}
                 <div className="flex items-center space-x-3">
-                  <FaUser className="text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Phòng</p>
-                    <p className="font-medium text-gray-900">
+                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <FaDoorOpen className="text-gray-600 w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm text-gray-500 font-medium">Phòng khám</p>
+                    <p className="font-semibold text-gray-900 truncate">
                       {room?.roomName || '-'}
                     </p>
                   </div>
                 </div>
 
                 {/* Địa điểm */}
-                <div className="flex items-start space-x-3 col-span-1 md:col-span-2 lg:col-span-3">
-                  <FaMapMarkerAlt className="text-gray-400 mt-1" />
-                  <div>
-                    <p className="text-sm text-gray-500">Địa điểm</p>
-                    <p className="font-medium text-gray-900">
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <FaMapMarkerAlt className="text-gray-600 w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm text-gray-500 font-medium">Địa điểm</p>
+                    <p className="font-semibold text-gray-900 text-sm leading-relaxed">
                       {loc
                         ? `${loc.addressLine}, ${loc.district}, ${loc.city}`
                         : '-'}
@@ -238,22 +248,25 @@ const BookingHistory = () => {
 
               {/* Payment Info */}
               {payment && (
-                <div className="bg-gray-50 rounded-lg p-4">
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <h4 className="font-semibold text-gray-900">Thông tin thanh toán</h4>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <p className="text-sm text-gray-500">Số tiền</p>
-                      <p className="font-medium text-gray-900">
+                      <p className="text-sm text-gray-500 font-medium">Số tiền</p>
+                      <p className="font-semibold text-gray-900">
                         {payment.amount ? `${payment.amount.toLocaleString('vi-VN')} VND` : '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Phương thức</p>
-                      <p className="font-medium text-gray-900">
+                      <p className="text-sm text-gray-500 font-medium">Phương thức</p>
+                      <p className="font-semibold text-gray-900">
                         {payment.paymentMethod || '-'}
                       </p>
                     </div>
                     <div className="md:text-right">
-                      <p className="text-sm text-gray-500">Thanh toán</p>
+                      <p className="text-sm text-gray-500 font-medium">Trạng thái</p>
                       <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
                         payment.getPaymentStatus === 'PAID'
                           ? 'bg-green-100 text-green-800'
@@ -289,15 +302,17 @@ const BookingHistory = () => {
           >
             <div className="p-6">
               {/* Header Row */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
-                  <FaHome className="text-blue-600" />
+                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <FaHome className="text-blue-600 w-5 h-5" />
+                  </div>
                   <div>
-                    <h3 className="text-blue-600 font-bold text-sm">
+                    <h3 className="text-blue-600 font-bold text-lg">
                       Lịch sử #{homeStart + index + 1}
                     </h3>
                     <p className="text-sm text-gray-500">
-                      Tại nhà
+                      Khám tại nhà
                     </p>
                   </div>
                 </div>
@@ -310,13 +325,15 @@ const BookingHistory = () => {
               </div>
 
               {/* Info Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 {/* Ngày khám */}
                 <div className="flex items-center space-x-3">
-                  <FaCalendarAlt className="text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Ngày khám</p>
-                    <p className="font-medium text-gray-900">
+                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <FaCalendarAlt className="text-gray-600 w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm text-gray-500 font-medium">Ngày khám</p>
+                    <p className="font-semibold text-gray-900 truncate">
                       {a?.appointmentDate || '-'}
                     </p>
                   </div>
@@ -324,22 +341,26 @@ const BookingHistory = () => {
 
                 {/* Tên kit */}
                 <div className="flex items-center space-x-3">
-                  <FaServicestack className="text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Tên kit</p>
-                    <p className="font-medium text-gray-900">
+                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <FaServicestack className="text-gray-600 w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm text-gray-500 font-medium">Tên kit</p>
+                    <p className="font-semibold text-gray-900 truncate">
                       {kit?.kitName || '-'}
                     </p>
                   </div>
                 </div>
 
                 {/* Ghi chú */}
-                <div className="flex items-start space-x-3 col-span-1 md:col-span-2 lg:col-span-1">
-                  <FaUser className="text-gray-400 mt-1" />
-                  <div>
-                    <p className="text-sm text-gray-500">Ghi chú</p>
-                    <p className="font-medium text-gray-900">
-                      {a?.note || '-'}
+                <div className="flex items-start space-x-3 md:col-span-2">
+                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <FaStickyNote className="text-gray-600 w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm text-gray-500 font-medium">Ghi chú</p>
+                    <p className="font-semibold text-gray-900 text-sm leading-relaxed">
+                      {a?.note || 'Không có ghi chú'}
                     </p>
                   </div>
                 </div>
@@ -347,22 +368,26 @@ const BookingHistory = () => {
 
               {/* Payment Info */}
               {payment && (
-                <div className="bg-gray-50 rounded-lg p-4">
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <FaMoneyBillWave className="text-green-600 w-4 h-4" />
+                    <h4 className="font-semibold text-gray-900">Thông tin thanh toán</h4>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <p className="text-sm text-gray-500">Số tiền</p>
-                      <p className="font-medium text-gray-900">
+                      <p className="text-sm text-gray-500 font-medium">Số tiền</p>
+                      <p className="font-semibold text-gray-900">
                         {payment.amount ? `${payment.amount.toLocaleString('vi-VN')} VND` : '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Phương thức</p>
-                      <p className="font-medium text-gray-900">
+                      <p className="text-sm text-gray-500 font-medium">Phương thức</p>
+                      <p className="font-semibold text-gray-900">
                         {payment.paymentMethod || '-'}
                       </p>
                     </div>
                     <div className="md:text-right">
-                      <p className="text-sm text-gray-500">Thanh toán</p>
+                      <p className="text-sm text-gray-500 font-medium">Trạng thái</p>
                       <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
                         payment.getPaymentStatus === 'PAID'
                           ? 'bg-green-100 text-green-800'
@@ -409,7 +434,7 @@ const BookingHistory = () => {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              <FaHospital className="mr-2" />
+              <FaHospital className="mr-2 w-4 h-4" />
               Tại trung tâm
             </button>
             <button
@@ -420,7 +445,7 @@ const BookingHistory = () => {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              <FaHome className="mr-2" />
+              <FaHome className="mr-2 w-4 h-4" />
               Tại nhà
             </button>
           </div>

@@ -358,6 +358,11 @@ const BookingAtCenter = () => {
   useEffect(() => {
     fetchPrice();
   }, []);
+const formatTime = (time: string) => {
+  const [hour, minute] = time.split(':');
+  // parseInt để bỏ số 0 đứng trước ở giờ, ví dụ "08" → "8"
+  return `${parseInt(hour, 10)}:${minute}`;
+};
 
   return (
     <div className="bg-gray-50 min-h-screen pt-12 pb-4">
@@ -406,6 +411,7 @@ const BookingAtCenter = () => {
             </div>
 
             {/* Date and Slot Selection */}
+            {/* Date and Slot Selection */}
             {selectedLocation && (
               <div className="space-y-4">
                 {isLoadingSlots ? (
@@ -418,61 +424,81 @@ const BookingAtCenter = () => {
                     <p className="text-amber-700">Không có slot nào khả dụng cho địa điểm này</p>
                   </div>
                 ) : (
-                  <>
-                    {/* Date Selection Dropdown */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Chọn Ngày
-                      </label>
-                      <select
-                        value={selectedDate}
-                        onChange={handleDateChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      >
-                        <option value="">-- Chọn ngày --</option>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      Chọn lịch hẹn
+                    </label>
+                    
+                    {/* Date Selection Tabs */}
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      {/* Date Tabs Header */}
+                      <div className="flex overflow-x-auto bg-gray-50 border-b border-gray-200">
                         {Object.keys(groupedSlots).map((date) => (
-                          <option key={date} value={date}>
-                            {date}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* Slot Selection */}
-                    {selectedDate && (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-3">
-                          Chọn Thời Gian
-                        </label>
-                        <div className="border border-gray-200 rounded-lg overflow-hidden">
-                          <div className="bg-gray-100 px-4 py-3 border-b border-gray-200">
-                            <h3 className="font-medium text-gray-800">{selectedDate}</h3>
-                          </div>
-                          <div className="p-4">
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                              {groupedSlots[selectedDate].map((slot) => (
-                                <button
-                                  key={slot.slotId}
-                                  onClick={() => handleSlotChange(slot.slotId)}
-                                  className={`p-3 rounded-lg border text-sm font-medium transition-colors ${
-                                    selectedSlot === slot.slotId
-                                      ? 'bg-blue-500 text-white border-blue-500'
-                                      : 'bg-white text-gray-700 border-gray-300 hover:bg-blue-50 hover:border-blue-300'
-                                  }`}
-                                >
-                                  {`${slot.startTime} - ${slot.endTime}`}
-                                </button>
-                              ))}
+                          <button
+                            key={date}
+                            onClick={() => handleDateChange({ target: { value: date } } as React.ChangeEvent<HTMLSelectElement>)}
+                            className={`flex-shrink-0 px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                              selectedDate === date
+                                ? 'border-blue-500 text-blue-600 bg-blue-50'
+                                : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                              </svg>
+                              {date}
                             </div>
-                          </div>
-                        </div>
+                          </button>
+                        ))}
                       </div>
-                    )}
-                  </>
+
+                      {/* Slot Selection Grid */}
+                      {selectedDate && (
+                        <div className="p-6">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                            {groupedSlots[selectedDate].map((slot) => (
+                              <button
+                                key={slot.slotId}
+                                onClick={() => handleSlotChange(slot.slotId)}
+                                className={`p-4 rounded-lg border text-sm font-medium transition-all duration-200 ${
+                                  selectedSlot === slot.slotId
+                                    ? 'bg-blue-500 text-white border-blue-500 shadow-lg transform scale-105'
+                                    : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-blue-50 hover:border-blue-300 hover:shadow-md'
+                                }`}
+                              >
+                                <div className="text-center">
+                                  <div className="font-semibold">
+                                     {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                                  </div>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                          
+                          {groupedSlots[selectedDate].length === 0 && (
+                            <div className="text-center py-8">
+                              <p className="text-gray-500">Không có slot nào khả dụng cho ngày này</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      
+                      {/* Instruction when no date selected */}
+                      {!selectedDate && (
+                        <div className="p-8 text-center">
+                          <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                          </svg>
+                          <p className="text-gray-600 text-lg">Vui lòng chọn ngày để xem các slot khả dụng</p>
+                          <p className="text-gray-500 text-sm mt-2">Nhấp vào một trong các tab ngày ở trên</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
             )}
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Price Selection */}
               <div>

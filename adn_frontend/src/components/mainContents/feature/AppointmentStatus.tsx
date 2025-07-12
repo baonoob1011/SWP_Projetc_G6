@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import styles from './AppointmentStatus.module.css';
 
 const GetKitDeliveryStatus = () => {
   const [kitStatus, setKitStatus] = useState<any[]>([]);
@@ -17,35 +16,35 @@ const GetKitDeliveryStatus = () => {
       id: 'pending',
       title: 'Đặt hàng thành công',
       description: 'Đơn hàng của bạn đã được đặt và đang chờ giao hàng',
-      icon: '📝',
+      icon: '1',
       status: 'PENDING'
     },
     {
       id: 'in_progress',
       title: 'Đang giao hàng',
       description: 'Đơn hàng đang được giao đến bạn',
-      icon: '🚚',
+      icon: '2',
       status: 'IN_PROGRESS'
     },
     {
       id: 'delivered',
       title: 'Đã giao thành công',
       description: 'Đơn hàng đã được giao thành công đến bạn',
-      icon: '✅',
+      icon: '3',
       status: 'DELIVERED'
     },
     {
       id: 'done',
-      title: 'Kit đã được nhận về và xử lý',
+      title: 'Kit đã được cơ sở tiếp nhận',
       description: 'Kit đã được nhận về và xử lý xong',
-      icon: '🎉',
+      icon: '4',
       status: 'DONE'
     },
     {
       id: 'failed',
       title: 'Giao hàng thất bại',
       description: 'Đơn hàng giao không thành công, sẽ thử lại',
-      icon: '❌',
+      icon: '!',
       status: 'FAILED'
     }
   ];
@@ -192,15 +191,76 @@ const GetKitDeliveryStatus = () => {
     switch (upperStatus) {
       case 'PENDING':
       case 'IN_PROGRESS':
-        return 'statusGray';
+        return 'bg-gray-50 border-gray-200';
       case 'DELIVERED':
-        return 'statusBlue';
+        return 'bg-blue-50 border-blue-200';
       case 'DONE':
-        return 'statusGreen';
+        return 'bg-green-50 border-green-200';
       case 'FAILED':
-        return 'statusRed';
+        return 'bg-red-50 border-red-200';
       default:
-        return 'statusGray';
+        return 'bg-gray-50 border-gray-200';
+    }
+  };
+
+  // Get status badge color
+  const getStatusBadgeClass = (status: string) => {
+    const upperStatus = status.toUpperCase();
+    switch (upperStatus) {
+      case 'PENDING':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'IN_PROGRESS':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'DELIVERED':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'DONE':
+        return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+      case 'FAILED':
+        return 'bg-red-100 text-red-800 border-red-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  // Get step styling classes - Updated for new design
+  const getStepIconClass = (stepClass: string) => {
+    switch (stepClass) {
+      case 'completed':
+        return 'bg-green-500 text-white border-green-500 shadow-md';
+      case 'active':
+        return 'bg-blue-500 text-white border-blue-500 shadow-md';
+      case 'failed':
+        return 'bg-red-500 text-white border-red-500 shadow-md';
+      case 'pending':
+      default:
+        return 'bg-gray-100 text-gray-500 border-gray-300';
+    }
+  };
+  const getStepTitleClass = (stepClass: string) => {
+    switch (stepClass) {
+      case 'completed':
+        return 'text-green-700 font-semibold';
+      case 'active':
+        return 'text-blue-700 font-semibold';
+      case 'failed':
+        return 'text-red-700 font-semibold';
+      case 'pending':
+      default:
+        return 'text-gray-600';
+    }
+  };
+
+  const getStepTimeClass = (stepClass: string) => {
+    switch (stepClass) {
+      case 'completed':
+        return 'text-green-600';
+      case 'active':
+        return 'text-blue-600';
+      case 'failed':
+        return 'text-red-600';
+      case 'pending':
+      default:
+        return 'text-gray-500';
     }
   };
 
@@ -212,10 +272,10 @@ const GetKitDeliveryStatus = () => {
 
   if (isLoading && kitStatus.length === 0) {
     return (
-      <div className={styles.container}>
-        <div className={styles.loadingContainer}>
-          <div className={styles.loadingSpinner}></div>
-          <div className={styles.loadingText}>
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+          <div className="text-gray-600 text-lg">
             Đang tải thông tin đơn hàng...
           </div>
         </div>
@@ -224,31 +284,11 @@ const GetKitDeliveryStatus = () => {
   }
 
   return (
-    <div className={styles.container}>
-      {/* <div className={styles.header}>
-        📦 Theo Dõi Đơn Hàng Kit DNA
-        <button 
-          onClick={handleRefresh}
-          style={{
-            background: 'rgba(255,255,255,0.2)',
-            border: 'none',
-            borderRadius: '8px',
-            color: 'white',
-            padding: '0.5rem 1rem',
-            marginLeft: '1rem',
-            cursor: 'pointer',
-            fontSize: '0.9rem'
-          }}
-          disabled={isLoading}
-        >
-          {isLoading ? '🔄' : '↻'} Làm mới
-        </button>
-      </div> */}
-
+    <div className="max-w-4xl mx-auto p-0">
       {kitStatus.length === 0 ? (
-        <div className={styles.noDataContainer}>
-          <span className={styles.noDataIcon}>📦</span>
-          <p className={styles.noDataText}>Không có đơn hàng nào để theo dõi.</p>
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="text-6xl mb-4">📦</div>
+          <p className="text-gray-600 text-lg">Không có đơn hàng nào để theo dõi.</p>
         </div>
       ) : (
         <>
@@ -258,118 +298,175 @@ const GetKitDeliveryStatus = () => {
             const relevantSteps = getRelevantSteps(order.deliveryStatus);
             const isExpanded = expandedOrders.has(realIndex);
             const statusColorClass = getStatusColorClass(order.deliveryStatus);
+            const statusBadgeClass = getStatusBadgeClass(order.deliveryStatus);
+            
             return (
-              <div key={realIndex} className={`${styles.orderCard} ${styles[statusColorClass]}`}>
+              <div key={realIndex} className={`mb-6 rounded-xl border-2 shadow-lg overflow-hidden ${statusColorClass}`}>
                 {/* Order Header */}
-                <div className={styles.orderHeader}>
-                  <div className={styles.orderInfo}>
-                    <div className={styles.orderId}>
-                      Đơn hàng #{realIndex + 1}
-                    </div>
-                    <div className={styles.orderDate}>
-                      Ngày đặt: {new Date(order.createOrderDate).toLocaleDateString('vi-VN', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric'
-                      })}
-                    </div>
-                  </div>
-                  <div className={styles.orderActions}>
-                    <div className={`${styles.orderStatus} ${styles[statusColorClass]}`}>
-                      {getStatusDisplayText(order.deliveryStatus)}
+                <div className="p-6 bg-white">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="text-xl font-bold text-gray-800">
+                          Đơn hàng #{realIndex + 1}
+                        </div>
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium border ${statusBadgeClass}`}>
+                          {getStatusDisplayText(order.deliveryStatus)}
+                        </span>
+                      </div>
+                      <div className="text-gray-600 flex items-center gap-2">
+                        <span className="text-base">📅</span>
+                        <span>Ngày đặt: {new Date(order.createOrderDate).toLocaleDateString('vi-VN', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric'
+                        })}</span>
+                      </div>
                     </div>
                     <button 
-                      className={styles.toggleButton}
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
                       onClick={() => toggleOrderExpansion(realIndex)}
                     >
-                      {isExpanded ? '🔼 Thu gọn' : '🔽 Xem chi tiết'}
+                      <span className="text-sm">
+                        {isExpanded ? '🔼' : '🔽'}
+                      </span>
+                      <span>
+                        {isExpanded ? 'Thu gọn' : 'Xem chi tiết'}
+                      </span>
                     </button>
                   </div>
                 </div>
+
                 {/* Timeline - Conditionally rendered */}
+              {/* Timeline - Conditionally rendered */}
                 {isExpanded && (
-                  <div className={styles.timeline}>
-                    {relevantSteps.map((step, stepIndex) => {
-                      const stepClass = getStepClass(stepIndex, currentStepIndex, order.deliveryStatus, step);
-                      return (
-                        <div key={step.id} className={`${styles.timelineStep} ${styles[stepClass]}`}>
-                          {/* Step Icon */}
-                          <div className={`${styles.stepIcon} ${styles[stepClass]}`}>
-                            {stepClass === 'completed' ? '✓' : stepClass === 'failed' ? '✗' : step.icon}
-                          </div>
-                          {/* Step Content */}
-                          <div className={styles.stepContent}>
-                            <div className={`${styles.stepTitle} ${styles[stepClass]}`}>
-                              {step.title}
-                            </div>
-                            <div className={styles.stepDescription}>
-                              {step.description}
-                            </div>
-                            <div className={`${styles.stepTime} ${styles[stepClass]}`}>
-                              {stepClass === 'pending' ? 'Chưa thực hiện' : 
-                               stepClass === 'active' ? 'Đang thực hiện' :
-                               stepClass === 'completed' ? 'Đã hoàn thành' :
-                               stepClass === 'failed' ? 'Thất bại' : ''}
-                            </div>
+                  <div className="px-6 pb-6 bg-white border-t border-gray-100">
+                    <div className="mt-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                        <span>Trạng thái giao hàng</span>
+                      </h3>
+                      
+                      {/* New Multi-step Progress Bar */}
+                      <div className="mb-8">
+                        <div className="flex items-center relative">
+                          {/* Background Line */}
+                          <div 
+                            className="absolute top-6 h-0.5 bg-gray-300 z-0"
+                            style={{
+                              left: '24px', // Half of circle width (48px/2)
+                              right: '24px' // Half of circle width (48px/2)
+                            }}
+                          ></div>
+                          
+                          {/* Progress Line */}
+                          <div 
+                            className="absolute top-6 h-0.5 bg-green-500 z-10 transition-all duration-500"
+                            style={{
+                              left: '24px',
+                              width: `calc((100% - 48px) * ${currentStepIndex / (relevantSteps.length - 1)})`
+                            }}
+                          ></div>
+                          
+                          {/* Step Circles Container */}
+                          <div className="flex items-center justify-between w-full">
+                            {/* Step Circles */}
+                            {relevantSteps.map((step, stepIndex) => {
+                              const stepClass = getStepClass(stepIndex, currentStepIndex, order.deliveryStatus, step);
+                              
+                              return (
+                                <div key={step.id} className="flex flex-col items-center relative z-20">
+                                  <div 
+                                    className={`w-12 h-12 rounded-full border-2 flex items-center justify-center text-sm font-bold transition-all duration-300 ${getStepIconClass(stepClass)}`}
+                                  >
+                                    {stepClass === 'completed' ? '✓' : stepClass === 'failed' ? '✗' : step.icon}
+                                  </div>
+                                  <div className={`mt-3 text-xs font-medium text-center max-w-20 ${getStepTitleClass(stepClass)}`}>
+                                    {step.title}
+                                  </div>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
-                      );
-                    })}
+                      </div>
+
+                      {/* Detailed Step Information */}
+                      <div className="space-y-4">
+                        {relevantSteps.map((step, stepIndex) => {
+                          const stepClass = getStepClass(stepIndex, currentStepIndex, order.deliveryStatus, step);
+                          
+                          return (
+                            <div key={step.id} className="flex items-start gap-4 p-4 rounded-lg bg-gray-50 border border-gray-200">
+                              {/* Step Icon */}
+                              <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-sm font-bold flex-shrink-0 ${getStepIconClass(stepClass)}`}>
+                                {stepClass === 'completed' ? '✓' : stepClass === 'failed' ? '✗' : step.icon}
+                              </div>
+                              
+                              {/* Step Content */}
+                              <div className="flex-1">
+                                <div className={`text-base font-medium mb-1 ${getStepTitleClass(stepClass)}`}>
+                                  {step.title}
+                                </div>
+                                <div className="text-gray-600 mb-2 text-sm leading-relaxed">
+                                  {step.description}
+                                </div>
+                                <div className={`text-xs font-medium ${getStepTimeClass(stepClass)}`}>
+                                  {stepClass === 'pending' ? 'Chưa thực hiện' : 
+                                   stepClass === 'active' ? 'Đang thực hiện' :
+                                   stepClass === 'completed' ? 'Đã hoàn thành' :
+                                   stepClass === 'failed' ? 'Thất bại' : ''}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
             );
           })}
+          
           {/* Pagination Controls */}
           {kitStatus.length > itemsPerPage && (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 24, gap: 16 }}>
+            <div className="flex justify-center items-center mt-8 gap-4">
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: 8,
-                  border: '1px solid #ccc',
-                  background: currentPage === 1 ? '#f3f3f3' : '#fff',
-                  color: currentPage === 1 ? '#aaa' : '#333',
-                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                  fontWeight: 500
-                }}
+                className={`px-4 py-2 rounded-lg border font-medium transition-colors duration-200 ${
+                  currentPage === 1
+                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                }`}
               >
                 Trang trước
               </button>
-              <div style={{ display: 'flex', gap: 4 }}>
+              
+              <div className="flex gap-1">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    style={{
-                      padding: '8px 12px',
-                      borderRadius: 8,
-                      border: '1px solid #ccc',
-                      background: currentPage === page ? '#2563eb' : '#fff',
-                      color: currentPage === page ? '#fff' : '#333',
-                      fontWeight: currentPage === page ? 700 : 500,
-                      cursor: 'pointer',
-                      margin: 0
-                    }}
+                    className={`px-3 py-2 rounded-lg border font-medium transition-colors duration-200 ${
+                      currentPage === page
+                        ? 'bg-blue-600 text-white border-blue-600'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    }`}
                   >
                     {page}
                   </button>
                 ))}
               </div>
+              
               <button
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: 8,
-                  border: '1px solid #ccc',
-                  background: currentPage === totalPages ? '#f3f3f3' : '#fff',
-                  color: currentPage === totalPages ? '#aaa' : '#333',
-                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                  fontWeight: 500
-                }}
+                className={`px-4 py-2 rounded-lg border font-medium transition-colors duration-200 ${
+                  currentPage === totalPages
+                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                }`}
               >
                 Trang sau
               </button>

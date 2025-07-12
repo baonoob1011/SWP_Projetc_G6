@@ -50,8 +50,6 @@ const SignUpConsultation = () => {
     message: '',
     severity: 'success' as 'success' | 'error',
   });
-  const [showCreateForm, setShowCreateForm] = useState(false);
-
   useEffect(() => {
     setIsAdmin(
       localStorage.getItem('role') === 'MANAGER' ||
@@ -231,7 +229,7 @@ const SignUpConsultation = () => {
         <div className="bg-[#4162EB] rounded-lg p-6 mb-6 relative">
           <div className="flex items-center gap-2 mb-3">
             <h2 className="text-white text-lg font-semibold">
-              Quản lý Kỹ thuật viên
+              Quản lý nhân viên tư vấn
             </h2>
           </div>
           {/* Breadcrumb */}
@@ -240,26 +238,15 @@ const SignUpConsultation = () => {
             <span className="mx-2">›</span>
             <span>Danh sách dữ liệu</span>
             <span className="mx-2">›</span>
-            <span>Kỹ thuật viên</span>
+            <span>Nhân viên tư vấn</span>
           </div>
         </div>
-
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={() => setShowCreateForm(!showCreateForm)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
-          >
-            Thêm Kỹ thuật viên
-          </button>
-        </div>
-
         {/* Create Form - Collapsible */}
-        {showCreateForm && (
+   
           <div className="bg-white border border-gray-200 rounded-lg mb-6 shadow-sm">
             <div className="p-6">
               <h3 className="text-lg font-medium text-gray-800 mb-4">
-                Thông tin nhân viên
+                Thông tin nhân viên tư vấn
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
@@ -475,12 +462,6 @@ const SignUpConsultation = () => {
 
               <div className="flex justify-end gap-3">
                 <button
-                  onClick={() => setShowCreateForm(false)}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
                   onClick={handleSubmit}
                   disabled={loading}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
@@ -497,7 +478,6 @@ const SignUpConsultation = () => {
               </div>
             </div>
           </div>
-        )}
       </div>
 
       <CustomSnackBar
