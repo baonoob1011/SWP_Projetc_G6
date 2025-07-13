@@ -150,6 +150,7 @@ public class AppointmentService {
         }
 
         appointment.setServices(serviceTest);
+
         appointment.setLocation(location);
         appointment.setUsers(userBookAppointment);
 
@@ -1301,7 +1302,7 @@ public class AppointmentService {
         invoiceRepository.save(invoice);
 
         // ✅ Cập nhật trạng thái appointment & payment
-        appointment.setNote("Đã thanh toán");
+        appointment.setNote("Quý khách vui lòng kiểm tra kỹ ngày, giờ và thứ trong lịch hẹn để đến đúng giờ lấy mẫu. Xin cảm ơn!");
         payment.setPaymentStatus(PaymentStatus.PAID);
         payment.setTransitionDate(LocalDate.now());
 

@@ -66,9 +66,9 @@ private AppointmentMapper appointmentMapper;
 
         Locus locus = locusRepository.findById(locusId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.LOCUS_NOT_EXISTS));
-
+        ResultAlleleResponse resultAlleleResponse=new ResultAlleleResponse();
         List<ResultAlleleResponse> responses = new ArrayList<>();
-
+        LocusResponse locusResponse=new LocusResponse();
         // Allele 1
         ResultAllele allele1 = new ResultAllele();
         allele1.setAlleleValue(request.getAllele1());
@@ -77,7 +77,8 @@ private AppointmentMapper appointmentMapper;
         allele1.setSample(sample);
         allele1.setLocus(locus);
         resultAlleleRepository.save(allele1);
-        responses.add(resultAlleleMapper.toResultAlleleResponse(allele1));
+        resultAlleleResponse=resultAlleleMapper.toResultAlleleResponse(allele1);
+        responses.add(resultAlleleResponse);
 
         // Allele 2
         ResultAllele allele2 = new ResultAllele();
@@ -87,8 +88,12 @@ private AppointmentMapper appointmentMapper;
         allele2.setSample(sample);
         allele2.setLocus(locus);
         resultAlleleRepository.save(allele2);
-        responses.add(resultAlleleMapper.toResultAlleleResponse(allele2));
-
+        locusResponse.setLocusId(locusId);
+        locusResponse.setLocusName(locus.getLocusName());
+        resultAlleleResponse=resultAlleleMapper.toResultAlleleResponse(allele2);
+        responses.add(resultAlleleResponse);
+        resultAlleleResponse.setLocusResponse(locusResponse);
+        responses.add(resultAlleleResponse);
         // Đếm số allele INVALID của sample hiện tại
         int invalidCount = resultAlleleRepository.countBySample_SampleIdAndAlleleStatus(sampleId, AlleleStatus.INVALID);
 
