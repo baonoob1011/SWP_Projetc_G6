@@ -389,6 +389,7 @@ const Booking = () => {
                   {/* Phòng / Thời gian / Địa chỉ */}
                   <div className="flex items-start space-x-3 col-span-1 md:col-span-2 lg:col-span-3">
                     <div>
+                      <p className="text-sm text-gray-500">Địa điểm</p>
                       <p className="font-medium text-gray-900 whitespace-pre-line">
                         {item.show.appointmentType === 'CENTER'
                           ? `Phòng: ${item.room?.roomName ?? '---'}\nGiờ: ${
