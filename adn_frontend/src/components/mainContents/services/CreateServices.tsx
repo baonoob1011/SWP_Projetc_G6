@@ -89,6 +89,7 @@ const Services = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [reloadServiceList, setReloadServiceList] = useState(false);
 
   // State cho service count
   const [services, setServices] = useState<ServiceItem[]>([]);
@@ -271,6 +272,7 @@ const Services = () => {
         if (fileRef.current) fileRef.current.value = '';
         // Refresh service count after creating new service
         fetchServicesCount();
+        setReloadServiceList((prev) => !prev); // Toggle để thông báo cho ServiceList
       } else {
         const error = 'Tên dịch vụ đã tồn tại';
         toast.warning(error);
@@ -532,7 +534,7 @@ const Services = () => {
           </div>
         )}
       </div>
-      <ServiceList />
+      <ServiceList reloadTrigger={reloadServiceList} />
     </div>
   );
 };
