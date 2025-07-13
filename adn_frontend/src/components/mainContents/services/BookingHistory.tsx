@@ -1,7 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { FaHospital, FaHome, FaServicestack, FaCalendarAlt, FaMoneyBillWave, FaChevronLeft, FaChevronRight, FaClock, FaMapMarkerAlt, FaUser, FaDoorOpen, FaStickyNote } from 'react-icons/fa';
+import {
+  FaHospital,
+  FaHome,
+  FaServicestack,
+  FaCalendarAlt,
+  FaMoneyBillWave,
+  FaChevronLeft,
+  FaChevronRight,
+  FaMapMarkerAlt,
+  FaDoorOpen,
+  FaStickyNote,
+} from 'react-icons/fa';
 
 const ITEMS_PER_PAGE = 3;
 
@@ -13,7 +24,7 @@ const BookingHistory = () => {
   // Pagination state
   const [centerPage, setCenterPage] = useState(1);
   const [homePage, setHomePage] = useState(1);
-  
+
   const translate = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -26,6 +37,10 @@ const BookingHistory = () => {
         return 'Đã hủy';
       case 'RATED':
         return 'Đã đánh giá';
+      case 'WALLET':
+        return 'Ví cá nhân';
+      case 'CASH':
+        return 'Tiền mặt';
       default:
         return 'Không xác định';
     }
@@ -93,7 +108,8 @@ const BookingHistory = () => {
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
       <h3 className="text-xl font-semibold text-gray-900 mb-2">{msg}</h3>
       <p className="text-gray-600">
-        Bạn chưa có lịch sử đặt lịch nào. Hãy đặt lịch khám để bắt đầu chăm sóc sức khỏe.
+        Bạn chưa có lịch sử đặt lịch nào. Hãy đặt lịch khám để bắt đầu chăm sóc
+        sức khỏe.
       </p>
     </div>
   );
@@ -159,7 +175,7 @@ const BookingHistory = () => {
         const loc = item.locationAppointmentResponses?.[0];
         const room = item.roomAppointmentResponse;
         const payment = item.paymentAppointmentResponse?.[0];
-        
+
         return (
           <div
             key={index}
@@ -176,14 +192,14 @@ const BookingHistory = () => {
                     <h3 className="text-blue-600 font-bold text-lg">
                       Lịch sử #{centerStart + index + 1}
                     </h3>
-                    <p className="text-sm text-gray-500">
-                      Khám tại trung tâm
-                    </p>
+                    <p className="text-sm text-gray-500">Khám tại trung tâm</p>
                   </div>
                 </div>
 
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(a?.appointmentStatus)}`}
+                  className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
+                    a?.appointmentStatus
+                  )}`}
                 >
                   {translate(a?.appointmentStatus)}
                 </span>
@@ -197,7 +213,9 @@ const BookingHistory = () => {
                     <FaCalendarAlt className="text-gray-600 w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm text-gray-500 font-medium">Ngày khám</p>
+                    <p className="text-sm text-gray-500 font-medium">
+                      Ngày khám
+                    </p>
                     <p className="font-semibold text-gray-900 truncate">
                       {a?.appointmentDate || '-'}
                     </p>
@@ -223,7 +241,9 @@ const BookingHistory = () => {
                     <FaDoorOpen className="text-gray-600 w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm text-gray-500 font-medium">Phòng khám</p>
+                    <p className="text-sm text-gray-500 font-medium">
+                      Phòng khám
+                    </p>
                     <p className="font-semibold text-gray-900 truncate">
                       {room?.roomName || '-'}
                     </p>
@@ -236,7 +256,9 @@ const BookingHistory = () => {
                     <FaMapMarkerAlt className="text-gray-600 w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm text-gray-500 font-medium">Địa điểm</p>
+                    <p className="text-sm text-gray-500 font-medium">
+                      Địa điểm
+                    </p>
                     <p className="font-semibold text-gray-900 text-sm leading-relaxed">
                       {loc
                         ? `${loc.addressLine}, ${loc.district}, ${loc.city}`
@@ -250,28 +272,40 @@ const BookingHistory = () => {
               {payment && (
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                   <div className="flex items-center space-x-2 mb-3">
-                    <h4 className="font-semibold text-gray-900">Thông tin thanh toán</h4>
+                    <h4 className="font-semibold text-gray-900">
+                      Thông tin thanh toán
+                    </h4>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <p className="text-sm text-gray-500 font-medium">Số tiền</p>
+                      <p className="text-sm text-gray-500 font-medium">
+                        Số tiền
+                      </p>
                       <p className="font-semibold text-gray-900">
-                        {payment.amount ? `${payment.amount.toLocaleString('vi-VN')} VND` : '-'}
+                        {payment.amount
+                          ? `${payment.amount.toLocaleString('vi-VN')} VND`
+                          : '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500 font-medium">Phương thức</p>
+                      <p className="text-sm text-gray-500 font-medium">
+                        Phương thức
+                      </p>
                       <p className="font-semibold text-gray-900">
                         {payment.paymentMethod || '-'}
                       </p>
                     </div>
                     <div className="md:text-right">
-                      <p className="text-sm text-gray-500 font-medium">Trạng thái</p>
-                      <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                        payment.getPaymentStatus === 'PAID'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
+                      <p className="text-sm text-gray-500 font-medium">
+                        Trạng thái
+                      </p>
+                      <span
+                        className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                          payment.getPaymentStatus === 'PAID'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}
+                      >
                         {payment.getPaymentStatus === 'PAID'
                           ? 'Đã thanh toán'
                           : 'Chưa thanh toán'}
@@ -294,7 +328,7 @@ const BookingHistory = () => {
         const a = item.showAppointmentResponse;
         const kit = item.kitAppointmentResponse;
         const payment = item.paymentAppointmentResponses?.[0];
-        
+
         return (
           <div
             key={index}
@@ -311,14 +345,14 @@ const BookingHistory = () => {
                     <h3 className="text-blue-600 font-bold text-lg">
                       Lịch sử #{homeStart + index + 1}
                     </h3>
-                    <p className="text-sm text-gray-500">
-                      Khám tại nhà
-                    </p>
+                    <p className="text-sm text-gray-500">Khám tại nhà</p>
                   </div>
                 </div>
 
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(a?.appointmentStatus)}`}
+                  className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
+                    a?.appointmentStatus
+                  )}`}
                 >
                   {translate(a?.appointmentStatus)}
                 </span>
@@ -332,7 +366,9 @@ const BookingHistory = () => {
                     <FaCalendarAlt className="text-gray-600 w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm text-gray-500 font-medium">Ngày khám</p>
+                    <p className="text-sm text-gray-500 font-medium">
+                      Ngày khám
+                    </p>
                     <p className="font-semibold text-gray-900 truncate">
                       {a?.appointmentDate || '-'}
                     </p>
@@ -371,28 +407,40 @@ const BookingHistory = () => {
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                   <div className="flex items-center space-x-2 mb-3">
                     <FaMoneyBillWave className="text-green-600 w-4 h-4" />
-                    <h4 className="font-semibold text-gray-900">Thông tin thanh toán</h4>
+                    <h4 className="font-semibold text-gray-900">
+                      Thông tin thanh toán
+                    </h4>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <p className="text-sm text-gray-500 font-medium">Số tiền</p>
+                      <p className="text-sm text-gray-500 font-medium">
+                        Số tiền
+                      </p>
                       <p className="font-semibold text-gray-900">
-                        {payment.amount ? `${payment.amount.toLocaleString('vi-VN')} VND` : '-'}
+                        {payment.amount
+                          ? `${payment.amount.toLocaleString('vi-VN')} VND`
+                          : '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500 font-medium">Phương thức</p>
+                      <p className="text-sm text-gray-500 font-medium">
+                        Phương thức
+                      </p>
                       <p className="font-semibold text-gray-900">
-                        {payment.paymentMethod || '-'}
+                        {translate(payment.paymentMethod || '-')}
                       </p>
                     </div>
                     <div className="md:text-right">
-                      <p className="text-sm text-gray-500 font-medium">Trạng thái</p>
-                      <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                        payment.getPaymentStatus === 'PAID'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
+                      <p className="text-sm text-gray-500 font-medium">
+                        Trạng thái
+                      </p>
+                      <span
+                        className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                          payment.getPaymentStatus === 'PAID'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}
+                      >
                         {payment.getPaymentStatus === 'PAID'
                           ? 'Đã thanh toán'
                           : 'Chưa thanh toán'}

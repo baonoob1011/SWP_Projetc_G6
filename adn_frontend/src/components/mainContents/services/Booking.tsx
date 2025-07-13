@@ -11,10 +11,6 @@ import {
   FaChevronRight,
   FaHome,
   FaHospital,
-  FaCalendarAlt,
-  FaClock,
-  FaMapMarkerAlt,
-  FaUser,
   FaServicestack,
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -103,23 +99,21 @@ const Booking = () => {
         const homeList = data.allAppointmentAtHomeResponse || [];
 
         const fullList: BookingHistoryItem[] = [...centerList, ...homeList]
-          .map(
-            (res: any) => ({
-              show: res.showAppointmentResponse,
-              patients: res.patientAppointmentResponse || [],
-              staff: res.staffAppointmentResponse || [],
-              user: res.userAppointmentResponse || [],
-              slot: res.slotAppointmentResponse || [],
-              services: res.serviceAppointmentResponses || [],
-              location: res.locationAppointmentResponses || [],
-              room: res.roomAppointmentResponse || null,
-              payments:
-                res.paymentAppointmentResponse ||
-                res.paymentAppointmentResponses ||
-                [],
-              kit: res.kitAppointmentResponse || null,
-            })
-          )
+          .map((res: any) => ({
+            show: res.showAppointmentResponse,
+            patients: res.patientAppointmentResponse || [],
+            staff: res.staffAppointmentResponse || [],
+            user: res.userAppointmentResponse || [],
+            slot: res.slotAppointmentResponse || [],
+            services: res.serviceAppointmentResponses || [],
+            location: res.locationAppointmentResponses || [],
+            room: res.roomAppointmentResponse || null,
+            payments:
+              res.paymentAppointmentResponse ||
+              res.paymentAppointmentResponses ||
+              [],
+            kit: res.kitAppointmentResponse || null,
+          }))
           .sort((a, b) => b.show.appointmentId - a.show.appointmentId);
 
         if (fullList.length === 0) {
@@ -163,6 +157,7 @@ const Booking = () => {
       } else {
         toast.success('Thanh toán thành công!');
         fetchData();
+        return true;
       }
     } catch (error) {
       console.log(error);
@@ -279,7 +274,7 @@ const Booking = () => {
         </div>
       </div>
     );
-  };
+  }
 
   return (
     <div className="min-h-screen py-1">
@@ -440,7 +435,9 @@ const Booking = () => {
                         (!payment.getPaymentStatus ||
                           payment.getPaymentStatus === 'PENDING') && (
                           <div key={payment.paymentId} className="mb-4">
-                            <p className="text-sm text-gray-500 mb-2">Đổi phương thức thanh toán</p>
+                            <p className="text-sm text-gray-500 mb-2">
+                              Đổi phương thức thanh toán
+                            </p>
                             <select
                               defaultValue={payment.paymentMethod || 'VNPAY'}
                               onChange={(e) =>
@@ -563,11 +560,16 @@ const Booking = () => {
                               });
 
                               if (result.isConfirmed) {
-                                handlePaymentByWallet(
+                                const success = await handlePaymentByWallet(
                                   item.show.appointmentId,
                                   item.services[0].serviceId,
                                   item.payments[0].paymentId
                                 );
+                                if (success) {
+                                  window.dispatchEvent(
+                                    new Event('reloadProfile')
+                                  );
+                                }
                               }
                             }}
                           >
@@ -676,23 +678,23 @@ const Booking = () => {
         {filteredBookings.length === 0 && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {activeTab === 'CENTER' 
-                ? 'Không có lịch hẹn tại trung tâm' 
-                : activeTab === 'HOME' 
+              {activeTab === 'CENTER'
+                ? 'Không có lịch hẹn tại trung tâm'
+                : activeTab === 'HOME'
                 ? 'Không có lịch hẹn tại nhà'
                 : 'Chưa có cuộc hẹn nào'}
             </h3>
             <p className="text-gray-600 mb-6">
-              {activeTab === 'CENTER' 
-                ? 'Bạn chưa có cuộc hẹn khám tại trung tâm nào.' 
-                : activeTab === 'HOME' 
+              {activeTab === 'CENTER'
+                ? 'Bạn chưa có cuộc hẹn khám tại trung tâm nào.'
+                : activeTab === 'HOME'
                 ? 'Bạn chưa có cuộc hẹn lấy mẫu tại nhà nào.'
                 : 'Bạn chưa có cuộc hẹn khám bệnh nào. Hãy đặt lịch khám để bắt đầu chăm sóc sức khỏe.'}
             </p>
           </div>
         )}
       </div>
-      
+
       <InvoicePopup
         visible={showInvoicePopup}
         onClose={() => setShowInvoicePopup(false)}

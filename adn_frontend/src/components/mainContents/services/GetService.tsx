@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 type PriceItem = {
   time: string;
   price: number;
+  priceTmp: number;
 };
 
 type UserCreateServiceResponse = {
@@ -29,17 +30,19 @@ type ServiceItem = {
   priceListRequest: PriceItem[];
   userCreateServiceResponse: UserCreateServiceResponse;
 };
-
-const ServiceList = () => {
+type Props = {
+  reloadTrigger: boolean;
+};
+const ServiceList = ({ reloadTrigger }: Props) => {
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [auth, setAuth] = useState(false);
+  // const [auth, setAuth] = useState(false);
 
-  const [editingServiceId, setEditingServiceId] = useState<number | null>(null);
-  const [updatedName, setUpdatedName] = useState('');
-  const [updatedDescription, setUpdatedDescription] = useState('');
-  const [updatedPrice, setUpdatedPrice] = useState<number>(0);
+  // const [editingServiceId, setEditingServiceId] = useState<number | null>(null);
+  // const [updatedName, setUpdatedName] = useState('');
+  // const [updatedDescription, setUpdatedDescription] = useState('');
+  // const [updatedPrices, setUpdatedPrices] = useState<PriceItem[]>([]);
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -80,20 +83,16 @@ const ServiceList = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
-    const role = localStorage.getItem('role');
-    setAuth(role === 'ADMIN' || role === 'MANAGER');
-    fetchServices();
-  }, []);
+    fetchServices(); // gọi khi reloadTrigger thay đổi
+  }, [reloadTrigger]);
 
-  const startEdit = (service: ServiceItem) => {
-    setEditingServiceId(service.serviceRequest.serviceId);
-    setUpdatedName(service.serviceRequest.serviceName);
-    setUpdatedDescription(service.serviceRequest.description);
-    const latestPrice = service.priceListRequest.at(-1)?.price || 0;
-    setUpdatedPrice(latestPrice);
-  };
+  // const startEdit = (service: ServiceItem) => {
+  //   setEditingServiceId(service.serviceRequest.serviceId);
+  //   setUpdatedName(service.serviceRequest.serviceName);
+  //   setUpdatedDescription(service.serviceRequest.description);
+  //   setUpdatedPrices(service.priceListRequest.map((p) => ({ ...p }))); // new state
+  // };
 
   const handleDelete = async (serviceId: number) => {
     const result = await Swal.fire({
@@ -131,72 +130,73 @@ const ServiceList = () => {
     }
   };
 
-  const handleUpdate = async (serviceId: number) => {
-    if (!updatedName.trim()) {
-      setSnackbar({
-        open: true,
-        message: 'Tên dịch vụ không được để trống',
-        severity: 'error',
-      });
-      return;
-    }
-    const currentService = services.find(
-      (s) => s.serviceRequest.serviceId === serviceId
-    );
-    if (!currentService) {
-      setSnackbar({
-        open: true,
-        message: 'Không tìm thấy dịch vụ',
-        severity: 'error',
-      });
-      return;
-    }
-    try {
-      const formData = new FormData();
-      const today = new Date().toISOString().split('T')[0];
-      const requestPayload = {
-        updateServiceTestRequest: {
-          serviceName: updatedName,
-          description: updatedDescription,
-          registerDate: currentService.serviceRequest.registerDate,
-        },
-        priceListRequest: { time: today, price: updatedPrice },
-      };
-      formData.append(
-        'request',
-        new Blob([JSON.stringify(requestPayload)], { type: 'application/json' })
-      );
+  // const handleUpdate = async (serviceId: number) => {
+  //   if (!updatedName.trim()) {
+  //     setSnackbar({
+  //       open: true,
+  //       message: 'Tên dịch vụ không được để trống',
+  //       severity: 'error',
+  //     });
+  //     return;
+  //   }
+  //   const currentService = services.find(
+  //     (s) => s.serviceRequest.serviceId === serviceId
+  //   );
+  //   if (!currentService) {
+  //     setSnackbar({
+  //       open: true,
+  //       message: 'Không tìm thấy dịch vụ',
+  //       severity: 'error',
+  //     });
+  //     return;
+  //   }
+  //   try {
+  //     const formData = new FormData();
+  //     const today = new Date().toISOString().split('T')[0];
+  //     const requestPayload = {
+  //       updateServiceTestRequest: {
+  //         serviceName: updatedName,
+  //         description: updatedDescription,
+  //         registerDate: currentService.serviceRequest.registerDate,
+  //       },
+  //       priceListRequest: [{ time: today, price: updatedPrices }],
+  //     };
+  //     formData.append(
+  //       'request',
+  //       new Blob([JSON.stringify(requestPayload)], { type: 'application/json' })
+  //     );
 
-      const res = await fetch(
-        `http://localhost:8080/api/services/update-service/${serviceId}`,
-        {
-          method: 'PUT',
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-        }
-      );
-      if (!res.ok) throw new Error('Cập nhật không thành công');
-      await Swal.fire({
-        title: 'Cập nhật thành công',
-        icon: 'success',
-        timer: 1500,
-        showConfirmButton: false,
-      });
-      setEditingServiceId(null);
-      fetchServices();
-    } catch (err: unknown) {
-      let message = 'Lỗi cập nhật';
-      if (err instanceof Error) message = err.message;
-      setSnackbar({
-        open: true,
-        message,
-        severity: 'error',
-      });
-    }
-  };
+  //     const res = await fetch(
+  //       `http://localhost:8080/api/services/update-service/${serviceId}`,
+  //       {
+  //         method: 'PUT',
+  //         headers: { Authorization: `Bearer ${token}` },
+  //         body: formData,
+  //       }
+  //     );
+  //     if (!res.ok) throw new Error('Cập nhật không thành công');
+  //     await Swal.fire({
+  //       title: 'Cập nhật thành công',
+  //       icon: 'success',
+  //       timer: 1500,
+  //       showConfirmButton: false,
+  //     });
+  //     setEditingServiceId(null);
+  //     fetchServices();
+  //   } catch (err: unknown) {
+  //     let message = 'Lỗi cập nhật';
+  //     if (err instanceof Error) message = err.message;
+  //     setSnackbar({
+  //       open: true,
+  //       message,
+  //       severity: 'error',
+  //     });
+  //   }
+  // };
+  const showDiscountColumn = services.some((service) =>
+    service.priceListRequest.some((price) => price.priceTmp > 0)
+  );
 
-  if (!auth) return null;
-  
   if (loading) {
     return (
       <div className="min-h-screen bg-white p-6 flex items-center justify-center">
@@ -207,14 +207,24 @@ const ServiceList = () => {
       </div>
     );
   }
-  
+
   if (error) {
     return (
       <div className="min-h-screen bg-white p-6 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-8 h-8 text-red-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           </div>
           <p className="text-red-600 font-semibold">Lỗi: {error}</p>
@@ -226,7 +236,6 @@ const ServiceList = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-full">
-
         {/* Services Table */}
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <table className="w-full">
@@ -235,51 +244,132 @@ const ServiceList = () => {
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                   <div className="flex items-center gap-1">
                     STT
-                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    <svg
+                      className="w-3 h-3 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                      />
                     </svg>
                   </div>
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                   <div className="flex items-center gap-1">
                     Tên Dịch Vụ
-                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    <svg
+                      className="w-3 h-3 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                      />
                     </svg>
                   </div>
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                   <div className="flex items-center gap-1">
                     Loại
-                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    <svg
+                      className="w-3 h-3 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                      />
                     </svg>
                   </div>
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                   <div className="flex items-center gap-1">
                     Mô Tả
-                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    <svg
+                      className="w-3 h-3 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                      />
                     </svg>
                   </div>
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                   <div className="flex items-center gap-1">
                     Ngày Đăng Ký
-                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    <svg
+                      className="w-3 h-3 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                      />
                     </svg>
                   </div>
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                   <div className="flex items-center gap-1">
                     Giá Hiện Tại
-                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    <svg
+                      className="w-3 h-3 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                      />
                     </svg>
                   </div>
                 </th>
+                {showDiscountColumn ? (
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                    <div className="flex items-center gap-1">
+                      Giá Khuyến Mãi
+                      <svg
+                        className="w-3 h-3 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                        />
+                      </svg>
+                    </div>
+                  </th>
+                ) : null}
+
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
                   Thao Tác
                 </th>
@@ -287,29 +377,23 @@ const ServiceList = () => {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {services.map((s, index) => {
-                const latestPrice = s.priceListRequest.at(-1);
-                const isEditing = editingServiceId === s.serviceRequest.serviceId;
+                // const isEditing =
+                //   editingServiceId === s.serviceRequest.serviceId;
 
                 return (
-                  <tr key={s.serviceRequest.serviceId} className="hover:bg-gray-50">
+                  <tr
+                    key={s.serviceRequest.serviceId}
+                    className="hover:bg-gray-50"
+                  >
                     <td className="px-4 py-3 text-sm text-blue-600 font-medium border-r border-gray-200">
                       {index + 1}
                     </td>
 
                     {/* Tên dịch vụ */}
                     <td className="px-4 py-3 border-r border-gray-200">
-                      {isEditing ? (
-                        <input
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          value={updatedName}
-                          onChange={(e) => setUpdatedName(e.target.value)}
-                          placeholder="Nhập tên dịch vụ"
-                        />
-                      ) : (
-                        <span className="text-sm text-gray-800">
-                          {s.serviceRequest.serviceName}
-                        </span>
-                      )}
+                      <span className="text-sm text-gray-800">
+                        {s.serviceRequest.serviceName}
+                      </span>
                     </td>
 
                     {/* Loại */}
@@ -321,118 +405,135 @@ const ServiceList = () => {
 
                     {/* Mô tả */}
                     <td className="px-4 py-3 border-r border-gray-200">
-                      {isEditing ? (
-                        <textarea
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-                          rows={2}
-                          value={updatedDescription}
-                          onChange={(e) => setUpdatedDescription(e.target.value)}
-                          placeholder="Nhập mô tả"
-                        />
-                      ) : (
-                        <span className="text-sm text-gray-600 max-w-xs truncate block">
-                          {s.serviceRequest.description}
-                        </span>
-                      )}
+                      <span className="text-sm text-gray-600 max-w-xs truncate block">
+                        {s.serviceRequest.description}
+                      </span>
                     </td>
 
                     {/* Ngày đăng ký */}
                     <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
-                      {new Date(s.serviceRequest.registerDate).toLocaleDateString('vi-VN')}
+                      {new Date(
+                        s.serviceRequest.registerDate
+                      ).toLocaleDateString('vi-VN')}
                     </td>
 
                     {/* Giá hiện tại */}
                     <td className="px-4 py-3 border-r border-gray-200">
-                      {isEditing ? (
-                        <input
-                          type="number"
-                          min={0}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          value={updatedPrice}
-                          onChange={(e) => setUpdatedPrice(Number(e.target.value))}
-                          placeholder="Nhập giá"
-                        />
-                      ) : latestPrice ? (
-                        <div>
-                          <div className="text-sm font-medium text-gray-800">
-                            {latestPrice.price.toLocaleString()}đ
-                          </div>
-                          <small className="text-xs text-gray-500">
-                            ({new Date(latestPrice.time).toLocaleDateString('vi-VN')})
-                          </small>
+                      {s.priceListRequest.length > 0 ? (
+                        <div className="space-y-1">
+                          {s.priceListRequest.map((priceItem, idx) => (
+                            <div key={idx}>
+                              <div className="text-sm font-medium text-gray-800">
+                                {priceItem.price.toLocaleString()}đ
+                              </div>
+                              <small className="text-xs text-gray-500">
+                                ({priceItem.time})
+                              </small>
+                            </div>
+                          ))}
                         </div>
                       ) : (
-                        <span className="text-sm text-gray-400 italic">Chưa có</span>
+                        <span className="text-sm text-gray-400 italic">
+                          Chưa có
+                        </span>
                       )}
                     </td>
+                    {showDiscountColumn ? (
+                      <td className="px-4 py-3 border-r border-gray-200">
+                        {s.priceListRequest.length > 0 ? (
+                          <div className="space-y-1">
+                            {s.priceListRequest.map((priceItem, idx) => (
+                              <div key={idx}>
+                                <div className="text-sm font-medium text-blue-600">
+                                  {priceItem.priceTmp.toLocaleString()}đ
+                                </div>
+                                <small className="text-xs text-gray-500">
+                                  ({priceItem.time})
+                                </small>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-400 italic">
+                            Chưa có
+                          </span>
+                        )}
+                      </td>
+                    ) : null}
 
                     {/* Hành động */}
                     <td className="px-4 py-3 whitespace-nowrap">
-                      {isEditing ? (
-                        <div className="flex items-center gap-2">
-                          <button
-                            className="p-2 text-green-600 hover:text-green-800 hover:bg-green-100 rounded-md transition-colors"
-                            onClick={() => handleUpdate(s.serviceRequest.serviceId)}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <button
+                          className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-md transition-colors"
+                          onClick={() =>
+                            handleDelete(s.serviceRequest.serviceId)
+                          }
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                          </button>
-                          <button
-                            className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-md transition-colors"
-                            onClick={() => setEditingServiceId(null)}
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        </button>
+                        <Button
+                          component={NavLink}
+                          to={`/newPrice/${s.serviceRequest.serviceId}`}
+                          className="!p-2 !text-purple-500 hover:!text-purple-700 hover:!bg-purple-100 !rounded-md !transition-colors !min-w-0"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <button
-                            className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-100 rounded-md transition-colors"
-                            onClick={() => startEdit(s)}
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                            />
+                          </svg>
+                        </Button>
+                        <Button
+                          component={NavLink}
+                          to={`/discount/${s.serviceRequest.serviceId}`}
+                          className="!p-2 !text-orange-500 hover:!text-orange-700 hover:!bg-orange-100 !rounded-md !transition-colors !min-w-0"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                          </button>
-                          <button
-                            className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-md transition-colors"
-                            onClick={() => handleDelete(s.serviceRequest.serviceId)}
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                          <Button
-                            component={NavLink}
-                            to={`/newPrice/${s.serviceRequest.serviceId}`}
-                            className="!p-2 !text-purple-500 hover:!text-purple-700 hover:!bg-purple-100 !rounded-md !transition-colors !min-w-0"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                          </Button>
-                          <Button
-                            component={NavLink}
-                            to={`/discount/${s.serviceRequest.serviceId}`}
-                            className="!p-2 !text-orange-500 hover:!text-orange-700 hover:!bg-orange-100 !rounded-md !transition-colors !min-w-0"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                            </svg>
-                          </Button>
-                        </div>
-                      )}
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                            />
+                          </svg>
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 );
               })}
-              
+
               {services.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                  <td
+                    colSpan={7}
+                    className="px-4 py-8 text-center text-gray-500"
+                  >
                     Không tìm thấy dịch vụ nào
                   </td>
                 </tr>
@@ -441,7 +542,7 @@ const ServiceList = () => {
           </table>
         </div>
       </div>
-      
+
       <CustomSnackBar
         open={snackbar.open}
         message={snackbar.message}
