@@ -350,6 +350,13 @@ const BookingAtCenter = () => {
     }, {} as Record<string, SlotInfo[]>);
   };
 
+  // Function to get day of week in Vietnamese
+  const getDayOfWeek = (dateString: string): string => {
+    const date = new Date(dateString);
+    const days = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
+    return days[date.getDay()];
+  };
+
   const groupedSlots = groupSlotsByDate(slots);
 
   useEffect(() => {
@@ -443,11 +450,16 @@ const formatTime = (time: string) => {
                                 : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-100'
                             }`}
                           >
-                            <div className="flex items-center gap-2">
-                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
-                              </svg>
-                              {date}
+                            <div className="flex flex-col items-center gap-1">
+                              <div className="text-xs text-gray-500 font-normal">
+                                {getDayOfWeek(date)}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                                </svg>
+                                {date}
+                              </div>
                             </div>
                           </button>
                         ))}
