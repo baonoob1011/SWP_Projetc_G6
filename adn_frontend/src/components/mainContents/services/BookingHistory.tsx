@@ -41,6 +41,8 @@ const BookingHistory = () => {
         return 'Ví cá nhân';
       case 'CASH':
         return 'Tiền mặt';
+      case 'VN_PAY':
+        return 'VNPAY';
       default:
         return 'Không xác định';
     }
@@ -292,7 +294,7 @@ const BookingHistory = () => {
                         Phương thức
                       </p>
                       <p className="font-semibold text-gray-900">
-                        {payment.paymentMethod || '-'}
+                        {translate(payment.paymentMethod || '-')}
                       </p>
                     </div>
                     <div className="md:text-right">
