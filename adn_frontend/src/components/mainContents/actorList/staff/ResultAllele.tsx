@@ -269,9 +269,15 @@ const CreateResultAllele = () => {
                         </td>
                         <td>{allele.allelePosition}</td>
                         <td>
-                          <span className="badge bg-success">
+                          <span className={`badge ${
+                            allele.alleleStatus === 'INVALID' 
+                              ? 'bg-warning' 
+                              : allele.alleleStatus === 'VALID' 
+                              ? 'bg-success' 
+                              : 'bg-secondary'
+                          }`}>
                             {allele.alleleStatus === 'INVALID'
-                              ? 'Đã nhập'
+                              ? 'Không hợp lệ'
                               : allele.alleleStatus === 'VALID'
                               ? 'Hợp lệ'
                               : allele.alleleStatus || 'Đã xác nhận'}
