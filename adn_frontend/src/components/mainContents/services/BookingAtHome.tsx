@@ -246,7 +246,7 @@ const BookingAtHome = () => {
       if (!res.ok) {
         setSnackbar({
           open: true,
-          message: 'Kiểm tra và điền thông tin hợp lệ',
+          message: 'Kiểm tra và điền đầy đủ thông tin',
           severity: 'error',
         });
       } else {
@@ -272,8 +272,12 @@ const BookingAtHome = () => {
         <div className="bg-white shadow-sm p-6 mb-6 mt-15 rounded-lg border-l-4 border-blue-500">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              <svg
+                className="w-5 h-5 text-white"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
               </svg>
             </div>
             <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">
@@ -285,8 +289,12 @@ const BookingAtHome = () => {
         {/* Service Configuration Section */}
         <div className="bg-white shadow-sm p-6 mb-6 rounded-lg">
           <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            <svg
+              className="w-5 h-5 text-blue-500"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
             </svg>
             Thông Tin Dịch Vụ
           </h2>
@@ -350,8 +358,12 @@ const BookingAtHome = () => {
 
         {/* Patient Information Section */}
         <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          <svg
+            className="w-5 h-5 text-blue-500"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
           </svg>
           Thông Tin Bệnh Nhân
         </h2>
@@ -360,7 +372,9 @@ const BookingAtHome = () => {
           {/* Patient One */}
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+              <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                1
+              </span>
               Người Thứ Nhất
             </h3>
 
@@ -376,11 +390,15 @@ const BookingAtHome = () => {
                     value={patientOne[name]}
                     onChange={handleInputPatientOne}
                     className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                      patientOneErrors[name] ? 'border-red-500' : 'border-gray-300'
+                      patientOneErrors[name]
+                        ? 'border-red-500'
+                        : 'border-gray-300'
                     }`}
                   />
                   {patientOneErrors[name] && (
-                    <p className="mt-1 text-sm text-red-600">{patientOneErrors[name]}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {patientOneErrors[name]}
+                    </p>
                   )}
                 </div>
               ))}
@@ -414,7 +432,10 @@ const BookingAtHome = () => {
               </label>
               <div className="flex gap-4">
                 {['Nam', 'Nữ'].map((gender) => (
-                  <label key={`one-gender-${gender}`} className="flex items-center cursor-pointer">
+                  <label
+                    key={`one-gender-${gender}`}
+                    className="flex items-center cursor-pointer"
+                  >
                     <input
                       type="radio"
                       name="gender"
@@ -433,7 +454,9 @@ const BookingAtHome = () => {
           {/* Patient Two */}
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+              <span className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                2
+              </span>
               Người Thứ Hai
             </h3>
 
@@ -449,11 +472,15 @@ const BookingAtHome = () => {
                     value={patientTwo[name]}
                     onChange={handleInputPatientTwo}
                     className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                      patientTwoErrors[name] ? 'border-red-500' : 'border-gray-300'
+                      patientTwoErrors[name]
+                        ? 'border-red-500'
+                        : 'border-gray-300'
                     }`}
                   />
                   {patientTwoErrors[name] && (
-                    <p className="mt-1 text-sm text-red-600">{patientTwoErrors[name]}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {patientTwoErrors[name]}
+                    </p>
                   )}
                 </div>
               ))}
@@ -487,7 +514,10 @@ const BookingAtHome = () => {
               </label>
               <div className="flex gap-4">
                 {['Nam', 'Nữ'].map((gender) => (
-                  <label key={`two-gender-${gender}`} className="flex items-center cursor-pointer">
+                  <label
+                    key={`two-gender-${gender}`}
+                    className="flex items-center cursor-pointer"
+                  >
                     <input
                       type="radio"
                       name="gender2"
