@@ -47,7 +47,6 @@ function GetUserByAdmin() {
     }
   };
 
-  // ✅ Xóa người dùng
   const handleDelete = async (phone: string, fullName: string) => {
     const result = await Swal.fire({
       title: 'Xác nhận xóa?',
@@ -99,7 +98,6 @@ function GetUserByAdmin() {
     }
   };
 
-  // ✅ Khởi động
   useEffect(() => {
     fetchData();
   }, []);

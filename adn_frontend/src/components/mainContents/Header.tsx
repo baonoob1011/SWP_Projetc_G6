@@ -33,7 +33,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
   const role = localStorage.getItem('role');
-
+  const url = localStorage.getItem('avatarUrl');
   const navItems = [
     { label: 'Trang chủ', path: '/' },
     {
@@ -76,6 +76,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
       localStorage.removeItem('username');
       localStorage.removeItem('fullName');
       localStorage.removeItem('role');
+      localStorage.removeItem('avatarUrl');
       setFullName('');
       window.location.href = '/login';
     } catch (error) {
@@ -268,7 +269,22 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       },
                     }}
                   >
-                    {fullName}
+                    <Box className="p-0.1 rounded-full border border-gray-300 mr-2">
+                      <img
+                        src={url ?? undefined}
+                        alt="Avatar"
+                        className="w-7 h-7 rounded-full object-cover"
+                      />
+                    </Box>
+                    <Typography
+                      sx={{
+                        fontSize: 20,
+                        fontWeight: 500,
+                        color: '#333',
+                      }}
+                    >
+                      {fullName}
+                    </Typography>
                   </Button>
                   <Menu
                     anchorEl={anchorEl}
@@ -353,7 +369,22 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       },
                     }}
                   >
-                    {fullName}
+                    <Box className="p-0.1 rounded-full border border-gray-300 mr-2">
+                      <img
+                        src={url ?? undefined}
+                        alt="Avatar"
+                        className="w-7 h-7 rounded-full object-cover"
+                      />
+                    </Box>
+                    <Typography
+                      sx={{
+                        fontSize: 20,
+                        fontWeight: 500,
+                        color: '#333',
+                      }}
+                    >
+                      {fullName}
+                    </Typography>
                   </Button>
                   <Menu
                     anchorEl={anchorEl}
@@ -438,7 +469,22 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       },
                     }}
                   >
-                    {fullName}
+                    <Box className="p-0.1 rounded-full border border-gray-300 mr-2">
+                      <img
+                        src={url ?? undefined}
+                        alt="Avatar"
+                        className="w-7 h-7 rounded-full object-cover"
+                      />
+                    </Box>
+                    <Typography
+                      sx={{
+                        fontSize: 20,
+                        fontWeight: 500,
+                        color: '#333',
+                      }}
+                    >
+                      {fullName}
+                    </Typography>
                   </Button>
                   <Menu
                     anchorEl={anchorEl}
@@ -493,7 +539,7 @@ export function Header({ fullName, setFullName }: HeaderProps) {
               ) : role === 'CONSULTANT' ? (
                 <>
                   <Button
-                    onClick={(e) => handleOpenMenu(e, 'LAB_TECHNICIAN')}
+                    onClick={(e) => handleOpenMenu(e, 'CONSULTANT')}
                     endIcon={<ArrowDropDown />}
                     sx={{
                       textTransform: 'none',
@@ -508,11 +554,26 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       },
                     }}
                   >
-                    {fullName}
+                    <Box className="p-0.1 rounded-full border border-gray-300 mr-2">
+                      <img
+                        src={url ?? undefined}
+                        alt="Avatar"
+                        className="w-7 h-7 rounded-full object-cover"
+                      />
+                    </Box>
+                    <Typography
+                      sx={{
+                        fontSize: 20,
+                        fontWeight: 500,
+                        color: '#333',
+                      }}
+                    >
+                      {fullName}
+                    </Typography>
                   </Button>
                   <Menu
                     anchorEl={anchorEl}
-                    open={menuOpen === 'LAB_TECHNICIAN'}
+                    open={menuOpen === 'CONSULTANT'}
                     onClose={handleCloseMenu}
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -593,7 +654,22 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       },
                     }}
                   >
-                    {fullName}
+                    <Box className="p-0.1 rounded-full border border-gray-300 mr-2">
+                      <img
+                        src={url ?? undefined}
+                        alt="Avatar"
+                        className="w-7 h-7 rounded-full object-cover"
+                      />
+                    </Box>
+                    <Typography
+                      sx={{
+                        fontSize: 20,
+                        fontWeight: 500,
+                        color: '#333',
+                      }}
+                    >
+                      {fullName}
+                    </Typography>
                   </Button>
                   <Menu
                     anchorEl={anchorEl}
@@ -678,7 +754,22 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                       },
                     }}
                   >
-                    {fullName}
+                    <Box className="p-0.1 rounded-full border border-gray-300 mr-2">
+                      <img
+                        src={url ?? undefined}
+                        alt="Avatar"
+                        className="w-7 h-7 rounded-full object-cover"
+                      />
+                    </Box>
+                    <Typography
+                      sx={{
+                        fontSize: 20,
+                        fontWeight: 500,
+                        color: '#333',
+                      }}
+                    >
+                      {fullName}
+                    </Typography>
                   </Button>
                   <Menu
                     anchorEl={anchorEl}
