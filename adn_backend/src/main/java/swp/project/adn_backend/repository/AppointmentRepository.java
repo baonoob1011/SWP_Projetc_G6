@@ -28,4 +28,16 @@ public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
     // Đếm tổng số appointment đã hủy
     @Query("SELECT COUNT(a) FROM Appointment a WHERE a.appointmentStatus = 'CANCELLED'")
     long countCancelledAppointments();
+    
+    // Đếm tổng số appointment đang chờ
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.appointmentStatus = 'PENDING'")
+    long countPendingAppointments();
+    
+    // Đếm tổng số appointment đã xác nhận
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.appointmentStatus = 'CONFIRMED'")
+    long countConfirmedAppointments();
+    
+    // Đếm tổng số appointment đã đánh giá
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.appointmentStatus = 'RATED'")
+    long countRatedAppointments();
 }
