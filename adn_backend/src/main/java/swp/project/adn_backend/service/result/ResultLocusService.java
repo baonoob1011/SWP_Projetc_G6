@@ -192,17 +192,8 @@ public class ResultLocusService {
         result.setResultStatus(ResultStatus.COMPLETED);
 
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
-        if (appointment.getSlot() != null) {
-            appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
-        }
         appointment.setNote("Đã có kết quả xét nghiệm");
 
-        // Gán lại cho nhân viên lấy mẫu
-        for (Staff staff : appointment.getSlot().getStaff()) {
-            if (staff.getRole().equals("SAMPLE_COLLECTOR")) {
-                appointment.setStaff(staff);
-            }
-        }
 
         // Kiểm tra loại dịch vụ để xử lý Slot + Kit
         ServiceTest service = appointment.getServices();
@@ -213,21 +204,43 @@ public class ResultLocusService {
                 List<CivilService> civilServices = service.getCivilServices();
                 if (civilServices != null) {
                     for (CivilService civilService : civilServices) {
-                        if (civilService.getSampleCollectionMethods().equals(SampleCollectionMethod.AT_CLINIC)) {
-                            if (appointment.getSlot() != null) {
-                                appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+                        Set<SampleCollectionMethod> methods = civilService.getSampleCollectionMethods();
+
+                        if (methods.contains(SampleCollectionMethod.AT_CLINIC)) {
+                            Slot slot = appointment.getSlot(); // ✅ chỉ gán khi chắc chắn có
+                            if (slot != null) {
+                                slot.setSlotStatus(SlotStatus.COMPLETED);
                             }
-                            if (appointment.getKitDeliveryStatus() != null) {
-                                appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.COMPLETED);
+                            // gán nhân viên nếu cần
+                            if (slot != null && slot.getStaff() != null) {
+                                for (Staff staff : slot.getStaff()) {
+                                    if ("SAMPLE_COLLECTOR".equals(staff.getRole())) {
+                                        appointment.setStaff(staff);
+                                        break;
+                                    }
+                                }
                             }
                             break;
                         }
+
+                        if (methods.contains(SampleCollectionMethod.AT_HOME)) {
+                            if (appointment.getKitDeliveryStatus() != null) {
+                                Staff staff=appointment.getKitDeliveryStatus().getStaff();
+                                appointment.setStaff(staff);
+                                appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.COMPLETED);
+                                break;
+                            }
+                        }
                     }
                 }
-            } else if (type == ServiceType.ADMINISTRATIVE && appointment.getSlot() != null) {
-                appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+            } else if (type == ServiceType.ADMINISTRATIVE) {
+                Slot slot = appointment.getSlot(); // ✅ ADMINISTRATIVE cũng có slot
+                if (slot != null) {
+                    slot.setSlotStatus(SlotStatus.COMPLETED);
+                }
             }
         }
+
 
         resultRepository.save(result);
         resultDetail.setResult(result);
