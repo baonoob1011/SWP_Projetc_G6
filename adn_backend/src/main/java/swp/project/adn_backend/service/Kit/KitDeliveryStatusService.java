@@ -69,6 +69,7 @@ public class KitDeliveryStatusService {
         return query.getResultList();
     }
 
+    // lấy appointment at home theo staff at home
     public List<KitDeliveryStatusInfoStaffDTO> getKitDeliveryStatusStaff(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
@@ -78,7 +79,7 @@ public class KitDeliveryStatusService {
             throw new RuntimeException("Chỉ có nhân viên thu mẫu tại nhà mới có thể lấy");
         }
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.KitDeliveryStatusInfoStaffDTO(" +
-                "s.kitDeliveryStatusId, s.deliveryStatus, s.createOrderDate, s.returnDate, s.appointment.appointmentId, s.appointment.appointmentType) " +
+                "s.kitDeliveryStatusId, s.deliveryStatus, s.createOrderDate, s.returnDate, s.appointment.appointmentId, s.appointment.appointmentType, s.appointment.appointmentStatus) " +
                 "FROM KitDeliveryStatus s WHERE s.staff.staffId = :staffId";
 //                "s.deliveryStatus <> :excludedStatus";
 

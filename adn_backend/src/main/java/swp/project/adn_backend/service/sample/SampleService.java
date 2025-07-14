@@ -278,4 +278,5 @@ public class SampleService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
         sample.setSampleStatus(SampleStatus.REJECTED);
     }
+
 }
