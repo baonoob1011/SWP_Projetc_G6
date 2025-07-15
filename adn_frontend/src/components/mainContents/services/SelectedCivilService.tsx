@@ -50,6 +50,12 @@ const SelectedCivilService = () => {
   const [feedbackData, setFeedbackData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Helper function to format price with thousand separators
+  const formatPrice = (price: number): string => {
+    return price.toLocaleString('vi-VN');
+  };
+
   const fetchData = async () => {
     try {
       const res = await fetch(
@@ -131,7 +137,7 @@ const SelectedCivilService = () => {
           <Box
             sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}
           >
-            <Box sx={{ flex: { md: '0 0 400px' } }}>
+            <Box sx={{ flex: { md: '0 0 40%' } }}>
               <Skeleton variant="rectangular" height={400} />
             </Box>
             <CardContent sx={{ flex: 1, p: 4 }}>
@@ -184,8 +190,8 @@ const SelectedCivilService = () => {
                 flexDirection: { xs: 'column', md: 'row' },
               }}
             >
-              {/* Product Image */}
-              <Box sx={{ flex: { md: '0 0 450px' }, position: 'relative' }}>
+              {/* Product Image - Changed to 40% width */}
+              <Box sx={{ flex: { md: '0 0 45%' }, position: 'relative' }}>
                 {svc.image && (
                   <CardMedia
                     component="img"
@@ -267,7 +273,7 @@ const SelectedCivilService = () => {
                   </Typography>
 
                   <Chip
-                    label={svc.serviceType}
+                    label="Dân sự"
                     variant="outlined"
                     sx={{
                       mb: 3,
@@ -371,7 +377,7 @@ const SelectedCivilService = () => {
                           (d: any) => d.active
                         );
                         const currentPrice = isDiscountActive
-                          ? item.price
+                          ? Math.round(item.price)
                           : item.priceTmp || item.price;
 
                         return (
@@ -414,7 +420,7 @@ const SelectedCivilService = () => {
                                       color: '#F72009',
                                     }}
                                   >
-                                    {item.price} VND
+                                    {formatPrice(Math.round(item.price))} VND
                                   </Typography>
                                   <Typography
                                     variant="body2"
@@ -423,7 +429,7 @@ const SelectedCivilService = () => {
                                       color: 'text.secondary',
                                     }}
                                   >
-                                    {item.priceTmp} VND
+                                    {formatPrice(item.priceTmp)} VND
                                   </Typography>
                                 </>
                               ) : (
@@ -431,7 +437,7 @@ const SelectedCivilService = () => {
                                   variant="h5"
                                   sx={{ fontWeight: 'bold', color: '#0d47a1' }}
                                 >
-                                  {currentPrice} VND
+                                  {formatPrice(currentPrice)} VND
                                 </Typography>
                               )}
                             </Box>

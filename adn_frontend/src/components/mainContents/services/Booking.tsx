@@ -290,33 +290,30 @@ const Booking = () => {
           <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
             <button
               onClick={() => handleTabChange('ALL')}
-              className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'ALL'
+              className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'ALL'
                   ? 'bg-white text-blue-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
-              }`}
+                }`}
             >
               <FaServicestack className="mr-2" />
               Tất cả
             </button>
             <button
               onClick={() => handleTabChange('CENTER')}
-              className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'CENTER'
+              className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'CENTER'
                   ? 'bg-white text-blue-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
-              }`}
+                }`}
             >
               <FaHospital className="mr-2" />
               Tại trung tâm
             </button>
             <button
               onClick={() => handleTabChange('HOME')}
-              className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'HOME'
+              className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'HOME'
                   ? 'bg-white text-blue-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
-              }`}
+                }`}
             >
               <FaHome className="mr-2" />
               Tại nhà
@@ -386,25 +383,40 @@ const Booking = () => {
                     </div>
                   </div>
 
-                  {/* Phòng / Thời gian / Địa chỉ */}
-                  <div className="flex items-start space-x-3 col-span-1 md:col-span-2 lg:col-span-3">
-                    <div>
-                      <p className="text-sm text-gray-500">Địa điểm</p>
-                      <p className="font-medium text-gray-900 whitespace-pre-line">
-                        {item.show.appointmentType === 'CENTER'
-                          ? `Phòng: ${item.room?.roomName ?? '---'}\nGiờ: ${
-                              item.slot?.[0]?.startTime ?? '--'
-                            } đến ${
-                              item.slot?.[0]?.endTime ?? '--'
-                            }\nĐịa chỉ: ${
-                              item.location?.[0]?.addressLine ?? ''
-                            }, ${item.location?.[0]?.district ?? ''}, ${
-                              item.location?.[0]?.city ?? ''
-                            }`
-                          : null}
-                      </p>
-                    </div>
-                  </div>
+                  {/* Phòng / Thời gian / Địa chỉ - Tách thành 3 phần riêng biệt */}
+                  {item.show.appointmentType === 'CENTER' && (
+                    <>
+                      {/* Phòng */}
+                      <div className="flex items-start space-x-3">
+                        <div>
+                          <p className="text-sm text-gray-500">Phòng</p>
+                          <p className="font-medium text-gray-900">
+                            {item.room?.roomName ?? '---'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Thời gian */}
+                      <div className="flex items-start space-x-3">
+                        <div>
+                          <p className="text-sm text-gray-500">Thời gian</p>
+                          <p className="font-medium text-gray-900">
+                            {item.slot?.[0]?.startTime ? item.slot[0].startTime.substring(0, 5) : '--'} đến {item.slot?.[0]?.endTime ? item.slot[0].endTime.substring(0, 5) : '--'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Địa điểm */}
+                      <div className="flex items-start space-x-3">
+                        <div>
+                          <p className="text-sm text-gray-500">Địa điểm</p>
+                          <p className="font-medium text-gray-900">
+                            {item.location?.[0]?.addressLine ?? ''}, {item.location?.[0]?.district ?? ''}, {item.location?.[0]?.city ?? ''}
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Payment Info */}
@@ -421,11 +433,10 @@ const Booking = () => {
                       <div className="md:text-right">
                         <p className="text-sm text-gray-500">Trạng thái</p>
                         <span
-                          className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                            item.payments[0].getPaymentStatus === 'PAID'
+                          className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${item.payments[0].getPaymentStatus === 'PAID'
                               ? 'bg-green-100 text-green-800'
                               : 'bg-yellow-100 text-yellow-800'
-                          }`}
+                            }`}
                         >
                           {item.payments[0].getPaymentStatus === 'PAID'
                             ? 'Đã thanh toán'
@@ -629,11 +640,10 @@ const Booking = () => {
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
-                currentPage === 1
+              className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${currentPage === 1
                   ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
                   : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-              }`}
+                }`}
             >
               <FaChevronLeft className="mr-2" />
               Trang trước
@@ -645,11 +655,10 @@ const Booking = () => {
                   <button
                     key={page}
                     onClick={() => handlePageChange(page)}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
-                      currentPage === page
+                    className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${currentPage === page
                         ? 'bg-blue-600 text-white border-blue-600'
                         : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     {page}
                   </button>
@@ -660,11 +669,10 @@ const Booking = () => {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
-                currentPage === totalPages
+              className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${currentPage === totalPages
                   ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
                   : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-              }`}
+                }`}
             >
               Trang sau
               <FaChevronRight className="ml-2" />
@@ -676,23 +684,23 @@ const Booking = () => {
         {filteredBookings.length === 0 && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {activeTab === 'CENTER' 
-                ? 'Không có lịch hẹn tại trung tâm' 
-                : activeTab === 'HOME' 
-                ? 'Không có lịch hẹn tại nhà'
-                : 'Chưa có cuộc hẹn nào'}
+              {activeTab === 'CENTER'
+                ? 'Không có lịch hẹn tại trung tâm'
+                : activeTab === 'HOME'
+                  ? 'Không có lịch hẹn tại nhà'
+                  : 'Chưa có cuộc hẹn nào'}
             </h3>
             <p className="text-gray-600 mb-6">
-              {activeTab === 'CENTER' 
-                ? 'Bạn chưa có cuộc hẹn khám tại trung tâm nào.' 
-                : activeTab === 'HOME' 
-                ? 'Bạn chưa có cuộc hẹn lấy mẫu tại nhà nào.'
-                : 'Bạn chưa có cuộc hẹn khám bệnh nào. Hãy đặt lịch khám để bắt đầu chăm sóc sức khỏe.'}
+              {activeTab === 'CENTER'
+                ? 'Bạn chưa có cuộc hẹn khám tại trung tâm nào.'
+                : activeTab === 'HOME'
+                  ? 'Bạn chưa có cuộc hẹn lấy mẫu tại nhà nào.'
+                  : 'Bạn chưa có cuộc hẹn khám bệnh nào. Hãy đặt lịch khám để bắt đầu chăm sóc sức khỏe.'}
             </p>
           </div>
         )}
       </div>
-      
+
       <InvoicePopup
         visible={showInvoicePopup}
         onClose={() => setShowInvoicePopup(false)}

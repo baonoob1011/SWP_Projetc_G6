@@ -365,11 +365,11 @@ const BookingAtCenter = () => {
   useEffect(() => {
     fetchPrice();
   }, []);
-const formatTime = (time: string) => {
-  const [hour, minute] = time.split(':');
-  // parseInt để bỏ số 0 đứng trước ở giờ, ví dụ "08" → "8"
-  return `${parseInt(hour, 10)}:${minute}`;
-};
+  const formatTime = (time: string) => {
+    const [hour, minute] = time.split(':');
+    // parseInt để bỏ số 0 đứng trước ở giờ, ví dụ "08" → "8"
+    return `${parseInt(hour, 10)}:${minute}`;
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen pt-12 pb-4">
@@ -379,7 +379,7 @@ const formatTime = (time: string) => {
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
               <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10z"/>
+                <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10z" />
               </svg>
             </div>
             <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">
@@ -392,7 +392,7 @@ const formatTime = (time: string) => {
         <div className="bg-white shadow-sm p-6 mb-6 rounded-lg">
           <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
             </svg>
             Thông Tin Dịch Vụ
           </h2>
@@ -435,20 +435,19 @@ const formatTime = (time: string) => {
                     <label className="block text-sm font-medium text-gray-700 mb-3">
                       Chọn lịch hẹn
                     </label>
-                    
+
                     {/* Date Selection Tabs */}
                     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                       {/* Date Tabs Header */}
                       <div className="flex overflow-x-auto bg-gray-50 border-b border-gray-200">
-                        {Object.keys(groupedSlots).map((date) => (
+                        {Object.keys(groupedSlots).sort((a, b) => new Date(a).getTime() - new Date(b).getTime()).map((date) => (
                           <button
                             key={date}
                             onClick={() => handleDateChange({ target: { value: date } } as React.ChangeEvent<HTMLSelectElement>)}
-                            className={`flex-shrink-0 px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
-                              selectedDate === date
+                            className={`flex-shrink-0 px-6 py-3 text-sm font-medium border-b-2 transition-colors ${selectedDate === date
                                 ? 'border-blue-500 text-blue-600 bg-blue-50'
                                 : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-100'
-                            }`}
+                              }`}
                           >
                             <div className="flex flex-col items-center gap-1">
                               <div className="text-xs text-gray-500 font-normal">
@@ -456,7 +455,7 @@ const formatTime = (time: string) => {
                               </div>
                               <div className="flex items-center gap-2">
                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                  <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                                  <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
                                 </svg>
                                 {date}
                               </div>
@@ -473,21 +472,20 @@ const formatTime = (time: string) => {
                               <button
                                 key={slot.slotId}
                                 onClick={() => handleSlotChange(slot.slotId)}
-                                className={`p-4 rounded-lg border text-sm font-medium transition-all duration-200 ${
-                                  selectedSlot === slot.slotId
+                                className={`p-4 rounded-lg border text-sm font-medium transition-all duration-200 ${selectedSlot === slot.slotId
                                     ? 'bg-blue-500 text-white border-blue-500 shadow-lg transform scale-105'
                                     : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-blue-50 hover:border-blue-300 hover:shadow-md'
-                                }`}
+                                  }`}
                               >
                                 <div className="text-center">
                                   <div className="font-semibold">
-                                     {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                                    {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
                                   </div>
                                 </div>
                               </button>
                             ))}
                           </div>
-                          
+
                           {groupedSlots[selectedDate].length === 0 && (
                             <div className="text-center py-8">
                               <p className="text-gray-500">Không có slot nào khả dụng cho ngày này</p>
@@ -495,12 +493,12 @@ const formatTime = (time: string) => {
                           )}
                         </div>
                       )}
-                      
+
                       {/* Instruction when no date selected */}
                       {!selectedDate && (
                         <div className="p-8 text-center">
                           <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
                           </svg>
                           <p className="text-gray-600 text-lg">Vui lòng chọn ngày để xem các slot khả dụng</p>
                           <p className="text-gray-500 text-sm mt-2">Nhấp vào một trong các tab ngày ở trên</p>
@@ -555,7 +553,7 @@ const formatTime = (time: string) => {
         {/* Patient Information Section */}
         <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
           <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
           </svg>
           Thông Tin Bệnh Nhân
         </h2>
@@ -579,9 +577,8 @@ const formatTime = (time: string) => {
                     name={name}
                     value={patientOne[name]}
                     onChange={handleInputPatientOne}
-                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                      patientOneErrors[name] ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${patientOneErrors[name] ? 'border-red-500' : 'border-gray-300'
+                      }`}
                   />
                   {patientOneErrors[name] && (
                     <p className="mt-1 text-sm text-red-600">{patientOneErrors[name]}</p>
@@ -652,9 +649,8 @@ const formatTime = (time: string) => {
                     name={name}
                     value={patientTwo[name]}
                     onChange={handleInputPatientTwo}
-                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                      patientTwoErrors[name] ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${patientTwoErrors[name] ? 'border-red-500' : 'border-gray-300'
+                      }`}
                   />
                   {patientTwoErrors[name] && (
                     <p className="mt-1 text-sm text-red-600">{patientTwoErrors[name]}</p>
@@ -718,11 +714,10 @@ const formatTime = (time: string) => {
           <button
             onClick={handleSubmit}
             disabled={!selectedSlot || isSubmitting}
-            className={`px-8 py-3 rounded-lg font-semibold text-lg ${
-              !selectedSlot || isSubmitting
+            className={`px-8 py-3 rounded-lg font-semibold text-lg ${!selectedSlot || isSubmitting
                 ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
                 : 'bg-blue-600 text-white hover:bg-blue-700'
-            }`}
+              }`}
           >
             {isSubmitting ? 'Đang đăng ký...' : 'Đăng Ký Slot'}
           </button>

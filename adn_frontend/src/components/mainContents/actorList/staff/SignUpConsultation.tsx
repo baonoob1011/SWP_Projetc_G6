@@ -1,6 +1,8 @@
 // export default SignUpConsultation;
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { ValidationError } from 'yup';
 import Swal from 'sweetalert2';
 import { signUpStaffSchema } from '../../userinfor/Validation';
@@ -30,6 +32,8 @@ type ErrorResponse = {
 };
 
 const SignUpConsultation = () => {
+        const navigate = useNavigate();
+
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [staff, setStaff] = useState<Staff>({
@@ -219,7 +223,9 @@ const SignUpConsultation = () => {
       setLoading(false);
     }
   };
-
+const handleBack = () => {
+    navigate('/admin/consultant');
+  };
   if (!isAdmin) return null;
 
   return (
@@ -461,6 +467,13 @@ const SignUpConsultation = () => {
               </div>
 
               <div className="flex justify-end gap-3">
+                <button
+                  onClick={handleBack}
+                  type="button"
+                  className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
+                >
+                  Quay về
+                </button>
                 <button
                   onClick={handleSubmit}
                   disabled={loading}

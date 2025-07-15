@@ -345,9 +345,9 @@ export default function Home() {
               >
                 Đặt lịch ngay
               </button>
-              <button className="px-8 py-4 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white font-bold rounded-full border border-white/30 hover:border-white/50 transition-all duration-300">
+              {/* <button className="px-8 py-4 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white font-bold rounded-full border border-white/30 hover:border-white/50 transition-all duration-300">
                 Tìm hiểu thêm
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

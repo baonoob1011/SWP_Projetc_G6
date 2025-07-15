@@ -184,7 +184,7 @@ export const DataList2 = () => {
           </div>
 
           {/* Navigation Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {managerNavItems.map((item, idx) => (
               <div
                 key={idx}
@@ -203,7 +203,7 @@ export const DataList2 = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -257,7 +257,7 @@ export const DataList2 = () => {
         </FormControl>
 
         {/* Quick Access Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           {managerNavItems.map((item, idx) => (
             <div
               key={idx}
@@ -276,7 +276,7 @@ export const DataList2 = () => {
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
 
       {/* Content Area */}

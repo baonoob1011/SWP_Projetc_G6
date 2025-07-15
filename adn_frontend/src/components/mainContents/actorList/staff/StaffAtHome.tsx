@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import CustomSnackBar from '../../userinfor/Snackbar';
 import { signUpStaffSchema } from '../../userinfor/Validation';
 import { ValidationError } from 'yup';
@@ -29,6 +31,8 @@ type ErrorResponse = {
 };
 
 const SignUpStaffAtHome = () => {
+     const navigate = useNavigate();
+
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [staff, setStaff] = useState<Staff>({
@@ -219,7 +223,9 @@ const SignUpStaffAtHome = () => {
       setLoading(false);
     }
   };
-
+const handleBack = () => {
+    navigate('/admin/staff-at-home');
+  };
   if (!isAdmin) return null;
 
   return (
@@ -464,6 +470,13 @@ const SignUpStaffAtHome = () => {
               </div>
 
               <div className="flex justify-end gap-3">
+                <button
+                  onClick={handleBack}
+                  type="button"
+                  className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
+                >
+                  Quay về
+                </button>
                 <button
                   onClick={handleSubmit}
                   disabled={loading}

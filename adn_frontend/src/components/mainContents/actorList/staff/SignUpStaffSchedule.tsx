@@ -84,7 +84,7 @@ const SignUpStaffSchedule = () => {
   useEffect(() => {
     setAuth(
       localStorage.getItem('role') === 'ADMIN' ||
-        localStorage.getItem('role') === 'MANAGER'
+      localStorage.getItem('role') === 'MANAGER'
     );
   }, []);
 
@@ -371,7 +371,9 @@ const SignUpStaffSchedule = () => {
       </div>
     );
   }
-
+  const handleBack = () => {
+    navigate('/room');
+  };
   return (
     <div className="min-h-screen bg-white ml-10">
       <div className="max-w-full">
@@ -395,9 +397,8 @@ const SignUpStaffSchedule = () => {
             <div className="text-blue-100 text-xl">Tổng số lịch làm: {isSlot.length}</div>
           </div>
         </div>
-
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-2">
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
@@ -405,7 +406,13 @@ const SignUpStaffSchedule = () => {
             Thêm lịch làm việc
           </button>
         </div>
-
+        <button
+          onClick={handleBack}
+          type="button"
+          className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
+        >
+          Quay về
+        </button>
         {/* Create Form - Collapsible */}
         {showCreateForm && (
           <div className="bg-white border border-gray-200 rounded-lg mb-6 shadow-sm">
@@ -427,7 +434,7 @@ const SignUpStaffSchedule = () => {
                           borderRadius: '8px',
                           backgroundColor: '#fff',
                           '&:hover fieldset': {
-                            borderColor: '#3b82f6', 
+                            borderColor: '#3b82f6',
                           },
                           '&.Mui-focused fieldset': {
                             borderColor: '#3b82f6',

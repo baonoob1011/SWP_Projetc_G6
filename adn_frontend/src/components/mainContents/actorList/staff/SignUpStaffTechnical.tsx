@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { ValidationError } from 'yup';
 import Swal from 'sweetalert2';
 import { signUpStaffSchema } from '../../userinfor/Validation';
@@ -29,6 +31,7 @@ type ErrorResponse = {
 };
 
 const SignUpStaffTechnical = () => {
+    const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [staff, setStaff] = useState<Staff>({
@@ -220,7 +223,9 @@ const SignUpStaffTechnical = () => {
       setLoading(false);
     }
   };
-
+const handleBack = () => {
+    navigate('/admin/technical');
+  };
   if (!isAdmin) return null;
 
   return (
@@ -462,6 +467,13 @@ const SignUpStaffTechnical = () => {
               </div>
 
               <div className="flex justify-end gap-3">
+                  <button
+                  onClick={handleBack}
+                  type="button"
+                  className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
+                >
+                  Quay về
+                </button>
                 <button
                   onClick={handleSubmit}
                   disabled={loading}

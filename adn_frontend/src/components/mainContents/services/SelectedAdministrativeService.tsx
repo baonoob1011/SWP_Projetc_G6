@@ -47,6 +47,10 @@ const SelectedAdministrativeService = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const formatPrice = (price: number): string => {
+    return price.toLocaleString('vi-VN');
+  };
+
   const mapRatingTextToNumber = (ratingText: string): number => {
     switch (ratingText) {
       case 'ONE_STAR':
@@ -196,7 +200,11 @@ const SelectedAdministrativeService = () => {
             >
               {/* Product Image */}
               <Box
-                sx={{ flex: { md: '0 0 450px' }, position: 'relative', mt: 7 }}
+                sx={{ 
+                  flex: { md: '0 0 45%' }, 
+                  position: 'relative', 
+                  mt: 7 
+                }}
               >
                 {svc.image && (
                   <CardMedia
@@ -279,7 +287,7 @@ const SelectedAdministrativeService = () => {
                   </Typography>
 
                   <Chip
-                    label={svc.serviceType}
+                    label="Hành chính"
                     variant="outlined"
                     sx={{
                       mb: 3,
@@ -378,44 +386,64 @@ const SelectedAdministrativeService = () => {
                 {price && price.length > 0 && (
                   <Box sx={{ mb: 4 }}>
                     <Stack spacing={2}>
-                      {price.map((item: any, idx: number) => (
-                        <Paper
-                          key={idx}
-                          elevation={0}
-                          sx={{
-                            p: 3,
-                            background:
-                              'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
-                            border: '1px solid #4caf50',
-                            borderRadius: 2,
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <Box
+                      {price.map((item: any, idx: number) => {
+                        const discountedPrice = activeDiscounts.length > 0 
+                          ? Math.round(item.price * (1 - activeDiscounts[0].discountValue / 100))
+                          : item.price;
+                        
+                        return (
+                          <Paper
+                            key={idx}
+                            elevation={0}
                             sx={{
+                              p: 3,
+                              background:
+                                'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
+                              border: '1px solid #4caf50',
+                              borderRadius: 2,
                               display: 'flex',
+                              justifyContent: 'space-between',
                               alignItems: 'center',
-                              gap: 2,
                             }}
                           >
-                            <Schedule sx={{ color: '#F72009' }} />
-                            <Typography
-                              variant="h6"
-                              sx={{ fontWeight: 'bold', color: '#F72009' }}
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                              }}
                             >
-                              Thời gian: {item.time}
-                            </Typography>
-                          </Box>
-                          <Typography
-                            variant="h5"
-                            sx={{ fontWeight: 'bold', color: '#F72009' }}
-                          >
-                            {item.price} VND
-                          </Typography>
-                        </Paper>
-                      ))}
+                              <Schedule sx={{ color: '#F72009' }} />
+                              <Typography
+                                variant="h6"
+                                sx={{ fontWeight: 'bold', color: '#F72009' }}
+                              >
+                                Thời gian: {item.time}
+                              </Typography>
+                            </Box>
+                            <Box sx={{ textAlign: 'right' }}>
+                              {activeDiscounts.length > 0 && (
+                                <Typography
+                                  variant="body2"
+                                  sx={{ 
+                                    textDecoration: 'line-through',
+                                    color: 'text.secondary',
+                                    mb: 0.5
+                                  }}
+                                >
+                                  {formatPrice(item.price)} VND
+                                </Typography>
+                              )}
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: 'bold', color: '#F72009' }}
+                              >
+                                {formatPrice(discountedPrice)} VND
+                              </Typography>
+                            </Box>
+                          </Paper>
+                        );
+                      })}
                     </Stack>
                   </Box>
                 )}
