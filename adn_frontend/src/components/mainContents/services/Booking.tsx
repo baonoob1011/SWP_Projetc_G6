@@ -354,7 +354,11 @@ const Booking = () => {
                   {/* Ngày khám */}
                   <div className="flex items-center space-x-3">
                     <div>
-                      <p className="text-sm text-gray-500">Ngày lấy mẫu</p>
+                      {item.show.appointmentType === 'CENTER' ? (
+                        <p className="text-sm text-gray-500">Ngày lấy mẫu</p>
+                      ) : (
+                        <p className="text-sm text-gray-500">Ngày đặt lịch</p>
+                      )}
                       <p className="font-medium text-gray-900">
                         {item.show.appointmentDate}
                       </p>

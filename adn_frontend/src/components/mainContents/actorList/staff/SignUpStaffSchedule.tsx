@@ -455,8 +455,7 @@ const SignUpStaffSchedule = () => {
                           key={location.locationId}
                           value={location.locationId}
                         >
-                          {location.addressLine},{''}
-                          {location.district},{''}
+                          {location.addressLine}, {location.district},{' '}
                           {location.city}
                         </MenuItem>
                       ))}

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import jsPDF from 'jspdf';
 import 'jspdf-autotable'; // 👈 Import đúng cách để autoTable hoạt động
-
+import '../../../assets/font/Roboto-Regular-normal.js';
 interface ExportResultPDFProps {
   item: any;
 }
@@ -10,7 +10,7 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
   const exportResultToPDF = () => {
     const doc = new jsPDF('p', 'mm', 'a4');
 
-    doc.setFont('helvetica');
+    doc.setFont('Roboto');
     let currentY = 15;
     const pageWidth = doc.internal.pageSize.getWidth();
     const margin = 20;
@@ -18,15 +18,11 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
 
     // === HEADER SECTION ===
     // Company logo area (placeholder box)
-    doc.setDrawColor(0, 0, 0);
-    doc.rect(margin, currentY, 40, 15);
-    doc.setFontSize(8);
-    doc.text('LOGO', margin + 18, currentY + 8);
 
     // Company info
-    doc.setFontSize(16).setFont('helvetica', 'bold');
+    doc.setFontSize(16).setFont('Roboto', 'bold');
     doc.text('GENELINK', margin + 50, currentY + 5);
-    doc.setFontSize(10).setFont('helvetica', 'normal');
+    doc.setFontSize(10).setFont('Roboto', 'normal');
     doc.text(
       'Dia chi: 123 Duong ABC, Quan XYZ, TP.HCM',
       margin + 50,
@@ -40,7 +36,7 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
 
     // Report number
     const reportId = `KQ ${item.showAppointmentResponse?.appointmentId}`;
-    doc.setFontSize(12).setFont('helvetica', 'bold');
+    doc.setFontSize(12).setFont('Roboto', 'bold');
     doc.text(`So: ${reportId}`, pageWidth - margin - 40, currentY + 8);
 
     currentY += 35;
@@ -51,12 +47,12 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
     currentY += 10;
 
     // === TITLE SECTION ===
-    doc.setFontSize(18).setFont('helvetica', 'bold');
+    doc.setFontSize(18).setFont('Roboto', 'bold');
     const title = 'PHIEU KET QUA PHAN TICH ADN';
     const titleWidth = doc.getTextWidth(title);
     doc.text(title, (pageWidth - titleWidth) / 2, currentY);
 
-    doc.setFontSize(14).setFont('helvetica', 'normal');
+    doc.setFontSize(14).setFont('Roboto', 'normal');
     const subtitle = '(Xet nghiem quan he huyet thong)';
     const subtitleWidth = doc.getTextWidth(subtitle);
     doc.text(subtitle, (pageWidth - subtitleWidth) / 2, currentY + 8);
@@ -64,15 +60,19 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
     currentY += 25;
 
     // === CUSTOMER INFO SECTION ===
-    doc.setFontSize(12).setFont('helvetica', 'bold');
+    doc.setFontSize(12).setFont('Roboto', 'bold');
     doc.text('I. THONG TIN KHACH HANG', margin, currentY);
     currentY += 8;
 
-    doc.setFontSize(11).setFont('helvetica', 'normal');
+    doc.setFontSize(11).setFont('Roboto', 'normal');
     const customerInfo = [
       `• Can cu vao giay de nghi phan tich ADN so: HID15 5986`,
       `• Ho va ten nguoi yeu cau: ${item.userAppointmentResponse.fullName}`,
-      `• So dien thoai: ${item.userAppointmentResponse.phone}`,
+      `• So dien thoai: ${
+        item.userAppointmentResponse.phone > 0
+          ? item.userAppointmentResponse.phone
+          : null
+      }`,
       `• Dia chi: ${item.userAppointmentResponse.address}`,
       `• Ngay tiep nhan mau: ${
         item.showAppointmentResponse?.appointmentDate || 'N/A'
@@ -86,7 +86,7 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
     currentY += 8;
 
     // === SAMPLE INFO SECTION ===
-    doc.setFontSize(12).setFont('helvetica', 'bold');
+    doc.setFontSize(12).setFont('Roboto', 'bold');
     doc.text('II. THONG TIN MAU PHAN TICH', margin, currentY);
     currentY += 10;
 
@@ -142,11 +142,11 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
     currentY = (doc as any).lastAutoTable.finalY + 15;
 
     // === ANALYSIS SECTION ===
-    doc.setFontSize(12).setFont('helvetica', 'bold');
+    doc.setFontSize(12).setFont('Roboto', 'bold');
     doc.text('III. KET QUA PHAN TICH', margin, currentY);
     currentY += 8;
 
-    doc.setFontSize(11).setFont('helvetica', 'normal');
+    doc.setFontSize(11).setFont('Roboto', 'normal');
     const analysisNote =
       'Sau khi phan tich cac mau ADN co ky hieu tren bang bo kit Identifiler-Plus cua hang Applied Biosystems - My, chung toi co ket qua nhu sau:';
     const splitNote = doc.splitTextToSize(analysisNote, contentWidth);
@@ -247,11 +247,11 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
       currentY = 30;
     }
 
-    doc.setFontSize(12).setFont('helvetica', 'bold');
+    doc.setFontSize(12).setFont('Roboto', 'bold');
     doc.text('IV. KET LUAN', margin, currentY);
     currentY += 10;
 
-    doc.setFontSize(11).setFont('helvetica', 'normal');
+    doc.setFontSize(11).setFont('Roboto', 'normal');
     const conclusionText = `Hoi dong khoa hoc Cong ty GENELINK ket luan: Nguoi co mau ADN ky hieu ${item.resultLocusAppointmentResponse?.[0]?.sampleCode1} va nguoi co mau ADN ky hieu ${item.resultLocusAppointmentResponse?.[0]?.sampleCode2}:`;
     const splitConclusion = doc.splitTextToSize(conclusionText, contentWidth);
     doc.text(splitConclusion, margin, currentY);
@@ -265,7 +265,7 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
         ? 'CO QUAN HE HUYET THONG'
         : 'KHONG CO QUAN HE HUYET THONG';
 
-    doc.setFontSize(14).setFont('helvetica', 'bold');
+    doc.setFontSize(14).setFont('Roboto', 'bold');
     const resultWidth = doc.getTextWidth(mainResult);
     doc.text(mainResult, (pageWidth - resultWidth) / 2, currentY);
     currentY += 10;
@@ -273,7 +273,7 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
     // Statistical details
     const detail = item.resultDetailAppointmentResponse?.[0];
     if (detail) {
-      doc.setFontSize(10).setFont('helvetica', 'normal');
+      doc.setFontSize(10).setFont('Roboto', 'normal');
       const statsText = `(Combined PI: ${
         detail.combinedPaternityIndex
       } | Xac suat: ${detail.paternityProbability?.toFixed(4)}%)`;
@@ -283,11 +283,11 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
     }
 
     // === DISCLAIMER SECTION ===
-    doc.setFontSize(11).setFont('helvetica', 'bold');
+    doc.setFontSize(11).setFont('Roboto', 'bold');
     doc.text('V. GHI CHU VA CAM KET', margin, currentY);
     currentY += 8;
 
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('Roboto', 'normal');
     const disclaimerText =
       item.serviceAppointmentResponses?.serviceType === 'ADMINISTRATIVE'
         ? '• Ket qua xet nghiem nay duoc su dung cho muc dich hanh chinh, co the lam can cu phap ly trong cac thu tuc nhu xac nhan cha con, khai sinh, hoac cac van de phap ly lien quan.\n• Cong ty cam ket ve tinh chinh xac va bao mat thong tin khach hang.'
@@ -307,15 +307,15 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
     const signatureY = currentY;
 
     // Left signature
-    doc.setFontSize(11).setFont('helvetica', 'bold');
+    doc.setFontSize(11).setFont('Roboto', 'bold');
     doc.text('KHACH HANG', margin + 30, signatureY);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('Roboto', 'normal');
     doc.text('(Ky va ghi ro ho ten)', margin + 20, signatureY + 6);
 
     // Right signature
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('Roboto', 'bold');
     doc.text('GIAM DOC GENELINK', pageWidth - margin - 60, signatureY);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('Roboto', 'normal');
     doc.text('(Ky va dong dau)', pageWidth - margin - 50, signatureY + 6);
 
     // Date

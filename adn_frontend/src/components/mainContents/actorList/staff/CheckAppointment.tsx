@@ -86,7 +86,7 @@ export const CheckAppointment = () => {
         <div className={styles.slotsContainer}>
           {bills.length > 0 ? (
             <div className={styles.slotsGrid}>
-              {bills.map((bill, idx) => (
+              {groupedAppointments.map((bill, idx) => (
                 <button
                   key={idx}
                   className={styles.slotButton}

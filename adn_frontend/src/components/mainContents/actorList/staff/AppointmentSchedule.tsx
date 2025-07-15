@@ -88,7 +88,10 @@ const AppointmentSchedule = () => {
 
   // Filter paid appointments
   const paidAppointments = homeSchedule
-    .filter((item) => item.showAppointmentResponse.note === 'Đã thanh toán')
+    .filter(
+      (item) =>
+        item.showAppointmentResponse.note === 'Đơn đăng ký đang đợi xác nhận'
+    )
     .sort(
       (a, b) =>
         b.showAppointmentResponse.appointmentId -

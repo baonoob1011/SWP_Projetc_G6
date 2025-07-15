@@ -497,7 +497,7 @@ const SelectedCivilService = () => {
                       px: 4,
                       borderRadius: 3,
                       fontWeight: 'bold',
-                      fontSize: '1.1rem',
+                      fontSize: '0.8rem',
                       boxShadow: '0 6px 20px rgba(25, 118, 210, 0.3)',
                       '&:hover': {
                         background:
@@ -508,7 +508,7 @@ const SelectedCivilService = () => {
                       transition: 'all 0.3s ease',
                     }}
                   >
-                    Đặt lịch tại nhà
+                    Đặt lịch lấy mẫu tại nhà
                   </Button>
                   <Button
                     component={NavLink}
@@ -522,7 +522,7 @@ const SelectedCivilService = () => {
                       px: 4,
                       borderRadius: 3,
                       fontWeight: 'bold',
-                      fontSize: '1.1rem',
+                      fontSize: '0.8rem',
                       borderWidth: 2,
                       borderColor: '#1976d2',
                       color: '#1976d2',
@@ -534,7 +534,7 @@ const SelectedCivilService = () => {
                       transition: 'all 0.3s ease',
                     }}
                   >
-                    Đặt lịch tại cơ sở
+                    Đặt lịch lấy mẫu tại cơ sở
                   </Button>
                 </Box>
               </CardContent>
