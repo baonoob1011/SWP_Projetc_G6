@@ -515,7 +515,7 @@ const SelectedAdministrativeService = () => {
                       transition: 'all 0.3s ease',
                     }}
                   >
-                    Đặt lịch tại cơ sở
+                    Đặt lịch lấy mẫu tại cơ sở
                   </Button>
                 </Box>
               </CardContent>

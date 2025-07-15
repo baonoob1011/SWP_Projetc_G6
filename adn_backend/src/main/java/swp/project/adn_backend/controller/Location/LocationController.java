@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import swp.project.adn_backend.dto.InfoDTO.LocationInfoDTO;
 import swp.project.adn_backend.dto.request.Location.LocationRequest;
 import swp.project.adn_backend.dto.request.Location.LocationResponse;
 import swp.project.adn_backend.entity.Location;
@@ -26,6 +27,7 @@ public class LocationController {
     public ResponseEntity<List<LocationResponse>> getAllLocation() {
         return ResponseEntity.ok(locationService.getAllLocation());
     }
+
 
     @DeleteMapping("/delete-location/{id}")
     public ResponseEntity<String> deleteLocation(@PathVariable Long id) {

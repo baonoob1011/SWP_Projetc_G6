@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Menu,
   X,
-  User,
   //   Settings,
   LogOut,
   // Users,
@@ -17,12 +16,18 @@ import {
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { toast } from 'react-toastify';
-import { ArrowBack, LocationCity, Room, RoomService } from '@mui/icons-material';
+import {
+  ArrowBack,
+  LocationCity,
+  Room,
+  RoomService,
+} from '@mui/icons-material';
 
 const ManagerPage = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeItem, setActiveItem] = useState('dashboard');
   const [fullName, setFullName] = useState<string>('');
+  const avatarUrl = localStorage.getItem('avatarUrl');
   const navigate = useNavigate();
   const TimeLeftLogout = (exp: number) => {
     const now = Date.now() / 1000;
@@ -162,7 +167,13 @@ const ManagerPage = () => {
 
         <div className="flex items-center space-x-3">
           <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
-            <User className="h-4 w-4 text-gray-600" />
+            <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
+              <img
+                src={avatarUrl ?? undefined}
+                alt="Avatar"
+                className="w-7 h-7 rounded-full object-cover"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -260,7 +271,11 @@ const ManagerPage = () => {
           {/* User Profile */}
           <div className="flex items-center space-x-3 px-3 py-3 rounded-lg bg-gray-50">
             <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
-              <User className="h-4 w-4 text-gray-600" />
+              <img
+                src={avatarUrl ?? undefined}
+                alt="Avatar"
+                className="w-7 h-7 rounded-full object-cover"
+              />
             </div>
             <span className="text-sm text-gray-700">{fullName}</span>
           </div>

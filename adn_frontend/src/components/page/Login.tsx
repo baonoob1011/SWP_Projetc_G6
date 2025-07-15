@@ -79,13 +79,14 @@ const Login = ({ setFullName }: LoginProps) => {
         exp: number;
         fullName: string;
         role: string;
+        avatarUrl: string;
       } = jwtDecode(token);
 
       localStorage.setItem('token', token);
       localStorage.setItem('username', decoded.sub);
       localStorage.setItem('fullName', decoded.fullName);
       localStorage.setItem('role', decoded.role);
-      localStorage.setItem('avatarUrl', decoded.role);
+      localStorage.setItem('avatarUrl', decoded.avatarUrl);
 
       setFullName(decoded.fullName);
       TimeLeftLogout(decoded.exp);
@@ -129,12 +130,14 @@ const Login = ({ setFullName }: LoginProps) => {
             exp: number;
             fullName: string;
             role: string;
+            avatarUrl: string;
           } = jwtDecode(token);
 
           localStorage.setItem('token', token);
           localStorage.setItem('username', decoded.sub);
           localStorage.setItem('fullName', decoded.fullName);
           localStorage.setItem('role', decoded.role);
+          localStorage.setItem('avatarUrl', decoded.avatarUrl);
 
           setFullName(decoded.fullName);
           TimeLeftLogout(decoded.exp);

@@ -403,6 +403,7 @@ public class AppointmentService {
         appointment.setAppointmentType(AppointmentType.HOME);
         appointment.setUsers(userBookAppointment);
         appointment.setAppointmentDate(LocalDate.now());
+        appointment.setNote("Đang đợi xác nhận");
 
         // Tính giá sau khi giảm (nếu có)
 
@@ -1144,7 +1145,9 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         appointment.setNote("vì lí do mẫu bị hư nên chúng tôi hoàn trả đơn cũng như tiền mong ví khách đăng kí lại để hổ trợ lấy mẫu lại ");
-        appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+        if(appointment.getAppointmentType().equals(AppointmentType.CENTER)){
+            appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+        }
         appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
         Users users = appointment.getUsers();
         for (Payment payment : appointment.getPayments()) {
@@ -1302,7 +1305,14 @@ public class AppointmentService {
         invoiceRepository.save(invoice);
 
         // ✅ Cập nhật trạng thái appointment & payment
-        appointment.setNote("Quý khách vui lòng kiểm tra kỹ ngày, giờ và thứ trong lịch hẹn để đến đúng giờ lấy mẫu. Xin cảm ơn!");
+        if(appointment.getAppointmentType().equals(AppointmentType.CENTER)){
+            appointment.setNote("Quý khách vui lòng kiểm tra kỹ ngày, giờ và thứ trong lịch hẹn để đến đúng giờ lấy mẫu. Xin cảm ơn!");
+
+        }
+        else{
+            appointment.setNote("Đơn đăng ký đang đợi xác nhận");
+
+        }
         payment.setPaymentStatus(PaymentStatus.PAID);
         payment.setTransitionDate(LocalDate.now());
 

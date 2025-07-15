@@ -17,23 +17,46 @@ import swp.project.adn_backend.dto.response.appointment.AppointmentResponse.appo
 import swp.project.adn_backend.dto.response.appointment.updateAppointmentStatus.UpdateAppointmentStatusResponse;
 import swp.project.adn_backend.dto.response.serviceResponse.AppointmentResponse;
 import swp.project.adn_backend.entity.Appointment;
+import swp.project.adn_backend.entity.ServiceTest;
+import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.enums.ServiceType;
+import swp.project.adn_backend.exception.AppException;
+import swp.project.adn_backend.repository.ServiceTestRepository;
 import swp.project.adn_backend.service.registerServiceTestService.AppointmentService;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/appointment")
 public class AppointmentController {
-    @Autowired
+
     AppointmentService appointmentService;
+    ServiceTestRepository serviceTestRepository;
+
+    @Autowired
+    public AppointmentController(AppointmentService appointmentService, ServiceTestRepository serviceTestRepository) {
+        this.appointmentService = appointmentService;
+        this.serviceTestRepository = serviceTestRepository;
+    }
 
     @PostMapping("/book-appointment/{serviceId}")
-    public AllAppointmentAtCenterResponse bookAppointmentAtCenter(@RequestBody @Valid BookAppointmentRequest request,
+    public AllAppointmentAtCenterResponse bookAppointmentAtCenter(@RequestBody BookAppointmentRequest request,
                                                                   Authentication authentication,
                                                                   @PathVariable("serviceId") long serviceId,
                                                                   @RequestParam long slotId,
                                                                   @RequestParam long locationId,
                                                                   @RequestParam long priceId) {
+
+        ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
+
+
+        if (serviceTest.getServiceType().equals(ServiceType.ADMINISTRATIVE)) {
+            validatePatientRequests(request.getPatientRequestList());
+        }
+
         return appointmentService.bookAppointmentAtCenter(
                 request.getAppointmentRequest(),
                 authentication,
@@ -46,8 +69,9 @@ public class AppointmentController {
         );
     }
 
+
     @PostMapping("/book-appointment-at-home/{serviceId}")
-    public AllAppointmentAtHomeResponse bookAppointmentAtHome(@RequestBody @Valid BookAppointmentRequest request,
+    public AllAppointmentAtHomeResponse bookAppointmentAtHome(@RequestBody  BookAppointmentRequest request,
                                                               Authentication authentication,
                                                               @PathVariable("serviceId") long serviceId,
                                                               @RequestParam long priceId) {
@@ -78,15 +102,7 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getHistory(authentication));
     }
 
-//    @GetMapping("/get-appointment-at-home")
-//    public ResponseEntity<List<AllAppointmentAtHomeResponse>> getAppointmentForUserAtHome(Authentication authentication) {
-//        return ResponseEntity.ok(appointmentService.getAppointmentAtHome(authentication));
-//    }
 
-//    @GetMapping("/get-appointment-history-user")
-//    public ResponseEntity<AllAppointmentResponse> getHistoryAppointmentUser(Authentication authentication) {
-//        return ResponseEntity.ok(appointmentService.getHistoryAppointmentUser(authentication));
-//    }
 
     @GetMapping("/get-appointment-by-slot/{slotId}")
     public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentBySlot(@PathVariable("slotId") long slotId,
@@ -178,4 +194,39 @@ public class AppointmentController {
         appointmentService.updateAppointmentStatus(slotId, patientId, appointmentRequest, patientRequest);
         return ResponseEntity.ok("Update Successful");
     }
+    private void validatePatientRequests(List<PatientRequest> list) {
+        if (list == null || list.isEmpty()) {
+            throw new RuntimeException("Danh sách bệnh nhân không được trống");
+        }
+
+        for (PatientRequest pr : list) {
+            if (pr.getFullName() == null || pr.getFullName().isBlank()) {
+                throw new RuntimeException("Tên bệnh nhân không được để trống");
+            }
+
+            if (pr.getDateOfBirth() == null || pr.getDateOfBirth().isAfter(LocalDate.now())) {
+                throw new RuntimeException("Ngày sinh không hợp lệ");
+            }
+
+            int age = Period.between(pr.getDateOfBirth(), LocalDate.now()).getYears();
+
+            // ✅ Nếu dưới 14 tuổi → yêu cầu giấy khai sinh
+            if (age < 14) {
+                if (pr.getBirthCertificate() == null || pr.getBirthCertificate().isBlank()) {
+                    throw new RuntimeException("Trẻ dưới 14 tuổi bắt buộc phải có giấy khai sinh");
+                }
+            }
+
+            // ✅ Nếu từ 16 tuổi trở lên → yêu cầu CCCD
+            if (age >= 16) {
+                if (pr.getIdentityNumber() == null || pr.getIdentityNumber().isBlank()) {
+                    throw new RuntimeException("Người từ 16 tuổi trở lên bắt buộc phải có số CCCD");
+                }
+            }
+
+            // Có thể thêm các điều kiện khác nếu cần
+        }
+    }
+
+
 }

@@ -2,6 +2,7 @@ package swp.project.adn_backend.dto.InfoDTO;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import swp.project.adn_backend.enums.AppointmentStatus;
 import swp.project.adn_backend.enums.AppointmentType;
 import swp.project.adn_backend.enums.DeliveryStatus;
 
@@ -15,14 +16,24 @@ public class KitDeliveryStatusInfoStaffDTO {
     private LocalDate returnDate;
     private long appointmentId;
     private AppointmentType appointmentType;
+    private AppointmentStatus appointmentStatus;
 
-    public KitDeliveryStatusInfoStaffDTO(long kitDeliveryStatusId, DeliveryStatus deliveryStatus, LocalDate createOrderDate, LocalDate returnDate, long appointmentId, AppointmentType appointmentType) {
+    public KitDeliveryStatusInfoStaffDTO(long kitDeliveryStatusId, DeliveryStatus deliveryStatus, LocalDate createOrderDate, LocalDate returnDate, long appointmentId, AppointmentType appointmentType, AppointmentStatus appointmentStatus) {
         this.kitDeliveryStatusId = kitDeliveryStatusId;
         this.deliveryStatus = deliveryStatus;
         this.createOrderDate = createOrderDate;
         this.returnDate = returnDate;
         this.appointmentId = appointmentId;
         this.appointmentType = appointmentType;
+        this.appointmentStatus = appointmentStatus;
+    }
+
+    public AppointmentStatus getAppointmentStatus() {
+        return appointmentStatus;
+    }
+
+    public void setAppointmentStatus(AppointmentStatus appointmentStatus) {
+        this.appointmentStatus = appointmentStatus;
     }
 
     public AppointmentType getAppointmentType() {

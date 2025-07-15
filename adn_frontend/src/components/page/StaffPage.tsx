@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Menu,
   X,
-  User,
   //   Settings,
   LogOut,
   Bell,
@@ -36,7 +35,7 @@ const StaffPage = () => {
       }, timeleft);
     }
   };
-
+  const avatarUrl = localStorage.getItem('avatarUrl');
   function getTokenExp(): number | null {
     const token = localStorage.getItem('token');
     if (!token) return null;
@@ -125,6 +124,7 @@ const StaffPage = () => {
       localStorage.removeItem('username');
       localStorage.removeItem('fullName');
       localStorage.removeItem('role');
+      localStorage.removeItem('avatarUrl');
       setFullName('');
       window.location.href = '/login';
     } catch (error) {
@@ -152,16 +152,22 @@ const StaffPage = () => {
         </div>
 
         <div className="flex items-center space-x-3">
-          <button className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors">
+          {/* <button className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors">
             <Bell className="h-5 w-5" />
             {notifications > 0 && (
               <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                 {notifications}
               </span>
             )}
-          </button>
+          </button> */}
           <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
-            <User className="h-4 w-4 text-gray-600" />
+            <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
+              <img
+                src={avatarUrl ?? undefined}
+                alt="Avatar"
+                className="w-7 h-7 rounded-full object-cover"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -259,7 +265,11 @@ const StaffPage = () => {
           {/* User Profile */}
           <div className="flex items-center space-x-3 px-3 py-3 rounded-lg bg-gray-50">
             <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
-              <User className="h-4 w-4 text-gray-600" />
+              <img
+                src={avatarUrl ?? undefined}
+                alt="Avatar"
+                className="w-7 h-7 rounded-full object-cover"
+              />
             </div>
             <span className="text-sm text-gray-700">{fullName}</span>
           </div>

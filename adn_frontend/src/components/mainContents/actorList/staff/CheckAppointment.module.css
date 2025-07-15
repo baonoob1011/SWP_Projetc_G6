@@ -310,14 +310,14 @@
 }
 
 /* Specific column widths for collected samples table */
-.collectedSamplesTable .tableHeaderCell:nth-child(1) { width: 12%; } /* HỌ TÊN */
+.collectedSamplesTable .tableHeaderCell:nth-child(1) { width: 14%; } /* HỌ TÊN */
 .collectedSamplesTable .tableHeaderCell:nth-child(2) { width: 12%; } /* MÃ KIT */
-.collectedSamplesTable .tableHeaderCell:nth-child(3) { width: 15%; } /* LOẠI MẪU */
-.collectedSamplesTable .tableHeaderCell:nth-child(4) { width: 18%; } /* TRẠNG THÁI MẪU */
+.collectedSamplesTable .tableHeaderCell:nth-child(3) { width: 12%; } /* LOẠI MẪU */
+.collectedSamplesTable .tableHeaderCell:nth-child(4) { width: 15%; } /* TRẠNG THÁI MẪU */
 .collectedSamplesTable .tableHeaderCell:nth-child(5) { width: 12%; } /* MÃ MẪU */
 .collectedSamplesTable .tableHeaderCell:nth-child(6) { width: 12%; } /* NGÀY THU */
 .collectedSamplesTable .tableHeaderCell:nth-child(7) { width: 12%; } /* NGƯỜI THU */
-.collectedSamplesTable .tableHeaderCell:nth-child(8) { width: 7%; }  /* THAO TÁC */
+.collectedSamplesTable .tableHeaderCell:nth-child(8) { width: 11%; } /* THAO TÁC */
 
 .collectedSamplesTable .tableCell {
   background: white;
@@ -326,6 +326,15 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
   vertical-align: middle;
+  text-align: center;
+}
+
+/* Special styling for the actions column */
+.collectedSamplesTable .tableCell:nth-child(8) {
+  padding: 0.5rem;
+  text-align: center;
+  vertical-align: middle;
+  min-width: 60px;
 }
 
 .collectedSamplesTable .tableRow:hover {
@@ -340,6 +349,29 @@
   font-size: 0.8rem;
   margin: 0 auto;
   display: block;
+}
+
+/* Special styling for submit button in collected samples table */
+.collectedSamplesTable .submitBtn {
+  padding: 0.4rem 0.6rem;
+  background: #0d6efd;
+  color: white;
+  border: 1px solid #0d6efd;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  font-weight: 400;
+  margin: 0 auto;
+}
+
+.collectedSamplesTable .submitBtn:hover {
+  background: #0b5ed7;
+  border-color: #0a58ca;
 }
 
 @media (max-width: 1024px) {

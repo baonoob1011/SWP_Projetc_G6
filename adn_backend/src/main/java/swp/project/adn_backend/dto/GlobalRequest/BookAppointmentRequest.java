@@ -18,7 +18,6 @@ public class BookAppointmentRequest {
     private StaffRequest staffRequest;
     private SlotRequest slotRequest;
     private LocationRequest locationRequest;
-    @Valid
     private List<PatientRequest> patientRequestList;
     private PaymentRequest paymentRequest;
 

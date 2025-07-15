@@ -157,7 +157,7 @@ const Stats = () => {
       period: 'this month',
     },
     {
-      label: 'Đã đăng ký dịch vụ',
+      label: 'người đã đăng ký ít nhất 1 dịch vụ',
       value: stats?.totalUsersRegisteredService,
       icon: FileText,
       circleColor: 'border-yellow-400',
@@ -206,77 +206,75 @@ const Stats = () => {
     <div className="min-h-screen bg-gray-50 ml-10">
       {/* Header Section */}
       <div className="bg-[#116AEF] rounded-3xl p-8 mb-6 relative overflow-hidden">
-  {/* Decorative elements */}
-  <div className="absolute right-0 top-0 w-64 h-full opacity-20">
-    <div className="flex items-center justify-end h-full pr-8">
-      <div className="flex space-x-4">
-        <div className="w-20 h-20 bg-white rounded-full opacity-30"></div>
-        <div className="w-16 h-16 bg-white rounded-full opacity-20"></div>
-        <div className="w-12 h-12 bg-white rounded-full opacity-40"></div>
-      </div>
-    </div>
-  </div>
-
-  <div className="relative z-10">
-    <h1 className="text-white text-3xl font-bold mb-2">
-      {stats?.description || 'Thống kê hệ thống'}
-    </h1>
-    <p className="text-blue-100 text-lg mb-8">
-      Tổng quan hoạt động hôm nay.
-    </p>
-
-    {/* Image of the doctor */}
-   <div className="absolute right-0 bottom-0 mb-1 mr-2">
-  <img src={doctor} alt="Doctor" className="h-40" />
-</div>
-
-
-    <div className="flex space-x-6">
-      {headerCards.map((card, idx) => (
-        <div
-          key={idx}
-          className={`${card.bgColor} rounded-2xl p-4 min-w-[140px]`}
-        >
-          <div className="text-white mb-1">
-            <card.icon size={32} />
-          </div>
-          <div className="text-white text-3xl font-bold mb-1">
-            {card.value?.toLocaleString() || 0}
-          </div>
-          <div className="text-white text-sm opacity-90">
-            {card.label}
+        {/* Decorative elements */}
+        <div className="absolute right-0 top-0 w-64 h-full opacity-20">
+          <div className="flex items-center justify-end h-full pr-8">
+            <div className="flex space-x-4">
+              <div className="w-20 h-20 bg-white rounded-full opacity-30"></div>
+              <div className="w-16 h-16 bg-white rounded-full opacity-20"></div>
+              <div className="w-12 h-12 bg-white rounded-full opacity-40"></div>
+            </div>
           </div>
         </div>
-      ))}
-    </div>
-  </div>
-</div>
+
+        <div className="relative z-10">
+          <h1 className="text-white text-3xl font-bold mb-2">
+            {stats?.description || 'Thống kê hệ thống'}
+          </h1>
+          <p className="text-blue-100 text-lg mb-8">
+            Tổng quan hoạt động hôm nay.
+          </p>
+
+          {/* Image of the doctor */}
+          <div className="absolute right-0 bottom-0 mb-1 mr-2">
+            <img src={doctor} alt="Doctor" className="h-40" />
+          </div>
+
+          <div className="flex space-x-6">
+            {headerCards.map((card, idx) => (
+              <div
+                key={idx}
+                className={`${card.bgColor} rounded-2xl p-4 min-w-[140px]`}
+              >
+                <div className="text-white mb-1">
+                  <card.icon size={32} />
+                </div>
+                <div className="text-white text-3xl font-bold mb-1">
+                  {card.value?.toLocaleString() || 0}
+                </div>
+                <div className="text-white text-sm opacity-90">
+                  {card.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Main Stats Section */}
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
-  {mainStats.map((stat, idx) => (
-    <div key={idx} className="bg-white rounded-2xl p-6 shadow-sm">
-      <div className="flex items-center justify-between mb-4">
-        <div
-          className={`w-16 h-16 rounded-full border-4 ${stat.circleColor} flex items-center justify-center`}
-        >
-          <div
-            className={`w-12 h-12 ${stat.iconBg} rounded-full flex items-center justify-center`}
-          >
-            <stat.icon className={`w-6 h-6 ${stat.iconColor}`} />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+        {mainStats.map((stat, idx) => (
+          <div key={idx} className="bg-white rounded-2xl p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div
+                className={`w-16 h-16 rounded-full border-4 ${stat.circleColor} flex items-center justify-center`}
+              >
+                <div
+                  className={`w-12 h-12 ${stat.iconBg} rounded-full flex items-center justify-center`}
+                >
+                  <stat.icon className={`w-6 h-6 ${stat.iconColor}`} />
+                </div>
+              </div>
+              <div className="ml-4">
+                <div className="text-4xl font-bold text-gray-900 mb-2">
+                  {stat.value?.toLocaleString() || 0}
+                </div>
+                <div className="text-gray-600 text-sm mb-3">{stat.label}</div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="ml-4">
-          <div className="text-4xl font-bold text-gray-900 mb-2">
-            {stat.value?.toLocaleString() || 0}
-          </div>
-          <div className="text-gray-600 text-sm mb-3">{stat.label}</div>
-        </div>
+        ))}
       </div>
-    </div>
-  ))}
-</div>
-
 
       {/* Bottom Blue Cards Section */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 mt-10">
