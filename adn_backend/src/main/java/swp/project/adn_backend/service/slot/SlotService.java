@@ -64,7 +64,7 @@ public class SlotService {
 
         List<Slot> createdSlots = new ArrayList<>();
         LocalDate currentDate = slotRequest.getSlotDate();
-        LocalDate endDate = currentDate.plusDays(29); // 30 ngày bao gồm ngày bắt đầu
+        LocalDate endDate = currentDate.plusDays(29); // 30 ngày
 
         while (!currentDate.isAfter(endDate)) {
             DayOfWeek day = currentDate.getDayOfWeek();
@@ -73,46 +73,66 @@ public class SlotService {
                 continue;
             }
 
-            // Kiểm tra trùng slot trong cùng room
-            Integer roomOverlap = slotRepository.isSlotOverlappingNative(
-                    roomId, currentDate, slotRequest.getStartTime(), slotRequest.getEndTime());
-            if (roomOverlap != null && roomOverlap == 1) {
-                throw new RuntimeException("Slot bị trùng trong phòng ngày " + currentDate);
-            }
+            LocalTime slotStart = slotRequest.getStartTime();
+            LocalTime slotEnd = slotStart.plusMinutes(30);
 
-            // Kiểm tra giờ hoạt động của phòng
-            if (slotRequest.getStartTime().isBefore(room.getOpenTime()) ||
-                    slotRequest.getEndTime().isAfter(room.getCloseTime())) {
-                throw new RuntimeException("Slot ngoài giờ hoạt động ngày " + currentDate);
-            }
-
-            // Danh sách nhân viên hợp lệ
-            List<Staff> staffList = new ArrayList<>();
-            for (StaffSlotRequest staffSlotRequest : staffSlotRequests) {
-                Staff staff = staffRepository.findById(staffSlotRequest.getStaffId())
-                        .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-
-                Integer staffOverlap = slotRepository.isStaffOverlappingSlot(
-                        staff.getStaffId(), currentDate, slotRequest.getStartTime(), slotRequest.getEndTime());
-                if (staffOverlap != null && staffOverlap > 0) {
-                    throw new RuntimeException("Nhân viên này đã có lịch ngày " + currentDate);
+            while (!slotEnd.isAfter(room.getCloseTime())) {
+                // Kiểm tra trùng slot trong room
+                Integer roomOverlap = slotRepository.isSlotOverlappingNative(
+                        roomId, currentDate, slotStart, slotEnd);
+                if (roomOverlap != null && roomOverlap == 1) {
+                    slotStart = slotStart.plusMinutes(30);
+                    slotEnd = slotStart.plusMinutes(30);
+                    continue;
                 }
 
-                staffList.add(staff);
+                // Kiểm tra slot trong giờ hoạt động
+                if (slotStart.isBefore(room.getOpenTime()) || slotEnd.isAfter(room.getCloseTime())) {
+                    break;
+                }
+
+                // Danh sách nhân viên hợp lệ
+                List<Staff> staffList = new ArrayList<>();
+                boolean skipSlot = false;
+                for (StaffSlotRequest staffSlotRequest : staffSlotRequests) {
+                    Staff staff = staffRepository.findById(staffSlotRequest.getStaffId())
+                            .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
+
+                    Integer staffOverlap = slotRepository.isStaffOverlappingSlot(
+                            staff.getStaffId(), currentDate, slotStart, slotEnd);
+                    if (staffOverlap != null && staffOverlap > 0) {
+                        skipSlot = true;
+                        break; // Nhân viên đã có lịch => bỏ slot này
+                    }
+
+                    staffList.add(staff);
+                }
+
+                if (!skipSlot) {
+                    SlotRequest newRequest = new SlotRequest();
+                    newRequest.setSlotDate(currentDate);
+                    newRequest.setStartTime(slotStart);
+                    newRequest.setEndTime(slotEnd);
+
+                    Slot slot = slotMapper.toSlot(newRequest);
+                    slot.setSlotDate(currentDate);
+                    slot.setRoom(room);
+                    slot.setStaff(staffList);
+                    slot.setSlotStatus(SlotStatus.AVAILABLE);
+                    createdSlots.add(slotRepository.save(slot));
+                }
+
+                // Tăng thời gian tiếp theo
+                slotStart = slotStart.plusMinutes(30);
+                slotEnd = slotStart.plusMinutes(30);
             }
 
-            // Tạo slot mới
-            Slot slot = slotMapper.toSlot(slotRequest);
-            slot.setSlotDate(currentDate);
-            slot.setRoom(room);
-            slot.setStaff(staffList);
-            slot.setSlotStatus(SlotStatus.AVAILABLE);
-            createdSlots.add(slotRepository.save(slot));
             currentDate = currentDate.plusDays(1);
         }
 
         return slotMapper.toSlotResponses(createdSlots);
     }
+
 
 
     @Transactional

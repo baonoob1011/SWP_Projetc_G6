@@ -174,6 +174,90 @@ public class AppointmentServiceTest {
         verify(emailService).sendAppointmentAtCenterDetailsEmail(eq("test@example.com"), any());
     }
     @Test
+    void testBookAppointmentAtCenter_slotNotFound() {
+        // Arrange
+        long slotId = 1L, locationId = 2L, serviceId = 3L, priceId = 4L;
+        Authentication auth = mock(Authentication.class);
+        Jwt jwt = mock(Jwt.class);
+        when(auth.getPrincipal()).thenReturn(jwt);
+        when(jwt.getClaim("id")).thenReturn(10L);
+
+        // Mock user to avoid USER_NOT_EXISTED
+        Users user = new Users();
+        user.setUserId(10L);
+        user.setEmail("test@example.com");
+        when(userRepository.findById(10L)).thenReturn(Optional.of(user));
+
+        when(slotRepository.findById(slotId)).thenReturn(Optional.empty());
+
+        when(serviceTestRepository.findById(serviceId)).thenReturn(Optional.of(new ServiceTest()));
+        when(priceListRepository.findById(priceId)).thenReturn(Optional.of(new PriceList()));
+        when(locationRepository.findById(locationId)).thenReturn(Optional.of(new Location()));
+
+        AppointmentRequest appointmentRequest = new AppointmentRequest();
+        List<PatientRequest> patientRequests = new ArrayList<>();
+        PaymentRequest paymentRequest = new PaymentRequest();
+        paymentRequest.setPaymentMethod(PaymentMethod.CASH);
+
+        // Act & Assert
+        AppException exception = assertThrows(AppException.class, () -> {
+            appointmentService.bookAppointmentAtCenter(
+                    appointmentRequest, auth, patientRequests, paymentRequest,
+                    slotId, locationId, serviceId, priceId
+            );
+        });
+
+        assertEquals(ErrorCodeUser.SLOT_NOT_EXISTS, exception.getErrorCode());
+    }
+
+    @Test
+    void testBookAppointmentAtHome_serviceNotFound() {
+        // Arrange
+        long serviceId = 1L;
+        long priceId = 2L;
+
+        Authentication authentication = mock(Authentication.class);
+        Jwt jwt = mock(Jwt.class);
+        when(authentication.getPrincipal()).thenReturn(jwt);
+        when(jwt.getClaim("id")).thenReturn(10L);
+
+        // Mock user to avoid USER_NOT_EXISTED
+        Users user = new Users();
+        user.setUserId(10L);
+        user.setAddress("123 Street");
+        when(userRepository.findById(10L)).thenReturn(Optional.of(user));
+
+        // 👇 Do NOT mock serviceTestRepository => simulate service not found
+        when(serviceTestRepository.findById(serviceId)).thenReturn(Optional.empty());
+
+        // Mock price to prevent it from throwing error
+        PriceList priceList = new PriceList();
+        priceList.setPriceId(priceId);
+        priceList.setPrice(100000);
+        priceList.setTime("Morning");
+        when(priceListRepository.findById(priceId)).thenReturn(Optional.of(priceList));
+
+        AppointmentRequest appointmentRequest = new AppointmentRequest();
+        PaymentRequest paymentRequest = new PaymentRequest();
+        paymentRequest.setPaymentMethod(PaymentMethod.CASH);
+
+        // Act & Assert
+        AppException exception = assertThrows(AppException.class, () -> {
+            appointmentService.bookAppointmentAtHome(
+                    appointmentRequest,
+                    authentication,
+                    new ArrayList<>(),
+                    paymentRequest,
+                    serviceId,
+                    priceId
+            );
+        });
+
+        assertEquals(ErrorCodeUser.SERVICE_NOT_EXISTS, exception.getErrorCode());
+    }
+
+
+    @Test
     void testBookAppointmentAtHome_success() {
         // Arrange
         long serviceId = 1L;

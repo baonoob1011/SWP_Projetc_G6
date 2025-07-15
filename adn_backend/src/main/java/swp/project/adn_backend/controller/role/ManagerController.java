@@ -41,8 +41,8 @@ public class ManagerController {
     }
 
     @DeleteMapping("/delete-staff")
-    public void deleteStaffByPhone(@RequestParam String phone) {
-        managerService.deleteStaffByPhone(phone);
+    public void deleteStaffByPhone(@RequestParam long staffId) {
+        managerService.deleteStaffByPhone(staffId);
     }
 
 //    //update
