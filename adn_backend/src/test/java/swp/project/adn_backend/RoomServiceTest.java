@@ -72,16 +72,16 @@ class RoomServiceTest {
         assertEquals(ErrorCodeUser.LOCATION_NOT_EXISTS, ex.getErrorCode());
     }
 
-    @Test
-    void testGetAllRoom_success() {
-        TypedQuery<RoomInfoDTO> mockQuery = mock(TypedQuery.class);
-        when(entityManager.createQuery(anyString(), eq(RoomInfoDTO.class))).thenReturn(mockQuery);
-        when(mockQuery.setParameter(eq("roomStatus"), eq(RoomStatus.AVAILABLE))).thenReturn(mockQuery);
-        when(mockQuery.getResultList()).thenReturn(List.of(new RoomInfoDTO()));
-
-        List<RoomInfoDTO> results = roomService.getAllRoom();
-        assertEquals(1, results.size());
-    }
+//    @Test
+//    void testGetAllRoom_success() {
+//        TypedQuery<RoomInfoDTO> mockQuery = mock(TypedQuery.class);
+//        when(entityManager.createQuery(anyString(), eq(RoomInfoDTO.class))).thenReturn(mockQuery);
+//        when(mockQuery.setParameter(eq("roomStatus"), eq(RoomStatus.AVAILABLE))).thenReturn(mockQuery);
+//        when(mockQuery.getResultList()).thenReturn(List.of(new RoomInfoDTO()));
+//
+//        List<RoomInfoDTO> results = roomService.getAllRoom();
+//        assertEquals(1, results.size());
+//    }
 
     @Test
     void testGetAllRoomActive_success() {

@@ -1,7 +1,12 @@
 package swp.project.adn_backend.service.Location;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import swp.project.adn_backend.dto.InfoDTO.LocationInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo;
 import swp.project.adn_backend.dto.request.Location.LocationRequest;
 import swp.project.adn_backend.dto.request.Location.LocationResponse;
 import swp.project.adn_backend.entity.Location;
@@ -16,12 +21,16 @@ import java.util.List;
 public class LocationService {
     private LocationRepository locationRepository;
     private LocationMapper locationMapper;
+    private EntityManager entityManager;
 
     @Autowired
-    public LocationService(LocationRepository locationRepository, LocationMapper locationMapper) {
+    public LocationService(LocationRepository locationRepository, LocationMapper locationMapper, EntityManager entityManager) {
         this.locationRepository = locationRepository;
         this.locationMapper = locationMapper;
+        this.entityManager = entityManager;
     }
+
+
 
     public Location createLocation(LocationRequest locationRequest) {
         Location location = locationMapper.toLocation(locationRequest);
@@ -32,7 +41,9 @@ public class LocationService {
         List<Location> locationList = locationRepository.findAll();
         List<LocationResponse> locationResponses = locationMapper.toLocationResponse(locationList);
         return locationResponses;
+
     }
+//
 
     public void deleteLocation(Long id) {
         Location location = locationRepository.findById(id)
