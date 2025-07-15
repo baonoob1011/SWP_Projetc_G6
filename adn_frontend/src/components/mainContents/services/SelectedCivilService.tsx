@@ -503,7 +503,7 @@ const SelectedCivilService = () => {
                       px: 4,
                       borderRadius: 3,
                       fontWeight: 'bold',
-                      fontSize: '0.8rem',
+                      fontSize: '0.75rem',
                       boxShadow: '0 6px 20px rgba(25, 118, 210, 0.3)',
                       '&:hover': {
                         background:
@@ -528,7 +528,7 @@ const SelectedCivilService = () => {
                       px: 4,
                       borderRadius: 3,
                       fontWeight: 'bold',
-                      fontSize: '0.8rem',
+                      fontSize: '0.75rem',
                       borderWidth: 2,
                       borderColor: '#1976d2',
                       color: '#1976d2',
