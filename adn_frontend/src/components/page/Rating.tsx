@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -158,6 +158,7 @@ const Feedback: React.FC = () => {
   const [feedbackText, setFeedbackText] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const { serviceId } = useParams<{ serviceId: string }>();
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     if (!rating || !feedbackText.trim()) {
@@ -190,6 +191,9 @@ const Feedback: React.FC = () => {
       toast.success('Gửi đánh giá thành công');
       setRating(null);
       setFeedbackText('');
+      
+      // Navigate to u-profile after successful feedback submission
+      navigate('/u-profile');
     } catch (err) {
       console.error(err);
       toast.error('Gửi đánh giá thất bại');

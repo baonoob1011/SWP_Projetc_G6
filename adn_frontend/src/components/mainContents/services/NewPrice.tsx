@@ -22,6 +22,7 @@ const NewPrice = () => {
     severity: 'success' as 'success' | 'error',
   });
   const [auth, setAuth] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     setAuth(
@@ -82,6 +83,7 @@ const NewPrice = () => {
         });
 
         setPrice({ effectiveDate: '', price: '', time: '' });
+        setShowCreateForm(false);
       }
     } catch (error) {
       console.log(error);
@@ -94,48 +96,90 @@ const NewPrice = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4 text-center">Tạo giá mới</h2>
-      <form onSubmit={handleSubmit} className="card p-4 shadow-sm">
-        <div className="mb-3">
-          <label className="form-label">Ngày áp dụng</label>
-          <input
-            type="date"
-            name="effectiveDate"
-            className="form-control"
-            value={price.effectiveDate}
-            onChange={handleInput}
-            placeholder="chọn ngày"
-          />
+    <div className="min-h-screen bg-white ml-10">
+      <div className="max-w-full">
+        {/* Statistics Header */}
+        <div className="bg-[#4162EB] rounded-lg p-6 mb-6 relative">
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="text-white text-lg font-semibold">Quản lý giá dịch vụ</h2>
+          </div>
+          {/* Breadcrumb */}
+          <div className="flex items-center mb-6 text-blue-100">
+            <span className="text-white font-medium">Admin</span>
+            <span className="mx-2">›</span>
+            <span>Price</span>
+          </div>
         </div>
+        {/* Create Form - Collapsible */}
 
-        <div className="mb-3">
-          <label className="form-label">Giá</label>
-          <input
-            type="number"
-            name="price"
-            className="form-control"
-            value={price.price}
-            onChange={handleInput}
-            placeholder="Nhập giá mới"
-          />
-        </div>
+          <div className="bg-white border border-gray-200 rounded-lg mb-6 shadow-sm">
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-800 mb-4">Tạo giá mới</h3>
+              <form onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Ngày áp dụng
+                    </label>
+                    <input
+                      type="date"
+                      name="effectiveDate"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={price.effectiveDate}
+                      onChange={handleInput}
+                      required
+                    />
+                  </div>
 
-        <div className="mb-3">
-          <label className="form-label">Thời gian</label>
-          <input
-            type="text"
-            name="time"
-            className="form-control"
-            value={price.time}
-            onChange={handleInput}
-            placeholder="Nhập thời gian"
-          />
-        </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Giá
+                    </label>
+                    <input
+                      type="number"
+                      name="price"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={price.price}
+                      onChange={handleInput}
+                      placeholder="Nhập giá mới"
+                      required
+                    />
+                  </div>
 
-        <button type="submit" className="btn btn-primary w-100">
-          Thêm giá
-        </button>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Thời gian
+                    </label>
+                    <input
+                      type="text"
+                      name="time"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={price.time}
+                      onChange={handleInput}
+                      placeholder="Nhập thời gian"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateForm(false)}
+                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  >
+                    Thêm Giá
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
 
         <CustomSnackBar
           open={snackbar.open}
@@ -143,7 +187,7 @@ const NewPrice = () => {
           severity={snackbar.severity}
           onClose={() => setSnackbar({ ...snackbar, open: false })}
         />
-      </form>
+      </div>
     </div>
   );
 };

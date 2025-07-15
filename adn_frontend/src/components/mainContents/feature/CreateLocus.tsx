@@ -404,7 +404,7 @@ const CreateLocus = () => {
                     {locusItem.locusName}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
-                    <div className="max-w-xs truncate" title={locusItem.description}>
+                    <div className="max-w-xs break-all">
                       {locusItem.description}
                     </div>
                   </td>
@@ -429,7 +429,7 @@ const CreateLocus = () => {
                     Chưa có locus nào được tạo
                   </td>
                 </tr>
-              )}
+                )}
             </tbody>
           </table>
         </div>
