@@ -29,11 +29,11 @@ class LocationServiceTest {
     @Mock
     private LocationMapper locationMapper;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        locationService = new LocationService(locationRepository, locationMapper);
-    }
+//    @BeforeEach
+//    void setUp() {
+//        MockitoAnnotations.openMocks(this);
+//        locationService = new LocationService(locationRepository, locationMapper);
+//    }
 
     @Test
     void testCreateLocation_success() {

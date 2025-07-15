@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from './GetSampleInfo.module.css';
+import Swal from 'sweetalert2';
 
 // type Result = {
 //   locusName: string;
@@ -15,6 +16,7 @@ const GetSampleInfo = () => {
   const { appointmentId } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [samples, setSamples] = useState<any[]>([]);
+  const navigate = useNavigate();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const [result, setResult] = useState<Result>({
   //   locusName: '',
@@ -63,9 +65,10 @@ const GetSampleInfo = () => {
         }
       );
       if (!res.ok) {
-        toast.error('Không đúng định dạng');
+        toast.warning('Ko thể thực hiện');
       } else {
         toast.success('thành công');
+        navigate('/s-page/labCheckSample');
       }
     } catch (error) {
       console.log(error);
@@ -111,35 +114,34 @@ const GetSampleInfo = () => {
   //   }
   // };
 
+  const fetchSamples = async () => {
+    if (!appointmentId) return;
+
+    try {
+      setLoading(true);
+      const res = await fetch(
+        `http://localhost:8080/api/sample/get-all-sample?appointmentId=${appointmentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (!res.ok) throw new Error('Không thể lấy dữ liệu mẫu');
+
+      const data = await res.json();
+      setSamples(data);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error('Lỗi khi tải dữ liệu mẫu');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchSamples = async () => {
-      if (!appointmentId) return;
-
-      try {
-        setLoading(true);
-        const res = await fetch(
-          `http://localhost:8080/api/sample/get-all-sample?appointmentId=${appointmentId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-          }
-        );
-        if (!res.ok) throw new Error('Không thể lấy dữ liệu mẫu');
-
-        const data = await res.json();
-        setSamples(data);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
-        toast.error('Lỗi khi tải dữ liệu mẫu');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchSamples();
   }, [appointmentId]);
-
   // Helper function to get gender badge class
 
   // const sampleStatusOptions = [
@@ -260,7 +262,20 @@ const GetSampleInfo = () => {
             </button>
             <button
               type="button"
-              onClick={handleBookingAgain}
+              onClick={async () => {
+                const result = await Swal.fire({
+                  title: 'Xác nhận hoàn trả?',
+                  text: 'Bạn có chắc muốn hoàn trả lịch hẹn này?',
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonText: 'Hoàn trả',
+                  cancelButtonText: 'Hủy',
+                });
+
+                if (result.isConfirmed) {
+                  handleBookingAgain(); // Gọi hàm khi người dùng xác nhận
+                }
+              }}
               className={styles.submitButton}
             >
               Hoàn trả

@@ -9,7 +9,6 @@ export const CheckAppointment = () => {
   const [slots, setSlots] = useState<any[]>([]);
   const [bills, setBills] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isHomeCollector, setIsHomeCollector] = useState(false);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
@@ -72,7 +71,9 @@ export const CheckAppointment = () => {
   }
 
   // Group appointments by appointmentId
-  const groupedAppointments = bills.filter((a) => a.appointmentType === 'HOME');
+  const groupedAppointments = bills.filter(
+    (a) => a.appointmentType === 'HOME' && a.appointmentStatus === 'CONFIRMED'
+  );
 
   return (
     <div className={styles.container}>
@@ -85,7 +86,7 @@ export const CheckAppointment = () => {
         <div className={styles.slotsContainer}>
           {bills.length > 0 ? (
             <div className={styles.slotsGrid}>
-              {bills.map((bill, idx) => (
+              {groupedAppointments.map((bill, idx) => (
                 <button
                   key={idx}
                   className={styles.slotButton}

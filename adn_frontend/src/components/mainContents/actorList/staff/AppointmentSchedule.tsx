@@ -87,9 +87,16 @@ const AppointmentSchedule = () => {
   }, []);
 
   // Filter paid appointments
-  const paidAppointments = homeSchedule.filter(
-    (item) => item.showAppointmentResponse.note === 'Đã thanh toán'
-  );
+  const paidAppointments = homeSchedule
+    .filter(
+      (item) =>
+        item.showAppointmentResponse.note === 'Đơn đăng ký đang đợi xác nhận'
+    )
+    .sort(
+      (a, b) =>
+        b.showAppointmentResponse.appointmentId -
+        a.showAppointmentResponse.appointmentId
+    );
 
   return (
     <div className={styles.container}>
@@ -141,7 +148,7 @@ const AppointmentSchedule = () => {
                   <div className={styles.infoGrid}>
                     {/* Ngày hẹn */}
                     <div className={styles.infoItem}>
-                      <p className={styles.infoLabel}>Ngày Hẹn</p>
+                      <p className={styles.infoLabel}>Ngày đặt</p>
                       <p className={styles.infoValue}>
                         {item.showAppointmentResponse.appointmentDate}
                       </p>

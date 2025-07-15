@@ -97,32 +97,38 @@ public class ResultLocusService {
                                                            long sampleId2,
                                                            long appointmentId,
                                                            ResultLocusRequest resultLocusRequest) {
-
         Sample sample1 = sampleRepository.findById(sampleId1)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
 
         Sample sample2 = sampleRepository.findById(sampleId2)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
+
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
-        if (sample1.getSampleStatus().equals(SampleStatus.REJECTED) ||
-                sample2.getSampleStatus().equals(SampleStatus.REJECTED)) {
+
+        if (sample1.getSampleStatus() == SampleStatus.REJECTED || sample2.getSampleStatus() == SampleStatus.REJECTED) {
             throw new RuntimeException("1 trong 2 mẫu này không hợp lệ");
         }
-        if (appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
+
+        if (appointment.getAppointmentStatus() == AppointmentStatus.COMPLETED) {
             throw new RuntimeException("Đơn đăng kí này đã có kết quả");
         }
+
         Map<String, List<Double>> allele1Map = new HashMap<>();
         Map<String, List<Double>> allele2Map = new HashMap<>();
         Map<String, Long> locusIdMap = new HashMap<>();
 
+        // Lấy VALID allele từ sample 1
         for (ResultAllele ra : sample1.getResultAlleles()) {
+            if (ra.getAlleleStatus() != AlleleStatus.VALID) continue;
             String locusName = ra.getLocus().getLocusName();
             allele1Map.computeIfAbsent(locusName, k -> new ArrayList<>()).add(ra.getAlleleValue());
             locusIdMap.put(locusName, ra.getLocus().getLocusId());
         }
 
+        // Lấy VALID allele từ sample 2
         for (ResultAllele ra : sample2.getResultAlleles()) {
+            if (ra.getAlleleStatus() != AlleleStatus.VALID) continue;
             String locusName = ra.getLocus().getLocusName();
             allele2Map.computeIfAbsent(locusName, k -> new ArrayList<>()).add(ra.getAlleleValue());
         }
@@ -130,39 +136,39 @@ public class ResultLocusService {
         List<ResultLocus> resultLocusList = new ArrayList<>();
 
         for (String locusName : allele1Map.keySet()) {
-            if (allele2Map.containsKey(locusName)) {
-                List<Double> parentAlleles = allele1Map.get(locusName);
-                List<Double> childAlleles = allele2Map.get(locusName);
+            if (!allele2Map.containsKey(locusName)) continue;
 
-                if (parentAlleles.size() < 2 || childAlleles.size() < 2) continue;
+            List<Double> parentAlleles = allele1Map.get(locusName);
+            List<Double> childAlleles = allele2Map.get(locusName);
 
-                double father1 = parentAlleles.get(0);
-                double father2 = parentAlleles.get(1);
-                double child1 = childAlleles.get(0);
-                double child2 = childAlleles.get(1);
+            if (parentAlleles.size() != 2 || childAlleles.size() != 2) continue;
 
-                double pi = calculatePI(father1, father2, child1, child2);
-                double freq1 = lookupFrequency(child1);
-                double freq2 = lookupFrequency(child2);
+            double father1 = parentAlleles.get(0);
+            double father2 = parentAlleles.get(1);
+            double child1 = childAlleles.get(0);
+            double child2 = childAlleles.get(1);
 
-                ResultLocus rl = new ResultLocus();
-                rl.setLocusName(locusName);
-                rl.setAllele1(child1);
-                rl.setAllele2(child2);
-                rl.setFatherAllele1(father1);
-                rl.setFatherAllele2(father2);
-                rl.setFrequency((freq1 + freq2) / 2);
-                rl.setPi(pi);
-                rl.setAppointment(appointment);
-                rl.setSampleCode1(sample1.getSampleCode());
-                rl.setSampleCode2(sample2.getSampleCode());
+            double pi = calculatePI(father1, father2, child1, child2);
+            double freq1 = lookupFrequency(child1);
+            double freq2 = lookupFrequency(child2);
 
-                Locus locus = locusRepository.findById(locusIdMap.get(locusName))
-                        .orElseThrow(() -> new AppException(ErrorCodeUser.LOCUS_NOT_FOUND));
-                rl.setLocus(locus);
+            ResultLocus rl = new ResultLocus();
+            rl.setLocusName(locusName);
+            rl.setAllele1(child1);
+            rl.setAllele2(child2);
+            rl.setFatherAllele1(father1);
+            rl.setFatherAllele2(father2);
+            rl.setFrequency((freq1 + freq2) / 2);
+            rl.setPi(pi);
+            rl.setAppointment(appointment);
+            rl.setSampleCode1(sample1.getSampleCode());
+            rl.setSampleCode2(sample2.getSampleCode());
 
-                resultLocusList.add(rl);
-            }
+            Locus locus = locusRepository.findById(locusIdMap.get(locusName))
+                    .orElseThrow(() -> new AppException(ErrorCodeUser.LOCUS_NOT_FOUND));
+            rl.setLocus(locus);
+
+            resultLocusList.add(rl);
         }
 
         double combinedPi = resultLocusList.stream()
@@ -176,10 +182,9 @@ public class ResultLocusService {
         resultDetail.setCombinedPaternityIndex(combinedPi);
         resultDetail.setPaternityProbability(paternityProbability);
         resultDetail.setResultSummary(String.format("Combined PI: %.2f, Probability: %.4f%%", combinedPi, paternityProbability));
-        resultDetail.setConclusion(paternityProbability > 99.0 ? "Tr\u00f9ng kh\u1edbp quan h\u1ec7 cha \u2013 con sinh h\u1ecdc" : "Kh\u00f4ng tr\u00f9ng kh\u1edbp");
+        resultDetail.setConclusion(paternityProbability > 99.0 ? "Trùng khớp quan hệ cha – con sinh học" : "Không trùng khớp");
         resultDetail.setAppointment(appointment);
 
-        // Tạo kết quả mới
         Result result = new Result();
         result.setCollectionDate(sample1.getCollectionDate());
         result.setAppointment(appointment);
@@ -187,45 +192,59 @@ public class ResultLocusService {
         result.setResultStatus(ResultStatus.COMPLETED);
 
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
-        appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
         appointment.setNote("Đã có kết quả xét nghiệm");
-        //trả lại cho staff lấy mẫu
-        for (Staff staff : appointment.getSlot().getStaff()) {
-            if (staff.getRole().equals("SAMPLE_COLLECTOR")) {
-                appointment.setStaff(staff);
-            }
-        }
+
+
+        // Kiểm tra loại dịch vụ để xử lý Slot + Kit
         ServiceTest service = appointment.getServices();
         if (service != null && service.getServiceType() != null) {
-
             ServiceType type = service.getServiceType();
 
-            if (type.equals(ServiceType.CIVIL)) {
+            if (type == ServiceType.CIVIL) {
                 List<CivilService> civilServices = service.getCivilServices();
                 if (civilServices != null) {
                     for (CivilService civilService : civilServices) {
-                        if (civilService.getSampleCollectionMethods().equals(SampleCollectionMethod.AT_CLINIC)) {
-                            if (appointment.getSlot() != null) {
-                                appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
-                                appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.COMPLETED);
+                        Set<SampleCollectionMethod> methods = civilService.getSampleCollectionMethods();
+
+                        if (methods.contains(SampleCollectionMethod.AT_CLINIC)) {
+                            Slot slot = appointment.getSlot(); // ✅ chỉ gán khi chắc chắn có
+                            if (slot != null) {
+                                slot.setSlotStatus(SlotStatus.COMPLETED);
                             }
-                            break; // nếu 1 cái là AT_CLINIC thì dừng
+                            // gán nhân viên nếu cần
+                            if (slot != null && slot.getStaff() != null) {
+                                for (Staff staff : slot.getStaff()) {
+                                    if ("SAMPLE_COLLECTOR".equals(staff.getRole())) {
+                                        appointment.setStaff(staff);
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+
+                        if (methods.contains(SampleCollectionMethod.AT_HOME)) {
+                            if (appointment.getKitDeliveryStatus() != null) {
+                                Staff staff=appointment.getKitDeliveryStatus().getStaff();
+                                appointment.setStaff(staff);
+                                appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.COMPLETED);
+                                break;
+                            }
                         }
                     }
                 }
-
-            } else if (type.equals(ServiceType.ADMINISTRATIVE)) {
-                if (appointment.getSlot() != null) {
-                    appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
+            } else if (type == ServiceType.ADMINISTRATIVE) {
+                Slot slot = appointment.getSlot(); // ✅ ADMINISTRATIVE cũng có slot
+                if (slot != null) {
+                    slot.setSlotStatus(SlotStatus.COMPLETED);
                 }
             }
         }
 
-        resultRepository.save(result);
 
+        resultRepository.save(result);
         resultDetail.setResult(result);
         resultDetailRepository.save(resultDetail);
-
 
         for (ResultLocus rl : resultLocusList) {
             rl.setResultDetail(resultDetail);
@@ -238,6 +257,7 @@ public class ResultLocusService {
 
         return resultDetailsMapper.toResultDetailResponse(resultDetail);
     }
+
 
     // Tính PI chuẩn dựa trên quan hệ cha-con
     // Tính PI chuẩn dựa trên quan hệ cha-con

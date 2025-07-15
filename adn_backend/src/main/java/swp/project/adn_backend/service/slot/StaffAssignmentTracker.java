@@ -11,7 +11,9 @@ public class StaffAssignmentTracker {
 
     public int getNextIndex(int totalStaff) {
         if (totalStaff == 0) return 0;
-        // Auto reset về 0 nếu vượt quá size
-        return currentIndex.getAndUpdate(index -> (index + 1) % totalStaff);
+        int index = currentIndex.getAndUpdate(i -> (i + 1) % totalStaff);
+        System.out.println("⚙️ Current assignment index: " + index);
+        return index;
     }
+
 }

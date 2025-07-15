@@ -146,30 +146,43 @@ public class SampleService {
                                                          long appointmentId) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
-
+        Staff staff=staffRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         List<Sample> sampleList = appointment.getSampleList();
         List<AllSampleResponse> allSampleResponseList = new ArrayList<>();
         for (Sample sample : sampleList) {
-            if(!sample.getSampleStatus().equals(SampleStatus.REJECTED)){
-                SampleResponse sampleResponse = sampleMapper.toSampleResponse(sample);
-                StaffSampleResponse staffSampleResponse = allSampleResponseMapper.toStaffSampleResponse(sample.getStaff());
-                PatientSampleResponse patientSampleResponse = allSampleResponseMapper.toPatientSampleResponse(sample.getPatient());
-                AppointmentSampleResponse appointmentSampleResponse = appointmentMapper.toAppointmentSampleResponse(appointment);
-                KitAppointmentResponse kitAppointmentResponse=appointmentMapper.toKitAppointmentResponse(appointment.getServices().getKit());
-                ServiceAppointmentResponse serviceAppointmentResponse=appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
-                AllSampleResponse allSampleResponse = new AllSampleResponse();
-                allSampleResponse.setKitAppointmentResponse(kitAppointmentResponse);
-                allSampleResponse.setAppointmentSampleResponse(appointmentSampleResponse);
-                allSampleResponse.setSampleResponse(sampleResponse);
-                allSampleResponse.setStaffSampleResponse(staffSampleResponse);
-                allSampleResponse.setPatientSampleResponse(patientSampleResponse);
-                allSampleResponse.setServiceAppointmentResponse(serviceAppointmentResponse);
-                allSampleResponseList.add(allSampleResponse);
+            if (!sample.getSampleStatus().equals(SampleStatus.REJECTED)) {
+                if (staff.getRole().equals("LAB_TECHNICIAN")) {
+                    // ✅ Lab chỉ xem sample đã nhận
+                    if (sample.getSampleStatus().equals(SampleStatus.RECEIVED)) {
+                        allSampleResponseList.add(buildSampleResponse(sample, appointment));
+                    }
+                } else {
+                    // ✅ Các vai trò khác thấy tất cả (trừ sample bị từ chối)
+                    allSampleResponseList.add(buildSampleResponse(sample, appointment));
+                }
             }
         }
         return allSampleResponseList;
+    }
+    private AllSampleResponse buildSampleResponse(Sample sample, Appointment appointment) {
+        SampleResponse sampleResponse = sampleMapper.toSampleResponse(sample);
+        StaffSampleResponse staffSampleResponse = allSampleResponseMapper.toStaffSampleResponse(sample.getStaff());
+        PatientSampleResponse patientSampleResponse = allSampleResponseMapper.toPatientSampleResponse(sample.getPatient());
+        AppointmentSampleResponse appointmentSampleResponse = appointmentMapper.toAppointmentSampleResponse(appointment);
+        KitAppointmentResponse kitAppointmentResponse = appointmentMapper.toKitAppointmentResponse(appointment.getServices().getKit());
+        ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
+
+        AllSampleResponse allSampleResponse = new AllSampleResponse();
+        allSampleResponse.setSampleResponse(sampleResponse);
+        allSampleResponse.setStaffSampleResponse(staffSampleResponse);
+        allSampleResponse.setPatientSampleResponse(patientSampleResponse);
+        allSampleResponse.setAppointmentSampleResponse(appointmentSampleResponse);
+        allSampleResponse.setKitAppointmentResponse(kitAppointmentResponse);
+        allSampleResponse.setServiceAppointmentResponse(serviceAppointmentResponse);
+        return allSampleResponse;
     }
 
     //check sample có hợp lệ không nếu không chuyển trạng thái
@@ -177,16 +190,20 @@ public class SampleService {
     public void updateSampleStatus(long sampleId,
                                    long appointmentId,
                                    SampleRequest sampleRequest) {
-        List<Staff> labTechnician = staffRepository.findAll();
+        List<Staff> labTechnicians = staffRepository.findAll();
 
         Sample sample = sampleRepository.findById(sampleId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+
         SampleStatus current = sample.getSampleStatus();
         SampleStatus next = sampleRequest.getSampleStatus();
 
-        // Ràng buộc: chỉ cho phép tiến lên theo COLLECTED → IN_TRANSIT → RECEIVED
+        // ✅ Gán trạng thái mới — bắt buộc để trigger dirty checking
+        sample.setSampleStatus(next);
+
+        // Ràng buộc: chỉ cho phép chuyển tiếp trong COLLECTED → IN_TRANSIT → RECEIVED
         List<SampleStatus> strictFlow = List.of(
                 SampleStatus.COLLECTED,
                 SampleStatus.IN_TRANSIT,
@@ -196,47 +213,60 @@ public class SampleService {
         int currentIndex = strictFlow.indexOf(current);
         int nextIndex = strictFlow.indexOf(next);
 
-        // Nếu cả 2 đều trong danh sách và đi lùi → không hợp lệ
+        // ❌ Không cho lùi trạng thái nếu đang trong flow nghiêm ngặt
         if (currentIndex != -1 && nextIndex != -1 && nextIndex < currentIndex) {
             throw new AppException(ErrorCodeUser.INVALID_SAMPLE_STATUS_TRANSITION);
         }
 
-        if (sampleRequest.getSampleStatus().equals(SampleStatus.RECEIVED)) {
+        if (next == SampleStatus.RECEIVED) {
+            // ✅ Cập nhật trạng thái bệnh nhân
             for (Patient patient : appointment.getPatients()) {
                 patient.setPatientStatus(PatientStatus.IN_ANALYSIS);
+
             }
+
             appointment.setNote("Phòng xét nghiệm đã nhận mẫu");
-            List<Staff> labTechnician1 = labTechnician.stream()
-                    .filter(lab -> "LAB_TECHNICIAN".equals(lab.getRole()))
+
+            // ✅ Lọc nhân viên lab
+            List<Staff> labOnly = labTechnicians.stream()
+                    .filter(lab -> "LAB_TECHNICIAN".equalsIgnoreCase(lab.getRole()))
                     .collect(Collectors.toList());
 
-            if (labTechnician1.isEmpty()) {
+            if (labOnly.isEmpty()) {
                 throw new RuntimeException("Không có nhân viên phòng lab");
             }
 
-// Đảm bảo index luôn nằm trong giới hạn danh sách
-            int selectedIndex = staffAssignmentTracker.getNextIndex(labTechnician1.size());
-            selectedIndex = selectedIndex % labTechnician1.size(); // fix an toàn
-            Staff selectedStaff = labTechnician1.get(selectedIndex);
-//        appointmentService.increaseStaffNotification(selectedStaff);
+            // ✅ Phân công nhân viên phòng lab
+            int selectedIndex = staffAssignmentTracker.getNextIndex(labOnly.size()) % labOnly.size();
+            Staff selectedStaff = labOnly.get(selectedIndex);
             appointment.setStaff(selectedStaff);
         }
 
-        switch (sampleRequest.getSampleStatus()) {
+        // ✅ Ghi chú theo trạng thái
+        switch (next) {
             case COLLECTED:
                 appointment.setNote("Đã lấy mẫu thành công");
                 break;
             case IN_TRANSIT:
-                appointment.setNote("Đang vận chuyển đến phòng xét nghiệm");
+                Patient inTransitPatient = sample.getPatient();
+                if (inTransitPatient != null) {
+                    appointment.setNote("Mẫu của " + inTransitPatient.getFullName() + " đang vận chuyển đến phòng xét nghiệm");
+                }
                 break;
             case TESTING:
-                appointment.setNote("Mẫu đang được xét nghiệm");
+                Patient testingPatient = sample.getPatient();
+                if (testingPatient != null) {
+                    appointment.setNote("Mẫu của " + testingPatient.getFullName() + " đang được xét nghiệm");
+                }
                 break;
             case COMPLETED:
                 appointment.setNote("Đã xét nghiệm xong");
                 break;
             case REJECTED:
-                appointment.setNote("Mẫu bị từ chối");
+                Patient rejectedPatient = sample.getPatient();
+                if (rejectedPatient != null) {
+                    appointment.setNote("Mẫu của " + rejectedPatient.getFullName() + " đã bị từ chối");
+                }
                 break;
         }
 
@@ -248,4 +278,5 @@ public class SampleService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
         sample.setSampleStatus(SampleStatus.REJECTED);
     }
+
 }

@@ -22,10 +22,15 @@ public class RoomController {
         return ResponseEntity.ok(roomService.createRoom(roomRequest,locationId));
     }
 
+    @GetMapping("/get-all-room-by-location-id")
+    public ResponseEntity<List<RoomInfoDTO>> getAllRoomByLocationId(@RequestParam long locationId) {
+        return ResponseEntity.ok(roomService.getAllRoomByLocationId(locationId));
+    }
     @GetMapping("/get-all-room")
     public ResponseEntity<List<RoomInfoDTO>> getAllRoom() {
         return ResponseEntity.ok(roomService.getAllRoom());
     }
+
 
     @GetMapping("/get-all-room-active")
     public ResponseEntity<List<RoomInfoDTO>> getAllRoomActive() {

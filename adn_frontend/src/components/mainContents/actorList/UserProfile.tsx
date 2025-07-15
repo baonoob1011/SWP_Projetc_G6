@@ -52,6 +52,16 @@ const NewProfile = () => {
   >('appointment');
 
   useEffect(() => {
+    const reload = () => {
+      fetchData(); // reload profile
+      fetchMoneyData(); // reload ví tiền
+    };
+
+    window.addEventListener('reloadProfile', reload);
+    return () => window.removeEventListener('reloadProfile', reload);
+  }, []);
+
+  useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
