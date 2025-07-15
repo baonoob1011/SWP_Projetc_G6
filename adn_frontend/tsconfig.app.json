@@ -24,5 +24,10 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "pdf-font-gen/build-vfs.cjs",
+    "pdf-font-gen/font.js",
+    "pdf-font-gen/build-vfs.ts"
+  ]
 }
