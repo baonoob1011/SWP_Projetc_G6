@@ -27,21 +27,23 @@ public class DashboardService {
     private final ServiceTestRepository serviceTestRepository;
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
-    private  StaffRepository staffRepository;
+    private final StaffRepository staffRepository;
+    private final ManagerRepository managerRepository;
 
 
 
     @Autowired
     public DashboardService(UserRepository userRepository, InvoiceRepository invoiceRepository,
                           FeedbackRepository feedbackRepository, ServiceTestRepository serviceTestRepository,
-                          AppointmentRepository appointmentRepository, PatientRepository patientRepository,StaffRepository staffRepository) {
+                          AppointmentRepository appointmentRepository, PatientRepository patientRepository, StaffRepository staffRepository, ManagerRepository managerRepository) {
         this.userRepository = userRepository;
         this.invoiceRepository = invoiceRepository;
         this.feedbackRepository = feedbackRepository;
         this.serviceTestRepository = serviceTestRepository;
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
-        this.staffRepository=staffRepository;
+        this.staffRepository = staffRepository;
+        this.managerRepository = managerRepository;
     }
     
     
@@ -49,9 +51,9 @@ public class DashboardService {
         long totalUsers = userRepository.count();
         long activeUsers = userRepository.countActiveUsers();
         long inactiveUsers = userRepository.countInactiveUsers();
-        long totalPatients = userRepository.countUsersByPatientRole();
+        long totalPatients = patientRepository.count();
         long totalStaff = staffRepository.countUsersByStaffRole();
-        long totalManagers = userRepository.countUsersByManagerRole();
+        long totalManagers = managerRepository.count();
         long totalAdmins = userRepository.countUsersByAdminRole();
         long totalUsersRegisteredService = appointmentRepository.countDistinctUsersRegisteredService();
         
@@ -161,7 +163,11 @@ public class DashboardService {
     public AppointmentStatusPercentageResponse getAppointmentStatusPercentage() {
         long totalCompleted = appointmentRepository.countCompletedAppointments();
         long totalCancelled = appointmentRepository.countCancelledAppointments();
-        long totalAppointments = totalCompleted + totalCancelled;
+        long totalPending = appointmentRepository.countPendingAppointments();
+        long totalConfirmed = appointmentRepository.countConfirmedAppointments();
+        long totalRated = appointmentRepository.countRatedAppointments();
+        
+        long totalAppointments = totalCompleted + totalCancelled + totalPending + totalConfirmed + totalRated;
         
         double completedPercentage = totalAppointments > 0 ? 
             (double) totalCompleted / totalAppointments * 100 : 0.0;
@@ -172,8 +178,8 @@ public class DashboardService {
                 .totalCompleted(totalCompleted)
                 .totalCancelled(totalCancelled)
                 .totalAppointments(totalAppointments)
-                .completedPercentage(Math.round(completedPercentage * 100.0) / 100.0) // Làm tròn 2 chữ số thập phân
-                .cancelledPercentage(Math.round(cancelledPercentage * 100.0) / 100.0) // Làm tròn 2 chữ số thập phân
+                .completedPercentage(Math.round(completedPercentage * 100.0) / 100.0)
+                .cancelledPercentage(Math.round(cancelledPercentage * 100.0) / 100.0)
                 .build();
     }
 } 

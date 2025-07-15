@@ -52,7 +52,17 @@ public class RoomService {
         query.setParameter("roomStatus", RoomStatus.AVAILABLE);
         return query.getResultList();
     }
+    public List<RoomInfoDTO> getAllRoomByLocationId(long locationId) {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.RoomInfoDTO(" +
+                "s.roomId, s.roomName, s.roomStatus, s.openTime, s.closeTime) " +
+                "FROM Room s WHERE s.roomStatus = :roomStatus " +
+                "AND s.location.locationId = :locationId";
 
+        TypedQuery<RoomInfoDTO> query = entityManager.createQuery(jpql, RoomInfoDTO.class);
+        query.setParameter("roomStatus", RoomStatus.AVAILABLE);
+        query.setParameter("locationId", locationId);
+        return query.getResultList();
+    }
     public List<RoomInfoDTO> getAllRoomActive() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.RoomInfoDTO(" +
                 "s.roomId, s.roomName, s.roomStatus, s.openTime, s.closeTime) " +
