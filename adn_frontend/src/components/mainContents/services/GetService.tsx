@@ -31,7 +31,7 @@ type ServiceItem = {
   userCreateServiceResponse: UserCreateServiceResponse;
 };
 type Props = {
-  reloadTrigger: boolean;
+  reloadTrigger?: boolean;
 };
 const ServiceList = ({ reloadTrigger }: Props) => {
   const [services, setServices] = useState<ServiceItem[]>([]);

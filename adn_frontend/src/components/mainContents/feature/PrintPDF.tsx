@@ -1,353 +1,404 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import jsPDF from 'jspdf';
-import 'jspdf-autotable'; // 👈 Import đúng cách để autoTable hoạt động
-import '../../../assets/font/Roboto-Regular-normal.js';
+import pdfMake from 'pdfmake/build/pdfmake';
+import { customVfs } from '../../../../pdf-font-gen/vfs_fonts'; // import file đã build từ Roboto.ttf
+
+pdfMake.vfs = customVfs;
+
+pdfMake.fonts = {
+  Roboto: {
+    normal: 'Roboto-Regular.ttf',
+    bold: 'Roboto-Regular.ttf',
+    italics: 'Roboto-Regular.ttf',
+    bolditalics: 'Roboto-Regular.ttf',
+  },
+};
+
 interface ExportResultPDFProps {
   item: any;
 }
 
 const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
   const exportResultToPDF = () => {
-    const doc = new jsPDF('p', 'mm', 'a4');
+    const today = new Date().toLocaleDateString('vi-VN');
 
-    doc.setFont('Roboto');
-    let currentY = 15;
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const margin = 20;
-    const contentWidth = pageWidth - 2 * margin;
-
-    // === HEADER SECTION ===
-    // Company logo area (placeholder box)
-
-    // Company info
-    doc.setFontSize(16).setFont('Roboto', 'bold');
-    doc.text('GENELINK', margin + 50, currentY + 5);
-    doc.setFontSize(10).setFont('Roboto', 'normal');
-    doc.text(
-      'Dia chi: 123 Duong ABC, Quan XYZ, TP.HCM',
-      margin + 50,
-      currentY + 12
-    );
-    doc.text(
-      'Hotline: 1900-xxxx | Email: info@genelink.vn',
-      margin + 50,
-      currentY + 18
-    );
-
-    // Report number
-    const reportId = `KQ ${item.showAppointmentResponse?.appointmentId}`;
-    doc.setFontSize(12).setFont('Roboto', 'bold');
-    doc.text(`So: ${reportId}`, pageWidth - margin - 40, currentY + 8);
-
-    currentY += 35;
-
-    // Horizontal line
-    doc.setDrawColor(0, 0, 0);
-    doc.line(margin, currentY, pageWidth - margin, currentY);
-    currentY += 10;
-
-    // === TITLE SECTION ===
-    doc.setFontSize(18).setFont('Roboto', 'bold');
-    const title = 'PHIEU KET QUA PHAN TICH ADN';
-    const titleWidth = doc.getTextWidth(title);
-    doc.text(title, (pageWidth - titleWidth) / 2, currentY);
-
-    doc.setFontSize(14).setFont('Roboto', 'normal');
-    const subtitle = '(Xet nghiem quan he huyet thong)';
-    const subtitleWidth = doc.getTextWidth(subtitle);
-    doc.text(subtitle, (pageWidth - subtitleWidth) / 2, currentY + 8);
-
-    currentY += 25;
-
-    // === CUSTOMER INFO SECTION ===
-    doc.setFontSize(12).setFont('Roboto', 'bold');
-    doc.text('I. THONG TIN KHACH HANG', margin, currentY);
-    currentY += 8;
-
-    doc.setFontSize(11).setFont('Roboto', 'normal');
-    const customerInfo = [
-      `• Can cu vao giay de nghi phan tich ADN so: HID15 5986`,
-      `• Ho va ten nguoi yeu cau: ${item.userAppointmentResponse.fullName}`,
-      `• So dien thoai: ${
-        item.userAppointmentResponse.phone > 0
-          ? item.userAppointmentResponse.phone
-          : null
-      }`,
-      `• Dia chi: ${item.userAppointmentResponse.address}`,
-      `• Ngay tiep nhan mau: ${
-        item.showAppointmentResponse?.appointmentDate || 'N/A'
-      }`,
-    ];
-
-    customerInfo.forEach((line) => {
-      doc.text(line, margin, currentY);
-      currentY += 6;
-    });
-    currentY += 8;
-
-    // === SAMPLE INFO SECTION ===
-    doc.setFontSize(12).setFont('Roboto', 'bold');
-    doc.text('II. THONG TIN MAU PHAN TICH', margin, currentY);
-    currentY += 10;
-
-    const tableData = item.patientAppointmentResponse
+    const tableBody = item.patientAppointmentResponse
       ?.slice(0, 2)
       .map((patient: any, i: number) => [
         (i + 1).toString(),
         patient.fullName,
         patient.relationship,
-        item.sampleAppointmentResponse?.[0].sampleType || 'Te bao mieng',
+        item.sampleAppointmentResponse?.[0].sampleType || 'Tế bào miệng',
         item.showAppointmentResponse?.appointmentDate || '',
         item.sampleAppointmentResponse?.[i]?.sampleCode || '---',
       ]);
 
-    (doc as any).autoTable({
-      head: [
-        [
-          'STT',
-          'Ho va ten',
-          'Quan he',
-          'Loai mau',
-          'Ngay thu mau',
-          'Ky hieu mau',
-        ],
-      ],
-      body: tableData,
-      startY: currentY,
-      styles: {
-        fontSize: 10,
-        cellPadding: 4,
-        lineColor: [0, 0, 0],
-        lineWidth: 0.1,
-      },
-      headStyles: {
-        fillColor: [230, 230, 230],
-        textColor: [0, 0, 0],
-        fontStyle: 'bold',
-        halign: 'center',
-      },
-      bodyStyles: {
-        halign: 'center',
-      },
-      columnStyles: {
-        0: { cellWidth: 15, halign: 'center' },
-        1: { cellWidth: 45, halign: 'left' },
-        2: { cellWidth: 25, halign: 'center' },
-        3: { cellWidth: 25, halign: 'center' },
-        4: { cellWidth: 30, halign: 'center' },
-        5: { cellWidth: 25, halign: 'center' },
-      },
-    });
-
-    currentY = (doc as any).lastAutoTable.finalY + 15;
-
-    // === ANALYSIS SECTION ===
-    doc.setFontSize(12).setFont('Roboto', 'bold');
-    doc.text('III. KET QUA PHAN TICH', margin, currentY);
-    currentY += 8;
-
-    doc.setFontSize(11).setFont('Roboto', 'normal');
-    const analysisNote =
-      'Sau khi phan tich cac mau ADN co ky hieu tren bang bo kit Identifiler-Plus cua hang Applied Biosystems - My, chung toi co ket qua nhu sau:';
-    const splitNote = doc.splitTextToSize(analysisNote, contentWidth);
-    doc.text(splitNote, margin, currentY);
-    currentY += splitNote.length * 6 + 10;
-
-    // Locus Table with better formatting
-    const locusTableHead = [
-      [
-        'Locus',
-        `${item.resultLocusAppointmentResponse?.[0]?.sampleCode1 || 'Mau 1'}`,
-        `${item.resultLocusAppointmentResponse?.[0]?.sampleCode2 || 'Mau 2'}`,
-        'PI',
-      ],
-    ];
-
-    const locusTableData = item.resultLocusAppointmentResponse?.map(
+    const locusTableBody = item.resultLocusAppointmentResponse?.map(
       (locus: any) => [
         locus.locusName,
-        `${locus.allele1}, ${locus.allele2}`,
-        `${locus.fatherAllele1 ?? 'N/A'}, ${locus.fatherAllele2 ?? 'N/A'}`,
+        `${locus.allele1} - ${locus.allele2}`,
+        `${locus.fatherAllele1 ?? 'N/A'} - ${locus.fatherAllele2 ?? 'N/A'}`,
         locus.pi?.toFixed(6) || 'N/A',
       ]
     );
 
-    // Check if need new page
-    if (
-      currentY + (locusTableData?.length || 0) * 8 >
-      doc.internal.pageSize.getHeight() - 60
-    ) {
-      doc.addPage();
-      currentY = 20;
-    }
-
-    (doc as any).autoTable({
-      head: locusTableHead,
-      body: locusTableData,
-      startY: currentY,
-      styles: {
-        fontSize: 9,
-        cellPadding: 3,
-        lineColor: [0, 0, 0],
-        lineWidth: 0.1,
-      },
-      headStyles: {
-        fillColor: [200, 200, 200],
-        textColor: [0, 0, 0],
-        fontStyle: 'bold',
-        halign: 'center',
-      },
-      bodyStyles: {
-        halign: 'center',
-      },
-      columnStyles: {
-        0: { cellWidth: 35, halign: 'center', fontStyle: 'bold' },
-        1: { cellWidth: 45, halign: 'center' },
-        2: { cellWidth: 45, halign: 'center' },
-        3: { cellWidth: 40, halign: 'center' },
-      },
-    });
-
-    currentY = (doc as any).lastAutoTable.finalY + 20;
     const paternityProb =
       item.resultDetailAppointmentResponse?.[0]?.paternityProbability;
+    const conclusionText =
+      paternityProb >= 99
+        ? 'CÓ QUAN HỆ HUYẾT THỐNG'
+        : 'KHÔNG CÓ QUAN HỆ HUYẾT THỐNG';
 
-    (doc as any).autoTable({
-      body: [
-        [
-          {
-            content: `Xac xuat huyet thong : ${paternityProb?.toFixed(4)}%`,
-            colSpan: 4,
-            styles: {
-              halign: 'left',
-              fontStyle: 'bold',
-              textColor: [200, 0, 0],
+    const docDefinition: any = {
+      content: [
+        // Header công ty
+        {
+          columns: [
+            {
+              width: '*',
+              stack: [
+                { text: 'CÔNG TY TNHH GENELINK', style: 'companyName' },
+                { text: 'TRUNG TÂM PHÂN TÍCH ADN', style: 'centerName' },
+                {
+                  text: 'Địa chỉ: 123 Đường ABC, Quận XYZ, TP.HCM',
+                  style: 'address',
+                },
+                {
+                  text: 'Hotline: 1900-xxxx | Email: info@genelink.vn',
+                  style: 'contact',
+                },
+              ],
             },
+            {
+              width: 'auto',
+              stack: [
+                {
+                  text: `Số: ${
+                    item.showAppointmentResponse?.appointmentId || 'KQ-001'
+                  }`,
+                  style: 'reportNumber',
+                },
+                { text: `Ngày: ${today}`, style: 'reportDate' },
+              ],
+            },
+          ],
+          margin: [0, 0, 0, 20],
+        },
+
+        // Tiêu đề chính
+        { text: 'PHIẾU KẾT QUẢ PHÂN TÍCH ADN', style: 'mainTitle' },
+        { text: '(Xét nghiệm quan hệ huyết thống)', style: 'subtitle' },
+
+        // Phần I: Thông tin khách hàng
+        { text: 'I. THÔNG TIN KHÁCH HÀNG', style: 'sectionHeader' },
+        {
+          table: {
+            widths: ['25%', '75%'],
+            body: [
+              [
+                'Họ và tên người yêu cầu:',
+                item.userAppointmentResponse.fullName || '',
+              ],
+              ['Số điện thoại:', item.userAppointmentResponse.phone || ''],
+              ['Địa chỉ:', item.userAppointmentResponse.address || ''],
+              [
+                'Ngày tiếp nhận mẫu:',
+                item.showAppointmentResponse?.appointmentDate || '',
+              ],
+              [
+                'Căn cứ theo giấy đề nghị số:',
+                `HID15 ${
+                  item.showAppointmentResponse?.appointmentId || '5986'
+                }`,
+              ],
+            ],
           },
-        ],
+          layout: 'noBorders',
+          margin: [0, 5, 0, 15],
+        },
+
+        // Phần II: Thông tin mẫu phân tích
+        { text: 'II. THÔNG TIN MẪU PHÂN TÍCH', style: 'sectionHeader' },
+        {
+          table: {
+            widths: ['8%', '25%', '20%', '15%', '15%', '17%'],
+            body: [
+              [
+                { text: 'STT', style: 'tableHeader' },
+                { text: 'Họ và tên', style: 'tableHeader' },
+                { text: 'Quan hệ', style: 'tableHeader' },
+                { text: 'Loại mẫu', style: 'tableHeader' },
+                { text: 'Ngày thu mẫu', style: 'tableHeader' },
+                { text: 'Ký hiệu mẫu', style: 'tableHeader' },
+              ],
+              ...tableBody.map((row: any) =>
+                row.map((cell: any) => ({ text: cell, style: 'tableCell' }))
+              ),
+            ],
+          },
+          layout: {
+            hLineWidth: () => 0.5,
+            vLineWidth: () => 0.5,
+            hLineColor: () => '#333333',
+            vLineColor: () => '#333333',
+          },
+          margin: [0, 5, 0, 15],
+        },
+
+        // Phần III: Kết quả phân tích
+        { text: 'III. KẾT QUẢ PHÂN TÍCH', style: 'sectionHeader' },
+        {
+          text: 'Sau khi phân tích các mẫu ADN có ký hiệu trên bằng bộ kit Identifiler Plus của hãng Applied Biosystems - Mỹ, chúng tôi có kết quả như sau:',
+          style: 'analysisDescription',
+          margin: [0, 5, 0, 10],
+        },
+
+        // Bảng kết quả Locus
+        {
+          table: {
+            widths: ['20%', '25%', '25%', '30%'],
+            body: [
+              [
+                { text: 'Locus', style: 'tableHeader' },
+                { text: 'Mẫu 1', style: 'tableHeader' },
+                { text: 'Mẫu 2', style: 'tableHeader' },
+                { text: 'Chỉ số PI', style: 'tableHeader' },
+              ],
+              ...locusTableBody.map((row: any) =>
+                row.map((cell: any) => ({ text: cell, style: 'tableCell' }))
+              ),
+              [
+                { text: 'Tổng CPI:', style: 'totalRow', colSpan: 3 },
+                {},
+                {},
+                {
+                  text: (paternityProb / (100 - paternityProb)).toFixed(6),
+                  style: 'totalValue',
+                },
+              ],
+            ],
+          },
+          layout: {
+            hLineWidth: () => 0.5,
+            vLineWidth: () => 0.5,
+            hLineColor: () => '#333333',
+            vLineColor: () => '#333333',
+          },
+          margin: [0, 0, 0, 15],
+        },
+
+        // Xác suất huyết thống
+        {
+          text: [
+            'Xác suất huyết thống (W): ',
+            {
+              text: `${paternityProb?.toFixed(4) || '---'}%`,
+              bold: true,
+              color: '#c0392b',
+            },
+          ],
+          style: 'probabilityText',
+          margin: [0, 10, 0, 20],
+        },
+
+        // Phần IV: Kết luận
+        { text: 'IV. KẾT LUẬN', style: 'sectionHeader' },
+        {
+          text: [
+            'Dựa trên kết quả phân tích ADN, người có mẫu ký hiệu ',
+            {
+              text:
+                item.resultLocusAppointmentResponse?.[0]?.sampleCode1 || 'M1',
+              bold: true,
+            },
+            ' và người có mẫu ký hiệu ',
+            {
+              text:
+                item.resultLocusAppointmentResponse?.[0]?.sampleCode2 || 'M2',
+              bold: true,
+            },
+            ' có kết luận: ',
+          ],
+          style: 'conclusionText',
+          margin: [0, 5, 0, 10],
+        },
+        {
+          text: conclusionText,
+          style: 'conclusionResult',
+          margin: [0, 0, 0, 20],
+        },
+
+        // Phần V: Ghi chú
+        { text: 'V. GHI CHÚ', style: 'sectionHeader' },
+        {
+          ul: [
+            'Phương pháp sử dụng: PCR-STR với bộ kit Identifiler Plus',
+            'Tiêu chuẩn đánh giá: Xác suất ≥ 99.9% được coi là có quan hệ huyết thống',
+            item.serviceAppointmentResponses?.serviceType === 'ADMINISTRATIVE'
+              ? 'Kết quả này có thể sử dụng cho mục đích hành chính/pháp lý.'
+              : 'Kết quả này chỉ mang tính chất tham khảo, không có giá trị pháp lý.',
+            'Kết quả này chỉ áp dụng cho các mẫu đã được phân tích.',
+          ],
+          style: 'noteList',
+          margin: [0, 5, 0, 30],
+        },
+
+        // Chữ ký
+        {
+          columns: [
+            {
+              width: '50%',
+              stack: [
+                { text: 'NGƯỜI THỰC HIỆN', style: 'signatureTitle' },
+                { text: '(Ký tên và đóng dấu)', style: 'signatureInstruction' },
+                { text: '\n\n\n', style: 'signatureSpace' },
+                { text: 'Kỹ thuật viên', style: 'signatureName' },
+              ],
+            },
+            {
+              width: '50%',
+              stack: [
+                { text: 'GIÁM ĐỐC TRUNG TÂM', style: 'signatureTitle' },
+                { text: '(Ký tên và đóng dấu)', style: 'signatureInstruction' },
+                { text: '\n\n\n', style: 'signatureSpace' },
+                { text: 'PGS.TS. Nguyễn Văn A', style: 'signatureName' },
+              ],
+            },
+          ],
+          margin: [0, 20, 0, 0],
+        },
       ],
-      startY: currentY,
-      theme: 'plain',
+
       styles: {
-        fontSize: 11,
-        cellPadding: 4,
+        companyName: {
+          fontSize: 14,
+          bold: true,
+          alignment: 'center',
+          margin: [0, 0, 0, 2],
+        },
+        centerName: {
+          fontSize: 12,
+          bold: true,
+          alignment: 'center',
+          margin: [0, 0, 0, 5],
+        },
+        address: {
+          fontSize: 10,
+          alignment: 'center',
+          margin: [0, 0, 0, 2],
+        },
+        contact: {
+          fontSize: 10,
+          alignment: 'center',
+        },
+        reportNumber: {
+          fontSize: 11,
+          bold: true,
+          alignment: 'right',
+        },
+        reportDate: {
+          fontSize: 10,
+          alignment: 'right',
+        },
+        mainTitle: {
+          fontSize: 16,
+          bold: true,
+          alignment: 'center',
+          margin: [0, 15, 0, 5],
+        },
+        subtitle: {
+          fontSize: 12,
+          alignment: 'center',
+          margin: [0, 0, 0, 20],
+        },
+        sectionHeader: {
+          fontSize: 12,
+          bold: true,
+          margin: [0, 10, 0, 5],
+        },
+        tableHeader: {
+          fontSize: 10,
+          bold: true,
+          alignment: 'center',
+          margin: [2, 4, 2, 4],
+        },
+        tableCell: {
+          fontSize: 10,
+          alignment: 'center',
+          margin: [2, 4, 2, 4],
+        },
+        totalRow: {
+          fontSize: 10,
+          bold: true,
+          alignment: 'right',
+          margin: [2, 4, 2, 4],
+        },
+        totalValue: {
+          fontSize: 10,
+          bold: true,
+          alignment: 'center',
+          margin: [2, 4, 2, 4],
+        },
+        analysisDescription: {
+          fontSize: 11,
+          lineHeight: 1.3,
+        },
+        probabilityText: {
+          fontSize: 12,
+          bold: true,
+          alignment: 'center',
+        },
+        conclusionText: {
+          fontSize: 11,
+          lineHeight: 1.3,
+        },
+        conclusionResult: {
+          fontSize: 14,
+          bold: true,
+          alignment: 'center',
+          color: '#e74c3c',
+        },
+        noteList: {
+          fontSize: 10,
+          lineHeight: 1.3,
+        },
+        signatureTitle: {
+          fontSize: 11,
+          bold: true,
+          alignment: 'center',
+        },
+        signatureInstruction: {
+          fontSize: 9,
+          alignment: 'center',
+          italics: true,
+        },
+        signatureSpace: {
+          fontSize: 10,
+        },
+        signatureName: {
+          fontSize: 10,
+          bold: true,
+          alignment: 'center',
+        },
       },
-    });
 
-    currentY = (doc as any).lastAutoTable.finalY + 10;
+      defaultStyle: {
+        font: 'Roboto',
+        fontSize: 10,
+        lineHeight: 1.2,
+      },
 
-    // === CONCLUSION SECTION (Updated - No border/box) ===
-    // Check if enough space for conclusion section, if not create new page
-    const conclusionEstimatedHeight = 80; // Estimated height needed for conclusion section
-    if (
-      currentY + conclusionEstimatedHeight >
-      doc.internal.pageSize.getHeight() - 20
-    ) {
-      doc.addPage();
-      currentY = 30;
-    }
+      pageMargins: [40, 40, 40, 40],
+      pageOrientation: 'portrait',
+      pageSize: 'A4',
+    };
 
-    doc.setFontSize(12).setFont('Roboto', 'bold');
-    doc.text('IV. KET LUAN', margin, currentY);
-    currentY += 10;
-
-    doc.setFontSize(11).setFont('Roboto', 'normal');
-    const conclusionText = `Hoi dong khoa hoc Cong ty GENELINK ket luan: Nguoi co mau ADN ky hieu ${item.resultLocusAppointmentResponse?.[0]?.sampleCode1} va nguoi co mau ADN ky hieu ${item.resultLocusAppointmentResponse?.[0]?.sampleCode2}:`;
-    const splitConclusion = doc.splitTextToSize(conclusionText, contentWidth);
-    doc.text(splitConclusion, margin, currentY);
-    currentY += splitConclusion.length * 6 + 10;
-
-    // Main result - simplified without box
-    const probability =
-      item.resultDetailAppointmentResponse?.[0]?.paternityProbability || 0;
-    const mainResult =
-      probability >= 99
-        ? 'CO QUAN HE HUYET THONG'
-        : 'KHONG CO QUAN HE HUYET THONG';
-
-    doc.setFontSize(14).setFont('Roboto', 'bold');
-    const resultWidth = doc.getTextWidth(mainResult);
-    doc.text(mainResult, (pageWidth - resultWidth) / 2, currentY);
-    currentY += 10;
-
-    // Statistical details
-    const detail = item.resultDetailAppointmentResponse?.[0];
-    if (detail) {
-      doc.setFontSize(10).setFont('Roboto', 'normal');
-      const statsText = `(Combined PI: ${
-        detail.combinedPaternityIndex
-      } | Xac suat: ${detail.paternityProbability?.toFixed(4)}%)`;
-      const statsWidth = doc.getTextWidth(statsText);
-      doc.text(statsText, (pageWidth - statsWidth) / 2, currentY);
-      currentY += 15;
-    }
-
-    // === DISCLAIMER SECTION ===
-    doc.setFontSize(11).setFont('Roboto', 'bold');
-    doc.text('V. GHI CHU VA CAM KET', margin, currentY);
-    currentY += 8;
-
-    doc.setFont('Roboto', 'normal');
-    const disclaimerText =
-      item.serviceAppointmentResponses?.serviceType === 'ADMINISTRATIVE'
-        ? '• Ket qua xet nghiem nay duoc su dung cho muc dich hanh chinh, co the lam can cu phap ly trong cac thu tuc nhu xac nhan cha con, khai sinh, hoac cac van de phap ly lien quan.\n• Cong ty cam ket ve tinh chinh xac va bao mat thong tin khach hang.'
-        : '• Ket qua xet nghiem nay duoc su dung cho muc dich dan su, chi mang tinh tham khao ca nhan va khong co gia tri phap ly.\n• Cong ty cam ket ve tinh chinh xac va bao mat thong tin khach hang.';
-
-    const splitDisclaimer = doc.splitTextToSize(disclaimerText, contentWidth);
-    doc.text(splitDisclaimer, margin, currentY);
-    currentY += splitDisclaimer.length * 6 + 20;
-
-    // Check if need new page for signatures
-    if (currentY > doc.internal.pageSize.getHeight() - 80) {
-      doc.addPage();
-      currentY = 30;
-    }
-
-    // === SIGNATURE SECTION ===
-    const signatureY = currentY;
-
-    // Left signature
-    doc.setFontSize(11).setFont('Roboto', 'bold');
-    doc.text('KHACH HANG', margin + 30, signatureY);
-    doc.setFont('Roboto', 'normal');
-    doc.text('(Ky va ghi ro ho ten)', margin + 20, signatureY + 6);
-
-    // Right signature
-    doc.setFont('Roboto', 'bold');
-    doc.text('GIAM DOC GENELINK', pageWidth - margin - 60, signatureY);
-    doc.setFont('Roboto', 'normal');
-    doc.text('(Ky va dong dau)', pageWidth - margin - 50, signatureY + 6);
-
-    // Date
-    const today = new Date().toLocaleDateString('vi-VN');
-    doc.setFontSize(10);
-    const dateText = `TP.HCM, ngay ${today}`;
-    const dateWidth = doc.getTextWidth(dateText);
-    doc.text(dateText, (pageWidth - dateWidth) / 2, signatureY + 30);
-
-    // Footer with page number and processing info
-    const pageCount = (doc as any).getNumberOfPages();
-    for (let i = 1; i <= pageCount; i++) {
-      doc.setPage(i);
-      doc.setFontSize(8);
-      doc.text(
-        `Trang ${i}/${pageCount}`,
-        pageWidth - margin - 20,
-        doc.internal.pageSize.getHeight() - 10
+    pdfMake
+      .createPdf(docDefinition)
+      .download(
+        `phieu-ket-qua-ADN-${
+          item.showAppointmentResponse?.appointmentId || 'KQ001'
+        }-${today.replace(/\//g, '-')}.pdf`
       );
-      doc.text(
-        `Ngay xu ly: ${
-          item.resultAppointmentResponse?.[0]?.resultDate || today
-        }`,
-        margin,
-        doc.internal.pageSize.getHeight() - 10
-      );
-    }
-
-    const fileName = `phieu-ket-qua-ADN-${
-      item.showAppointmentResponse?.appointmentId
-    }-${today.replace(/\//g, '-')}.pdf`;
-    doc.save(fileName);
   };
 
   return (
