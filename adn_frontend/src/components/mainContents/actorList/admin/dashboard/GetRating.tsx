@@ -209,6 +209,9 @@ const GetRating = () => {
                   tick={{ fontSize: 12, fill: '#6b7280' }}
                   axisLine={{ stroke: '#d1d5db' }}
                   tickLine={{ stroke: '#d1d5db' }}
+                  domain={[1, 5]}
+                  allowDecimals={true}
+                  ticks={[0, 1, 2, 3, 4, 5]}
                 >
                   <Label
                     angle={-90}

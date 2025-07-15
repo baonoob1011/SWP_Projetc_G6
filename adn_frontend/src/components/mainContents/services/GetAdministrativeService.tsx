@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button } from '@mui/material';
 import {
   Plus,
@@ -59,7 +60,7 @@ const AdministrativeServiceList = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 2;
-const { hash } = useLocation();
+  const { hash } = useLocation();
   useEffect(() => {
     if (hash === '#administrative-service-list') {
       const el = document.getElementById('administrative-service-list');
