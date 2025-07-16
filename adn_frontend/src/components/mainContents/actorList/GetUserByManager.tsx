@@ -25,7 +25,6 @@ type User = {
 
 function GetUserByManager() {
   const [account, setAccount] = useState<User[]>([]);
-  const [isManager, setIsManager] = useState(true);
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -110,25 +109,17 @@ function GetUserByManager() {
   };
 
   useEffect(() => {
-    setIsManager(localStorage.getItem('role') === 'MANAGER');
-  }, []);
-
-  useEffect(() => {
     fetchData();
   }, []);
 
-  if (!isManager) {
-    return;
-  }
-
-  const searchByPhone = account.filter((user) => user.phone.includes(search));
+  const searchByPhone = account.filter((user) =>
+    (user.phone || '').includes(search)
+  );
 
   if (loading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loadingContainer}>
-          Đang tải dữ liệu...
-        </div>
+        <div className={styles.loadingContainer}>Đang tải dữ liệu...</div>
       </div>
     );
   }
@@ -148,7 +139,9 @@ function GetUserByManager() {
           <p className={styles.statLabel}>Tổng người dùng</p>
         </div>
         <div className={styles.statCard}>
-          <h2 className={styles.statNumber}>{account.filter(user => user.enabled).length}</h2>
+          <h2 className={styles.statNumber}>
+            {account.filter((user) => user.enabled).length}
+          </h2>
           <p className={styles.statLabel}>Đang hoạt động</p>
         </div>
         <div className={styles.statCard}>
@@ -158,11 +151,7 @@ function GetUserByManager() {
       </div>
 
       {/* Error Message */}
-      {error && (
-        <div className={styles.errorMessage}>
-          {error}
-        </div>
-      )}
+      {error && <div className={styles.errorMessage}>{error}</div>}
 
       {/* Table Card */}
       <div className={styles.tableCard}>
@@ -196,7 +185,9 @@ function GetUserByManager() {
               {searchByPhone.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className={styles.noData}>
-                    {search ? 'Không tìm thấy người dùng với số điện thoại này' : 'Chưa có người dùng nào'}
+                    {search
+                      ? 'Không tìm thấy người dùng với số điện thoại này'
+                      : 'Chưa có người dùng nào'}
                   </TableCell>
                 </TableRow>
               ) : (

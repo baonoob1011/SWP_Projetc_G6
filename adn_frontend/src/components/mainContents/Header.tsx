@@ -1,6 +1,6 @@
 // src/components/mainContents/Header.tsx
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -22,6 +22,7 @@ import { Menu as MenuIcon, ArrowDropDown } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
 
 import Logo from '../../image/Logo.png';
+import WalletNotification from './nofiticationBell/Bell';
 
 type HeaderProps = {
   fullName: string;
@@ -34,6 +35,16 @@ export function Header({ fullName, setFullName }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
   const role = localStorage.getItem('role');
   const url = localStorage.getItem('avatarUrl');
+  const [reloadFlag, setReloadFlag] = useState(false);
+
+  // Đặt lại flag sau khi cập nhật để không bị lặp
+  useEffect(() => {
+    if (reloadFlag) {
+      // Có thể fetch lại user info tại đây nếu cần
+      setReloadFlag(false);
+    }
+  }, [reloadFlag]);
+
   const navItems = [
     { label: 'Trang chủ', path: '/' },
     {
@@ -738,6 +749,10 @@ export function Header({ fullName, setFullName }: HeaderProps) {
                 </>
               ) : (
                 <>
+                  <Box>
+                    <WalletNotification />
+                  </Box>
+
                   <Button
                     onClick={(e) => handleOpenMenu(e, 'USER')}
                     endIcon={<ArrowDropDown />}
