@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import pdfMake from 'pdfmake/build/pdfmake';
 import { customVfs } from '../../../../pdf-font-gen/vfs_fonts'; // import file đã build từ Roboto.ttf
+import Logo from '../../mainContents/feature/featureImage/Logo.png';
+import Sign from '../../mainContents/feature/featureImage/Sign.png';
 
 pdfMake.vfs = customVfs;
 
@@ -17,9 +19,40 @@ interface ExportResultPDFProps {
   item: any;
 }
 
+// Hàm chuyển đổi image URL thành base64
+const getImageBase64 = (imageUrl: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx?.drawImage(img, 0, 0);
+      const dataURL = canvas.toDataURL('image/png');
+      resolve(dataURL);
+    };
+    img.onerror = reject;
+    img.src = imageUrl;
+  });
+};
+
 const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
-  const exportResultToPDF = () => {
+  const exportResultToPDF = async () => {
     const today = new Date().toLocaleDateString('vi-VN');
+
+    // Chuyển đổi logo và sign thành base64
+    let logoBase64 = '';
+    let signBase64 = '';
+
+    try {
+      logoBase64 = await getImageBase64(Logo);
+      signBase64 = await getImageBase64(Sign);
+    } catch (error) {
+      console.warn('Không thể tải hình ảnh:', error);
+      // Sử dụng fallback nếu không tải được hình ảnh
+    }
 
     const tableBody = item.patientAppointmentResponse
       ?.slice(0, 2)
@@ -50,9 +83,43 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
 
     const docDefinition: any = {
       content: [
-        // Header công ty
+        // Header với logo và thông tin công ty
         {
           columns: [
+            {
+              width: 80,
+              stack: [
+                logoBase64 ? {
+                  image: logoBase64,
+                  width: 90,
+                  height: 50,
+                  alignment: 'center',
+                } : {
+                  canvas: [
+                    {
+                      type: 'rect',
+                      x: 0,
+                      y: 0,
+                      w: 70,
+                      h: 70,
+                      r: 8,
+                      color: '#2E86AB',
+                    },
+                    {
+                      type: 'text',
+                      x: 35,
+                      y: 35,
+                      text: 'DNA',
+                      options: {
+                        color: 'white',
+                        fontSize: 16,
+                        bold: true,
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
             {
               width: '*',
               stack: [
@@ -66,325 +133,605 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
                   text: 'Hotline: 1900-xxxx | Email: info@genelink.vn',
                   style: 'contact',
                 },
+                {
+                  text: 'Website: www.genelink.vn',
+                  style: 'contact',
+                },
               ],
             },
             {
-              width: 'auto',
+              width: 120,
               stack: [
                 {
-                  text: `Số: ${
-                    item.showAppointmentResponse?.appointmentId || 'KQ-001'
-                  }`,
-                  style: 'reportNumber',
+                  table: {
+                    widths: ['*'],
+                    body: [
+                      [
+                        {
+                          text: `Số: ${
+                            item.showAppointmentResponse?.appointmentId || 'KQ-001'
+                          }`,
+                          style: 'reportNumber',
+                        },
+                      ],
+                      [
+                        {
+                          text: `Ngày: ${today}`,
+                          style: 'reportDate',
+                        },
+                      ],
+                    ],
+                  },
+                  layout: {
+                    hLineWidth: () => 1,
+                    vLineWidth: () => 1,
+                    hLineColor: () => '#2E86AB',
+                    vLineColor: () => '#2E86AB',
+                    paddingLeft: () => 8,
+                    paddingRight: () => 8,
+                    paddingTop: () => 6,
+                    paddingBottom: () => 6,
+                  },
                 },
-                { text: `Ngày: ${today}`, style: 'reportDate' },
               ],
+            },
+          ],
+          margin: [0, 0, 0, 30],
+        },
+
+        // Đường kẻ ngang
+        {
+          canvas: [
+            {
+              type: 'line',
+              x1: 0,
+              y1: 0,
+              x2: 515,
+              y2: 0,
+              lineWidth: 2,
+              lineColor: '#2E86AB',
             },
           ],
           margin: [0, 0, 0, 20],
         },
 
-        // Tiêu đề chính
-        { text: 'PHIẾU KẾT QUẢ PHÂN TÍCH ADN', style: 'mainTitle' },
-        { text: '(Xét nghiệm quan hệ huyết thống)', style: 'subtitle' },
-
-        // Phần I: Thông tin khách hàng
-        { text: 'I. THÔNG TIN KHÁCH HÀNG', style: 'sectionHeader' },
+        // Tiêu đề chính với background
         {
           table: {
-            widths: ['25%', '75%'],
+            widths: ['*'],
             body: [
               [
-                'Họ và tên người yêu cầu:',
-                item.userAppointmentResponse.fullName || '',
-              ],
-              ['Số điện thoại:', item.userAppointmentResponse.phone || ''],
-              ['Địa chỉ:', item.userAppointmentResponse.address || ''],
-              [
-                'Ngày tiếp nhận mẫu:',
-                item.showAppointmentResponse?.appointmentDate || '',
-              ],
-              [
-                'Căn cứ theo giấy đề nghị số:',
-                `HID15 ${
-                  item.showAppointmentResponse?.appointmentId || '5986'
-                }`,
+                {
+                  stack: [
+                    { text: 'PHIẾU KẾT QUẢ PHÂN TÍCH ADN', style: 'mainTitle' },
+                    { text: '(Xét nghiệm quan hệ huyết thống)', style: 'subtitle' },
+                  ],
+                  fillColor: '#F8F9FA',
+                  margin: [0, 15, 0, 15],
+                },
               ],
             ],
           },
-          layout: 'noBorders',
-          margin: [0, 5, 0, 15],
+          layout: {
+            hLineWidth: () => 0,
+            vLineWidth: () => 0,
+          },
+          margin: [0, 0, 0, 25],
+        },
+
+        // Phần I: Thông tin khách hàng
+        {
+          table: {
+            widths: ['*'],
+            body: [
+              [
+                {
+                  text: 'I. THÔNG TIN KHÁCH HÀNG',
+                  style: 'sectionHeader',
+                  fillColor: '#E3F2FD',
+                  margin: [10, 8, 10, 8],
+                },
+              ],
+            ],
+          },
+          layout: {
+            hLineWidth: () => 0,
+            vLineWidth: () => 0,
+          },
+          margin: [0, 0, 0, 10],
+        },
+        {
+          table: {
+            widths: ['30%', '70%'],
+            body: [
+              [
+                { text: 'Họ và tên người yêu cầu:', style: 'infoLabel' },
+                { text: item.userAppointmentResponse.fullName || '', style: 'infoValue' },
+              ],
+              [
+                { text: 'Số điện thoại:', style: 'infoLabel' },
+                { text: item.userAppointmentResponse.phone || '', style: 'infoValue' },
+              ],
+              [
+                { text: 'Địa chỉ:', style: 'infoLabel' },
+                { text: item.userAppointmentResponse.address || '', style: 'infoValue' },
+              ],
+              [
+                { text: 'Ngày tiếp nhận mẫu:', style: 'infoLabel' },
+                { text: item.showAppointmentResponse?.appointmentDate || '', style: 'infoValue' },
+              ],
+              [
+                { text: 'Căn cứ theo giấy đề nghị số:', style: 'infoLabel' },
+                { text: `HID15 ${item.showAppointmentResponse?.appointmentId || '5986'}`, style: 'infoValue' },
+              ],
+            ],
+          },
+          layout: {
+            hLineWidth: (i: number) => (i === 0 || i === 5) ? 1 : 0.5,
+            vLineWidth: () => 0.5,
+            hLineColor: () => '#DDDDDD',
+            vLineColor: () => '#DDDDDD',
+            paddingLeft: () => 12,
+            paddingRight: () => 12,
+            paddingTop: () => 8,
+            paddingBottom: () => 8,
+          },
+          margin: [0, 0, 0, 20],
         },
 
         // Phần II: Thông tin mẫu phân tích
-        { text: 'II. THÔNG TIN MẪU PHÂN TÍCH', style: 'sectionHeader' },
+        {
+          table: {
+            widths: ['*'],
+            body: [
+              [
+                {
+                  text: 'II. THÔNG TIN MẪU PHÂN TÍCH',
+                  style: 'sectionHeader',
+                  fillColor: '#E3F2FD',
+                  margin: [10, 8, 10, 8],
+                },
+              ],
+            ],
+          },
+          layout: {
+            hLineWidth: () => 0,
+            vLineWidth: () => 0,
+          },
+          margin: [0, 0, 0, 10],
+        },
         {
           table: {
             widths: ['8%', '25%', '20%', '15%', '15%', '17%'],
             body: [
               [
-                { text: 'STT', style: 'tableHeader' },
-                { text: 'Họ và tên', style: 'tableHeader' },
-                { text: 'Quan hệ', style: 'tableHeader' },
-                { text: 'Loại mẫu', style: 'tableHeader' },
-                { text: 'Ngày thu mẫu', style: 'tableHeader' },
-                { text: 'Ký hiệu mẫu', style: 'tableHeader' },
+                { text: 'STT', style: 'tableHeader', fillColor: '#2E86AB' },
+                { text: 'Họ và tên', style: 'tableHeader', fillColor: '#2E86AB' },
+                { text: 'Quan hệ', style: 'tableHeader', fillColor: '#2E86AB' },
+                { text: 'Loại mẫu', style: 'tableHeader', fillColor: '#2E86AB' },
+                { text: 'Ngày thu mẫu', style: 'tableHeader', fillColor: '#2E86AB' },
+                { text: 'Ký hiệu mẫu', style: 'tableHeader', fillColor: '#2E86AB' },
               ],
-              ...tableBody.map((row: any) =>
-                row.map((cell: any) => ({ text: cell, style: 'tableCell' }))
+              ...tableBody.map((row: any, rowIndex: number) =>
+                row.map((cell: any) => ({
+                  text: cell,
+                  style: 'tableCell',
+                  fillColor: rowIndex % 2 === 0 ? '#F8F9FA' : '#FFFFFF',
+                }))
               ),
             ],
           },
           layout: {
-            hLineWidth: () => 0.5,
-            vLineWidth: () => 0.5,
-            hLineColor: () => '#333333',
-            vLineColor: () => '#333333',
+            hLineWidth: () => 1,
+            vLineWidth: () => 1,
+            hLineColor: () => '#DDDDDD',
+            vLineColor: () => '#DDDDDD',
+            paddingLeft: () => 8,
+            paddingRight: () => 8,
+            paddingTop: () => 6,
+            paddingBottom: () => 6,
           },
-          margin: [0, 5, 0, 15],
+          margin: [0, 0, 0, 25],
         },
 
         // Phần III: Kết quả phân tích
-        { text: 'III. KẾT QUẢ PHÂN TÍCH', style: 'sectionHeader' },
-        {
-          text: 'Sau khi phân tích các mẫu ADN có ký hiệu trên bằng bộ kit Identifiler Plus của hãng Applied Biosystems - Mỹ, chúng tôi có kết quả như sau:',
-          style: 'analysisDescription',
-          margin: [0, 5, 0, 10],
-        },
-
-        // Bảng kết quả Locus
         {
           table: {
-            widths: ['20%', '25%', '25%', '30%'],
+            widths: ['*'],
             body: [
               [
-                { text: 'Locus', style: 'tableHeader' },
-                { text: 'Mẫu 1', style: 'tableHeader' },
-                { text: 'Mẫu 2', style: 'tableHeader' },
-                { text: 'Chỉ số PI', style: 'tableHeader' },
-              ],
-              ...locusTableBody.map((row: any) =>
-                row.map((cell: any) => ({ text: cell, style: 'tableCell' }))
-              ),
-              [
-                { text: 'Tổng CPI:', style: 'totalRow', colSpan: 3 },
-                {},
-                {},
                 {
-                  text: (paternityProb / (100 - paternityProb)).toFixed(6),
-                  style: 'totalValue',
+                  text: 'III. KẾT QUẢ PHÂN TÍCH',
+                  style: 'sectionHeader',
+                  fillColor: '#E3F2FD',
+                  margin: [10, 8, 10, 8],
                 },
               ],
             ],
           },
           layout: {
-            hLineWidth: () => 0.5,
-            vLineWidth: () => 0.5,
-            hLineColor: () => '#333333',
-            vLineColor: () => '#333333',
+            hLineWidth: () => 0,
+            vLineWidth: () => 0,
           },
+          margin: [0, 0, 0, 10],
+        },
+        {
+          text: 'Sau khi phân tích các mẫu ADN có ký hiệu trên bằng bộ kit Identifiler Plus của hãng Applied Biosystems - Mỹ, chúng tôi có kết quả như sau:',
+          style: 'analysisDescription',
           margin: [0, 0, 0, 15],
         },
 
-        // Xác suất huyết thống
+        // Bảng kết quả Locus với thiết kế cải tiến
         {
-          text: [
-            'Xác suất huyết thống (W): ',
-            {
-              text: `${paternityProb?.toFixed(4) || '---'}%`,
-              bold: true,
-              color: '#c0392b',
-            },
-          ],
-          style: 'probabilityText',
-          margin: [0, 10, 0, 20],
+          table: {
+            widths: ['20%', '25%', '25%', '30%'],
+            body: [
+              [
+                { text: 'Locus', style: 'tableHeader', fillColor: '#2E86AB' },
+                { text: 'Mẫu 1', style: 'tableHeader', fillColor: '#2E86AB' },
+                { text: 'Mẫu 2', style: 'tableHeader', fillColor: '#2E86AB' },
+                { text: 'Chỉ số PI', style: 'tableHeader', fillColor: '#2E86AB' },
+              ],
+              ...locusTableBody.map((row: any, rowIndex: number) =>
+                row.map((cell: any) => ({
+                  text: cell,
+                  style: 'tableCell',
+                  fillColor: rowIndex % 2 === 0 ? '#F8F9FA' : '#FFFFFF',
+                }))
+              ),
+              [
+                { text: 'Tổng CPI:', style: 'totalRow', colSpan: 3, fillColor: '#FFF3E0' },
+                {},
+                {},
+                {
+                  text: (paternityProb / (100 - paternityProb)).toFixed(6),
+                  style: 'totalValue',
+                  fillColor: '#FFF3E0',
+                },
+              ],
+            ],
+          },
+          layout: {
+            hLineWidth: () => 1,
+            vLineWidth: () => 1,
+            hLineColor: () => '#DDDDDD',
+            vLineColor: () => '#DDDDDD',
+            paddingLeft: () => 8,
+            paddingRight: () => 8,
+            paddingTop: () => 6,
+            paddingBottom: () => 6,
+          },
+          margin: [0, 0, 0, 20],
+        },
+
+        // Xác suất huyết thống với box đặc biệt
+        {
+          table: {
+            widths: ['*'],
+            body: [
+              [
+                {
+                  stack: [
+                    {
+                      text: 'XÁC SUẤT HUYẾT THỐNG',
+                      style: 'probabilityLabel',
+                    },
+                    {
+                      text: `${paternityProb?.toFixed(4) || '---'}%`,
+                      style: 'probabilityValue',
+                    },
+                  ],
+                  fillColor: '#FFF3E0',
+                  margin: [0, 15, 0, 15],
+                },
+              ],
+            ],
+          },
+          layout: {
+            hLineWidth: () => 2,
+            vLineWidth: () => 2,
+            hLineColor: () => '#FF9800',
+            vLineColor: () => '#FF9800',
+          },
+          margin: [0, 0, 0, 25],
         },
 
         // Phần IV: Kết luận
-        { text: 'IV. KẾT LUẬN', style: 'sectionHeader' },
+        {
+          table: {
+            widths: ['*'],
+            body: [
+              [
+                {
+                  text: 'IV. KẾT LUẬN',
+                  style: 'sectionHeader',
+                  fillColor: '#E3F2FD',
+                  margin: [10, 8, 10, 8],
+                },
+              ],
+            ],
+          },
+          layout: {
+            hLineWidth: () => 0,
+            vLineWidth: () => 0,
+          },
+          margin: [0, 0, 0, 10],
+        },
         {
           text: [
             'Dựa trên kết quả phân tích ADN, người có mẫu ký hiệu ',
             {
-              text:
-                item.resultLocusAppointmentResponse?.[0]?.sampleCode1 || 'M1',
+              text: item.resultLocusAppointmentResponse?.[0]?.sampleCode1 || 'M1',
               bold: true,
+              color: '#2E86AB',
             },
             ' và người có mẫu ký hiệu ',
             {
-              text:
-                item.resultLocusAppointmentResponse?.[0]?.sampleCode2 || 'M2',
+              text: item.resultLocusAppointmentResponse?.[0]?.sampleCode2 || 'M2',
               bold: true,
+              color: '#2E86AB',
             },
             ' có kết luận: ',
           ],
           style: 'conclusionText',
-          margin: [0, 5, 0, 10],
+          margin: [0, 0, 0, 15],
         },
         {
-          text: conclusionText,
-          style: 'conclusionResult',
-          margin: [0, 0, 0, 20],
+          table: {
+            widths: ['*'],
+            body: [
+              [
+                {
+                  text: conclusionText,
+                  style: 'conclusionResult',
+                  fillColor: paternityProb >= 99 ? '#E8F5E8' : '#FFEBEE',
+                  margin: [0, 15, 0, 15],
+                },
+              ],
+            ],
+          },
+          layout: {
+            hLineWidth: () => 2,
+            vLineWidth: () => 2,
+            hLineColor: () => (paternityProb >= 99 ? '#4CAF50' : '#F44336'),
+            vLineColor: () => (paternityProb >= 99 ? '#4CAF50' : '#F44336'),
+          },
+          margin: [0, 0, 0, 25],
         },
 
         // Phần V: Ghi chú
-        { text: 'V. GHI CHÚ', style: 'sectionHeader' },
         {
-          ul: [
-            'Phương pháp sử dụng: PCR-STR với bộ kit Identifiler Plus',
-            'Tiêu chuẩn đánh giá: Xác suất ≥ 99.9% được coi là có quan hệ huyết thống',
-            item.serviceAppointmentResponses?.serviceType === 'ADMINISTRATIVE'
-              ? 'Kết quả này có thể sử dụng cho mục đích hành chính/pháp lý.'
-              : 'Kết quả này chỉ mang tính chất tham khảo, không có giá trị pháp lý.',
-            'Kết quả này chỉ áp dụng cho các mẫu đã được phân tích.',
-          ],
-          style: 'noteList',
-          margin: [0, 5, 0, 30],
+          table: {
+            widths: ['*'],
+            body: [
+              [
+                {
+                  text: 'V. GHI CHÚ',
+                  style: 'sectionHeader',
+                  fillColor: '#E3F2FD',
+                  margin: [10, 8, 10, 8],
+                },
+              ],
+            ],
+          },
+          layout: {
+            hLineWidth: () => 0,
+            vLineWidth: () => 0,
+          },
+          margin: [0, 0, 0, 10],
+        },
+        {
+          table: {
+            widths: ['*'],
+            body: [
+              [
+                {
+                  ul: [
+  
+                    'Kết quả xét nghiệm này được sử dụng cho mục đích dân sự, chỉ mang tính tham khảo cá nhân và không có giá trị pháp lý.'
+                  ],
+                  style: 'noteList',
+                  fillColor: '#F8F9FA',
+                  margin: [15, 10, 15, 10],
+                },
+              ],
+            ],
+          },
+          layout: {
+            hLineWidth: () => 1,
+            vLineWidth: () => 1,
+            hLineColor: () => '#DDDDDD',
+            vLineColor: () => '#DDDDDD',
+          },
+          margin: [0, 0, 0, 30],
         },
 
-        // Chữ ký
+        // Chữ ký với sign image
         {
-          columns: [
-            {
-              width: '50%',
-              stack: [
-                { text: 'NGƯỜI THỰC HIỆN', style: 'signatureTitle' },
-                { text: '(Ký tên và đóng dấu)', style: 'signatureInstruction' },
-                { text: '\n\n\n', style: 'signatureSpace' },
-                { text: 'Kỹ thuật viên', style: 'signatureName' },
+          table: {
+            widths: ['50%', '50%'],
+            body: [
+              [
+                {
+                  stack: [
+                    { text: 'NGƯỜI THỰC HIỆN', style: 'signatureTitle' },
+                    { text: '(Ký tên và đóng dấu)', style: 'signatureInstruction' },
+                    { text: 'Kỹ thuật viên', style: 'signatureName' },
+                  ],
+                  margin: [0, 10, 0, 10],
+                },
+                {
+                  stack: [
+                    { text: 'GIÁM ĐỐC TRUNG TÂM', style: 'signatureTitle' },
+                    { text: '(Ký tên và đóng dấu)', style: 'signatureInstruction' },
+                    signBase64 ? {
+                      image: signBase64,
+                      width: 120,
+                      height: 70,
+                      alignment: 'center',
+                      margin: [0, 10, 0, 10],
+                    } : { text: '\n\n', style: 'signatureSpace' },
+                    { text: 'Trần Đình Bảo', style: 'signatureName' },
+                  ],
+                  margin: [0, 10, 0, 10],
+                },
               ],
-            },
-            {
-              width: '50%',
-              stack: [
-                { text: 'GIÁM ĐỐC TRUNG TÂM', style: 'signatureTitle' },
-                { text: '(Ký tên và đóng dấu)', style: 'signatureInstruction' },
-                { text: '\n\n\n', style: 'signatureSpace' },
-                { text: 'PGS.TS. Nguyễn Văn A', style: 'signatureName' },
-              ],
-            },
-          ],
-          margin: [0, 20, 0, 0],
+            ],
+          },
+          layout: {
+            hLineWidth: () => 1,
+            vLineWidth: () => 1,
+            hLineColor: () => '#DDDDDD',
+            vLineColor: () => '#DDDDDD',
+          },
+          margin: [0, 0, 0, 0],
         },
       ],
 
       styles: {
         companyName: {
-          fontSize: 14,
+          fontSize: 16,
           bold: true,
-          alignment: 'center',
-          margin: [0, 0, 0, 2],
+          color: '#2E86AB',
+          margin: [0, 0, 0, 3],
         },
         centerName: {
-          fontSize: 12,
+          fontSize: 14,
           bold: true,
-          alignment: 'center',
-          margin: [0, 0, 0, 5],
+          color: '#34495E',
+          margin: [0, 0, 0, 8],
         },
         address: {
-          fontSize: 10,
-          alignment: 'center',
-          margin: [0, 0, 0, 2],
+          fontSize: 11,
+          color: '#7F8C8D',
+          margin: [0, 0, 0, 3],
         },
         contact: {
           fontSize: 10,
-          alignment: 'center',
+          color: '#7F8C8D',
+          margin: [0, 0, 0, 2],
         },
         reportNumber: {
-          fontSize: 11,
+          fontSize: 12,
           bold: true,
-          alignment: 'right',
+          color: '#2E86AB',
+          alignment: 'center',
         },
         reportDate: {
-          fontSize: 10,
-          alignment: 'right',
+          fontSize: 11,
+          color: '#34495E',
+          alignment: 'center',
         },
         mainTitle: {
-          fontSize: 16,
+          fontSize: 18,
           bold: true,
           alignment: 'center',
-          margin: [0, 15, 0, 5],
+          color: '#2E86AB',
+          margin: [0, 0, 0, 5],
         },
         subtitle: {
-          fontSize: 12,
+          fontSize: 13,
           alignment: 'center',
-          margin: [0, 0, 0, 20],
+          color: '#34495E',
         },
         sectionHeader: {
-          fontSize: 12,
+          fontSize: 13,
           bold: true,
-          margin: [0, 10, 0, 5],
+          color: '#2E86AB',
+        },
+        infoLabel: {
+          fontSize: 11,
+          bold: true,
+          color: '#34495E',
+        },
+        infoValue: {
+          fontSize: 11,
+          color: '#2C3E50',
         },
         tableHeader: {
-          fontSize: 10,
+          fontSize: 11,
           bold: true,
           alignment: 'center',
-          margin: [2, 4, 2, 4],
+          color: '#FFFFFF',
         },
         tableCell: {
           fontSize: 10,
           alignment: 'center',
-          margin: [2, 4, 2, 4],
+          color: '#2C3E50',
         },
         totalRow: {
-          fontSize: 10,
+          fontSize: 11,
           bold: true,
           alignment: 'right',
-          margin: [2, 4, 2, 4],
+          color: '#E67E22',
         },
         totalValue: {
-          fontSize: 10,
+          fontSize: 11,
           bold: true,
           alignment: 'center',
-          margin: [2, 4, 2, 4],
+          color: '#E67E22',
         },
         analysisDescription: {
           fontSize: 11,
-          lineHeight: 1.3,
+          lineHeight: 1.4,
+          color: '#34495E',
         },
-        probabilityText: {
-          fontSize: 12,
+        probabilityLabel: {
+          fontSize: 13,
           bold: true,
           alignment: 'center',
+          color: '#E67E22',
+        },
+        probabilityValue: {
+          fontSize: 20,
+          bold: true,
+          alignment: 'center',
+          color: '#D35400',
         },
         conclusionText: {
           fontSize: 11,
-          lineHeight: 1.3,
+          lineHeight: 1.4,
+          color: '#34495E',
         },
         conclusionResult: {
-          fontSize: 14,
+          fontSize: 16,
           bold: true,
           alignment: 'center',
-          color: '#e74c3c',
+          color: paternityProb >= 99 ? '#27AE60' : '#E74C3C',
         },
         noteList: {
           fontSize: 10,
-          lineHeight: 1.3,
+          lineHeight: 1.4,
+          color: '#34495E',
         },
         signatureTitle: {
-          fontSize: 11,
+          fontSize: 12,
           bold: true,
           alignment: 'center',
+          color: '#2E86AB',
         },
         signatureInstruction: {
-          fontSize: 9,
+          fontSize: 10,
           alignment: 'center',
           italics: true,
+          color: '#7F8C8D',
         },
         signatureSpace: {
           fontSize: 10,
         },
         signatureName: {
-          fontSize: 10,
+          fontSize: 11,
           bold: true,
           alignment: 'center',
+          color: '#2C3E50',
         },
       },
 
       defaultStyle: {
         font: 'Roboto',
         fontSize: 10,
-        lineHeight: 1.2,
+        lineHeight: 1.3,
+        color: '#2C3E50',
       },
 
       pageMargins: [40, 40, 40, 40],
@@ -402,37 +749,56 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
   };
 
   return (
-    <button
-      onClick={exportResultToPDF}
-      style={{
-        marginTop: 20,
-        padding: '12px 20px',
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <button
+        onClick={exportResultToPDF}
+        style={{
+          marginTop: 20,
+          padding: '14px 28px',
+          borderRadius: 12,
+          border: 'none',
+          cursor: 'pointer',
+          backgroundColor: '#2E86AB',
+          color: 'white',
+          fontSize: '15px',
+          fontWeight: 'bold',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          transition: 'all 0.3s ease',
+          boxShadow: '0 4px 12px rgba(46, 134, 171, 0.3)',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = '#1E5F7A';
+          e.currentTarget.style.transform = 'translateY(-2px)';
+          e.currentTarget.style.boxShadow = '0 6px 20px rgba(46, 134, 171, 0.4)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = '#2E86AB';
+          e.currentTarget.style.transform = 'translateY(0)';
+          e.currentTarget.style.boxShadow = '0 4px 12px rgba(46, 134, 171, 0.3)';
+        }}
+      >
+        <span style={{ fontSize: '18px' }}>📋</span>
+        Tải phiếu kết quả PDF
+      </button>
+      
+      <div style={{
+        marginTop: 15,
+        padding: '10px 20px',
+        backgroundColor: '#F8F9FA',
         borderRadius: 8,
-        border: '2px solid #007bff',
-        cursor: 'pointer',
-        backgroundColor: '#007bff',
-        color: 'white',
-        fontSize: '14px',
-        fontWeight: 'bold',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        transition: 'all 0.3s ease',
-        boxShadow: '0 2px 4px rgba(0,123,255,0.3)',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = '#0056b3';
-        e.currentTarget.style.transform = 'translateY(-2px)';
-        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,123,255,0.4)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = '#007bff';
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,123,255,0.3)';
-      }}
-    >
-      📄 Tải phiếu kết quả PDF
-    </button>
+        border: '1px solid #E9ECEF',
+        fontSize: '13px',
+        color: '#6C757D',
+        textAlign: 'center',
+        maxWidth: '400px',
+      }}>
+        <span style={{ fontWeight: 'bold', color: '#2E86AB' }}>💡 Lưu ý:</span> Phiếu kết quả được thiết kế chuyên nghiệp với logo và chữ ký tự động chèn vào PDF.
+      </div>
+    </div>
   );
 };
 
