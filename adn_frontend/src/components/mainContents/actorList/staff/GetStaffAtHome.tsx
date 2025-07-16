@@ -20,7 +20,6 @@ type Staff = {
 
 function GetStaffAtHome() {
   const [account, setAccount] = useState<Staff[]>([]);
-  const [isAdmin, setIsAdmin] = useState(true);
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -45,10 +44,6 @@ function GetStaffAtHome() {
       setError('Không thể lấy dữ liệu');
     }
   };
-
-  useEffect(() => {
-    setIsAdmin(localStorage.getItem('role') === 'ADMIN');
-  }, []);
 
   useEffect(() => {
     fetchData();
@@ -101,16 +96,12 @@ function GetStaffAtHome() {
     }
   };
 
-  if (!isAdmin) {
-    return null;
-  }
-
   const searchByphone = account.filter((user) => user.phone.includes(search));
 
   return (
     <div className="bg-white">
       {error && showErrorSnackbar(error)}
-      
+
       {/* Search Input */}
       <div className="mb-4">
         <input
@@ -125,7 +116,7 @@ function GetStaffAtHome() {
       {/* Table */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <table className="w-full">
-         <thead className="bg-gray-50">
+          <thead className="bg-gray-50">
             <tr>
               <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
                 ID

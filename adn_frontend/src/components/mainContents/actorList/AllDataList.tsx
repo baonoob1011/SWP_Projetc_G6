@@ -144,6 +144,31 @@ export const DataList2 = () => {
   const managerNavItems = [
     { path: '/manager/user', label: 'Danh sách người dùng', icon: Users },
     { path: '/manager/staff', label: 'Danh sách nhân viên', icon: UserCheck },
+    {
+      path: '/manager/collector',
+      label: 'Danh sách nhân viên thu mẫu',
+      icon: FlaskConical,
+    },
+    {
+      path: '/manager/staff-at-home',
+      label: 'Danh sách nhân viên dịch vụ tại nhà',
+      icon: Home,
+    },
+    {
+      path: '/manager/cashier',
+      label: 'Danh sách nhân viên thu ngân',
+      icon: CreditCard,
+    },
+    {
+      path: '/manager/technical',
+      label: 'Danh sách nhân viên phòng lab',
+      icon: FlaskConical,
+    },
+    {
+      path: '/manager/consultant',
+      label: 'Danh sách nhân viên tư vấn',
+      icon: FlaskConical,
+    },
   ];
 
   const handleDropdownChange = (event: SelectChangeEvent<string>) => {
@@ -182,28 +207,6 @@ export const DataList2 = () => {
             <span className="mx-2">›</span>
             <span>Quản lý dữ liệu</span>
           </div>
-
-          {/* Navigation Cards */}
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {managerNavItems.map((item, idx) => (
-              <div
-                key={idx}
-                onClick={() => navigate(item.path)}
-                className={`bg-white bg-opacity-25 backdrop-blur-sm rounded-2xl p-6 cursor-pointer transition-all duration-200 hover:bg-opacity-35 hover:scale-105 border border-white border-opacity-20 ${
-                  location.pathname === item.path
-                    ? 'bg-opacity-35 ring-2 ring-white shadow-lg'
-                    : ''
-                }`}
-              >
-                <div className="text-white mb-4 flex justify-center">
-                  <item.icon size={36} strokeWidth={2} />
-                </div>
-                <div className="text-white text-lg font-semibold text-center">
-                  {item.label}
-                </div>
-              </div>
-            ))}
-          </div> */}
         </div>
       </div>
 
@@ -255,28 +258,6 @@ export const DataList2 = () => {
             ))}
           </Select>
         </FormControl>
-
-        {/* Quick Access Grid */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          {managerNavItems.map((item, idx) => (
-            <div
-              key={idx}
-              onClick={() => navigate(item.path)}
-              className={`bg-gray-50 rounded-2xl p-6 cursor-pointer transition-all duration-200 hover:bg-green-50 hover:scale-105 border border-gray-200 ${
-                location.pathname === item.path
-                  ? 'bg-green-50 ring-2 ring-green-300 shadow-md'
-                  : ''
-              }`}
-            >
-              <div className="w-18 h-18 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-                <item.icon className="w-9 h-9 text-white" strokeWidth={2} />
-              </div>
-              <div className="text-gray-800 text-base font-semibold text-center">
-                {item.label}
-              </div>
-            </div>
-          ))}
-        </div> */}
       </div>
 
       {/* Content Area */}

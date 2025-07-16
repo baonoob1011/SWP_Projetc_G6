@@ -183,7 +183,15 @@ const NewProfile = () => {
   useEffect(() => {
     fetchMoneyData();
   }, []);
+  useEffect(() => {
+    const reload = () => {
+      fetchData(); // reload profile
+      fetchMoneyData(); // reload ví tiền
+    };
 
+    window.addEventListener('reloadProfile', reload);
+    return () => window.removeEventListener('reloadProfile', reload);
+  }, []);
   const tabConfig = [
     {
       id: 'appointment',

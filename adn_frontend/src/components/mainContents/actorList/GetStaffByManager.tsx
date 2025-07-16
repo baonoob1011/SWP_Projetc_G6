@@ -12,7 +12,6 @@ import {
 import { useEffect, useState } from 'react';
 import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
 import Swal from 'sweetalert2';
-import { NavLink } from 'react-router-dom';
 import styles from './GetStaffByManager.module.css';
 
 type Staff = {
@@ -40,13 +39,10 @@ function GetStaffByManager() {
     const token = localStorage.getItem('token');
     setLoading(true);
     try {
-      const res = await fetch(
-        'http://localhost:8080/api/manager/get-all-staff',
-        {
-          method: 'GET',
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await fetch('http://localhost:8080/api/staff/get-all-staff', {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (!res.ok) {
         setError('Không thể lấy dữ liệu');
         return;
@@ -119,9 +115,7 @@ function GetStaffByManager() {
   if (loading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loadingContainer}>
-          Đang tải dữ liệu...
-        </div>
+        <div className={styles.loadingContainer}>Đang tải dữ liệu...</div>
       </div>
     );
   }
@@ -141,7 +135,9 @@ function GetStaffByManager() {
           <p className={styles.statLabel}>Tổng nhân viên</p>
         </div>
         <div className={styles.statCard}>
-          <h2 className={styles.statNumber}>{account.filter(staff => staff.enabled).length}</h2>
+          <h2 className={styles.statNumber}>
+            {account.filter((staff) => staff.enabled).length}
+          </h2>
           <p className={styles.statLabel}>Đang hoạt động</p>
         </div>
         <div className={styles.statCard}>
@@ -151,11 +147,7 @@ function GetStaffByManager() {
       </div>
 
       {/* Error Message */}
-      {error && (
-        <div className={styles.errorMessage}>
-          {error}
-        </div>
-      )}
+      {error && <div className={styles.errorMessage}>{error}</div>}
 
       {/* Table Card */}
       <div className={styles.tableCard}>
@@ -193,7 +185,9 @@ function GetStaffByManager() {
               {searchByphone.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={9} className={styles.noData}>
-                    {search ? 'Không tìm thấy nhân viên với số điện thoại này' : 'Chưa có nhân viên nào'}
+                    {search
+                      ? 'Không tìm thấy nhân viên với số điện thoại này'
+                      : 'Chưa có nhân viên nào'}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -231,15 +225,6 @@ function GetStaffByManager() {
                         onClick={() => handleDelete(user.phone, user.fullName)}
                       >
                         Xóa
-                      </Button>
-                      <Button
-                        variant="contained"
-                        component={NavLink}
-                        to={`/slot/${user.staffId}`}
-                        size="small"
-                        className={styles.addButton}
-                      >
-                        Slot
                       </Button>
                     </TableCell>
                   </TableRow>
