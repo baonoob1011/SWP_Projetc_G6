@@ -1,14 +1,12 @@
 package swp.project.adn_backend.dto.InfoDTO;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import swp.project.adn_backend.entity.WalletTransaction;
 import swp.project.adn_backend.enums.TransactionStatus;
 import swp.project.adn_backend.enums.TransactionType;
 
 import java.time.LocalDateTime;
 
-public class WalletInfoDTO {
+public class WalletTransitionInfoDTO {
     private Long walletTransactionId;
     private long amount;
     private TransactionType type;
@@ -16,7 +14,7 @@ public class WalletInfoDTO {
     private LocalDateTime timestamp;
     private String bankCode;
 
-    public WalletInfoDTO(WalletTransaction walletTransaction) {
+    public WalletTransitionInfoDTO(WalletTransaction walletTransaction) {
         this.walletTransactionId = walletTransaction.getWalletTransactionId();
         this.amount = walletTransaction.getAmount();
         this.type = walletTransaction.getType();

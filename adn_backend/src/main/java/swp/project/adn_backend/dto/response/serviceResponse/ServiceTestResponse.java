@@ -20,6 +20,7 @@ public class ServiceTestResponse {
         this.image = image;
     }
 
+
     public long getServiceId() {
         return serviceId;
     }

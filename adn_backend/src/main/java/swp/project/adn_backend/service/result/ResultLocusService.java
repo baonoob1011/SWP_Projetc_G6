@@ -191,8 +191,8 @@ public class ResultLocusService {
         result.setResultDate(LocalDate.now());
         result.setResultStatus(ResultStatus.COMPLETED);
 
-        appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
-        appointment.setNote("Đã có kết quả xét nghiệm");
+        appointment.setAppointmentStatus(AppointmentStatus.WAITING_MANAGER_APPROVAL);
+        appointment.setNote("kết quả xét nghiệm đang được xác nhận");
 
 
         // Kiểm tra loại dịch vụ để xử lý Slot + Kit

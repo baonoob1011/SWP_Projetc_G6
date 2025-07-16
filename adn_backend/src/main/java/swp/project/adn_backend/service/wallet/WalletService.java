@@ -6,18 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import swp.project.adn_backend.dto.InfoDTO.KitDeliveryStatusInfoStaffDTO;
 import swp.project.adn_backend.dto.InfoDTO.WalletInfoAmountDTO;
-import swp.project.adn_backend.dto.InfoDTO.WalletInfoDTO;
-import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.repository.UserRepository;
 import swp.project.adn_backend.repository.WalletRepository;
 import swp.project.adn_backend.repository.WalletTransactionRepository;
-
-import java.util.List;
 
 @Service
 public class WalletService {
