@@ -130,6 +130,11 @@ function App() {
     '/manager/create-services',
     '/manager/staff',
     '/manager/user',
+    '/manager/collector',
+    '/manager/technical',
+    '/manager/staff-at-home',
+    '/manager/consultant',
+    '/manager/cashier',
     '/manager/createKit',
     '/manager/location',
     '/manager/room',
@@ -537,7 +542,48 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route
+                  path="collector"
+                  element={
+                    <ProtectedRoute allowedRoles={['MANAGER']}>
+                      <GetCollector />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="technical"
+                  element={
+                    <ProtectedRoute allowedRoles={['MANAGER']}>
+                      <GetStaffTechnical />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="staff-at-home"
+                  element={
+                    <ProtectedRoute allowedRoles={['MANAGER']}>
+                      <GetStaffAtHome />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="consultant"
+                  element={
+                    <ProtectedRoute allowedRoles={['MANAGER']}>
+                      <GetConsultationStaff />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="cashier"
+                  element={
+                    <ProtectedRoute allowedRoles={['MANAGER']}>
+                      <GetCashier />
+                    </ProtectedRoute>
+                  }
+                />
               </Route>
+
               <Route
                 path="manager/location"
                 element={

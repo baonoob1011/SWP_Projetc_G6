@@ -35,10 +35,7 @@ const BookingAtHome = () => {
     relationship: '',
     birthCertificate: '',
   });
-  const payment = [
-    { label: 'Ví cá nhân', value: 'WALLET' },
-    { label: 'VNPay', value: 'VN_PAY' },
-  ];
+  const payment = [{ label: 'Ví Genelink', value: 'WALLET' }];
 
   const [patientTwo, setPatientTwo] = useState<Patient>({
     fullName: '',
