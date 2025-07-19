@@ -6,6 +6,7 @@ import { Check } from '@mui/icons-material';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from './CollectorSlot.module.css';
+import Swal from 'sweetalert2';
 
 export const CollectSampleAtHome = () => {
   const [sample, setSample] = useState<any[]>([]);
@@ -149,8 +150,7 @@ export const CollectSampleAtHome = () => {
       );
 
       if (!res.ok) {
-        const err = await res.text();
-        toast.error(`Cập nhật thất bại: ${err}`);
+        toast.error(`Không thể cập nhật trạng thái cũ`);
       } else {
         toast.success('Cập nhật trạng thái thành công');
         setSample((prev) =>
@@ -414,18 +414,30 @@ export const CollectSampleAtHome = () => {
                                 value={
                                   selectedStatus[appointmentId] || 'PENDING'
                                 }
-                                onChange={(e) => {
+                                onChange={async (e) => {
                                   const newStatus = e.target.value;
                                   const currentStatus =
                                     selectedStatus[appointmentId] || 'PENDING';
-                                  setSelectedStatus({
-                                    [appointmentId]: newStatus,
+
+                                  const result = await Swal.fire({
+                                    title: 'Xác nhận thay đổi trạng thái?',
+                                    text: `Bạn có chắc chắn muốn đổi trạng thái này?`,
+                                    icon: 'question',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Xác nhận',
+                                    cancelButtonText: 'Hủy',
                                   });
-                                  handleUpdateStatus(
-                                    appointmentId,
-                                    newStatus,
-                                    currentStatus
-                                  );
+
+                                  if (result.isConfirmed) {
+                                    setSelectedStatus({
+                                      [appointmentId]: newStatus,
+                                    });
+                                    handleUpdateStatus(
+                                      appointmentId,
+                                      newStatus,
+                                      currentStatus
+                                    );
+                                  }
                                 }}
                               >
                                 {statusOptions.map((option) => (
@@ -477,13 +489,28 @@ export const CollectSampleAtHome = () => {
                       <td>
                         <select
                           value={item.sampleResponse.sampleStatus || ''}
-                          onChange={(e) =>
-                            handleUpdate(
-                              item.sampleResponse.sampleId,
-                              e.target.value,
-                              item.appointmentSampleResponse.appointmentId
-                            )
-                          }
+                          onChange={async (e) => {
+                            const selectedValue = e.target.value;
+
+                            if (!selectedValue) return;
+
+                            const result = await Swal.fire({
+                              title: 'Xác nhận thay đổi?',
+                              text: 'Bạn có chắc chắn muốn thay đổi trạng thái mẫu này?',
+                              icon: 'warning',
+                              showCancelButton: true,
+                              confirmButtonText: 'Xác nhận',
+                              cancelButtonText: 'Hủy',
+                            });
+
+                            if (result.isConfirmed) {
+                              handleUpdate(
+                                item.sampleResponse.sampleId,
+                                selectedValue,
+                                item.appointmentSampleResponse.appointmentId
+                              );
+                            }
+                          }}
                           className={styles.sampleSelect}
                         >
                           <option value="">Chọn trạng thái</option>

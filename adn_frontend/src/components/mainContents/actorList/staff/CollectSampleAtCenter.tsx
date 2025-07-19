@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { Check, Delete } from '@mui/icons-material';
 import styles from './CheckAppointment.module.css';
+import Swal from 'sweetalert2';
 
 const CollectSampleAtCenter = () => {
   const { slotId } = useParams();
@@ -30,6 +31,10 @@ const CollectSampleAtCenter = () => {
     switch (status) {
       case 'REGISTERED':
         return 'Đã đăng ký';
+      case 'IN_TRANSIT':
+        return 'Đang vận chuyển';
+      case 'RECEIVED':
+        return 'Đã nhận tại phòng xét nghiệm';
       case 'SAMPLE_COLLECTED':
         return 'Đã thu mẫu';
       case 'IN_ANALYSIS':
@@ -304,7 +309,7 @@ const CollectSampleAtCenter = () => {
                 <th className={styles.tableHeaderCell}>Vật xét nghiệm</th>
 
                 {sampleStatus ? (
-                  <th className={styles.tableHeaderCell}>Hủy</th>
+                  <th className={styles.tableHeaderCell}>Vắng mặt</th>
                 ) : null}
               </tr>
             </thead>
@@ -384,11 +389,25 @@ const CollectSampleAtCenter = () => {
                           <td>
                             <button
                               className={styles.submitBtn}
-                              onClick={() =>
-                                handleAbsent(patient.patientId, appointmentId)
-                              }
+                              onClick={async () => {
+                                const result = await Swal.fire({
+                                  title: 'Xác nhận vắng mặt?',
+                                  text: 'Bạn có chắc chắn muốn đánh dấu bệnh nhân này là vắng mặt?',
+                                  icon: 'warning',
+                                  showCancelButton: true,
+                                  confirmButtonText: 'Xác nhận',
+                                  cancelButtonText: 'Hủy',
+                                });
+
+                                if (result.isConfirmed) {
+                                  handleAbsent(
+                                    patient.patientId,
+                                    appointmentId
+                                  );
+                                }
+                              }}
                             >
-                              <Delete fontSize="small" />
+                              Vắng mặt
                             </button>
                           </td>
                         ) : null}
@@ -410,35 +429,69 @@ const CollectSampleAtCenter = () => {
       {sample.length > 0 ? (
         <div className={styles.collectedSamplesContainer}>
           <h2 className={styles.subTitle}>Danh sách mẫu đã nhập</h2>
-          <div className={`${styles.tableContainer} ${styles.collectedSamplesTable}`}>
+          <div
+            className={`${styles.tableContainer} ${styles.collectedSamplesTable}`}
+          >
             <table className={styles.table}>
               <thead className={styles.tableHeader}>
                 <tr>
                   <th className={styles.tableHeaderCell}>Họ tên</th>
                   <th className={styles.tableHeaderCell}>Mã Kit</th>
                   <th className={styles.tableHeaderCell}>Loại mẫu</th>
-                  <th className={styles.tableHeaderCell}>Trạng thái mẫu</th>
                   <th className={styles.tableHeaderCell}>Mã mẫu</th>
                   <th className={styles.tableHeaderCell}>Ngày thu</th>
                   <th className={styles.tableHeaderCell}>Người thu</th>
+                  <th className={styles.tableHeaderCell}>Trạng thái mẫu</th>
                   <th className={styles.tableHeaderCell}>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
                 {sample.map((item: any, index: number) => (
                   <tr key={index} className={styles.tableRow}>
-                    <td className={styles.tableCell}>{item.patientSampleResponse.fullName}</td>
-                    <td className={styles.tableCell}>{item.kitAppointmentResponse.kitCode}</td>
-                    <td className={styles.tableCell}>{item.sampleResponse.sampleType}</td>
+                    <td className={styles.tableCell}>
+                      {item.patientSampleResponse.fullName}
+                    </td>
+                    <td className={styles.tableCell}>
+                      {item.kitAppointmentResponse.kitCode}
+                    </td>
+                    <td className={styles.tableCell}>
+                      {item.sampleResponse.sampleType}
+                    </td>
+
+                    <td className={styles.tableCell}>
+                      {item.sampleResponse.sampleCode}
+                    </td>
+                    <td className={styles.tableCell}>
+                      {item.sampleResponse.collectionDate}
+                    </td>
+                    <td className={styles.tableCell}>
+                      {item.staffSampleResponse.fullName}
+                    </td>
                     <td className={styles.tableCell}>
                       <select
                         value={item.sampleResponse.sampleStatus}
-                        onChange={(e) =>
-                          handleUpdate(
-                            item.sampleResponse.sampleId,
-                            e.target.value
-                          )
-                        }
+                        onChange={async (e) => {
+                          const selectedValue = e.target.value;
+
+                          // Nếu chưa chọn giá trị mới thì không làm gì
+                          if (!selectedValue) return;
+
+                          const result = await Swal.fire({
+                            title: 'Xác nhận thay đổi?',
+                            text: `Bạn có chắc chắn muốn đổi sang trạng thái mẫu này"?`,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Xác nhận',
+                            cancelButtonText: 'Hủy',
+                          });
+
+                          if (result.isConfirmed) {
+                            handleUpdate(
+                              item.sampleResponse.sampleId,
+                              selectedValue
+                            );
+                          }
+                        }}
                         className={styles.sampleSelect}
                       >
                         <option value="">Chọn trạng thái</option>
@@ -449,9 +502,6 @@ const CollectSampleAtCenter = () => {
                         ))}
                       </select>
                     </td>
-                    <td className={styles.tableCell}>{item.sampleResponse.sampleCode}</td>
-                    <td className={styles.tableCell}>{item.sampleResponse.collectionDate}</td>
-                    <td className={styles.tableCell}>{item.staffSampleResponse.fullName}</td>
                     <td className={styles.tableCell}>
                       <button
                         type="submit"
