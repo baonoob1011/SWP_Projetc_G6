@@ -43,9 +43,9 @@ const GetSampleInfo = () => {
         }
       );
       if (!res.ok) {
-        toast.error('Không đúng định dạng');
+        toast.error('Dữ liệu chưa đầy đủ');
       } else {
-        toast.success('thành công');
+        toast.success('Gửi kết quả thành công');
       }
     } catch (error) {
       console.log(error);
@@ -255,7 +255,20 @@ const GetSampleInfo = () => {
           <div className={styles.submitContainerWrapper}>
             <button
               type="button"
-              onClick={handleResult}
+              onClick={async () => {
+                const result = await Swal.fire({
+                  title: 'Xác nhận gửi kết quả?',
+                  text: 'Bạn có chắc muốn gửi kết quả xét nghiệm này?',
+                  icon: 'question',
+                  showCancelButton: true,
+                  confirmButtonText: 'Gửi',
+                  cancelButtonText: 'Hủy',
+                });
+
+                if (result.isConfirmed) {
+                  handleResult(); // Gọi hàm gửi kết quả khi người dùng xác nhận
+                }
+              }}
               className={styles.submitButton}
             >
               Gửi kết quả

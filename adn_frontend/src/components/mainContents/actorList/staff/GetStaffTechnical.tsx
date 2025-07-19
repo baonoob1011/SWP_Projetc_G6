@@ -1,6 +1,5 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import { showErrorSnackbar, showSuccessAlert } from '../utils/notifications';
 import Swal from 'sweetalert2';
 
@@ -101,7 +100,7 @@ function GetStaffTechnical() {
   return (
     <div className="bg-white">
       {error && showErrorSnackbar(error)}
-      
+
       {/* Search Input */}
       <div className="mb-4">
         <input
@@ -116,7 +115,7 @@ function GetStaffTechnical() {
       {/* Table */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <table className="w-full">
-        <thead className="bg-gray-50">
+          <thead className="bg-gray-50">
             <tr>
               <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
                 ID
@@ -200,13 +199,15 @@ function GetStaffTechnical() {
 
       {/* Add Staff Technical Button */}
       <div className="mt-4">
-        <NavLink
-          to="/signup-staff-technical"
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm flex items-center gap-1 transition-colors no-underline inline-flex"
+        <button
+          onClick={() => {
+            window.location.href = '/signup-staff-technical';
+          }}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 transition-colors"
         >
-          <Plus size={16} />
+          <Plus size={20} />
           Thêm nhân viên kỹ thuật
-        </NavLink>
+        </button>
       </div>
     </div>
   );

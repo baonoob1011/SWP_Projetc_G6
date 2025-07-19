@@ -99,6 +99,8 @@ import SignUpConsultation from './components/mainContents/actorList/staff/SignUp
 import GetConsultant from './components/mainContents/actorList/staff/ConsultantPage';
 import { CollectSampleAtHome } from './components/mainContents/actorList/staff/CollectSampleAtHome';
 import Deposit from './components/mainContents/services/Deposit';
+import CheckResult from './components/mainContents/actorList/manager/CheckResult';
+import GetAllResultByManager from './components/mainContents/actorList/manager/GetAppointmentResult';
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
@@ -127,6 +129,7 @@ function App() {
   const isManagerLayoutRoute = [
     '/manager/data',
     '/manager/services',
+    'manager/checkResult',
     '/manager/create-services',
     '/manager/staff',
     '/manager/user',
@@ -145,6 +148,13 @@ function App() {
     '/newPrice/:serviceId',
     '/manager',
     '/discount/:serviceId',
+    '/signup-collector',
+    '/signup-staff',
+    '/signup-staff-technical',
+    '/signup-consultant',
+    '/signup-staff-at-home',
+    '/signup-cashier',
+    '/checkResultById/:appointmentId',
   ].some((path) => matchPath(path, location.pathname));
 
   return (
@@ -583,7 +593,62 @@ function App() {
                   }
                 />
               </Route>
-
+              <Route
+                path="/signup-staff"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <SignUpStaff />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup-staff-technical"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <SignUpStaffTechnical />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup-consultant"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <SignUpConsultation />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup-collector"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <SignUpCollector />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup-cashier"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <SignUpCashier />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup-staff-at-home"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <SignUpStaffAtHome />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="manager/checkResult"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <CheckResult />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="manager/location"
                 element={
@@ -637,6 +702,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
                     <CreateKit />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/checkResultById/:appointmentId"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <GetAllResultByManager />
                   </ProtectedRoute>
                 }
               />
