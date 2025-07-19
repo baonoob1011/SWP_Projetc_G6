@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.response.DashboardResponse;
 import swp.project.adn_backend.dto.response.DailyRevenueResponse;
+import swp.project.adn_backend.dto.response.MonthlyRevenueResponse;
+import swp.project.adn_backend.dto.response.YearlyRevenueResponse;
 import swp.project.adn_backend.dto.response.ServiceRatingStatsResponse;
 import swp.project.adn_backend.dto.response.TotalUsersCompletedResponse;
 import swp.project.adn_backend.dto.response.TotalCancelledAppointmentsResponse;
@@ -13,9 +15,12 @@ import swp.project.adn_backend.repository.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -48,8 +53,8 @@ public class DashboardService {
     
     
     public DashboardResponse getDashboardStats() {
-        long totalUsers = userRepository.count();
-        long activeUsers = userRepository.countActiveUsers();
+        long totalUsers = userRepository.count() - userRepository.countUsersByAdminRole()-staffRepository.countUsersByStaffRole()-managerRepository.count();
+        long activeUsers = userRepository.countActiveUsers() - userRepository.countUsersByAdminRole()-staffRepository.countUsersByStaffRole()-managerRepository.count();
         long inactiveUsers = userRepository.countInactiveUsers();
         long totalPatients = patientRepository.count();
         long totalStaff = staffRepository.countUsersByStaffRole();
@@ -158,6 +163,76 @@ public class DashboardService {
         }
 
         return new DailyRevenueResponse(dailyRevenues, totalRevenue, "Doanh thu hàng ngày từ " + startDate + " đến " + endDate);
+    }
+
+    public MonthlyRevenueResponse getMonthlyRevenue(LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+
+        List<Object[]> results = invoiceRepository.findMonthlyRevenueBetween(startDateTime, endDateTime);
+        Map<String, Long> revenueMap = new HashMap<>();
+        long totalRevenue = 0L;
+
+        // Đưa dữ liệu từ DB vào map để tra cứu nhanh
+        for (Object[] result : results) {
+            Integer year = (Integer) result[0];
+            Integer month = (Integer) result[1];
+            Long revenue = (Long) result[2];
+            String key = year + "-" + String.format("%02d", month);
+            revenueMap.put(key, revenue);
+            totalRevenue += revenue;
+        }
+
+        // Tạo list đủ tháng, tháng nào không có thì revenue = 0
+        List<Map<String, Object>> monthlyRevenues = new ArrayList<>();
+        YearMonth current = YearMonth.from(startDate);
+        YearMonth endYearMonth = YearMonth.from(endDate);
+
+        while (!current.isAfter(endYearMonth)) {
+            Map<String, Object> monthRevenue = new HashMap<>();
+            String key = current.getYear() + "-" + String.format("%02d", current.getMonthValue());
+            String monthName = current.getMonth().getDisplayName(TextStyle.FULL, new Locale("vi", "VN"));
+            
+            monthRevenue.put("year", current.getYear());
+            monthRevenue.put("month", current.getMonthValue());
+            monthRevenue.put("monthName", monthName);
+            monthRevenue.put("revenue", revenueMap.getOrDefault(key, 0L));
+            monthlyRevenues.add(monthRevenue);
+            current = current.plusMonths(1);
+        }
+
+        return new MonthlyRevenueResponse(monthlyRevenues, totalRevenue, "Doanh thu theo tháng từ " + startDate + " đến " + endDate);
+    }
+
+    public YearlyRevenueResponse getYearlyRevenue(LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+
+        List<Object[]> results = invoiceRepository.findYearlyRevenueBetween(startDateTime, endDateTime);
+        Map<Integer, Long> revenueMap = new HashMap<>();
+        long totalRevenue = 0L;
+
+        // Đưa dữ liệu từ DB vào map để tra cứu nhanh
+        for (Object[] result : results) {
+            Integer year = (Integer) result[0];
+            Long revenue = (Long) result[1];
+            revenueMap.put(year, revenue);
+            totalRevenue += revenue;
+        }
+
+        // Tạo list đủ năm, năm nào không có thì revenue = 0
+        List<Map<String, Object>> yearlyRevenues = new ArrayList<>();
+        int startYear = startDate.getYear();
+        int endYear = endDate.getYear();
+
+        for (int year = startYear; year <= endYear; year++) {
+            Map<String, Object> yearRevenue = new HashMap<>();
+            yearRevenue.put("year", year);
+            yearRevenue.put("revenue", revenueMap.getOrDefault(year, 0L));
+            yearlyRevenues.add(yearRevenue);
+        }
+
+        return new YearlyRevenueResponse(yearlyRevenues, totalRevenue, "Doanh thu theo năm từ " + startDate + " đến " + endDate);
     }
 
     public AppointmentStatusPercentageResponse getAppointmentStatusPercentage() {

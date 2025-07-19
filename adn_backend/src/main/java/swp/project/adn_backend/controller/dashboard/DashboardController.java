@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import swp.project.adn_backend.dto.response.APIResponse;
 import swp.project.adn_backend.dto.response.DashboardResponse;
 import swp.project.adn_backend.dto.response.DailyRevenueResponse;
+import swp.project.adn_backend.dto.response.MonthlyRevenueResponse;
+import swp.project.adn_backend.dto.response.YearlyRevenueResponse;
 import swp.project.adn_backend.dto.response.ServiceRatingStatsResponse;
 import swp.project.adn_backend.dto.response.TotalRevenueResponse;
 import swp.project.adn_backend.dto.response.TotalUsersCompletedResponse;
@@ -107,5 +109,29 @@ public class DashboardController {
         }
         DailyRevenueResponse response = dashboardService.getDailyRevenue(startDate, endDate);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/monthly-revenue")
+    public ResponseEntity<MonthlyRevenueResponse> getMonthlyRevenue(
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate) {
+        try {
+            MonthlyRevenueResponse response = dashboardService.getMonthlyRevenue(startDate, endDate);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/yearly-revenue")
+    public ResponseEntity<YearlyRevenueResponse> getYearlyRevenue(
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate) {
+        try {
+            YearlyRevenueResponse response = dashboardService.getYearlyRevenue(startDate, endDate);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 } 
