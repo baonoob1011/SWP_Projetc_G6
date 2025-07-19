@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.GlobalRequest.BookAppointmentRequest;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoForManagerDTO;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
@@ -71,7 +72,7 @@ public class AppointmentController {
 
 
     @PostMapping("/book-appointment-at-home/{serviceId}")
-    public AllAppointmentAtHomeResponse bookAppointmentAtHome(@RequestBody  BookAppointmentRequest request,
+    public AllAppointmentAtHomeResponse bookAppointmentAtHome(@RequestBody BookAppointmentRequest request,
                                                               Authentication authentication,
                                                               @PathVariable("serviceId") long serviceId,
                                                               @RequestParam long priceId) {
@@ -84,6 +85,7 @@ public class AppointmentController {
                 priceId
         );
     }
+
     // đánh vắng patient
     @PutMapping("/check-in-patient")
     public ResponseEntity<String> checkInPatient(@RequestParam long patientId,
@@ -103,11 +105,10 @@ public class AppointmentController {
     }
 
 
-
     @GetMapping("/get-appointment-by-slot/{slotId}")
     public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentBySlot(@PathVariable("slotId") long slotId,
                                                                                      Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getAppointmentBySlot(slotId,authentication));
+        return ResponseEntity.ok(appointmentService.getAppointmentBySlot(slotId, authentication));
     }
 
 
@@ -115,7 +116,7 @@ public class AppointmentController {
     @GetMapping("/get-appointment-at-home-to-get-sample")
     public ResponseEntity<List<AllAppointmentAtCenterResponse>> getAppointmentAtHomeToGetSample(Authentication authentication,
                                                                                                 @RequestParam long appointmentId) {
-        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeToRecordResult(authentication,appointmentId));
+        return ResponseEntity.ok(appointmentService.getAppointmentAtHomeToRecordResult(authentication, appointmentId));
     }
 
     @GetMapping("/get-appointment-at-home-by-staff")
@@ -128,6 +129,20 @@ public class AppointmentController {
     public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResult(Authentication authentication,
                                                                                @RequestParam long appointmentId) {
         return ResponseEntity.ok(appointmentService.getAllAppointmentsResult(authentication, appointmentId));
+    }
+
+    @GetMapping("/get-all-result-by-manager")
+    public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResultForManager(Authentication authentication,
+                                                                                         @RequestParam long appointmentId) {
+        return ResponseEntity.ok(appointmentService.getAllAppointmentsResultForManager(authentication, appointmentId));
+    }
+    @GetMapping("/get-all-appointment-by-manager")
+    public ResponseEntity<List<AppointmentInfoForManagerDTO>> getAppointmentToViewResult() {
+        return ResponseEntity.ok(appointmentService.getAppointmentToViewResult());
+    }
+    @GetMapping("/get-all-appointment-by-manager-to-refund")
+    public ResponseEntity<List<AppointmentInfoForManagerDTO>> getAppointmentToRefund() {
+        return ResponseEntity.ok(appointmentService.getAppointmentToRefund());
     }
 
     //thêm staff vào appointment at home
@@ -179,6 +194,13 @@ public class AppointmentController {
         appointmentService.updateAppointmentToGetSampleAgain(appointmentId);
         return ResponseEntity.ok("update thanh cong");
     }
+
+    @PutMapping("/update-complete-appointment-by-manager")
+    public ResponseEntity<String> updateAppointmentStatusByManager(@RequestParam long appointmentId) {
+        appointmentService.updateAppointmentStatusByManager(appointmentId);
+        return ResponseEntity.ok("update thanh cong");
+    }
+
     @PutMapping("/appointment-refund")
     public ResponseEntity<String> appointmentRefund(@RequestParam long appointmentId) {
         appointmentService.appointmentRefund(appointmentId);
@@ -194,6 +216,7 @@ public class AppointmentController {
         appointmentService.updateAppointmentStatus(slotId, patientId, appointmentRequest, patientRequest);
         return ResponseEntity.ok("Update Successful");
     }
+
     private void validatePatientRequests(List<PatientRequest> list) {
         if (list == null || list.isEmpty()) {
             throw new RuntimeException("Danh sách bệnh nhân không được trống");

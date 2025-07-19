@@ -81,6 +81,7 @@ public class SecurityConfig {
             "/api/wallet/payment-by-wallet",
             "/api/user/**",
             "/api/payment/**",
+            "/api/wallet/get-all-wallet-transition/**",
             "/api/v1/**",
             "/api/appointment/book-appointment-at-home/**",
             "/api/appointment/cancel-appointment/**",
@@ -177,7 +178,7 @@ public class SecurityConfig {
                         .requestMatchers(USER_ENDPOINTS).hasAnyRole("USER", "ADMIN", "MANAGER")
                         .requestMatchers(CASHIER_ENDPOINTS).hasAnyRole("CASHIER", "ADMIN")
                         .requestMatchers(CONSULTANT_PUBLIC).hasAnyRole("CONSULTANT", "ADMIN")
-                        .requestMatchers(LAB_TECHNICIAN).hasAnyRole("LAB_TECHNICIAN", "ADMIN")
+                        .requestMatchers(LAB_TECHNICIAN).hasAnyRole("LAB_TECHNICIAN", "ADMIN", "MANAGER")
                         .requestMatchers(STAFF_PUBLIC).hasAnyRole("STAFF", "LAB_TECHNICIAN", "CASHIER", "ADMIN", "MANAGER", "CONSULTANT")
 
                         // Quyền STAFF

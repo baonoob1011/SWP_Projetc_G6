@@ -1,10 +1,16 @@
 package swp.project.adn_backend.service.payment;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import swp.project.adn_backend.dto.InfoDTO.ServiceFeedbackInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.WalletInfoAmountDTO;
+import swp.project.adn_backend.dto.InfoDTO.WalletTransitionDTO;
+import swp.project.adn_backend.dto.InfoDTO.WalletTransitionInfoDTO;
 import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
 import swp.project.adn_backend.dto.request.payment.WalletRequest;
 import swp.project.adn_backend.entity.*;
@@ -16,6 +22,7 @@ import swp.project.adn_backend.service.registerServiceTestService.AppointmentSer
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -29,9 +36,10 @@ public class CreatePaymentService {
     private UserRepository userRepository;
     private final WalletRepository walletRepository;
     private WalletTransactionRepository walletTransactionRepository;
+    private EntityManager entityManager;
 
     @Autowired
-    public CreatePaymentService(PaymentRepository paymentRepository, ServiceTestRepository serviceTestRepository, InvoiceRepository invoiceRepository, WalletRepository walletRepository, AppointmentService appointmentService, UserRepository userRepository, WalletTransactionRepository walletTransactionRepository) {
+    public CreatePaymentService(PaymentRepository paymentRepository, ServiceTestRepository serviceTestRepository, InvoiceRepository invoiceRepository, WalletRepository walletRepository, AppointmentService appointmentService, UserRepository userRepository, WalletTransactionRepository walletTransactionRepository, EntityManager entityManager) {
         this.paymentRepository = paymentRepository;
         this.serviceTestRepository = serviceTestRepository;
         this.invoiceRepository = invoiceRepository;
@@ -39,6 +47,7 @@ public class CreatePaymentService {
         this.appointmentService = appointmentService;
         this.userRepository = userRepository;
         this.walletTransactionRepository = walletTransactionRepository;
+        this.entityManager = entityManager;
     }
 
     public CreatePaymentRequest createPayment(long paymentId, long serviceId) {
@@ -199,6 +208,23 @@ public class CreatePaymentService {
         walletTransaction.setTransactionStatus(TransactionStatus.FAILED);
         walletTransaction.setTimestamp(LocalDateTime.now());
         System.out.println("thanh Toán Thất bại");
+    }
+    public List<WalletTransitionDTO> getWalletTransition(Authentication authentication){
+        Jwt jwt=(Jwt) authentication.getPrincipal();
+        long userId=jwt.getClaim("id");
+        Users users=userRepository.findById(userId)
+                .orElseThrow(()->new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+        Wallet wallet=walletRepository.findByUser(users)
+                .orElseThrow(()->new AppException(ErrorCodeUser.WALLET_INFO_NOT_EXISTS));
+
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.WalletTransitionDTO(" +
+                "s.walletTransactionId, s.amount, s.type, s.transactionStatus, s.timestamp, s.bankCode) " +
+                "FROM WalletTransaction s " +
+                "WHERE s.wallet.walletId = :walletId";
+        TypedQuery<WalletTransitionDTO> query = entityManager.createQuery(jpql, WalletTransitionDTO.class);
+        query.setParameter("walletId", wallet.getWalletId());
+        return query.getResultList();
+
     }
 
 }

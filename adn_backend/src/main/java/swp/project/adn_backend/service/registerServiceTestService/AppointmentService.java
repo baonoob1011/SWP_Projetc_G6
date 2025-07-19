@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoForManagerDTO;
+import swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo;
 import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
 import swp.project.adn_backend.dto.request.payment.PaymentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
@@ -1080,6 +1082,71 @@ public class AppointmentService {
 
         return results;
     }
+    // manager lay ra de xac nhan
+    public List<AllAppointmentResult> getAllAppointmentsResultForManager(Authentication authentication, long appointmentId) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Long userId = jwt.getClaim("id");
+
+        Users Manager = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
+        if (!Manager.getRoles().equals(Roles.MANAGER.name())) {
+            throw new RuntimeException("Chỉ Có Manager mới có quyền xem");
+        }
+
+        List<Appointment> appointments = appointmentRepository.findAll();
+
+        List<AllAppointmentResult> results = new ArrayList<>();
+        for (Appointment appointment:appointments){
+        if (appointment.getAppointmentStatus().equals(AppointmentStatus.WAITING_MANAGER_APPROVAL)) {
+            List<PatientAppointmentResponse> patientAppointmentResponse = appointmentMapper.toPatientAppointmentService(appointment.getPatients());
+            ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
+            ShowAppointmentResponse appointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
+            StaffAppointmentResponse staffAppointmentResponse = appointmentMapper.toStaffAppointmentResponse(appointment.getStaff());
+            UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(appointment.getUsers());
+            List<SampleAppointmentResponse> sampleAppointmentResponse = appointmentMapper.toSampleAppointmentResponse(appointment.getSampleList());
+            List<ResultAppointmentResponse> resultResponses = new ArrayList<>();
+            List<ResultDetailAppointmentResponse> resultDetailAppointmentResponses = new ArrayList<>();
+            List<ResultLocusAppointmentResponse> resultLocusAppointmentResponses = new ArrayList<>();
+
+            for (Result result : appointment.getResults()) {
+                if (!result.getResultStatus().equals(ResultStatus.COMPLETED)) {
+                    throw new RuntimeException("Kết quả chưa có");
+                }
+
+                ResultAppointmentResponse resultAppointmentResponse = appointmentMapper.toResultAppointmentResponse(result);
+                ResultDetailAppointmentResponse resultDetailAppointmentResponse = appointmentMapper.toResultDetailAppointmentResponse(result.getResultDetail());
+
+                resultResponses.add(resultAppointmentResponse);
+                resultDetailAppointmentResponses.add(resultDetailAppointmentResponse);
+
+                for (ResultLocus resultLocus : result.getResultDetail().getResultLoci()) {
+                    ResultLocusAppointmentResponse locusResponse = appointmentMapper.toResultLocusAppointmentResponse(resultLocus);
+                    resultLocusAppointmentResponses.add(locusResponse);
+                }
+            }
+
+            AllAppointmentResult result = new AllAppointmentResult();
+            result.setShowAppointmentResponse(appointmentResponse);
+            result.setStaffAppointmentResponse(staffAppointmentResponse);
+            result.setServiceAppointmentResponses(serviceAppointmentResponse);
+            result.setResultAppointmentResponse(resultResponses);
+            result.setResultDetailAppointmentResponse(resultDetailAppointmentResponses);
+            result.setResultLocusAppointmentResponse(resultLocusAppointmentResponses);
+            result.setPatientAppointmentResponse(patientAppointmentResponse);
+            result.setSampleAppointmentResponse(sampleAppointmentResponse);
+            result.setUserAppointmentResponse(userAppointmentResponse);
+            results.add(result);
+        }
+        }
+
+        return results;
+    }
+
+    public void updateAppointmentStatusByManager(long appointmentId){
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
+    }
 
     @Transactional
     public void cancelledAppointment(long appointmentId) {
@@ -1140,6 +1207,7 @@ public class AppointmentService {
         return appointmentResponses;
     }
 
+    // Manager bấm nút này
     @Transactional
     public void appointmentRefund(long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
@@ -1148,13 +1216,8 @@ public class AppointmentService {
         if(appointment.getAppointmentType().equals(AppointmentType.CENTER)){
             appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
         }
-        appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
-        Users users = appointment.getUsers();
-        for (Payment payment : appointment.getPayments()) {
-            if (payment.getGetPaymentStatus().equals(PaymentStatus.PAID)) {
-                users.getWallet().setBalance(users.getWallet().getBalance() + (long) payment.getAmount());
-            }
-        }
+        appointment.setAppointmentStatus(AppointmentStatus.REFUND);
+
     }
 
     @Transactional
@@ -1162,11 +1225,9 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         appointment.setNote("Mẫu của bạn bị hỏng trong quá trình xử lý. bạn vui lòng đến cơ sở để lấy lại mẫu");
-//            appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.PENDING);
         appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
         appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
         appointment.setAppointmentType(AppointmentType.CENTER);
-//            appointment.setLocation(appointment.getLocation());
         // ✅ Tìm slot vào ngày mai
         LocalDate tomorrow = appointment.getAppointmentDate().plusDays(1);
         List<Slot> slotsTomorrow = slotRepository.findBySlotDateAndSlotStatus(
@@ -1337,8 +1398,34 @@ public class AppointmentService {
         return createPaymentRequest;
     }
 
+    public List<AppointmentInfoForManagerDTO> getAppointmentToViewResult() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentInfoForManagerDTO(" +
+                "s.appointmentId, s.appointmentDate, s.appointmentStatus) " +
+                "FROM Appointment s " +
+                "WHERE s.appointmentStatus = :status";
 
-    private String generateRandomBankCode() {
+        TypedQuery<AppointmentInfoForManagerDTO> query = entityManager
+                .createQuery(jpql, AppointmentInfoForManagerDTO.class);
+
+        query.setParameter("status", AppointmentStatus.WAITING_MANAGER_APPROVAL);
+
+        return query.getResultList();
+    }
+    public List<AppointmentInfoForManagerDTO> getAppointmentToRefund() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentInfoForManagerDTO(" +
+                "s.appointmentId, s.appointmentDate, s.appointmentStatus) " +
+                "FROM Appointment s " +
+                "WHERE s.appointmentStatus = :status";
+
+        TypedQuery<AppointmentInfoForManagerDTO> query = entityManager
+                .createQuery(jpql, AppointmentInfoForManagerDTO.class);
+
+        query.setParameter("status", AppointmentStatus.REFUND);
+
+        return query.getResultList();
+    }
+
+    public static String generateRandomBankCode() {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         int length = 6;
         StringBuilder result = new StringBuilder();

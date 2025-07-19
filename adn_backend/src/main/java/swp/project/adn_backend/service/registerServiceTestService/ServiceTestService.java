@@ -208,10 +208,12 @@ public class ServiceTestService {
     public List<FullCivilServiceResponse> getCivilServices() {
         List<ServiceTest> services = serviceTestRepository.findAllByServiceType(ServiceType.CIVIL);
         List<FullCivilServiceResponse> responses = new ArrayList<>();
-
+        ServiceTestResponse serviceReq=null;
         for (ServiceTest s : services) {
             // Convert service entity to DTO
-            ServiceTestResponse serviceReq = serviceTestMapper.toServiceTestResponse(s);
+            if(s.isActive()){
+                serviceReq = serviceTestMapper.toServiceTestResponse(s);
+            }
             List<DiscountResponse> discountResponse=serviceTestMapper.toDiscountResponses(s.getDiscounts());
 
             // Convert price list
@@ -264,10 +266,11 @@ public class ServiceTestService {
 
 
 
+    @Transactional
     public void deleteServiceTest(long serviceId) {
         ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
-        serviceTestRepository.delete(serviceTest);
+        serviceTest.setActive(false);
     }
 
     public List<ServiceFeedbackInfoDTO> getServiceById(long serviceId) {

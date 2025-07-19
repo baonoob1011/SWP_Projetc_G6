@@ -5,17 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import swp.project.adn_backend.dto.InfoDTO.InvoiceDTO;
 import swp.project.adn_backend.dto.InfoDTO.PaymentInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.WalletInfoAmountDTO;
-import swp.project.adn_backend.dto.InfoDTO.WalletInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.WalletTransitionDTO;
+import swp.project.adn_backend.dto.InfoDTO.WalletTransitionInfoDTO;
 import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
 import swp.project.adn_backend.dto.request.payment.WalletRequest;
-import swp.project.adn_backend.entity.WalletTransaction;
-import swp.project.adn_backend.repository.InvoiceRepository;
 import swp.project.adn_backend.repository.WalletTransactionRepository;
 import swp.project.adn_backend.service.payment.CreatePaymentService;
-import swp.project.adn_backend.service.payment.InvoiceService;
 import swp.project.adn_backend.service.payment.PaymentService;
 import swp.project.adn_backend.service.payment.VNPayService;
 import swp.project.adn_backend.service.registerServiceTestService.AppointmentService;
@@ -51,6 +48,10 @@ public class WalletController {
     public ResponseEntity<List<PaymentInfoDTO>> getAllPayment(Authentication authentication) {
         return ResponseEntity.ok(paymentService.getAllPayment(authentication));
     }
+    @GetMapping("/get-all-wallet-transition")
+    public ResponseEntity<List<WalletTransitionDTO>> getWalletTransition(Authentication authentication) {
+        return ResponseEntity.ok(createPaymentService.getWalletTransition(authentication));
+    }
     @PostMapping("/payment-by-wallet")
     public ResponseEntity<CreatePaymentRequest> createPaymentByWallet(Authentication authentication,
                                                                       @RequestParam long appointmentId,
@@ -82,7 +83,7 @@ public class WalletController {
 
 
     @GetMapping("/vnpay-return")
-    public ResponseEntity<WalletInfoDTO> handleVNPayReturn(@RequestParam Map<String, String> params) {
+    public ResponseEntity<WalletTransitionInfoDTO> handleVNPayReturn(@RequestParam Map<String, String> params) {
         String vnpTxnRef = params.get("vnp_TxnRef");
         String responseCode = params.get("vnp_ResponseCode");
         String transactionStatus = params.get("vnp_TransactionStatus");
@@ -91,7 +92,7 @@ public class WalletController {
         }
         createPaymentService.successPaymentWallet(vnpTxnRef);
         return walletTransactionRepository.findByTxnRef(vnpTxnRef)
-                .map(Wallet -> ResponseEntity.ok(new WalletInfoDTO(Wallet)))
+                .map(Wallet -> ResponseEntity.ok(new WalletTransitionInfoDTO(Wallet)))
                 .orElse(ResponseEntity.status(404).body(null));
     }
 

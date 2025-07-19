@@ -247,6 +247,7 @@ public class SlotService {
         return fullSlotResponses;
     }
 
+    // collector and staff get
     public List<GetFullSlotResponse> getAllSlotStaff(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
