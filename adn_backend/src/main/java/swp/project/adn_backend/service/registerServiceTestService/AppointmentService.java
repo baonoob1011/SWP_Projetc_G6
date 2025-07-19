@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoForManagerDTO;
+import swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo;
 import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
 import swp.project.adn_backend.dto.request.payment.PaymentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
@@ -1205,6 +1207,7 @@ public class AppointmentService {
         return appointmentResponses;
     }
 
+    // Manager bấm nút này
     @Transactional
     public void appointmentRefund(long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
@@ -1214,21 +1217,7 @@ public class AppointmentService {
             appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
         }
         appointment.setAppointmentStatus(AppointmentStatus.REFUND);
-        Users users = appointment.getUsers();
-        for (Payment payment : appointment.getPayments()) {
-            if (payment.getGetPaymentStatus().equals(PaymentStatus.PAID)) {
-                payment.setPaymentStatus(PaymentStatus.REFUNDED);
-                users.getWallet().setBalance(users.getWallet().getBalance() + (long) payment.getAmount());
-                WalletTransaction walletTransaction=new WalletTransaction();
-                walletTransaction.setAmount((long)payment.getAmount());
-                walletTransaction.setTimestamp(LocalDateTime.now());
-                walletTransaction.setBankCode(generateRandomBankCode());
-                walletTransaction.setTransactionStatus(TransactionStatus.SUCCESS);
-                walletTransaction.setType(TransactionType.REFUND);
-                String txnRef = UUID.randomUUID().toString().replace("-", "").substring(0, 20); // max 20 ký tự
-                walletTransaction.setTxnRef(txnRef);
-            }
-        }
+
     }
 
     @Transactional
@@ -1409,8 +1398,34 @@ public class AppointmentService {
         return createPaymentRequest;
     }
 
+    public List<AppointmentInfoForManagerDTO> getAppointmentToViewResult() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentInfoForManagerDTO(" +
+                "s.appointmentId, s.appointmentDate, s.appointmentStatus) " +
+                "FROM Appointment s " +
+                "WHERE s.appointmentStatus = :status";
 
-    private String generateRandomBankCode() {
+        TypedQuery<AppointmentInfoForManagerDTO> query = entityManager
+                .createQuery(jpql, AppointmentInfoForManagerDTO.class);
+
+        query.setParameter("status", AppointmentStatus.WAITING_MANAGER_APPROVAL);
+
+        return query.getResultList();
+    }
+    public List<AppointmentInfoForManagerDTO> getAppointmentToRefund() {
+        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentInfoForManagerDTO(" +
+                "s.appointmentId, s.appointmentDate, s.appointmentStatus) " +
+                "FROM Appointment s " +
+                "WHERE s.appointmentStatus = :status";
+
+        TypedQuery<AppointmentInfoForManagerDTO> query = entityManager
+                .createQuery(jpql, AppointmentInfoForManagerDTO.class);
+
+        query.setParameter("status", AppointmentStatus.REFUND);
+
+        return query.getResultList();
+    }
+
+    public static String generateRandomBankCode() {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         int length = 6;
         StringBuilder result = new StringBuilder();

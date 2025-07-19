@@ -58,6 +58,11 @@ public class PaymentController {
         paymentService.updatePaymentMethod(paymentId,paymentRequest);
         return ResponseEntity.ok("update payment method thành công");
     }
+    @PutMapping("/refund")
+    public ResponseEntity<String> walletRefund(@RequestParam long appointmentId) {
+        paymentService.walletRefund(appointmentId);
+        return ResponseEntity.ok("update payment method thành công");
+    }
 
     @PostMapping("/create")
     public ResponseEntity<String> createPayment(
@@ -65,10 +70,7 @@ public class PaymentController {
             @RequestParam long serviceId) {
 
         CreatePaymentRequest req = createPaymentService.createPayment(paymentId, serviceId);
-
-        // ép kiểu đúng: double -> long -> int
         int amount = Math.toIntExact((long) req.getAmount());
-
         String paymentUrl = vnPayService.createOrder(
                 amount,
                 req.getOrderInfo(),
@@ -115,6 +117,5 @@ public class PaymentController {
         List<PaymentInfoDTO> list = getPaymentService.getAllPayment(authentication);
         return ResponseEntity.ok(list);
     }
-//    @GetMapping("/return-order-payment")
-//    public
+
 }

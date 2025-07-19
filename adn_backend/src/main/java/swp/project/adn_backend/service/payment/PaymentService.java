@@ -14,14 +14,19 @@ import swp.project.adn_backend.dto.request.payment.PaymentRequest;
 import swp.project.adn_backend.entity.Appointment;
 import swp.project.adn_backend.entity.Payment;
 import swp.project.adn_backend.entity.Users;
-import swp.project.adn_backend.enums.ErrorCodeUser;
+import swp.project.adn_backend.entity.WalletTransaction;
+import swp.project.adn_backend.enums.*;
 import swp.project.adn_backend.exception.AppException;
 import swp.project.adn_backend.mapper.PaymentMapper;
 import swp.project.adn_backend.repository.AppointmentRepository;
 import swp.project.adn_backend.repository.PaymentRepository;
 import swp.project.adn_backend.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+
+import static swp.project.adn_backend.service.registerServiceTestService.AppointmentService.generateRandomBankCode;
 
 @Service
 public class PaymentService {
@@ -76,6 +81,25 @@ public class PaymentService {
 
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
 
+    } @Transactional
+    public void walletRefund(long appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+        Users users = appointment.getUsers();
+        for (Payment payment : appointment.getPayments()) {
+            if (payment.getGetPaymentStatus().equals(PaymentStatus.PAID)) {
+                payment.setPaymentStatus(PaymentStatus.REFUNDED);
+                users.getWallet().setBalance(users.getWallet().getBalance() + (long) payment.getAmount());
+                WalletTransaction walletTransaction=new WalletTransaction();
+                walletTransaction.setAmount((long)payment.getAmount());
+                walletTransaction.setTimestamp(LocalDateTime.now());
+                walletTransaction.setBankCode(generateRandomBankCode());
+                walletTransaction.setTransactionStatus(TransactionStatus.SUCCESS);
+                walletTransaction.setType(TransactionType.REFUND);
+                String txnRef = UUID.randomUUID().toString().replace("-", "").substring(0, 20); // max 20 ký tự
+                walletTransaction.setTxnRef(txnRef);
+            }
+        }
     }
 }
 

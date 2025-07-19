@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import swp.project.adn_backend.dto.GlobalRequest.BookAppointmentRequest;
 import swp.project.adn_backend.dto.GlobalRequest.CreateServiceRequest;
 import swp.project.adn_backend.dto.InfoDTO.AppointmentAtHomeInfoDTO;
+import swp.project.adn_backend.dto.InfoDTO.AppointmentInfoForManagerDTO;
 import swp.project.adn_backend.dto.request.appointment.AppointmentRequest;
 import swp.project.adn_backend.dto.request.roleRequest.PatientRequest;
 import swp.project.adn_backend.dto.request.roleRequest.UserRequest;
@@ -134,6 +135,14 @@ public class AppointmentController {
     public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResultForManager(Authentication authentication,
                                                                                          @RequestParam long appointmentId) {
         return ResponseEntity.ok(appointmentService.getAllAppointmentsResultForManager(authentication, appointmentId));
+    }
+    @GetMapping("/get-all-appointment-by-manager")
+    public ResponseEntity<List<AppointmentInfoForManagerDTO>> getAppointmentToViewResult() {
+        return ResponseEntity.ok(appointmentService.getAppointmentToViewResult());
+    }
+    @GetMapping("/get-all-appointment-by-manager-to-refund")
+    public ResponseEntity<List<AppointmentInfoForManagerDTO>> getAppointmentToRefund() {
+        return ResponseEntity.ok(appointmentService.getAppointmentToRefund());
     }
 
     //thêm staff vào appointment at home
