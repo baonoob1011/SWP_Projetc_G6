@@ -452,13 +452,14 @@ const AdministrativeServiceList = () => {
                         key={index}
                         className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group"
                       >
-                        <div className="flex flex-col lg:flex-row">
-                          {/* Image Section - Vertical on mobile, side on desktop */}
+
+                      <div className="flex flex-col lg:flex-row">
+                         {/* Image Section - Vertical on mobile, side on desktop */}
                           {service.serviceRequest.image && (
                             <div className="lg:w-2/5 lg:flex-shrink-0 relative overflow-hidden">
                               <img
                                 src={`data:image/*;base64,${service.serviceRequest.image}`}
-                                className="w-64 h-64 lg:h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                className="w-full h-64 lg:h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 alt={service.serviceRequest.serviceName}
                               />
                               <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-black/10 to-transparent"></div>
