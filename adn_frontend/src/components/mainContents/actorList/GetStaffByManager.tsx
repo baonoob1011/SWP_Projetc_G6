@@ -1,25 +1,15 @@
-import {
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-} from '@mui/material';
-
+import { Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
 import Swal from 'sweetalert2';
-import styles from './GetStaffByManager.module.css';
+import './styles/swal-custom.css';
 
 type Staff = {
   idCard: string;
   dateOfBirth: string;
   address: string;
   gender: string;
-  staffId: string;
+  staffId: number;
   fullName: string;
   email: string;
   enabled: boolean;
@@ -30,14 +20,11 @@ type Staff = {
 
 function GetStaffByManager() {
   const [account, setAccount] = useState<Staff[]>([]);
-  const [isManager, setIsManager] = useState(true);
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     const token = localStorage.getItem('token');
-    setLoading(true);
     try {
       const res = await fetch('http://localhost:8080/api/staff/get-all-staff', {
         method: 'GET',
@@ -49,190 +36,177 @@ function GetStaffByManager() {
       }
       const data = await res.json();
       setAccount(data);
-      setError(null);
     } catch (error) {
       console.log(error);
       setError('Không thể lấy dữ liệu');
-    } finally {
-      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    setIsManager(localStorage.getItem('role') === 'MANAGER');
-  }, []);
 
   useEffect(() => {
     fetchData();
   }, []);
 
   const handleDelete = async (phone: string, fullName: string) => {
+    const result = await Swal.fire({
+      title: 'Xác nhận xóa?',
+      text: `Bạn có chắc chắn muốn xóa nhân viên có tên là ${fullName}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Xóa',
+      cancelButtonText: 'Hủy',
+      background: '#fff',
+      customClass: {
+        container: 'custom-swal-container',
+        popup: 'custom-swal-popup',
+        title: 'custom-swal-title',
+        htmlContainer: 'custom-swal-html',
+        confirmButton: 'custom-swal-confirm',
+        cancelButton: 'custom-swal-cancel',
+      },
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+
     try {
-      const result = await Swal.fire({
-        title: 'Xác nhận xóa?',
-        text: `Bạn có chắc chắn muốn xóa nhân viên ${fullName}?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#1976d2',
-        confirmButtonText: 'Xóa',
-        cancelButtonText: 'Hủy',
-      });
-
-      if (!result.isConfirmed) {
-        return;
-      }
-
-      const token = localStorage.getItem('token');
       const res = await fetch(
-        `http://localhost:8080/api/manager/delete-staff?phone=${phone}`,
+        `http://localhost:8080/api/admin/delete-staff?phone=${phone}`,
         {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       if (!res.ok) {
-        throw new Error('Không thể xóa nhân viên');
+        setError('Không thể xóa nhân viên');
+        return;
       }
-
       showSuccessAlert('Thành công', 'Xóa nhân viên thành công');
       fetchData();
     } catch (error) {
-      console.error(error);
-      showErrorSnackbar(
-        error instanceof Error ? error.message : 'Mất kết nối với hệ thống'
-      );
+      console.log(error);
+      setError('Mất kết nối với hệ thống');
     }
   };
 
-  if (!isManager) {
-    return;
-  }
-
   const searchByphone = account.filter((user) => user.phone.includes(search));
 
-  if (loading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loadingContainer}>Đang tải dữ liệu...</div>
-      </div>
-    );
-  }
-
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <h1 className={styles.title}>Quản Lý Nhân Viên</h1>
-        <p className={styles.subtitle}>Danh sách nhân viên trong hệ thống</p>
+    <div className="bg-white">
+      {error && showErrorSnackbar(error)}
+
+      {/* Search Input */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Nhập số điện thoại"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
       </div>
 
-      {/* Stats Cards */}
-      <div className={styles.statsContainer}>
-        <div className={styles.statCard}>
-          <h2 className={styles.statNumber}>{account.length}</h2>
-          <p className={styles.statLabel}>Tổng nhân viên</p>
-        </div>
-        <div className={styles.statCard}>
-          <h2 className={styles.statNumber}>
-            {account.filter((staff) => staff.enabled).length}
-          </h2>
-          <p className={styles.statLabel}>Đang hoạt động</p>
-        </div>
-        <div className={styles.statCard}>
-          <h2 className={styles.statNumber}>{searchByphone.length}</h2>
-          <p className={styles.statLabel}>Kết quả tìm kiếm</p>
-        </div>
+      {/* Table */}
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                ID
+              </th>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                Họ tên
+              </th>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                CCCD
+              </th>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                Ngày sinh
+              </th>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                Giới tính
+              </th>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                Email
+              </th>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                SĐT
+              </th>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                Địa chỉ
+              </th>
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-600">
+                Hành động
+              </th>
+            </tr>
+          </thead>
+
+          <tbody className="divide-y divide-gray-200">
+            {searchByphone.map((user, index) => (
+              <tr key={index} className="hover:bg-gray-50">
+                <td className="px-2 py-3 text-sm text-blue-600 font-medium border-r border-gray-200">
+                  #{String(index + 1).padStart(4, '0')}
+                </td>
+                <td className="px-2 py-3 text-sm text-gray-800 border-r border-gray-200 w-48">
+                  {user.fullName}
+                </td>
+                <td className="px-2 py-3 text-sm text-gray-600 border-r border-gray-200">
+                  {user.idCard}
+                </td>
+                <td className="px-2 py-3 text-sm text-gray-600 border-r border-gray-200 w-32">
+                  {user.dateOfBirth}
+                </td>
+                <td className="px-2 py-3 text-sm text-gray-600 border-r border-gray-200">
+                  {user.gender}
+                </td>
+                <td className="px-2 py-3 text-sm text-gray-600 border-r border-gray-200">
+                  {user.email}
+                </td>
+                <td className="px-2 py-3 text-sm text-gray-600 border-r border-gray-200">
+                  {user.phone}
+                </td>
+                <td className="px-2 py-3 text-sm text-gray-600 border-r border-gray-200">
+                  {user.address}
+                </td>
+                <td className="px-2 py-3">
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleDelete(user.phone, user.fullName)}
+                      className="p-1 text-red-500 hover:bg-red-50 rounded border border-red-200 hover:border-red-300 transition-colors"
+                      title="Xóa nhân viên"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+            {searchByphone.length === 0 && (
+              <tr>
+                <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
+                  Không tìm thấy thông tin nhân viên nào
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
-      {/* Error Message */}
-      {error && <div className={styles.errorMessage}>{error}</div>}
-
-      {/* Table Card */}
-      <div className={styles.tableCard}>
-        {/* Search Section */}
-        <div className={styles.searchContainer}>
-          <TextField
-            label="Tìm kiếm theo số điện thoại"
-            variant="outlined"
-            size="small"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className={styles.searchField}
-            placeholder="Nhập số điện thoại để tìm kiếm..."
-          />
-        </div>
-
-        {/* Table */}
-        <TableContainer className={styles.tableContainer}>
-          <Table className={styles.table}>
-            <TableHead className={styles.tableHead}>
-              <TableRow>
-                <TableCell className={styles.headerCell}>STT</TableCell>
-                <TableCell className={styles.headerCell}>Họ tên</TableCell>
-                <TableCell className={styles.headerCell}>CCCD</TableCell>
-                <TableCell className={styles.headerCell}>Ngày sinh</TableCell>
-                <TableCell className={styles.headerCell}>Giới tính</TableCell>
-                <TableCell className={styles.headerCell}>Email</TableCell>
-                <TableCell className={styles.headerCell}>SĐT</TableCell>
-                <TableCell className={styles.headerCell}>Địa chỉ</TableCell>
-                <TableCell className={styles.headerCell}>Thao tác</TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {searchByphone.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={9} className={styles.noData}>
-                    {search
-                      ? 'Không tìm thấy nhân viên với số điện thoại này'
-                      : 'Chưa có nhân viên nào'}
-                  </TableCell>
-                </TableRow>
-              ) : (
-                searchByphone.map((user, index) => (
-                  <TableRow key={index} className={styles.bodyRow}>
-                    <TableCell className={styles.bodyCell}>
-                      {index + 1}
-                    </TableCell>
-                    <TableCell className={styles.bodyCell}>
-                      {user.fullName}
-                    </TableCell>
-                    <TableCell className={styles.bodyCell}>
-                      {user.idCard}
-                    </TableCell>
-                    <TableCell className={styles.bodyCell}>
-                      {user.dateOfBirth}
-                    </TableCell>
-                    <TableCell className={styles.bodyCell}>
-                      {user.gender}
-                    </TableCell>
-                    <TableCell className={styles.bodyCell}>
-                      {user.email}
-                    </TableCell>
-                    <TableCell className={styles.bodyCell}>
-                      {user.phone}
-                    </TableCell>
-                    <TableCell className={styles.bodyCell}>
-                      {user.address}
-                    </TableCell>
-                    <TableCell className={styles.actionCell}>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        className={styles.deleteButton}
-                        onClick={() => handleDelete(user.phone, user.fullName)}
-                      >
-                        Xóa
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+      {/* Add Staff Button */}
+      <div className="mt-4">
+        <button
+          onClick={() => {
+            window.location.href = '/signup-staff';
+          }}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 transition-colors"
+        >
+          <Plus size={20} />
+          Thêm nhân viên
+        </button>
       </div>
     </div>
   );

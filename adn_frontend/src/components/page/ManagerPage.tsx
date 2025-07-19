@@ -2,16 +2,13 @@ import React, { useEffect, useState } from 'react';
 import {
   Menu,
   X,
-  //   Settings,
   LogOut,
-  // Users,
-  // BarChart3,
-  // FileText,
   Shield,
   List,
   ShoppingBag,
   BaggageClaim,
   Newspaper,
+  Check,
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
@@ -76,7 +73,14 @@ const ManagerPage = () => {
   }, []);
 
   const menuItems = [
-    { id: 'dashboard', icon: ArrowBack, label: 'Home', path: '' },
+    { id: 'dashboard', icon: ArrowBack, label: 'Trang chủ', path: '' },
+
+    {
+      id: 'result',
+      icon: Check,
+      label: 'Duyệt kết quả',
+      path: 'manager/checkResult',
+    },
     { id: 'data', icon: List, label: 'Danh sách', path: 'manager/data' },
     {
       id: 'location',
@@ -138,6 +142,7 @@ const ManagerPage = () => {
       localStorage.removeItem('username');
       localStorage.removeItem('fullName');
       localStorage.removeItem('role');
+      localStorage.removeItem('avatarUrl');
       setFullName('');
 
       window.location.href = '/login';

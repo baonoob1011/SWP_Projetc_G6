@@ -458,7 +458,8 @@ const Booking = () => {
                     {item.payments.map(
                       (payment) =>
                         (!payment.getPaymentStatus ||
-                          payment.getPaymentStatus === 'PENDING') && (
+                          payment.getPaymentStatus === 'PENDING') &&
+                        item.show.appointmentType === 'CENTER' && (
                           <div key={payment.paymentId} className="mb-4">
                             <p className="text-sm text-gray-500 mb-2">
                               Đổi phương thức thanh toán
