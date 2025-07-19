@@ -195,12 +195,13 @@ public class AppointmentController {
         return ResponseEntity.ok("update thanh cong");
     }
 
+    //manager update xác nhận kết quả
     @PutMapping("/update-complete-appointment-by-manager")
     public ResponseEntity<String> updateAppointmentStatusByManager(@RequestParam long appointmentId) {
         appointmentService.updateAppointmentStatusByManager(appointmentId);
         return ResponseEntity.ok("update thanh cong");
     }
-
+    //
     @PutMapping("/appointment-refund")
     public ResponseEntity<String> appointmentRefund(@RequestParam long appointmentId) {
         appointmentService.appointmentRefund(appointmentId);
