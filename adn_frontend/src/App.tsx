@@ -129,7 +129,7 @@ function App() {
   const isManagerLayoutRoute = [
     '/manager/data',
     '/manager/services',
-    'manager/checkResult',
+    '/manager/checkResult',
     '/manager/create-services',
     '/manager/staff',
     '/manager/user',
