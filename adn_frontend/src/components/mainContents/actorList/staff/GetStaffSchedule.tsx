@@ -29,10 +29,10 @@ const StaffSlot = () => {
     switch (status) {
       case 'BOOKED':
         return 'Đã đặt';
-      case 'COMPLETE':
+      case 'COMPLETED':
         return 'Hoàn thành';
       default:
-        return status;
+        return 'Trống';
     }
   };
 
@@ -40,7 +40,7 @@ const StaffSlot = () => {
     switch (status) {
       case 'BOOKED':
         return 'orange'; // hoặc '#FFA500'
-      case 'COMPLETE':
+      case 'COMPLETED':
         return 'green'; // hoặc '#28a745'
       default:
         return 'black';
@@ -137,7 +137,6 @@ const StaffSlot = () => {
         padding: '20px',
       }}
     >
-      {/* Top Navigation */}
       <div
         style={{
           backgroundColor: 'white',

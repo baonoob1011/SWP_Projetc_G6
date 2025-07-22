@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
-import { Check, Delete } from '@mui/icons-material';
+import { NavLink, useParams } from 'react-router-dom';
+import { ArrowBack, Check, Delete } from '@mui/icons-material';
 import styles from './CheckAppointment.module.css';
 import Swal from 'sweetalert2';
 
@@ -291,6 +291,9 @@ const CollectSampleAtCenter = () => {
   }, []);
   return (
     <div className={styles.container}>
+      <NavLink to="/s-page/s-slot">
+        <ArrowBack></ArrowBack>
+      </NavLink>
       <div className={styles.header}>
         <h1 className={styles.title}>Kiểm tra lịch hẹn - Slot {slotId}</h1>
       </div>
