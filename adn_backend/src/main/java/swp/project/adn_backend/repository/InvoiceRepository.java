@@ -40,20 +40,6 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     );
 
     @Query(
-      value = "SELECT YEAR(pay_date) as year, MONTH(pay_date) as month, SUM(amount) as revenue " +
-              "FROM invoices " +
-              "WHERE pay_date BETWEEN :startDate AND :endDate " +
-              "AND transaction_status = 'SUCCESS' " +
-              "GROUP BY YEAR(pay_date), MONTH(pay_date) " +
-              "ORDER BY YEAR(pay_date), MONTH(pay_date)",
-      nativeQuery = true
-    )
-    List<Object[]> findMonthlyRevenueBetween(
-        @Param("startDate") LocalDateTime startDate,
-        @Param("endDate") LocalDateTime endDate
-    );
-
-    @Query(
       value = "SELECT YEAR(pay_date) as year, SUM(amount) as revenue " +
               "FROM invoices " +
               "WHERE pay_date BETWEEN :startDate AND :endDate " +
@@ -66,4 +52,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
         @Param("startDate") LocalDateTime startDate,
         @Param("endDate") LocalDateTime endDate
     );
+
+    @Query("SELECT SUM(i.amount) FROM Invoice i WHERE i.transactionStatus = 'SUCCESS' AND i.payDate BETWEEN :startDate AND :endDate")
+    Long sumRevenueBetween(@Param("startDate") java.time.LocalDateTime startDate, @Param("endDate") java.time.LocalDateTime endDate);
 }

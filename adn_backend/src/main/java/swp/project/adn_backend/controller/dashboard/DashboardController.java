@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import swp.project.adn_backend.dto.response.APIResponse;
 import swp.project.adn_backend.dto.response.DashboardResponse;
 import swp.project.adn_backend.dto.response.DailyRevenueResponse;
-import swp.project.adn_backend.dto.response.MonthlyRevenueResponse;
 import swp.project.adn_backend.dto.response.YearlyRevenueResponse;
 import swp.project.adn_backend.dto.response.ServiceRatingStatsResponse;
 import swp.project.adn_backend.dto.response.TotalRevenueResponse;
 import swp.project.adn_backend.dto.response.TotalUsersCompletedResponse;
 import swp.project.adn_backend.dto.response.TotalCancelledAppointmentsResponse;
 import swp.project.adn_backend.dto.response.AppointmentStatusPercentageResponse;
+import swp.project.adn_backend.dto.response.YearlyRevenueSummaryResponse;
 import swp.project.adn_backend.service.dashboard.DashboardService;
 import swp.project.adn_backend.repository.UserRepository;
 import swp.project.adn_backend.repository.AppointmentRepository;
@@ -67,18 +67,6 @@ public class DashboardController {
         }
     }
     
-    @GetMapping("/daily-revenue")
-    public ResponseEntity<DailyRevenueResponse> getDailyRevenue(
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
-        try {
-            DailyRevenueResponse response = dashboardService.getDailyRevenue(startDate, endDate);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
     @GetMapping("/service-ratings")
     public ResponseEntity<ServiceRatingStatsResponse> getServiceRatingStats() {
         try {
@@ -111,24 +99,10 @@ public class DashboardController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/monthly-revenue")
-    public ResponseEntity<MonthlyRevenueResponse> getMonthlyRevenue(
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
-        try {
-            MonthlyRevenueResponse response = dashboardService.getMonthlyRevenue(startDate, endDate);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
     @GetMapping("/yearly-revenue")
-    public ResponseEntity<YearlyRevenueResponse> getYearlyRevenue(
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
+    public ResponseEntity<YearlyRevenueSummaryResponse> getYearlyRevenue(@RequestParam int year) {
         try {
-            YearlyRevenueResponse response = dashboardService.getYearlyRevenue(startDate, endDate);
+            YearlyRevenueSummaryResponse response = dashboardService.getYearlyRevenueSummary(year);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
