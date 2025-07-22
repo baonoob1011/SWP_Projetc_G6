@@ -78,7 +78,7 @@ const CheckResult = () => {
                   </TableCell>
                   <TableCell>{item.appointmentStatus}</TableCell>
                   <TableCell>
-                    <NavLink to={`/checkResultById/${item.appointment}`}>
+                    <NavLink to={`/checkResultById/${item.appointmentId}`}>
                       Xem chi tiết
                     </NavLink>
                   </TableCell>
