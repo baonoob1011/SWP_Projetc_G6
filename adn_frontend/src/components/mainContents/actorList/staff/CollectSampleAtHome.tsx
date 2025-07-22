@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { CircularProgress } from '@mui/material';
-import { Check } from '@mui/icons-material';
-import { useParams } from 'react-router-dom';
+import { ArrowBack, Check } from '@mui/icons-material';
+import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from './CollectorSlot.module.css';
 import Swal from 'sweetalert2';
@@ -309,6 +309,9 @@ export const CollectSampleAtHome = () => {
 
   return (
     <div className={styles.container}>
+      <NavLink to="/s-page/selectorSlot">
+        <ArrowBack></ArrowBack>
+      </NavLink>
       <div className={styles.header}>
         <h1 className={styles.title}>Danh sách Slot & Lịch hẹn</h1>
       </div>
