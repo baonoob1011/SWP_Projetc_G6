@@ -916,7 +916,9 @@ public class AppointmentService {
         for (Appointment appointment : appointmentList) {
             if (appointment.getAppointmentStatus().equals(AppointmentStatus.PENDING) ||
                     appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED) ||
-                    appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
+                    appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED) ||
+                    appointment.getAppointmentStatus().equals(AppointmentStatus.WAITING_MANAGER_APPROVAL)
+            ) {
                 if (appointment.getAppointmentType().equals(AppointmentType.CENTER)) {
                     ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
                     List<StaffAppointmentResponse> staff = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
@@ -1083,15 +1085,23 @@ public class AppointmentService {
         return results;
     }
     // manager lay ra de xac nhan
+    @Transactional
     public List<AllAppointmentResult> getAllAppointmentsResultForManager(Authentication authentication, long appointmentId) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
 
         Users Manager = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
-        if (!Manager.getRoles().equals(Roles.MANAGER.name())) {
+        System.out.println("getRoles: " + Manager.getRoles());
+        System.out.println("getRoles.toString(): " + Manager.getRoles().toString());
+        System.out.println("enum name: " + Roles.MANAGER.name());
+        System.out.println("equals: " + Manager.getRoles().equals(Roles.MANAGER.name()));
+
+
+        if (!Manager.getRoles().contains(Roles.MANAGER.name())) {
             throw new RuntimeException("Chỉ Có Manager mới có quyền xem");
         }
+
 
         List<Appointment> appointments = appointmentRepository.findAll();
 
@@ -1142,6 +1152,7 @@ public class AppointmentService {
         return results;
     }
 
+    @Transactional
     public void updateAppointmentStatusByManager(long appointmentId){
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));

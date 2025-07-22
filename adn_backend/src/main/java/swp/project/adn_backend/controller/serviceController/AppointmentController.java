@@ -131,6 +131,7 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getAllAppointmentsResult(authentication, appointmentId));
     }
 
+    // manager lấy kết quả ra xem rồi xác nhận
     @GetMapping("/get-all-result-by-manager")
     public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResultForManager(Authentication authentication,
                                                                                          @RequestParam long appointmentId) {
@@ -144,7 +145,6 @@ public class AppointmentController {
     public ResponseEntity<List<AppointmentInfoForManagerDTO>> getAppointmentToRefund() {
         return ResponseEntity.ok(appointmentService.getAppointmentToRefund());
     }
-
     //thêm staff vào appointment at home
     @PutMapping("/update-staff-to-appointment-at-home")
     public ResponseEntity<String> addStaffToAppointment(@RequestParam long staffId,
@@ -152,7 +152,6 @@ public class AppointmentController {
         appointmentService.addStaffToAppointment(staffId, appointmentId);
         return ResponseEntity.ok("add staff to appointment successful");
     }
-
     //thong bao sample bi loi
     @PutMapping("/update-note")
     public ResponseEntity<String> updateNote(@RequestBody AppointmentRequest appointmentRequest,
@@ -167,18 +166,6 @@ public class AppointmentController {
         return ResponseEntity.ok("cancel successful");
     }
 
-    @PutMapping("/confirm-appointment-at-center")
-    public ResponseEntity<UpdateAppointmentStatusResponse> updateAppointmentStatusAtCenter(@RequestParam long appointmentId,
-                                                                                           @RequestParam long userId,
-                                                                                           @RequestParam long slotId,
-                                                                                           @RequestParam long serviceId,
-                                                                                           @RequestParam long locationId) {
-        return ResponseEntity.ok(appointmentService.ConfirmAppointmentAtCenter(appointmentId,
-                userId,
-                slotId,
-                serviceId,
-                locationId));
-    }
 
     @PutMapping("/confirm-appointment-at-home")
     public ResponseEntity<UpdateAppointmentStatusResponse> updateAppointmentStatusAtHome(@RequestParam long appointmentId,

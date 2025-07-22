@@ -81,7 +81,9 @@ public class PaymentService {
 
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
 
-    } @Transactional
+    }
+
+    @Transactional
     public void walletRefund(long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
@@ -90,8 +92,8 @@ public class PaymentService {
             if (payment.getGetPaymentStatus().equals(PaymentStatus.PAID)) {
                 payment.setPaymentStatus(PaymentStatus.REFUNDED);
                 users.getWallet().setBalance(users.getWallet().getBalance() + (long) payment.getAmount());
-                WalletTransaction walletTransaction=new WalletTransaction();
-                walletTransaction.setAmount((long)payment.getAmount());
+                WalletTransaction walletTransaction = new WalletTransaction();
+                walletTransaction.setAmount((long) payment.getAmount());
                 walletTransaction.setTimestamp(LocalDateTime.now());
                 walletTransaction.setBankCode(generateRandomBankCode());
                 walletTransaction.setTransactionStatus(TransactionStatus.SUCCESS);
