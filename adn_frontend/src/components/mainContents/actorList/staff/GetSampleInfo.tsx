@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from './GetSampleInfo.module.css';
 import Swal from 'sweetalert2';
@@ -16,7 +16,7 @@ const GetSampleInfo = () => {
   const { appointmentId } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [samples, setSamples] = useState<any[]>([]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const [result, setResult] = useState<Result>({
   //   locusName: '',
@@ -51,29 +51,29 @@ const GetSampleInfo = () => {
       console.log(error);
     }
   };
-  const handleBookingAgain = async () => {
-    try {
-      const res = await fetch(
-        `http://localhost:8080/api/appointment/appointment-refund?appointmentId=${appointmentId}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-          body: JSON.stringify({}),
-        }
-      );
-      if (!res.ok) {
-        toast.warning('Ko thể thực hiện');
-      } else {
-        toast.success('thành công');
-        navigate('/s-page/labCheckSample');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleBookingAgain = async () => {
+  //   try {
+  //     const res = await fetch(
+  //       `http://localhost:8080/api/appointment/appointment-refund?appointmentId=${appointmentId}`,
+  //       {
+  //         method: 'PUT',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           Authorization: `Bearer ${localStorage.getItem('token')}`,
+  //         },
+  //         body: JSON.stringify({}),
+  //       }
+  //     );
+  //     if (!res.ok) {
+  //       toast.warning('Ko thể thực hiện');
+  //     } else {
+  //       toast.success('thành công');
+  //       navigate('/s-page/labCheckSample');
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   // const handleUpdate = async (sampleId: string, sampleStatus: string) => {
   //   try {
   //     const res = await fetch(
@@ -243,7 +243,7 @@ const GetSampleInfo = () => {
                           patientId: item.patientSampleResponse.patientId,
                         }}
                       >
-                        Ghi kết quả
+                        Nhập giá trị
                       </NavLink>
                     </td>
                   </tr>
@@ -272,26 +272,6 @@ const GetSampleInfo = () => {
               className={styles.submitButton}
             >
               Gửi kết quả
-            </button>
-            <button
-              type="button"
-              onClick={async () => {
-                const result = await Swal.fire({
-                  title: 'Xác nhận hoàn trả?',
-                  text: 'Bạn có chắc muốn hoàn trả lịch hẹn này?',
-                  icon: 'warning',
-                  showCancelButton: true,
-                  confirmButtonText: 'Hoàn trả',
-                  cancelButtonText: 'Hủy',
-                });
-
-                if (result.isConfirmed) {
-                  handleBookingAgain(); // Gọi hàm khi người dùng xác nhận
-                }
-              }}
-              className={styles.submitButton}
-            >
-              Hoàn trả
             </button>
           </div>
         </>

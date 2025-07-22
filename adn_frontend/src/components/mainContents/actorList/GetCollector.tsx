@@ -21,7 +21,7 @@ function GetCollector() {
   const [account, setAccount] = useState<Staff[]>([]);
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
-
+  const role = localStorage.getItem('role');
   const fetchData = async () => {
     const token = localStorage.getItem('token');
     try {
@@ -198,17 +198,19 @@ function GetCollector() {
       </div>
 
       {/* Add Collector Button */}
-      <div className="mt-4">
-        <button
-          onClick={() => {
-            window.location.href = '/signup-collector';
-          }}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 transition-colors"
-        >
-          <Plus size={20} />
-          Thêm thông tin Nhân viên thu mẫu
-        </button>
-      </div>
+      {role === 'ADMIN' ? (
+        <div className="mt-4">
+          <button
+            onClick={() => {
+              window.location.href = '/signup-collector';
+            }}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 transition-colors"
+          >
+            <Plus size={20} />
+            Thêm thông tin Nhân viên thu mẫu
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

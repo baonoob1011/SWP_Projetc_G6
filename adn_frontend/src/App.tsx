@@ -593,7 +593,7 @@ function App() {
                   }
                 />
               </Route>
-              <Route
+              {/* <Route
                 path="/signup-staff"
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
@@ -640,7 +640,7 @@ function App() {
                     <SignUpStaffAtHome />
                   </ProtectedRoute>
                 }
-              />
+              /> */}
               <Route
                 path="manager/checkResult"
                 element={

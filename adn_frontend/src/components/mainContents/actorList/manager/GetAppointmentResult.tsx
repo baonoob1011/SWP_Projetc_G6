@@ -316,6 +316,52 @@ const GetAllResultByManager = () => {
             </div>
           </div>
         ))}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '30px',
+          marginTop: '24px',
+          flexWrap: 'wrap',
+        }}
+      >
+        <button
+          type="button"
+          onClick={async () => {
+            const result = await Swal.fire({
+              title: 'Xác nhận gửi kết quả?',
+              text: 'Bạn có chắc muốn gửi kết quả xét nghiệm này?',
+              icon: 'question',
+              showCancelButton: true,
+              confirmButtonText: 'Gửi',
+              cancelButtonText: 'Hủy',
+            });
+
+            if (result.isConfirmed) {
+              handleResult();
+            }
+          }}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#2c3e50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            transition: 'background-color 0.3s ease',
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = '#1a242f';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = '#2c3e50';
+          }}
+        >
+          Gửi kết quả
+        </button>
+      </div>
       {isResult
         .filter(
           (item) =>
@@ -324,26 +370,6 @@ const GetAllResultByManager = () => {
         .map((item, index) => (
           <ExportResultPDF key={index} item={item} />
         ))}
-      <button
-        type="button"
-        onClick={async () => {
-          const result = await Swal.fire({
-            title: 'Xác nhận gửi kết quả?',
-            text: 'Bạn có chắc muốn gửi kết quả xét nghiệm này?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Gửi',
-            cancelButtonText: 'Hủy',
-          });
-
-          if (result.isConfirmed) {
-            handleResult(); // Gọi hàm gửi kết quả khi người dùng xác nhận
-          }
-        }}
-        className={styles.submitButton}
-      >
-        Gửi kết quả
-      </button>
     </div>
   );
 };

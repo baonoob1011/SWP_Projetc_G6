@@ -21,11 +21,21 @@ interface RevenueStats {
     revenue: number;
   }[];
 }
+interface YearRevenueStats {
+  year: number;
+  totalRevenue: number;
+  monthlyRevenues: {
+    month: number;
+    revenue: number;
+  }[];
+}
 
 const RevenueDashboard = () => {
   const [revenue, setRevenue] = useState<RevenueStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [yearRevenue, setYearRevenue] = useState<YearRevenueStats | null>(null);
+  const [year, setYear] = useState(new Date().getFullYear());
 
   // === Ngày lọc ===
   const [startDate, setStartDate] = useState<string>('');
@@ -63,10 +73,50 @@ const RevenueDashboard = () => {
       setLoading(false);
     }
   };
+  const fetchYearRevenue = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await fetch(
+        `http://localhost:8080/api/dashboard/yearly-revenue?year=${year}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 401) throw new Error('Token hết hạn.');
+        if (response.status === 403)
+          throw new Error('Không có quyền truy cập.');
+        if (response.status === 404) throw new Error('API không tồn tại.');
+        throw new Error(`Lỗi server: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setYearRevenue(data);
+    } catch (err: any) {
+      setError(err.message || 'Lỗi không xác định');
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchYearRevenue();
+  }, [year]);
 
   useEffect(() => {
     fetchRevenue();
   }, [startDate, endDate]); // cập nhật khi thay đổi ngày
+  const monthlyChartData =
+    yearRevenue?.monthlyRevenues.map((item) => ({
+      name: `Tháng ${item.month}`,
+      value: item.revenue,
+    })) || [];
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -136,28 +186,6 @@ const RevenueDashboard = () => {
       0
     ) || 0;
 
-  // Header cards with colored backgrounds (matching Stats component)
-  // const headerCards = [
-  //   {
-  //     label: 'Tổng doanh thu',
-  //     value: revenue?.totalRevenue || 0,
-  //     icon: FaMoneyBill,
-  //     bgColor: 'bg-cyan-400',
-  //   },
-  //   {
-  //     label: 'Trung bình/ngày',
-  //     value: averageRevenue,
-  //     icon: TrendingUp,
-  //     bgColor: 'bg-green-400',
-  //   },
-  //   {
-  //     label: 'Cao nhất/ngày',
-  //     value: highestDayRevenue,
-  //     icon: DollarSign,
-  //     bgColor: 'bg-orange-400',
-  //   },
-  // ];
-
   // Main revenue stats with circular progress indicators
   const mainStats = [
     {
@@ -194,6 +222,50 @@ const RevenueDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 ml-10 mt-10">
+      {/* Chart - Doanh thu theo tháng */}
+      <div className="bg-white rounded-2xl p-6 shadow-sm mt-8">
+        <div className="flex items-center mb-6">
+          <BarChart3 className="text-green-500 mr-2" />
+          <h3 className="text-lg font-semibold text-gray-800">
+            Biểu đồ doanh thu theo tháng ({year})
+          </h3>
+          <select
+            className="ml-auto border border-gray-300 rounded px-3 py-1"
+            value={year}
+            onChange={(e) => setYear(Number(e.target.value))}
+          >
+            {Array.from({ length: 5 }).map((_, i) => {
+              const y = new Date().getFullYear() - i;
+              return (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+
+        <ResponsiveContainer width="100%" height={350}>
+          <BarChart data={monthlyChartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(1)}K`} />
+            <Tooltip
+              formatter={(value) => [
+                formatCurrencyTooltip(Number(value)),
+                'Doanh Thu',
+              ]}
+            />
+            <Bar
+              dataKey="value"
+              fill="#10b981"
+              radius={[8, 8, 0, 0]}
+              maxBarSize={80}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
       {/* Header Section */}
       <div className="bg-[#116AEF] rounded-3xl p-8 mb-6 relative overflow-hidden">
         {/* Decorative elements */}

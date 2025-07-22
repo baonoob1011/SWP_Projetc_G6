@@ -23,6 +23,7 @@ import Booking from '../services/Booking';
 // import GetAllResult from '../feature/GetAllResult';
 import GetKitDeliveryStatus from '../feature/AppointmentStatus';
 import BookingHistory from '../services/BookingHistory';
+import TransactionTable from './user/PaymentHistory';
 
 type OldProfile = {
   fullName: string;
@@ -48,9 +49,13 @@ const NewProfile = () => {
   const [showBalance, setShowBalance] = useState(false);
 
   const [activeTab, setActiveTab] = useState<
-    'profile' | 'changePassword' | 'appointment' | 'follow' | 'history'
+    | 'profile'
+    | 'changePassword'
+    | 'appointment'
+    | 'follow'
+    | 'history'
+    | 'payment'
   >('appointment');
-
   useEffect(() => {
     const reload = () => {
       fetchData(); // reload profile
@@ -220,6 +225,12 @@ const NewProfile = () => {
     {
       id: 'history',
       label: 'Lịch sử đơn hàng',
+      icon: History,
+      color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
+    },
+    {
+      id: 'payment',
+      label: 'Lịch sử giao dịch',
       icon: History,
       color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
     },
@@ -532,7 +543,7 @@ const NewProfile = () => {
                   <div className="relative">
                     <h2 className="text-2xl font-bold text-white">Lịch sử</h2>
                     <p className="text-purple-100 mt-2">
-                      Theo dõi các giao dịch và hoạt động trước đây
+                      Theo dõi các đơn hàng trước đây
                     </p>
                   </div>
                 </div>
@@ -541,12 +552,25 @@ const NewProfile = () => {
                 </div>
               </div>
             )}
-            {/* Enhanced History Tab */}
+            {activeTab === 'payment' && (
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl overflow-hidden">
+                <div className="relative px-8 py-6 bg-gradient-to-r from-blue-500 to-indigo-600">
+                  <div className="absolute inset-0 bg-black/10"></div>
+                  <div className="relative">
+                    <h2 className="text-2xl font-bold text-white">Lịch sử</h2>
+                    <p className="text-purple-100 mt-2">
+                      Theo dõi các giao dịch động trước đây
+                    </p>
+                  </div>
+                </div>
+                <div className="p-8">
+                  <TransactionTable />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-
-      {/* <GetAllResult /> */}
     </div>
   );
 };

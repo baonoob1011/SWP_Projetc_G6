@@ -216,7 +216,7 @@ const SignUpCollector = () => {
     }
   };
   const handleBack = () => {
-    navigate('/manager/collector');
+    navigate('/admin/collector');
   };
 
   return (

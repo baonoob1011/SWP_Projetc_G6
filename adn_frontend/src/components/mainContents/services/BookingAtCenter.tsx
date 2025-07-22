@@ -317,7 +317,7 @@ const BookingAtCenter = () => {
       if (res.status === 401) {
         toast.error('Phiên đăng nhập đã hết hạn');
         localStorage.clear();
-        navigate('/login');
+        window.location.href = '/u-profile';
         return;
       }
 

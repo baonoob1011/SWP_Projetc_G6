@@ -215,7 +215,7 @@ const SignUpCashier = () => {
     }
   };
   const handleBack = () => {
-    navigate('/manager/cashier');
+    navigate('/admin/cashier');
   };
 
   return (

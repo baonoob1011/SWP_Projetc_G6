@@ -157,6 +157,7 @@ const Booking = () => {
       } else {
         toast.success('Thanh toán thành công!');
         fetchData();
+        window.location.href = '/u-profile';
         return true;
       }
     } catch (error) {
@@ -488,7 +489,10 @@ const Booking = () => {
                     {/* Note và Tên nhân viên */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        {item.show?.note && item.show.note.length > 0 && (
+                        {item.show?.note &&
+                        item.show.note.length > 0 &&
+                        item.payments.length > 0 &&
+                        item.payments[0]?.getPaymentStatus === 'PAID' ? (
                           <>
                             <p className="text-sm text-gray-500">
                               Trạng thái đơn đăng ký
@@ -497,7 +501,7 @@ const Booking = () => {
                               {item.show.note}
                             </p>
                           </>
-                        )}
+                        ) : null}
                       </div>
 
                       {item.staff && item.staff.length > 0 && (

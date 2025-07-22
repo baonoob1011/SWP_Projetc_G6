@@ -217,7 +217,7 @@ const SignUpConsultation = () => {
     }
   };
   const handleBack = () => {
-    navigate('/manager/consultant');
+    navigate('/admin/consultant');
   };
 
   return (

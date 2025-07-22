@@ -157,7 +157,7 @@ const Stats = () => {
       period: 'this month',
     },
     {
-      label: 'người đã đăng ký ít nhất 1 dịch vụ',
+      label: 'số người đã đăng ký ít nhất 1 dịch vụ',
       value: stats?.totalUsersRegisteredService,
       icon: FileText,
       circleColor: 'border-yellow-400',
@@ -254,8 +254,12 @@ const Stats = () => {
       {/* Main Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
         {mainStats.map((stat, idx) => (
-          <div key={idx} className="bg-white rounded-2xl p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
+          <div
+            key={idx}
+            className="relative bg-white rounded-2xl p-6 pt-20 shadow-sm"
+          >
+            {/* ICON ở góc trái trên */}
+            <div className="absolute top-4 left-4">
               <div
                 className={`w-16 h-16 rounded-full border-4 ${stat.circleColor} flex items-center justify-center`}
               >
@@ -265,12 +269,14 @@ const Stats = () => {
                   <stat.icon className={`w-6 h-6 ${stat.iconColor}`} />
                 </div>
               </div>
-              <div className="ml-4">
-                <div className="text-4xl font-bold text-gray-900 mb-2">
-                  {stat.value?.toLocaleString() || 0}
-                </div>
-                <div className="text-gray-600 text-sm mb-3">{stat.label}</div>
+            </div>
+
+            {/* Nội dung thông tin */}
+            <div className="pl-0">
+              <div className="text-4xl font-bold text-gray-900 mb-2">
+                {stat.value?.toLocaleString() || 0}
               </div>
+              <div className="text-gray-600 text-sm">{stat.label}</div>
             </div>
           </div>
         ))}

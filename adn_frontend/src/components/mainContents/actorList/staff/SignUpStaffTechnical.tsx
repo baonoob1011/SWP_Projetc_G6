@@ -186,7 +186,7 @@ const SignUpStaffTechnical = () => {
     }
   };
   const handleBack = () => {
-    navigate('/manager/technical');
+    navigate('/admin/technical');
   };
 
   return (

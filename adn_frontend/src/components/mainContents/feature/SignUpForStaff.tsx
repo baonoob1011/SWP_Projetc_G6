@@ -215,7 +215,7 @@ const SignUpStaff = () => {
     }
   };
   const handleBack = () => {
-    navigate('/manager/staff');
+    navigate('/admin/staff');
   };
 
   return (
