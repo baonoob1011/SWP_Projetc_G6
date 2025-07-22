@@ -283,6 +283,9 @@ const CollectSampleAtCenter = () => {
       a.patientAppointmentResponse.patientStatus ===
       'Đã đăng ký lịch xét nghiệm'
   );
+  const hidden = appointments.map(
+    (a) => a.showAppointmentResponse.appointmentStatus !== 'COMPLETED'
+  );
   useEffect(() => {
     fetchAppointment();
   }, []);
@@ -306,9 +309,11 @@ const CollectSampleAtCenter = () => {
                 <th className={styles.tableHeaderCell}>Tên Kit</th>
                 <th className={styles.tableHeaderCell}>Quan hệ</th>
                 <th className={styles.tableHeaderCell}>Ghi chú</th>
-                <th className={styles.tableHeaderCell}>Vật xét nghiệm</th>
+                {hidden ? (
+                  <th className={styles.tableHeaderCell}>Vật xét nghiệm</th>
+                ) : null}
 
-                {sampleStatus ? (
+                {hidden && sampleStatus ? (
                   <th className={styles.tableHeaderCell}>Vắng mặt</th>
                 ) : null}
               </tr>
@@ -348,7 +353,7 @@ const CollectSampleAtCenter = () => {
                           {Translation(patient.patientStatus)}
                         </td>
 
-                        {
+                        {hidden ? (
                           <td className={styles.tableCell}>
                             {!isPaid ? (
                               <div className={styles.actionsContainer}>
@@ -384,8 +389,8 @@ const CollectSampleAtCenter = () => {
                               </span>
                             )}
                           </td>
-                        }
-                        {sampleStatus ? (
+                        ) : null}
+                        {hidden && sampleStatus ? (
                           <td>
                             <button
                               className={styles.submitBtn}

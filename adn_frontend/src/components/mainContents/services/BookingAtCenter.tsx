@@ -27,7 +27,7 @@ const BookingAtCenter = () => {
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const relationshipOption = [
     'Con',
-    'Ba',
+    'Cha',
     'Mẹ',
     'Ông',
     'Bà',
@@ -317,7 +317,6 @@ const BookingAtCenter = () => {
       if (res.status === 401) {
         toast.error('Phiên đăng nhập đã hết hạn');
         localStorage.clear();
-        window.location.href = '/u-profile';
         return;
       }
 
@@ -328,7 +327,7 @@ const BookingAtCenter = () => {
           severity: 'error',
         });
       } else {
-        navigate(`/u-profile`);
+        window.location.href = '/u-profile';
         toast.success('Đặt lịch thành công');
         setSelectedSlot('');
       }
@@ -569,10 +568,10 @@ const BookingAtCenter = () => {
                   disabled={selectedSlot === ''}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 >
-                  <option value="">-- Chọn giá --</option>
+                  <option value="">-- Chọn gói --</option>
                   {price.map((priceItem) => (
                     <option key={priceItem.priceId} value={priceItem.priceId}>
-                      {`${priceItem.price} : ${priceItem.time}`}
+                      {`${priceItem.price}VND - ${priceItem.time}`}
                     </option>
                   ))}
                 </select>
