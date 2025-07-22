@@ -17,7 +17,7 @@ const GetAllResultByManager = () => {
   const fetchData = async () => {
     try {
       const res = await fetch(
-        `http://localhost:8080/apiappointment/get-all-result-by-manager?appointmentId=${appointmentId}`,
+        `http://localhost:8080/api/appointment/get-all-result-by-manager?appointmentId=${appointmentId}`,
         {
           method: 'GET',
           headers: {
