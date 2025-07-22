@@ -16,7 +16,7 @@ const BookingAtHome = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const relationshipOption = [
     'Con',
-    'Ba',
+    'Cha',
     'Mẹ',
     'Ông',
     'Bà',
@@ -322,10 +322,10 @@ const BookingAtHome = () => {
                   onChange={handlePriceChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <option value="">-- Chọn gói giá --</option>
+                  <option value="">-- Chọn gói --</option>
                   {price.map((priceItem) => (
                     <option key={priceItem.priceId} value={priceItem.priceId}>
-                      {`${priceItem.price} - ${priceItem.time}`}
+                      {`${priceItem.price}VND - ${priceItem.time}`}
                     </option>
                   ))}
                 </select>

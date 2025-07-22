@@ -303,6 +303,9 @@ export const CollectSampleAtHome = () => {
       a.showAppointmentResponse?.appointmentType === 'HOME' &&
       a.showAppointmentResponse?.appointmentStatus === 'CONFIRMED'
   );
+  const hidden = appointments.map(
+    (a) => a.showAppointmentResponse?.appointmentStatus !== 'COMPLETED'
+  );
 
   return (
     <div className={styles.container}>
@@ -342,8 +345,14 @@ export const CollectSampleAtHome = () => {
                       <th className={styles.tableHeaderCell}>Ngày sinh</th>
                       <th className={styles.tableHeaderCell}>Giới tính</th>
                       <th className={styles.tableHeaderCell}>Quan hệ</th>
-                      <th className={styles.tableHeaderCell}>Thu mẫu</th>
-                      <th className={styles.tableHeaderCell}>Trạng thái Kit</th>
+                      {hidden ? (
+                        <th className={styles.tableHeaderCell}>Thu mẫu</th>
+                      ) : null}
+                      {hidden ? (
+                        <th className={styles.tableHeaderCell}>
+                          Trạng thái Kit
+                        </th>
+                      ) : null}
                     </tr>
                   </thead>
                   <tbody>
@@ -373,38 +382,40 @@ export const CollectSampleAtHome = () => {
                           <td className={styles.tableCell}>
                             {patient.relationship}
                           </td>
-                          <td className={styles.tableCell}>
-                            <div className={styles.inputGroup}>
-                              <select
-                                className={styles.sampleSelect}
-                                value={sampleType[key as any] || ''}
-                                onChange={(e) => handleSeletedSample(e, key)}
-                              >
-                                <option value="">Chọn vật xét nghiệm</option>
-                                {sampleTypes.map((type) => (
-                                  <option key={type} value={type}>
-                                    {type}
-                                  </option>
-                                ))}
-                              </select>
+                          {hidden ? (
+                            <td className={styles.tableCell}>
+                              <div className={styles.inputGroup}>
+                                <select
+                                  className={styles.sampleSelect}
+                                  value={sampleType[key as any] || ''}
+                                  onChange={(e) => handleSeletedSample(e, key)}
+                                >
+                                  <option value="">Chọn vật xét nghiệm</option>
+                                  {sampleTypes.map((type) => (
+                                    <option key={type} value={type}>
+                                      {type}
+                                    </option>
+                                  ))}
+                                </select>
 
-                              <button
-                                className={styles.submitBtn}
-                                onClick={() =>
-                                  handleSendSample(
-                                    patient.patientId,
-                                    serviceId,
-                                    appointmentId,
-                                    key
-                                  )
-                                }
-                              >
-                                <Check fontSize="small" />
-                              </button>
-                            </div>
-                          </td>
+                                <button
+                                  className={styles.submitBtn}
+                                  onClick={() =>
+                                    handleSendSample(
+                                      patient.patientId,
+                                      serviceId,
+                                      appointmentId,
+                                      key
+                                    )
+                                  }
+                                >
+                                  <Check fontSize="small" />
+                                </button>
+                              </div>
+                            </td>
+                          ) : null}
 
-                          {isFirstPatient && (
+                          {isFirstPatient && hidden ? (
                             <td
                               className={`${styles.tableCell} ${styles.statusColumn}`}
                               rowSpan={patients.length}
@@ -450,7 +461,7 @@ export const CollectSampleAtHome = () => {
                                 ))}
                               </select>
                             </td>
-                          )}
+                          ) : null}
                         </tr>
                       );
                     })}

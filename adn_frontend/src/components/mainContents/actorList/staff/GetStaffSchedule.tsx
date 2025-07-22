@@ -16,6 +16,7 @@ type SlotInfo = {
   endTime: string;
   roomName: string;
   fullName: string;
+  slotStatus: string;
 };
 
 const StaffSlot = () => {
@@ -23,6 +24,28 @@ const StaffSlot = () => {
   const [currentWeekStart, setCurrentWeekStart] = useState(
     startOfWeek(new Date(), { weekStartsOn: 1 })
   );
+
+  const translate = (status: string): string => {
+    switch (status) {
+      case 'BOOKED':
+        return 'Đã đặt';
+      case 'COMPLETE':
+        return 'Hoàn thành';
+      default:
+        return status;
+    }
+  };
+
+  const getStatusColor = (status: string): string => {
+    switch (status) {
+      case 'BOOKED':
+        return 'orange'; // hoặc '#FFA500'
+      case 'COMPLETE':
+        return 'green'; // hoặc '#28a745'
+      default:
+        return 'black';
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -51,6 +74,7 @@ const StaffSlot = () => {
           endTime: item.slotResponse.endTime,
           roomName: item.roomSlotResponse?.roomName || '',
           fullName: item.staffSlotResponse?.fullName || '',
+          slotStatus: item.slotResponse.slotStatus || '',
         }));
 
       setSlots(mapped);
@@ -286,13 +310,38 @@ const StaffSlot = () => {
                     }}
                   >
                     {slot ? (
-                      <div
-                        style={{
-                          color: '#374151',
-                          fontWeight: '500',
-                        }}
-                      >
-                        {slot.roomName}
+                      <div style={{ color: '#374151', fontWeight: '500' }}>
+                        <div>{slot.roomName}</div>
+                        <div
+                          style={{
+                            marginTop: '4px',
+                            color: getStatusColor(slot.slotStatus),
+                            fontWeight: 'bold',
+                            fontSize: '14px',
+                          }}
+                        >
+                          {translate(slot.slotStatus)}
+                        </div>
+                        {(slot.slotStatus === 'BOOKED' ||
+                          slot.slotStatus === 'COMPLETED') && (
+                          <button
+                            onClick={() =>
+                              (window.location.href = `/s-page/checkAppointmentAtCenter/${slot.slotId}`)
+                            }
+                            style={{
+                              marginTop: '8px',
+                              backgroundColor: '#3b82f6',
+                              border: 'none',
+                              color: 'white',
+                              padding: '6px 12px',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontSize: '14px',
+                            }}
+                          >
+                            Xem chi tiết
+                          </button>
+                        )}
                       </div>
                     ) : (
                       <span style={{ color: '#9ca3af' }}>-</span>

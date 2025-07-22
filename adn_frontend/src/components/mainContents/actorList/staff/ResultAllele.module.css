@@ -19,6 +19,111 @@
 .formCard:hover {
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
 }
+.container {
+  position: relative;
+  padding: 24px;
+}
+
+/* Nút "Xem danh sách Locus" nằm ở góc trái trên */
+.topLeftButton {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+}
+
+.viewLocusButton {
+  background-color: #3b82f6;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.viewLocusButton:hover {
+  background-color: #2563eb;
+}
+
+/* Modal content styling */
+.modalContent {
+  background: white;
+  padding: 24px;
+  max-width: 600px;
+  margin: auto;
+  border-radius: 12px;
+  outline: none;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.modalOverlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Table inside modal */
+.popupTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.popupTable th,
+.popupTable td {
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.popupTable th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+}
+
+.popupTable tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+/* Đóng modal */
+.closeButton {
+  margin-top: 16px;
+  background-color: #ef4444;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #dc2626;
+}
+
+/* Optional: Responsive behavior */
+@media (max-width: 600px) {
+  .modalContent {
+    width: 90%;
+    padding: 16px;
+  }
+
+  .popupTable th,
+  .popupTable td {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+}
 
 .header {
   text-align: center;

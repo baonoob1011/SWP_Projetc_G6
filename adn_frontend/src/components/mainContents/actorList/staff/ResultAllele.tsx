@@ -3,12 +3,15 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from './ResultAllele.module.css';
+import Modal from 'react-modal';
+Modal.setAppElement('#root'); // đảm bảo hỗ trợ accessibility
 
 type Locus = {
   allele1: string;
   allele2: string;
   locusId: string;
   locusName: string;
+  description: string;
 };
 
 const CreateResultAllele = () => {
@@ -24,6 +27,8 @@ const CreateResultAllele = () => {
   const navigate = useNavigate();
   const { appointmentId } = location.state || {};
   const [alleleResultData, setAlleleResultData] = useState<any>('');
+  const [showPopup, setShowPopup] = useState(false);
+
   const fetchData = async () => {
     try {
       const res = await fetch('http://localhost:8080/api/locus/get-all-locus', {
@@ -116,217 +121,258 @@ const CreateResultAllele = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.formCard}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>Nhập giá trị Allele</h1>
-          <p className={styles.subtitle}>Nhập thông tin allele cho mẫu DNA</p>
-        </div>
-
-        {patientName && (
-          <div className={styles.patientInfo}>
-            <label className={styles.label}>Tên bệnh nhân</label>
-            <input
-              type="text"
-              className={styles.inputField}
-              value={patientName}
-              disabled
-            />
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.alleleGroup}>
-            <div className={`${styles.formGroup} ${styles.alleleField}`}>
-              <label className={styles.label}>Allele 1</label>
-              <input
-                type="text"
-                className={styles.inputField}
-                value={allele1}
-                onChange={(e) => setAllele1(e.target.value)}
-                placeholder="Nhập giá trị allele 1"
-                required
-              />
-            </div>
-
-            <div className={`${styles.formGroup} ${styles.alleleField}`}>
-              <label className={styles.label}>Allele 2</label>
-              <input
-                type="text"
-                className={styles.inputField}
-                value={allele2}
-                onChange={(e) => setAllele2(e.target.value)}
-                placeholder="Nhập giá trị allele 2"
-                required
-              />
-            </div>
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Trạng thái Allele</label>
-            <select
-              className={`${styles.selectField} ${styles.statusSelect}`}
-              value={alleleStatus}
-              onChange={(e) => setAlleleStatus(e.target.value)}
-              required
-            >
-              <option value="VALID">Hợp lệ</option>
-              <option value="INVALID">Không hợp lệ</option>
-            </select>
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Chọn Locus</label>
-            <select
-              className={`${styles.selectField} ${styles.locusSelect}`}
-              value={selectedLocus}
-              onChange={(e) => setSelectedLocus(e.target.value)}
-              required
-            >
-              <option value="">-- Chọn locus --</option>
+    <>
+      <div className="rounded-xl mt-6">
+        <button
+          onClick={() => setShowPopup(true)}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+        >
+          Xem danh sách Locus
+        </button>
+        <Modal
+          isOpen={showPopup}
+          onRequestClose={() => setShowPopup(false)}
+          contentLabel="Danh sách Locus"
+          className={styles.modalContent}
+          overlayClassName={styles.modalOverlay}
+        >
+          <h3>Danh sách Locus</h3>
+          <table className={styles.popupTable}>
+            <thead>
+              <tr>
+                <th>Locus Name</th>
+                <th>Mô tả</th>
+              </tr>
+            </thead>
+            <tbody>
               {locusList.map((locus) => (
-                <option key={locus.locusId} value={locus.locusId}>
-                  {locus.locusName}
-                </option>
+                <tr key={locus.locusId}>
+                  <td>{locus.locusName}</td>
+                  <td>{locus.description || 'Không có mô tả'}</td>
+                </tr>
               ))}
-            </select>
-          </div>
-
+            </tbody>
+          </table>
           <button
-            type="submit"
-            className={styles.submitButton}
-            disabled={!selectedLocus}
+            onClick={() => setShowPopup(false)}
+            className={styles.closeButton}
           >
-            Ghi kết quả
+            Đóng
           </button>
-        </form>
+        </Modal>{' '}
       </div>
-      {alleleResultData &&
-        alleleResultData.resultAlleleResponse?.length > 0 && (
-          <div className={styles.resultTableContainer}>
-            <div className={styles.header}>
-              <h2 className={styles.title}>Kết quả Allele</h2>
-              <p className={styles.subtitle}>
-                Thông tin chi tiết kết quả phân tích DNA
-              </p>
-            </div>
-
-            <div className={styles.patientInfo}>
-              <div className="row">
-                <div className="col-md-6">
-                  <p>
-                    <strong>Bệnh nhân:</strong>{' '}
-                    {alleleResultData.patientAppointmentResponse?.fullName}
-                  </p>
-                </div>
-                <div className="col-md-6">
-                  <p>
-                    <strong>Loại mẫu:</strong>{' '}
-                    {alleleResultData.sampleAlleleResponse?.[0]?.sampleType ||
-                      'Không có dữ liệu'}
-                  </p>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-6">
-                  <p>
-                    <strong>Ngày nhận mẫu:</strong>{' '}
-                    {new Date().toLocaleDateString('vi-VN')}
-                  </p>
-                </div>
-                <div className="col-md-6">
-                  <p>
-                    <strong>Tổng số allele:</strong>{' '}
-                    {alleleResultData.resultAlleleResponse?.length || 0}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="table-responsive">
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>STT</th>
-                    <th>Locus</th>
-                    <th>Giá trị Allele</th>
-                    <th>Vị trí Allele</th>
-                    <th>Trạng thái</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {alleleResultData.resultAlleleResponse.map(
-                    (allele: any, index: number) => (
-                      <tr key={allele.alleleId}>
-                        <td>{index + 1}</td>
-                        <td>
-                          <span className="badge bg-primary">
-                            {allele.locusResponse.locusName || 'N/A'}
-                          </span>
-                        </td>
-                        <td>
-                          <strong>{allele.alleleValue}</strong>
-                        </td>
-                        <td>{allele.allelePosition}</td>
-                        <td>
-                          <span
-                            className={`badge ${
-                              allele.alleleStatus === 'INVALID'
-                                ? 'bg-warning'
-                                : allele.alleleStatus === 'VALID'
-                                ? 'bg-success'
-                                : 'bg-secondary'
-                            }`}
-                          >
-                            {allele.alleleStatus === 'INVALID'
-                              ? 'Không hợp lệ'
-                              : allele.alleleStatus === 'VALID'
-                              ? 'Hợp lệ'
-                              : allele.alleleStatus || 'Đã xác nhận'}
-                          </span>
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            <div className={styles.tableSummary}>
-              <div className="row text-center">
-                <div className="col-md-4">
-                  <div className="p-3 bg-light rounded">
-                    <h5 className="text-primary">
-                      {alleleResultData.resultAlleleResponse?.length || 0}
-                    </h5>
-                    <small className="text-muted">Tổng Allele</small>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="p-3 bg-light rounded">
-                    <h5 className="text-success">
-                      {alleleResultData.resultAlleleResponse?.filter(
-                        (a: any) => a.alleleStatus === 'VALID'
-                      ).length || 0}
-                    </h5>
-                    <small className="text-muted">Hợp lệ</small>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="p-3 bg-light rounded">
-                    <h5 className="text-warning">
-                      {alleleResultData.resultAlleleResponse?.filter(
-                        (a: any) => a.alleleStatus === 'INVALID'
-                      ).length || 0}
-                    </h5>
-                    <small className="text-muted">Không hợp lệ</small>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div className={styles.container}>
+        <div className={styles.formCard}>
+          <div className={styles.header}>
+            <h1 className={styles.title}>Nhập giá trị Allele</h1>
+            <p className={styles.subtitle}>Nhập thông tin allele cho mẫu DNA</p>
           </div>
-        )}
-    </div>
+
+          {patientName && (
+            <div className={styles.patientInfo}>
+              <label className={styles.label}>Tên bệnh nhân</label>
+              <input
+                type="text"
+                className={styles.inputField}
+                value={patientName}
+                disabled
+              />
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <div className={styles.alleleGroup}>
+              <div className={`${styles.formGroup} ${styles.alleleField}`}>
+                <label className={styles.label}>Allele 1</label>
+                <input
+                  type="text"
+                  className={styles.inputField}
+                  value={allele1}
+                  onChange={(e) => setAllele1(e.target.value)}
+                  placeholder="Nhập giá trị allele 1"
+                  required
+                />
+              </div>
+
+              <div className={`${styles.formGroup} ${styles.alleleField}`}>
+                <label className={styles.label}>Allele 2</label>
+                <input
+                  type="text"
+                  className={styles.inputField}
+                  value={allele2}
+                  onChange={(e) => setAllele2(e.target.value)}
+                  placeholder="Nhập giá trị allele 2"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Trạng thái Allele</label>
+              <select
+                className={`${styles.selectField} ${styles.statusSelect}`}
+                value={alleleStatus}
+                onChange={(e) => setAlleleStatus(e.target.value)}
+                required
+              >
+                <option value="VALID">Hợp lệ</option>
+                <option value="INVALID">Không hợp lệ</option>
+              </select>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Chọn Locus</label>
+              <select
+                className={`${styles.selectField} ${styles.locusSelect}`}
+                value={selectedLocus}
+                onChange={(e) => setSelectedLocus(e.target.value)}
+                required
+              >
+                <option value="">-- Chọn locus --</option>
+                {locusList.map((locus) => (
+                  <option key={locus.locusId} value={locus.locusId}>
+                    {locus.locusName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              className={styles.submitButton}
+              disabled={!selectedLocus}
+            >
+              Ghi kết quả
+            </button>
+          </form>
+        </div>
+        {alleleResultData &&
+          alleleResultData.resultAlleleResponse?.length > 0 && (
+            <div className={styles.resultTableContainer}>
+              <div className={styles.header}>
+                <h2 className={styles.title}>Kết quả Allele</h2>
+                <p className={styles.subtitle}>
+                  Thông tin chi tiết kết quả phân tích DNA
+                </p>
+              </div>
+
+              <div className={styles.patientInfo}>
+                <div className="row">
+                  <div className="col-md-6">
+                    <p>
+                      <strong>Bệnh nhân:</strong>{' '}
+                      {alleleResultData.patientAppointmentResponse?.fullName}
+                    </p>
+                  </div>
+                  <div className="col-md-6">
+                    <p>
+                      <strong>Loại mẫu:</strong>{' '}
+                      {alleleResultData.sampleAlleleResponse?.[0]?.sampleType ||
+                        'Không có dữ liệu'}
+                    </p>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <p>
+                      <strong>Ngày nhận mẫu:</strong>{' '}
+                      {new Date().toLocaleDateString('vi-VN')}
+                    </p>
+                  </div>
+                  <div className="col-md-6">
+                    <p>
+                      <strong>Tổng số allele:</strong>{' '}
+                      {alleleResultData.resultAlleleResponse?.length || 0}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="table-responsive">
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>STT</th>
+                      <th>Locus</th>
+                      <th>Giá trị Allele</th>
+                      <th>Vị trí Allele</th>
+                      <th>Trạng thái</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {alleleResultData.resultAlleleResponse.map(
+                      (allele: any, index: number) => (
+                        <tr key={allele.alleleId}>
+                          <td>{index + 1}</td>
+                          <td>
+                            <span className="badge bg-primary">
+                              {allele.locusResponse.locusName || 'N/A'}
+                            </span>
+                          </td>
+                          <td>
+                            <strong>{allele.alleleValue}</strong>
+                          </td>
+                          <td>{allele.allelePosition}</td>
+                          <td>
+                            <span
+                              className={`badge ${
+                                allele.alleleStatus === 'INVALID'
+                                  ? 'bg-warning'
+                                  : allele.alleleStatus === 'VALID'
+                                  ? 'bg-success'
+                                  : 'bg-secondary'
+                              }`}
+                            >
+                              {allele.alleleStatus === 'INVALID'
+                                ? 'Không hợp lệ'
+                                : allele.alleleStatus === 'VALID'
+                                ? 'Hợp lệ'
+                                : allele.alleleStatus || 'Đã xác nhận'}
+                            </span>
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className={styles.tableSummary}>
+                <div className="row text-center">
+                  <div className="col-md-4">
+                    <div className="p-3 bg-light rounded">
+                      <h5 className="text-primary">
+                        {alleleResultData.resultAlleleResponse?.length || 0}
+                      </h5>
+                      <small className="text-muted">Tổng Allele</small>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="p-3 bg-light rounded">
+                      <h5 className="text-success">
+                        {alleleResultData.resultAlleleResponse?.filter(
+                          (a: any) => a.alleleStatus === 'VALID'
+                        ).length || 0}
+                      </h5>
+                      <small className="text-muted">Hợp lệ</small>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="p-3 bg-light rounded">
+                      <h5 className="text-warning">
+                        {alleleResultData.resultAlleleResponse?.filter(
+                          (a: any) => a.alleleStatus === 'INVALID'
+                        ).length || 0}
+                      </h5>
+                      <small className="text-muted">Không hợp lệ</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+      </div>
+    </>
   );
 };
 
