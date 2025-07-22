@@ -1,4 +1,4 @@
-import { Plus, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
 import Swal from 'sweetalert2';
@@ -197,17 +197,6 @@ function GetStaffByManager() {
       </div>
 
       {/* Add Staff Button */}
-      <div className="mt-4">
-        <button
-          onClick={() => {
-            window.location.href = '/signup-staff';
-          }}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 transition-colors"
-        >
-          <Plus size={20} />
-          Thêm nhân viên
-        </button>
-      </div>
     </div>
   );
 }

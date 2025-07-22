@@ -248,7 +248,7 @@ const BookingAtHome = () => {
         });
       } else {
         toast.success('Đặt lịch thành công');
-        navigate(`/u-profile`);
+        window.location.href = '/u-profile';
       }
     } catch (error) {
       console.error('Submit error:', error);

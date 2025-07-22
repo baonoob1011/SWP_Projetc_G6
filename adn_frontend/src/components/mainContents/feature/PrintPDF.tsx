@@ -89,35 +89,37 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
             {
               width: 80,
               stack: [
-                logoBase64 ? {
-                  image: logoBase64,
-                  width: 90,
-                  height: 50,
-                  alignment: 'center',
-                } : {
-                  canvas: [
-                    {
-                      type: 'rect',
-                      x: 0,
-                      y: 0,
-                      w: 70,
-                      h: 70,
-                      r: 8,
-                      color: '#2E86AB',
+                logoBase64
+                  ? {
+                      image: logoBase64,
+                      width: 90,
+                      height: 50,
+                      alignment: 'center',
+                    }
+                  : {
+                      canvas: [
+                        {
+                          type: 'rect',
+                          x: 0,
+                          y: 0,
+                          w: 70,
+                          h: 70,
+                          r: 8,
+                          color: '#2E86AB',
+                        },
+                        {
+                          type: 'text',
+                          x: 35,
+                          y: 35,
+                          text: 'DNA',
+                          options: {
+                            color: 'white',
+                            fontSize: 16,
+                            bold: true,
+                          },
+                        },
+                      ],
                     },
-                    {
-                      type: 'text',
-                      x: 35,
-                      y: 35,
-                      text: 'DNA',
-                      options: {
-                        color: 'white',
-                        fontSize: 16,
-                        bold: true,
-                      },
-                    },
-                  ],
-                },
               ],
             },
             {
@@ -149,7 +151,8 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
                       [
                         {
                           text: `Số: ${
-                            item.showAppointmentResponse?.appointmentId || 'KQ-001'
+                            item.showAppointmentResponse?.appointmentId ||
+                            'KQ-001'
                           }`,
                           style: 'reportNumber',
                         },
@@ -204,7 +207,10 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
                 {
                   stack: [
                     { text: 'PHIẾU KẾT QUẢ PHÂN TÍCH ADN', style: 'mainTitle' },
-                    { text: '(Xét nghiệm quan hệ huyết thống)', style: 'subtitle' },
+                    {
+                      text: '(Xét nghiệm quan hệ huyết thống)',
+                      style: 'subtitle',
+                    },
                   ],
                   fillColor: '#F8F9FA',
                   margin: [0, 15, 0, 15],
@@ -246,28 +252,45 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
             body: [
               [
                 { text: 'Họ và tên người yêu cầu:', style: 'infoLabel' },
-                { text: item.userAppointmentResponse.fullName || '', style: 'infoValue' },
+                {
+                  text: item.userAppointmentResponse.fullName || '',
+                  style: 'infoValue',
+                },
               ],
               [
                 { text: 'Số điện thoại:', style: 'infoLabel' },
-                { text: item.userAppointmentResponse.phone || '', style: 'infoValue' },
+                {
+                  text: item.userAppointmentResponse.phone || '',
+                  style: 'infoValue',
+                },
               ],
               [
                 { text: 'Địa chỉ:', style: 'infoLabel' },
-                { text: item.userAppointmentResponse.address || '', style: 'infoValue' },
+                {
+                  text: item.userAppointmentResponse.address || '',
+                  style: 'infoValue',
+                },
               ],
               [
                 { text: 'Ngày tiếp nhận mẫu:', style: 'infoLabel' },
-                { text: item.showAppointmentResponse?.appointmentDate || '', style: 'infoValue' },
+                {
+                  text: item.showAppointmentResponse?.appointmentDate || '',
+                  style: 'infoValue',
+                },
               ],
               [
                 { text: 'Căn cứ theo giấy đề nghị số:', style: 'infoLabel' },
-                { text: `HID15 ${item.showAppointmentResponse?.appointmentId || '5986'}`, style: 'infoValue' },
+                {
+                  text: `HID15 ${
+                    item.showAppointmentResponse?.appointmentId || '5986'
+                  }`,
+                  style: 'infoValue',
+                },
               ],
             ],
           },
           layout: {
-            hLineWidth: (i: number) => (i === 0 || i === 5) ? 1 : 0.5,
+            hLineWidth: (i: number) => (i === 0 || i === 5 ? 1 : 0.5),
             vLineWidth: () => 0.5,
             hLineColor: () => '#DDDDDD',
             vLineColor: () => '#DDDDDD',
@@ -306,11 +329,27 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
             body: [
               [
                 { text: 'STT', style: 'tableHeader', fillColor: '#2E86AB' },
-                { text: 'Họ và tên', style: 'tableHeader', fillColor: '#2E86AB' },
+                {
+                  text: 'Họ và tên',
+                  style: 'tableHeader',
+                  fillColor: '#2E86AB',
+                },
                 { text: 'Quan hệ', style: 'tableHeader', fillColor: '#2E86AB' },
-                { text: 'Loại mẫu', style: 'tableHeader', fillColor: '#2E86AB' },
-                { text: 'Ngày thu mẫu', style: 'tableHeader', fillColor: '#2E86AB' },
-                { text: 'Ký hiệu mẫu', style: 'tableHeader', fillColor: '#2E86AB' },
+                {
+                  text: 'Loại mẫu',
+                  style: 'tableHeader',
+                  fillColor: '#2E86AB',
+                },
+                {
+                  text: 'Ngày thu mẫu',
+                  style: 'tableHeader',
+                  fillColor: '#2E86AB',
+                },
+                {
+                  text: 'Ký hiệu mẫu',
+                  style: 'tableHeader',
+                  fillColor: '#2E86AB',
+                },
               ],
               ...tableBody.map((row: any, rowIndex: number) =>
                 row.map((cell: any) => ({
@@ -368,9 +407,25 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
             body: [
               [
                 { text: 'Locus', style: 'tableHeader', fillColor: '#2E86AB' },
-                { text: 'Mẫu 1', style: 'tableHeader', fillColor: '#2E86AB' },
-                { text: 'Mẫu 2', style: 'tableHeader', fillColor: '#2E86AB' },
-                { text: 'Chỉ số PI', style: 'tableHeader', fillColor: '#2E86AB' },
+                {
+                  text:
+                    item.resultLocusAppointmentResponse?.[0]?.sampleCode1 ||
+                    'M1',
+                  style: 'tableHeader',
+                  fillColor: '#2E86AB',
+                },
+                {
+                  text:
+                    item.resultLocusAppointmentResponse?.[0]?.sampleCode2 ||
+                    'M2',
+                  style: 'tableHeader',
+                  fillColor: '#2E86AB',
+                },
+                {
+                  text: 'Chỉ số PI',
+                  style: 'tableHeader',
+                  fillColor: '#2E86AB',
+                },
               ],
               ...locusTableBody.map((row: any, rowIndex: number) =>
                 row.map((cell: any) => ({
@@ -380,7 +435,12 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
                 }))
               ),
               [
-                { text: 'Tổng CPI:', style: 'totalRow', colSpan: 3, fillColor: '#FFF3E0' },
+                {
+                  text: 'Tổng CPI:',
+                  style: 'totalRow',
+                  colSpan: 3,
+                  fillColor: '#FFF3E0',
+                },
                 {},
                 {},
                 {
@@ -461,13 +521,15 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
           text: [
             'Dựa trên kết quả phân tích ADN, người có mẫu ký hiệu ',
             {
-              text: item.resultLocusAppointmentResponse?.[0]?.sampleCode1 || 'M1',
+              text:
+                item.resultLocusAppointmentResponse?.[0]?.sampleCode1 || 'M1',
               bold: true,
               color: '#2E86AB',
             },
             ' và người có mẫu ký hiệu ',
             {
-              text: item.resultLocusAppointmentResponse?.[0]?.sampleCode2 || 'M2',
+              text:
+                item.resultLocusAppointmentResponse?.[0]?.sampleCode2 || 'M2',
               bold: true,
               color: '#2E86AB',
             },
@@ -527,8 +589,7 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
               [
                 {
                   ul: [
-  
-                    'Kết quả xét nghiệm này được sử dụng cho mục đích dân sự, chỉ mang tính tham khảo cá nhân và không có giá trị pháp lý.'
+                    'Kết quả xét nghiệm này được sử dụng cho mục đích dân sự, chỉ mang tính tham khảo cá nhân và không có giá trị pháp lý.',
                   ],
                   style: 'noteList',
                   fillColor: '#F8F9FA',
@@ -555,7 +616,10 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
                 {
                   stack: [
                     { text: 'NGƯỜI THỰC HIỆN', style: 'signatureTitle' },
-                    { text: '(Ký tên và đóng dấu)', style: 'signatureInstruction' },
+                    {
+                      text: '(Ký tên và đóng dấu)',
+                      style: 'signatureInstruction',
+                    },
                     { text: 'Kỹ thuật viên', style: 'signatureName' },
                   ],
                   margin: [0, 10, 0, 10],
@@ -563,14 +627,19 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
                 {
                   stack: [
                     { text: 'GIÁM ĐỐC TRUNG TÂM', style: 'signatureTitle' },
-                    { text: '(Ký tên và đóng dấu)', style: 'signatureInstruction' },
-                    signBase64 ? {
-                      image: signBase64,
-                      width: 120,
-                      height: 70,
-                      alignment: 'center',
-                      margin: [0, 10, 0, 10],
-                    } : { text: '\n\n', style: 'signatureSpace' },
+                    {
+                      text: '(Ký tên và đóng dấu)',
+                      style: 'signatureInstruction',
+                    },
+                    signBase64
+                      ? {
+                          image: signBase64,
+                          width: 120,
+                          height: 70,
+                          alignment: 'center',
+                          margin: [0, 10, 0, 10],
+                        }
+                      : { text: '\n\n', style: 'signatureSpace' },
                     { text: 'Trần Đình Bảo', style: 'signatureName' },
                   ],
                   margin: [0, 10, 0, 10],
@@ -749,7 +818,9 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
       <button
         onClick={exportResultToPDF}
         style={{
@@ -773,30 +844,36 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
         onMouseEnter={(e) => {
           e.currentTarget.style.backgroundColor = '#1E5F7A';
           e.currentTarget.style.transform = 'translateY(-2px)';
-          e.currentTarget.style.boxShadow = '0 6px 20px rgba(46, 134, 171, 0.4)';
+          e.currentTarget.style.boxShadow =
+            '0 6px 20px rgba(46, 134, 171, 0.4)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.backgroundColor = '#2E86AB';
           e.currentTarget.style.transform = 'translateY(0)';
-          e.currentTarget.style.boxShadow = '0 4px 12px rgba(46, 134, 171, 0.3)';
+          e.currentTarget.style.boxShadow =
+            '0 4px 12px rgba(46, 134, 171, 0.3)';
         }}
       >
         <span style={{ fontSize: '18px' }}>📋</span>
         Tải phiếu kết quả PDF
       </button>
-      
-      <div style={{
-        marginTop: 15,
-        padding: '10px 20px',
-        backgroundColor: '#F8F9FA',
-        borderRadius: 8,
-        border: '1px solid #E9ECEF',
-        fontSize: '13px',
-        color: '#6C757D',
-        textAlign: 'center',
-        maxWidth: '400px',
-      }}>
-        <span style={{ fontWeight: 'bold', color: '#2E86AB' }}>💡 Lưu ý:</span> Phiếu kết quả được thiết kế chuyên nghiệp với logo và chữ ký tự động chèn vào PDF.
+
+      <div
+        style={{
+          marginTop: 15,
+          padding: '10px 20px',
+          backgroundColor: '#F8F9FA',
+          borderRadius: 8,
+          border: '1px solid #E9ECEF',
+          fontSize: '13px',
+          color: '#6C757D',
+          textAlign: 'center',
+          maxWidth: '400px',
+        }}
+      >
+        <span style={{ fontWeight: 'bold', color: '#2E86AB' }}>💡 Lưu ý:</span>{' '}
+        Phiếu kết quả được thiết kế chuyên nghiệp với logo và chữ ký tự động
+        chèn vào PDF.
       </div>
     </div>
   );

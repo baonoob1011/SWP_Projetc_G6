@@ -1,20 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Menu,
-  X,
-  User,
-  LogOut,
-  Home,
-  Shield,
-  List,
-  ShoppingBag,
-  BaggageClaim,
-  Newspaper,
-} from 'lucide-react';
+import { Menu, X, User, LogOut, Home, Shield, List } from 'lucide-react';
 
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
-import { LocationCity, Room, RoomService } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
 const AdminSidebar = () => {
@@ -70,42 +58,42 @@ const AdminSidebar = () => {
   const menuItems = [
     { id: 'dashboard', icon: Home, label: 'Tổng quan', path: '' },
     { id: 'data', icon: List, label: 'Danh sách', path: 'admin/data' },
-    {
-      id: 'location',
-      icon: LocationCity,
-      label: 'Địa chỉ',
-      path: 'location',
-    },
-    {
-      id: 'room',
-      icon: Room,
-      label: 'Phòng',
-      path: 'room',
-    },
-    {
-      id: 'kit',
-      icon: BaggageClaim,
-      label: 'kit test',
-      path: 'kit',
-    },
-    {
-      id: 'services',
-      icon: RoomService,
-      label: 'Dịch vụ',
-      path: 'services',
-    },
-    {
-      id: 'blog',
-      icon: Newspaper,
-      label: 'Blog/Tin tức',
-      path: 'create-blog',
-    },
-    {
-      id: 'createLocus',
-      icon: ShoppingBag,
-      label: 'Locus',
-      path: 'create-locus',
-    },
+    // {
+    //   id: 'location',
+    //   icon: LocationCity,
+    //   label: 'Địa chỉ',
+    //   path: 'location',
+    // },
+    // {
+    //   id: 'room',
+    //   icon: Room,
+    //   label: 'Phòng',
+    //   path: 'room',
+    // },
+    // {
+    //   id: 'kit',
+    //   icon: BaggageClaim,
+    //   label: 'kit test',
+    //   path: 'kit',
+    // },
+    // {
+    //   id: 'services',
+    //   icon: RoomService,
+    //   label: 'Dịch vụ',
+    //   path: 'services',
+    // },
+    // {
+    //   id: 'blog',
+    //   icon: Newspaper,
+    //   label: 'Blog/Tin tức',
+    //   path: 'create-blog',
+    // },
+    // {
+    //   id: 'createLocus',
+    //   icon: ShoppingBag,
+    //   label: 'Locus',
+    //   path: 'create-locus',
+    // },
   ];
 
   const handleLogout = async () => {

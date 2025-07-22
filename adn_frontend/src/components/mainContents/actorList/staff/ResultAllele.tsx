@@ -119,7 +119,7 @@ const CreateResultAllele = () => {
     <div className={styles.container}>
       <div className={styles.formCard}>
         <div className={styles.header}>
-          <h1 className={styles.title}>Ghi Kết Quả Allele</h1>
+          <h1 className={styles.title}>Nhập giá trị Allele</h1>
           <p className={styles.subtitle}>Nhập thông tin allele cho mẫu DNA</p>
         </div>
 
@@ -269,13 +269,15 @@ const CreateResultAllele = () => {
                         </td>
                         <td>{allele.allelePosition}</td>
                         <td>
-                          <span className={`badge ${
-                            allele.alleleStatus === 'INVALID' 
-                              ? 'bg-warning' 
-                              : allele.alleleStatus === 'VALID' 
-                              ? 'bg-success' 
-                              : 'bg-secondary'
-                          }`}>
+                          <span
+                            className={`badge ${
+                              allele.alleleStatus === 'INVALID'
+                                ? 'bg-warning'
+                                : allele.alleleStatus === 'VALID'
+                                ? 'bg-success'
+                                : 'bg-secondary'
+                            }`}
+                          >
                             {allele.alleleStatus === 'INVALID'
                               ? 'Không hợp lệ'
                               : allele.alleleStatus === 'VALID'

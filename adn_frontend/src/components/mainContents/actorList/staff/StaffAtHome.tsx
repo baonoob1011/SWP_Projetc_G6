@@ -215,7 +215,7 @@ const SignUpStaffAtHome = () => {
     }
   };
   const handleBack = () => {
-    navigate('/manager/staff-at-home');
+    navigate('/admin/staff-at-home');
   };
 
   return (

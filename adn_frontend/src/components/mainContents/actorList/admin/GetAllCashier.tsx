@@ -21,7 +21,7 @@ function GetCashier() {
   const [account, setAccount] = useState<Staff[]>([]);
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
-
+  const role = localStorage.getItem('role');
   const fetchData = async () => {
     const token = localStorage.getItem('token');
     try {
@@ -198,17 +198,19 @@ function GetCashier() {
       </div>
 
       {/* Add Cashier Button */}
-      <div className="mt-4">
-        <button
-          onClick={() => {
-            window.location.href = '/signup-cashier';
-          }}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 transition-colors"
-        >
-          <Plus size={20} />
-          Thêm nhân viên thu ngân
-        </button>
-      </div>
+      {role === 'ADMIN' ? (
+        <div className="mt-4">
+          <button
+            onClick={() => {
+              window.location.href = '/signup-cashier';
+            }}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 transition-colors"
+          >
+            <Plus size={20} />
+            Thêm nhân viên thu ngân
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
