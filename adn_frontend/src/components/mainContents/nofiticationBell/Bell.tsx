@@ -111,12 +111,20 @@ export default function WalletNotification() {
       );
       const data = await res.json();
 
-      const list: Appointment[] =
+      const homeAppointments: Appointment[] =
         data?.allAppointmentAtHomeResponse?.map(
           (item: any) => item.showAppointmentResponse
         ) || [];
 
-      const sorted = list.sort((a, b) => b.appointmentId - a.appointmentId);
+      const centerAppointments: Appointment[] =
+        data?.allAppointmentAtCenterResponse?.map(
+          (item: any) => item.showAppointmentResponse
+        ) || [];
+
+      const combinedAppointments = [...homeAppointments, ...centerAppointments];
+      const sorted = combinedAppointments.sort(
+        (a, b) => b.appointmentId - a.appointmentId
+      );
       setAppointments(sorted);
 
       // Lấy dữ liệu cũ từ localStorage
@@ -225,7 +233,7 @@ export default function WalletNotification() {
     switch (type) {
       case 'DEPOSIT':
         return 'Nạp tiền';
-      case 'REFUND':
+      case 'REFUNDED':
         return 'Hoàn tiền';
       case 'WITHDRAW':
         return 'Rút tiền';
@@ -237,6 +245,8 @@ export default function WalletNotification() {
         return 'Hoàn thành';
       case 'PENDING':
         return 'Đang xử lý';
+      case 'CONFIRMED':
+        return 'Đã xác nhận';
       default:
         return type;
     }
@@ -246,7 +256,9 @@ export default function WalletNotification() {
     switch (status.toLowerCase()) {
       case 'success':
       case 'completed':
+      case 'confirmed':
         return 'success';
+
       case 'pending':
         return 'warning';
       case 'failed':
@@ -323,8 +335,8 @@ export default function WalletNotification() {
                       <Box>
                         <Typography variant="body2" fontWeight="medium">
                           {appt.appointmentType === 'HOME'
-                            ? 'Khám tại nhà'
-                            : 'Khám tại cơ sở'}
+                            ? 'Tại nhà'
+                            : 'Tại cơ sở'}
                         </Typography>
                         <Typography variant="caption" color="textSecondary">
                           {new Date(appt.appointmentDate).toLocaleString(

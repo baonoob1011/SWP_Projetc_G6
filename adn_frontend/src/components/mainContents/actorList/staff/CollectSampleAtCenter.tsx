@@ -272,6 +272,7 @@ const CollectSampleAtCenter = () => {
         toast.error('bị lỗi');
       } else {
         toast.success('Đã đánh dấu vắng mặt');
+        fetchAppointment();
       }
     } catch (error) {
       console.error('Error checking in patient:', error);
@@ -279,13 +280,9 @@ const CollectSampleAtCenter = () => {
   };
 
   const sampleStatus = appointments.map(
-    (a) =>
-      a.patientAppointmentResponse.patientStatus ===
-      'Đã đăng ký lịch xét nghiệm'
+    (a) => a.patientAppointmentResponse.patientStatus === 'REGISTERED'
   );
-  const hidden = appointments.map(
-    (a) => a.showAppointmentResponse.appointmentStatus !== 'COMPLETED'
-  );
+
   useEffect(() => {
     fetchAppointment();
   }, []);
@@ -312,15 +309,24 @@ const CollectSampleAtCenter = () => {
                 <th className={styles.tableHeaderCell}>Tên Kit</th>
                 <th className={styles.tableHeaderCell}>Quan hệ</th>
                 <th className={styles.tableHeaderCell}>Ghi chú</th>
-                {hidden ? (
-                  <th className={styles.tableHeaderCell}>Vật xét nghiệm</th>
-                ) : null}
 
-                {hidden && sampleStatus ? (
-                  <th className={styles.tableHeaderCell}>Vắng mặt</th>
-                ) : null}
+                {appointments[0]?.patientAppointmentResponse?.some(
+                  (patient: any) =>
+                    patient?.patientStatus !== 'COMPLETED' &&
+                    patient?.patientStatus !== 'NO_SHOW'
+                ) && <th className={styles.tableHeaderCell}>Vật xét nghiệm</th>}
+
+                {appointments[0]?.patientAppointmentResponse?.some(
+                  (patient: any) =>
+                    patient?.patientStatus !== 'COMPLETED' &&
+                    patient?.patientStatus !== 'NO_SHOW'
+                ) &&
+                  sampleStatus && (
+                    <th className={styles.tableHeaderCell}>Vắng mặt</th>
+                  )}
               </tr>
             </thead>
+
             <tbody>
               {appointments.map((appointmentItem) =>
                 appointmentItem.patientAppointmentResponse.map(
@@ -356,69 +362,76 @@ const CollectSampleAtCenter = () => {
                           {Translation(patient.patientStatus)}
                         </td>
 
-                        {hidden ? (
-                          <td className={styles.tableCell}>
-                            {!isPaid ? (
-                              <div className={styles.actionsContainer}>
-                                <select
-                                  className={styles.sampleSelect}
-                                  value={sampleType[key as any] || ''}
-                                  onChange={(e) => handleSeletedSample(e, key)}
-                                >
-                                  <option value="">Chọn vật xét nghiệm</option>
-                                  {sampleTypes.map((type) => (
-                                    <option key={type} value={type}>
-                                      {type}
+                        {patient.patientStatus !== 'COMPLETED' &&
+                          patient.patientStatus !== 'NO_SHOW' && (
+                            <td className={styles.tableCell}>
+                              {!isPaid ? (
+                                <div className={styles.actionsContainer}>
+                                  <select
+                                    className={styles.sampleSelect}
+                                    value={sampleType[key as any] || ''}
+                                    onChange={(e) =>
+                                      handleSeletedSample(e, key)
+                                    }
+                                  >
+                                    <option value="">
+                                      Chọn vật xét nghiệm
                                     </option>
-                                  ))}
-                                </select>
-                                <button
-                                  className={styles.submitBtn}
-                                  onClick={() =>
-                                    handleSendSample(
-                                      patient.patientId,
-                                      serviceId,
-                                      appointmentId,
-                                      key
-                                    )
-                                  }
-                                >
-                                  <Check fontSize="small" />
-                                </button>
-                              </div>
-                            ) : (
-                              <span className={styles.unpaidStatus}>
-                                Chưa thanh toán
-                              </span>
-                            )}
-                          </td>
-                        ) : null}
-                        {hidden && sampleStatus ? (
-                          <td>
-                            <button
-                              className={styles.submitBtn}
-                              onClick={async () => {
-                                const result = await Swal.fire({
-                                  title: 'Xác nhận vắng mặt?',
-                                  text: 'Bạn có chắc chắn muốn đánh dấu bệnh nhân này là vắng mặt?',
-                                  icon: 'warning',
-                                  showCancelButton: true,
-                                  confirmButtonText: 'Xác nhận',
-                                  cancelButtonText: 'Hủy',
-                                });
+                                    {sampleTypes.map((type) => (
+                                      <option key={type} value={type}>
+                                        {type}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <button
+                                    className={styles.submitBtn}
+                                    onClick={() =>
+                                      handleSendSample(
+                                        patient.patientId,
+                                        serviceId,
+                                        appointmentId,
+                                        key
+                                      )
+                                    }
+                                  >
+                                    <Check fontSize="small" />
+                                  </button>
+                                </div>
+                              ) : (
+                                <span className={styles.unpaidStatus}>
+                                  Chưa thanh toán
+                                </span>
+                              )}
+                            </td>
+                          )}
+                        {patient.patientStatus !== 'COMPLETED' &&
+                          patient.patientStatus !== 'NO_SHOW' &&
+                          sampleStatus && (
+                            <td>
+                              <button
+                                className={styles.submitBtn}
+                                onClick={async () => {
+                                  const result = await Swal.fire({
+                                    title: 'Xác nhận vắng mặt?',
+                                    text: 'Bạn có chắc chắn muốn đánh dấu bệnh nhân này là vắng mặt?',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Xác nhận',
+                                    cancelButtonText: 'Hủy',
+                                  });
 
-                                if (result.isConfirmed) {
-                                  handleAbsent(
-                                    patient.patientId,
-                                    appointmentId
-                                  );
-                                }
-                              }}
-                            >
-                              Vắng mặt
-                            </button>
-                          </td>
-                        ) : null}
+                                  if (result.isConfirmed) {
+                                    handleAbsent(
+                                      patient.patientId,
+                                      appointmentId
+                                    );
+                                  }
+                                }}
+                              >
+                                Vắng mặt
+                              </button>
+                            </td>
+                          )}
                       </tr>
                     );
                   }

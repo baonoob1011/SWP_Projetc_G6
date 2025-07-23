@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from './GetSampleInfo.module.css';
 import Swal from 'sweetalert2';
@@ -16,6 +16,7 @@ const GetSampleInfo = () => {
   const { appointmentId } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [samples, setSamples] = useState<any[]>([]);
+  const navigate = useNavigate();
   // const navigate = useNavigate();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const [result, setResult] = useState<Result>({
@@ -46,6 +47,7 @@ const GetSampleInfo = () => {
         toast.error('Dữ liệu chưa đầy đủ');
       } else {
         toast.success('Gửi kết quả thành công');
+        navigate('/s-page/labCheckSample');
       }
     } catch (error) {
       console.log(error);

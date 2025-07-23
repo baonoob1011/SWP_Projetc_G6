@@ -3,7 +3,7 @@
 import { ArrowBack } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from '../../feature/GetAllResult.module.css';
 import Logo from '../../../../image/Logo.png';
@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
 const GetAllResultByManager = () => {
   const { appointmentId } = useParams();
   const [isResult, setIsResult] = useState<any[]>([]);
-
+  const navigate = useNavigate();
   const fetchData = async () => {
     try {
       const res = await fetch(
@@ -55,11 +55,13 @@ const GetAllResultByManager = () => {
         toast.warning('Ko thể thực hiện');
       } else {
         toast.success('Gửi kết quả thành công');
+        navigate('/manager/checkResult');
       }
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     if (appointmentId) fetchData();
   }, [appointmentId]);

@@ -43,6 +43,8 @@ const BookingHistory = () => {
         return 'Tiền mặt';
       case 'VN_PAY':
         return 'VNPAY';
+      case 'REFUND':
+        return 'Đơn bị vắng';
       default:
         return 'Không xác định';
     }
@@ -310,6 +312,8 @@ const BookingHistory = () => {
                       >
                         {payment.getPaymentStatus === 'PAID'
                           ? 'Đã thanh toán'
+                          : payment.getPaymentStatus === 'REFUNDED'
+                          ? 'Đã hoàn trả'
                           : 'Chưa thanh toán'}
                       </span>
                     </div>

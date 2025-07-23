@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { startOfWeek, addWeeks, endOfWeek } from 'date-fns';
 import {
+  CircularProgress,
   FormControl,
   MenuItem,
   OutlinedInput,
@@ -55,6 +56,7 @@ type Staff = {
 const SignUpStaffSchedule = () => {
   const { staffId } = useParams<{ staffId: string }>();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isSchedule, setIsSchedule] = useState<Schedule>({
     staffId: staffId || '',
@@ -252,13 +254,15 @@ const SignUpStaffSchedule = () => {
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
+    setIsLoading(true);
     if (!selectedRoom) {
       setSnackbar({
         open: true,
         message: 'Vui lòng chọn phòng',
         severity: 'error',
       });
+      setIsLoading(false);
+
       return;
     }
 
@@ -268,6 +272,7 @@ const SignUpStaffSchedule = () => {
         message: 'Vui lòng chọn đủ 2 nhân viên',
         severity: 'error',
       });
+      setIsLoading(false);
       return;
     }
 
@@ -299,14 +304,9 @@ const SignUpStaffSchedule = () => {
       );
 
       if (!res.ok) {
-        const contentType = res.headers.get('content-type');
-        const errorMessage = contentType?.includes('application/json')
-          ? (await res.json()).message
-          : await res.text();
-
         setSnackbar({
           open: true,
-          message: errorMessage || 'Không thể đăng ký',
+          message: 'Nhập đầy đủ thời gian theo phòng',
           severity: 'error',
         });
       } else {
@@ -337,6 +337,8 @@ const SignUpStaffSchedule = () => {
         message: 'Lỗi hệ thống',
         severity: 'error',
       });
+    } finally {
+      setIsLoading(false); // 👉 Stop loading
     }
   };
 
@@ -372,7 +374,7 @@ const SignUpStaffSchedule = () => {
     );
   }
   const handleBack = () => {
-    navigate('/room');
+    navigate('/manager/room');
   };
   return (
     <div className="min-h-screen bg-white ml-10">
@@ -599,20 +601,17 @@ const SignUpStaffSchedule = () => {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3">
-                <button
-                  onClick={() => setShowCreateForm(false)}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSubmit}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Tạo Lịch Làm
-                </button>
-              </div>
+              <button
+                onClick={handleSubmit}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center min-w-[130px]"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <CircularProgress size={24} style={{ color: 'white' }} />
+                ) : (
+                  'Tạo Lịch Làm'
+                )}
+              </button>
             </div>
           </div>
         )}
