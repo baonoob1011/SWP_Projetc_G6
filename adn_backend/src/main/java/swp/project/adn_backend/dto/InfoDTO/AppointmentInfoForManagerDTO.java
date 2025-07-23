@@ -8,14 +8,23 @@ public class AppointmentInfoForManagerDTO {
     private long appointmentId;
     private LocalDate appointmentDate;
     private AppointmentStatus appointmentStatus;
+    private String note;
 
 
-    public AppointmentInfoForManagerDTO(long appointmentId, LocalDate appointmentDate, AppointmentStatus appointmentStatus) {
+    public AppointmentInfoForManagerDTO(long appointmentId, LocalDate appointmentDate, AppointmentStatus appointmentStatus, String note) {
         this.appointmentId = appointmentId;
         this.appointmentDate = appointmentDate;
         this.appointmentStatus = appointmentStatus;
+        this.note = note;
     }
 
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 
     public long getAppointmentId() {
         return appointmentId;

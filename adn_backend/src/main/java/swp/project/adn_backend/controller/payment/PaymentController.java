@@ -58,6 +58,7 @@ public class PaymentController {
         paymentService.updatePaymentMethod(paymentId,paymentRequest);
         return ResponseEntity.ok("update payment method thành công");
     }
+    //manager refund cho user
     @PutMapping("/refund")
     public ResponseEntity<String> walletRefund(@RequestParam long appointmentId) {
         paymentService.walletRefund(appointmentId);

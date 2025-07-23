@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.response.DashboardResponse;
 import swp.project.adn_backend.dto.response.DailyRevenueResponse;
-import swp.project.adn_backend.dto.response.MonthlyRevenueResponse;
 import swp.project.adn_backend.dto.response.YearlyRevenueResponse;
 import swp.project.adn_backend.dto.response.ServiceRatingStatsResponse;
 import swp.project.adn_backend.dto.response.TotalUsersCompletedResponse;
 import swp.project.adn_backend.dto.response.TotalCancelledAppointmentsResponse;
 import swp.project.adn_backend.dto.response.AppointmentStatusPercentageResponse;
+import swp.project.adn_backend.dto.response.YearlyRevenueSummaryResponse;
 import swp.project.adn_backend.repository.*;
 
 import java.time.LocalDate;
@@ -165,45 +165,6 @@ public class DashboardService {
         return new DailyRevenueResponse(dailyRevenues, totalRevenue, "Doanh thu hàng ngày từ " + startDate + " đến " + endDate);
     }
 
-    public MonthlyRevenueResponse getMonthlyRevenue(LocalDate startDate, LocalDate endDate) {
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
-
-        List<Object[]> results = invoiceRepository.findMonthlyRevenueBetween(startDateTime, endDateTime);
-        Map<String, Long> revenueMap = new HashMap<>();
-        long totalRevenue = 0L;
-
-        // Đưa dữ liệu từ DB vào map để tra cứu nhanh
-        for (Object[] result : results) {
-            Integer year = (Integer) result[0];
-            Integer month = (Integer) result[1];
-            Long revenue = (Long) result[2];
-            String key = year + "-" + String.format("%02d", month);
-            revenueMap.put(key, revenue);
-            totalRevenue += revenue;
-        }
-
-        // Tạo list đủ tháng, tháng nào không có thì revenue = 0
-        List<Map<String, Object>> monthlyRevenues = new ArrayList<>();
-        YearMonth current = YearMonth.from(startDate);
-        YearMonth endYearMonth = YearMonth.from(endDate);
-
-        while (!current.isAfter(endYearMonth)) {
-            Map<String, Object> monthRevenue = new HashMap<>();
-            String key = current.getYear() + "-" + String.format("%02d", current.getMonthValue());
-            String monthName = current.getMonth().getDisplayName(TextStyle.FULL, new Locale("vi", "VN"));
-            
-            monthRevenue.put("year", current.getYear());
-            monthRevenue.put("month", current.getMonthValue());
-            monthRevenue.put("monthName", monthName);
-            monthRevenue.put("revenue", revenueMap.getOrDefault(key, 0L));
-            monthlyRevenues.add(monthRevenue);
-            current = current.plusMonths(1);
-        }
-
-        return new MonthlyRevenueResponse(monthlyRevenues, totalRevenue, "Doanh thu theo tháng từ " + startDate + " đến " + endDate);
-    }
-
     public YearlyRevenueResponse getYearlyRevenue(LocalDate startDate, LocalDate endDate) {
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
@@ -256,5 +217,21 @@ public class DashboardService {
                 .completedPercentage(Math.round(completedPercentage * 100.0) / 100.0)
                 .cancelledPercentage(Math.round(cancelledPercentage * 100.0) / 100.0)
                 .build();
+    }
+
+    public YearlyRevenueSummaryResponse getYearlyRevenueSummary(int year) {
+        int currentYear = java.time.LocalDate.now().getYear();
+        int lastMonth = (year == currentYear) ? java.time.LocalDate.now().getMonthValue() : 12;
+        List<YearlyRevenueSummaryResponse.MonthlyRevenue> monthlyRevenues = new ArrayList<>();
+        long total = 0L;
+        for (int month = 1; month <= lastMonth; month++) {
+            java.time.LocalDateTime start = java.time.LocalDate.of(year, month, 1).atStartOfDay();
+            java.time.LocalDateTime end = java.time.YearMonth.of(year, month).atEndOfMonth().atTime(java.time.LocalTime.MAX);
+            Long revenue = invoiceRepository.sumRevenueBetween(start, end);
+            if (revenue == null) revenue = 0L;
+            monthlyRevenues.add(new YearlyRevenueSummaryResponse.MonthlyRevenue(month, revenue));
+            total += revenue;
+        }
+        return new YearlyRevenueSummaryResponse(year, monthlyRevenues, total);
     }
 } 
