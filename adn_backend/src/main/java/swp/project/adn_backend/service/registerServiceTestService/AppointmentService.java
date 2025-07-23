@@ -745,8 +745,8 @@ public class AppointmentService {
                     throw new RuntimeException("Đơn đăn ký chưa được thanh toán");
                 }
             }
-            if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)
-                    && appointment.getSlot().getSlotStatus().equals(SlotStatus.BOOKED)) {
+//            if (appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)
+//                    && appointment.getSlot().getSlotStatus().equals(SlotStatus.BOOKED)) {
 
                 // Lọc bệnh nhân có trạng thái REGISTERED
                 List<Patient> registeredPatients = appointment.getPatients();
@@ -795,7 +795,7 @@ public class AppointmentService {
 
                 responses.add(response);
             }
-        }
+//        }
 
         return responses;
     }  //staff xem ds cuar slot ddos va lay mau
@@ -1218,17 +1218,16 @@ public class AppointmentService {
         return appointmentResponses;
     }
 
-    // Manager bấm nút này
+    // Lab chứ bấm nút này
     @Transactional
     public void appointmentRefund(long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
-        appointment.setNote("vì lí do mẫu bị hư nên chúng tôi hoàn trả đơn cũng như tiền mong ví khách đăng kí lại để hổ trợ lấy mẫu lại ");
+        appointment.setNote("Lịch hẹn không thể thực hiện do bệnh nhân vắng mặt. Khoản thanh toán sẽ được hoàn lại.");
         if(appointment.getAppointmentType().equals(AppointmentType.CENTER)){
             appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
         }
         appointment.setAppointmentStatus(AppointmentStatus.REFUND);
-
     }
 
     @Transactional
@@ -1258,15 +1257,54 @@ public class AppointmentService {
     public void patientCheckIn(long patientId, long appointmentId) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PATIENT_INFO_NOT_EXISTS));
+
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
-        appointment.setNote("Bệnh nhân vắng mặt nên không thể hoàn thành việc lấy mẫu");
-        appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
-        patient.setPatientStatus(PatientStatus.NO_SHOW);
-        for (Payment payment : appointment.getPayments()) {
-            payment.setPaymentStatus(PaymentStatus.REFUNDED);
+
+        if (appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)) {
+            throw new RuntimeException("Đơn này đã hoàn thành, bạn không thể check-in bệnh nhân.");
+        }
+
+        // Cập nhật status trực tiếp trong danh sách patients của appointment
+        for (Patient p : appointment.getPatients()) {
+            if (p.getPatientId() == patientId) {
+                p.setPatientStatus(PatientStatus.NO_SHOW);
+                break;
+            }
+        }
+
+        // Nếu đã hoàn tiền rồi thì không làm gì nữa
+        if (appointment.getAppointmentStatus().equals(AppointmentStatus.REFUND)) {
+            return;
+        }
+
+        // Debug: In trạng thái tất cả bệnh nhân
+        System.out.println(">>> Patient status list:");
+        appointment.getPatients().forEach(p ->
+                System.out.println("Patient ID: " + p.getPatientId() + " | Status: " + p.getPatientStatus())
+        );
+
+        // Kiểm tra nếu tất cả bệnh nhân đều NO_SHOW
+        boolean allNoShow = appointment.getPatients().stream()
+                .allMatch(p -> p.getPatientStatus().equals(PatientStatus.NO_SHOW));
+
+        System.out.println(">>> allNoShow = " + allNoShow);
+
+        if (allNoShow) {
+            System.out.println(">>> All patients NO_SHOW → Proceeding refund...");
+
+            for (Payment payment : appointment.getPayments()) {
+                System.out.println("Payment ID: " + payment.getPaymentId() + " | Status: " + payment.getPaymentStatus());
+
+                if (payment.getPaymentStatus().equals(PaymentStatus.PAID)) {
+                    System.out.println(">>> Refunding payment ID: " + payment.getPaymentId());
+                    payment.setPaymentStatus(PaymentStatus.REFUNDED);
+                    appointmentRefund(appointmentId);
+                }
+            }
         }
     }
+
 
     @Transactional
     public void payAppointment(long paymentId, long appointmentId) {
@@ -1411,7 +1449,7 @@ public class AppointmentService {
 
     public List<AppointmentInfoForManagerDTO> getAppointmentToViewResult() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentInfoForManagerDTO(" +
-                "s.appointmentId, s.appointmentDate, s.appointmentStatus) " +
+                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note) " +
                 "FROM Appointment s " +
                 "WHERE s.appointmentStatus = :status";
 
@@ -1424,7 +1462,7 @@ public class AppointmentService {
     }
     public List<AppointmentInfoForManagerDTO> getAppointmentToRefund() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.AppointmentInfoForManagerDTO(" +
-                "s.appointmentId, s.appointmentDate, s.appointmentStatus) " +
+                "s.appointmentId, s.appointmentDate, s.appointmentStatus, s.note) " +
                 "FROM Appointment s " +
                 "WHERE s.appointmentStatus = :status";
 
