@@ -406,7 +406,11 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
             widths: ['20%', '25%', '25%', '30%'],
             body: [
               [
-                { text: 'Locus', style: 'tableHeader', fillColor: '#2E86AB' },
+                {
+                  text: 'Locus GEN',
+                  style: 'tableHeader',
+                  fillColor: '#2E86AB',
+                },
                 {
                   text:
                     item.resultLocusAppointmentResponse?.[0]?.sampleCode1 ||

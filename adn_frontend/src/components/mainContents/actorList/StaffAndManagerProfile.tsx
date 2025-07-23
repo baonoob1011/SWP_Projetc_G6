@@ -70,10 +70,10 @@ const NewProfile = ({ role }: Profile) => {
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const apiMap = {
-      CONSULTANT: 'http://localhost:8080/api/staff/update-staff',
-      CASHIER: 'http://localhost:8080/api/staff/update-staff',
-      STAFF: 'http://localhost:8080/api/staff/update-staff',
-      MANAGER: 'http://localhost:8080/api/manager/update-manager',
+      CONSULTANT: 'http://localhost:8080/api/staff/update-profile',
+      CASHIER: 'http://localhost:8080/api/staff/update-profile',
+      STAFF: 'http://localhost:8080/api/staff/update-profile',
+      MANAGER: 'http://localhost:8080/api/manager/update-profile',
     };
     try {
       const res = await fetch(apiMap[role], {

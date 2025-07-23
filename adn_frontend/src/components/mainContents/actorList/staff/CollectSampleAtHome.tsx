@@ -303,9 +303,6 @@ export const CollectSampleAtHome = () => {
       a.showAppointmentResponse?.appointmentType === 'HOME' &&
       a.showAppointmentResponse?.appointmentStatus === 'CONFIRMED'
   );
-  const hidden = appointments.map(
-    (a) => a.showAppointmentResponse?.appointmentStatus !== 'COMPLETED'
-  );
 
   return (
     <div className={styles.container}>
@@ -348,14 +345,16 @@ export const CollectSampleAtHome = () => {
                       <th className={styles.tableHeaderCell}>Ngày sinh</th>
                       <th className={styles.tableHeaderCell}>Giới tính</th>
                       <th className={styles.tableHeaderCell}>Quan hệ</th>
-                      {hidden ? (
+                      {appointments[0]?.patientAppointmentResponse[0]
+                        ?.patientStatus !== 'COMPLETED' && (
                         <th className={styles.tableHeaderCell}>Thu mẫu</th>
-                      ) : null}
-                      {hidden ? (
+                      )}
+                      {appointments[0]?.patientAppointmentResponse[0]
+                        ?.patientStatus !== 'COMPLETED' && (
                         <th className={styles.tableHeaderCell}>
                           Trạng thái Kit
                         </th>
-                      ) : null}
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -385,7 +384,7 @@ export const CollectSampleAtHome = () => {
                           <td className={styles.tableCell}>
                             {patient.relationship}
                           </td>
-                          {hidden ? (
+                          {patient.patientStatus !== 'COMPLETED' && (
                             <td className={styles.tableCell}>
                               <div className={styles.inputGroup}>
                                 <select
@@ -416,55 +415,57 @@ export const CollectSampleAtHome = () => {
                                 </button>
                               </div>
                             </td>
-                          ) : null}
+                          )}
 
-                          {isFirstPatient && hidden ? (
-                            <td
-                              className={`${styles.tableCell} ${styles.statusColumn}`}
-                              rowSpan={patients.length}
-                            >
-                              <select
-                                className={styles.statusSelect}
-                                value={
-                                  selectedStatus[appointmentId] || 'PENDING'
-                                }
-                                onChange={async (e) => {
-                                  const newStatus = e.target.value;
-                                  const currentStatus =
-                                    selectedStatus[appointmentId] || 'PENDING';
-
-                                  const result = await Swal.fire({
-                                    title: 'Xác nhận thay đổi trạng thái?',
-                                    text: `Bạn có chắc chắn muốn đổi trạng thái này?`,
-                                    icon: 'question',
-                                    showCancelButton: true,
-                                    confirmButtonText: 'Xác nhận',
-                                    cancelButtonText: 'Hủy',
-                                  });
-
-                                  if (result.isConfirmed) {
-                                    setSelectedStatus({
-                                      [appointmentId]: newStatus,
-                                    });
-                                    handleUpdateStatus(
-                                      appointmentId,
-                                      newStatus,
-                                      currentStatus
-                                    );
-                                  }
-                                }}
+                          {isFirstPatient &&
+                            patient.patientStatus !== 'COMPLETED' && (
+                              <td
+                                className={`${styles.tableCell} ${styles.statusColumn}`}
+                                rowSpan={patients.length}
                               >
-                                {statusOptions.map((option) => (
-                                  <option
-                                    key={option.value}
-                                    value={option.value}
-                                  >
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
-                            </td>
-                          ) : null}
+                                <select
+                                  className={styles.statusSelect}
+                                  value={
+                                    selectedStatus[appointmentId] || 'PENDING'
+                                  }
+                                  onChange={async (e) => {
+                                    const newStatus = e.target.value;
+                                    const currentStatus =
+                                      selectedStatus[appointmentId] ||
+                                      'PENDING';
+
+                                    const result = await Swal.fire({
+                                      title: 'Xác nhận thay đổi trạng thái?',
+                                      text: `Bạn có chắc chắn muốn đổi trạng thái này?`,
+                                      icon: 'question',
+                                      showCancelButton: true,
+                                      confirmButtonText: 'Xác nhận',
+                                      cancelButtonText: 'Hủy',
+                                    });
+
+                                    if (result.isConfirmed) {
+                                      setSelectedStatus({
+                                        [appointmentId]: newStatus,
+                                      });
+                                      handleUpdateStatus(
+                                        appointmentId,
+                                        newStatus,
+                                        currentStatus
+                                      );
+                                    }
+                                  }}
+                                >
+                                  {statusOptions.map((option) => (
+                                    <option
+                                      key={option.value}
+                                      value={option.value}
+                                    >
+                                      {option.label}
+                                    </option>
+                                  ))}
+                                </select>
+                              </td>
+                            )}
                         </tr>
                       );
                     })}
