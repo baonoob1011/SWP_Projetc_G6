@@ -9,7 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { BarChart3, DollarSign, TrendingUp } from 'lucide-react';
+import { BarChart3, DollarSign, TrendingUp, Calendar } from 'lucide-react';
 import { FaMoneyBill } from 'react-icons/fa';
 
 interface RevenueStats {
@@ -186,6 +186,16 @@ const RevenueDashboard = () => {
       0
     ) || 0;
 
+  // Calculate monthly stats
+  const totalYearRevenue = yearRevenue?.totalRevenue || 0;
+  const averageMonthlyRevenue = yearRevenue?.monthlyRevenues?.length 
+    ? totalYearRevenue / yearRevenue.monthlyRevenues.length 
+    : 0;
+  const highestMonthRevenue = yearRevenue?.monthlyRevenues?.reduce(
+    (max, month) => (month.revenue > max ? month.revenue : max),
+    0
+  ) || 0;
+
   // Main revenue stats with circular progress indicators
   const mainStats = [
     {
@@ -220,29 +230,112 @@ const RevenueDashboard = () => {
     },
   ];
 
+  // Monthly stats for header
+  const monthlyStats = [
+    {
+      label: 'Tổng doanh thu năm',
+      value: totalYearRevenue,
+      icon: FaMoneyBill,
+      circleColor: 'border-purple-400',
+      iconBg: 'bg-purple-50',
+      iconColor: 'text-purple-500',
+    },
+    {
+      label: 'Trung bình/tháng',
+      value: Math.round(averageMonthlyRevenue),
+      icon: TrendingUp,
+      circleColor: 'border-green-400',
+      iconBg: 'bg-green-50',
+      iconColor: 'text-green-500',
+    },
+    {
+      label: 'Cao nhất/tháng',
+      value: highestMonthRevenue,
+      icon: DollarSign,
+      circleColor: 'border-orange-400',
+      iconBg: 'bg-orange-50',
+      iconColor: 'text-orange-500',
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50 ml-10 mt-10">
+      {/* Monthly Revenue Header Section */}
+      <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-3xl p-8 mb-6 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute right-0 top-0 w-64 h-full opacity-20">
+          <div className="flex items-center justify-end h-full pr-8">
+            <div className="flex space-x-4">
+              <div className="w-20 h-20 bg-white rounded-full opacity-30"></div>
+              <div className="w-16 h-16 bg-white rounded-full opacity-20"></div>
+              <div className="w-12 h-12 bg-white rounded-full opacity-40"></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-white text-3xl font-bold mb-2 flex items-center">
+                <Calendar className="mr-3" size={36} />
+                Thống Kê Doanh Thu Theo Tháng
+              </h1>
+              <p className="text-green-100 text-lg">
+                Tổng quan doanh thu năm {year} - Phân tích theo từng tháng
+              </p>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <label className="flex flex-col text-sm font-medium text-white">
+                Chọn năm:
+                <select
+                  className="mt-1 border border-gray-300 rounded-xl px-4 py-2 text-gray-700 bg-white shadow-sm focus:ring-2 focus:ring-green-300"
+                  value={year}
+                  onChange={(e) => setYear(Number(e.target.value))}
+                >
+                  {Array.from({ length: 5 }).map((_, i) => {
+                    const y = new Date().getFullYear() - i;
+                    return (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>
+            </div>
+          </div>
+
+          {/* Monthly Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {monthlyStats.map((stat, idx) => (
+              <div key={idx} className="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
+                <div className="flex items-center">
+                  <div
+                    className={`w-12 h-12 rounded-full border-2 ${stat.circleColor} bg-white/30 flex items-center justify-center mr-4`}
+                  >
+                    <stat.icon className={`w-6 h-6 text-white`} />
+                  </div>
+                  <div>
+                    <div className="text-white text-2xl font-bold">
+                      {formatCurrency(stat.value)}
+                    </div>
+                    <div className="text-green-100 text-sm">{stat.label}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Chart - Doanh thu theo tháng */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm mt-8">
+      <div className="bg-white rounded-2xl p-6 shadow-sm mb-8">
         <div className="flex items-center mb-6">
           <BarChart3 className="text-green-500 mr-2" />
           <h3 className="text-lg font-semibold text-gray-800">
             Biểu đồ doanh thu theo tháng ({year})
           </h3>
-          <select
-            className="ml-auto border border-gray-300 rounded px-3 py-1"
-            value={year}
-            onChange={(e) => setYear(Number(e.target.value))}
-          >
-            {Array.from({ length: 5 }).map((_, i) => {
-              const y = new Date().getFullYear() - i;
-              return (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              );
-            })}
-          </select>
         </div>
 
         <ResponsiveContainer width="100%" height={350}>
@@ -266,7 +359,7 @@ const RevenueDashboard = () => {
         </ResponsiveContainer>
       </div>
 
-      {/* Header Section */}
+      {/* Header Section for Daily Revenue */}
       <div className="bg-[#116AEF] rounded-3xl p-8 mb-6 relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute right-0 top-0 w-64 h-full opacity-20">
@@ -316,24 +409,6 @@ const RevenueDashboard = () => {
               Lọc
             </button>
           </div>
-          {/* <div className="flex space-x-6">
-            {headerCards.map((card, idx) => (
-              <div
-                key={idx}
-                className={`${card.bgColor} rounded-2xl p-4 min-w-[140px]`}
-              >
-                <div className="text-white mb-1">
-                  <card.icon size={32} />
-                </div>
-                <div className="text-white text-3xl font-bold mb-1">
-                  {typeof card.value === 'number' ? formatCurrency(card.value) : card.value}
-                </div>
-                <div className="text-white text-sm opacity-90">
-                  {card.label}
-                </div>
-              </div>
-            ))}
-          </div> */}
         </div>
       </div>
 
