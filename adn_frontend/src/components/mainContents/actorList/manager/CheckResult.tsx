@@ -85,7 +85,7 @@ const CheckResult = () => {
       if (!res.ok) {
         toast.warning('Ko thể thực hiện');
       } else {
-        toast.success('Gửi kết quả thành công');
+        toast.success('Hoàn tiền thành công');
         fetchRefund();
       }
     } catch (error) {
@@ -104,8 +104,8 @@ const CheckResult = () => {
       </Typography>
 
       <Tabs value={tabIndex} onChange={handleTabChange}>
-        <Tab label="Lịch hẹn" />
-        <Tab label="Cần hoàn tiền" />
+        <Tab label="Đơn đã hoàn thành" />
+        <Tab label="Đơn cần hoàn tiền" />
       </Tabs>
 
       {loading ? (

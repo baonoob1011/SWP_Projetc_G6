@@ -44,7 +44,7 @@ const BookingHistory = () => {
       case 'VN_PAY':
         return 'VNPAY';
       case 'REFUND':
-        return 'Đơn bị vắng';
+        return 'Bệnh nhân vắng mặt';
       default:
         return 'Không xác định';
     }
@@ -276,37 +276,34 @@ const BookingHistory = () => {
               {payment && (
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                   <div className="flex items-center space-x-2 mb-3">
-                    <h4 className="font-semibold text-gray-900">
+                    <h4 className="font-semibold text-gray-900 text-base">
                       Thông tin thanh toán
                     </h4>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                     <div>
-                      <p className="text-sm text-gray-500 font-medium">
-                        Số tiền
-                      </p>
-                      <p className="font-semibold text-gray-900">
+                      <p className="text-gray-500 font-medium">Số tiền</p>
+                      <p className="text-gray-900 font-medium">
                         {payment.amount
                           ? `${payment.amount.toLocaleString('vi-VN')} VND`
                           : '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500 font-medium">
-                        Phương thức
-                      </p>
-                      <p className="font-semibold text-gray-900">
+                      <p className="text-gray-500 font-medium">Phương thức</p>
+                      <p className="text-gray-900 font-medium">
                         {translate(payment.paymentMethod || '-')}
                       </p>
                     </div>
                     <div className="md:text-right">
-                      <p className="text-sm text-gray-500 font-medium">
-                        Trạng thái
-                      </p>
+                      <p className="text-gray-500 font-medium">Trạng thái</p>
                       <span
-                        className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                        className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${
                           payment.getPaymentStatus === 'PAID'
                             ? 'bg-green-100 text-green-800'
+                            : payment.getPaymentStatus === 'REFUNDED'
+                            ? 'bg-blue-100 text-blue-800'
                             : 'bg-yellow-100 text-yellow-800'
                         }`}
                       >
@@ -318,6 +315,13 @@ const BookingHistory = () => {
                       </span>
                     </div>
                   </div>
+
+                  {a && (
+                    <div className="mt-4">
+                      <p className="text-gray-500 font-medium">Ghi chú</p>
+                      <p className="text-gray-900 font-medium">{a.note}</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
