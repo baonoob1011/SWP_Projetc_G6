@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight, Clock, TrendingUp, TrendingDown, CheckCircle, AlertCircle } from 'lucide-react';
 
 type WalletTransaction = {
   walletTransactionId: number;
@@ -63,75 +64,164 @@ const TransactionTable: React.FC = () => {
     setCurrentPage(page);
   };
 
-  if (loading) return <p>Đang tải dữ liệu...</p>;
+  const getVisiblePages = () => {
+    const delta = 2;
+    const range = [];
+    const rangeWithDots = [];
+
+    for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+      range.push(i);
+    }
+
+    if (currentPage - delta > 2) {
+      rangeWithDots.push(1, '...');
+    } else {
+      rangeWithDots.push(1);
+    }
+
+    rangeWithDots.push(...range);
+
+    if (currentPage + delta < totalPages - 1) {
+      rangeWithDots.push('...', totalPages);
+    } else {
+      if (totalPages > 1) rangeWithDots.push(totalPages);
+    }
+
+    return rangeWithDots;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-64 bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-slate-600 font-medium">Đang tải dữ liệu...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <table
-        border={1}
-        cellPadding={10}
-        style={{ width: '100%', textAlign: 'center' }}
-      >
-        <thead>
-          <tr>
-            <th>Mã GD</th>
-            <th>Loại</th>
-            <th>Số tiền</th>
-            <th>Trạng thái</th>
-            <th>Thời gian</th>
-            <th>Mã hóa đơn</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedData.map((tx) => (
-            <tr key={tx.walletTransactionId}>
-              <td>{tx.walletTransactionId}</td>
-              <td>{tx.type === 'PAYMENT' ? 'Thanh toán' : 'Nạp tiền'}</td>
-              <td style={{ color: tx.type === 'PAYMENT' ? 'red' : 'green' }}>
-                {formatAmount(tx.type, tx.amount)}
-              </td>
-              <td>
-                {tx.transactionStatus === 'SUCCESS'
-                  ? 'Thành công'
-                  : tx.transactionStatus}
-              </td>
-              <td>{new Date(tx.timestamp).toLocaleString('vi-VN')}</td>
-              <td>{tx.bankCode}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="w-full">
+      <div>
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200">
+          {/* Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-full">
+              <thead className="bg-slate-50 border-b border-slate-200">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Mã GD</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Loại</th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">Số tiền</th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-slate-600 uppercase tracking-wider">Trạng thái</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Thời gian</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Mã hóa đơn</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-slate-200">
+                {paginatedData.map((tx) => (
+                  <tr key={tx.walletTransactionId} className="hover:bg-slate-50 transition-colors duration-150">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm font-medium text-slate-900">#{tx.walletTransactionId}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        {tx.type === 'PAYMENT' ? (
+                          <TrendingDown className="w-4 h-4 text-red-500" />
+                        ) : (
+                          <TrendingUp className="w-4 h-4 text-green-500" />
+                        )}
+                        <span className={`text-sm font-medium ${tx.type === 'PAYMENT' ? 'text-red-700' : 'text-green-700'}`}>
+                          {tx.type === 'PAYMENT' ? 'Thanh toán' : 'Nạp tiền'}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <span className={`text-sm font-bold ${tx.type === 'PAYMENT' ? 'text-red-600' : 'text-green-600'}`}>
+                        {formatAmount(tx.type, tx.amount)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        {tx.transactionStatus === 'SUCCESS' ? (
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                        ) : (
+                          <AlertCircle className="w-4 h-4 text-yellow-500" />
+                        )}
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          tx.transactionStatus === 'SUCCESS' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {tx.transactionStatus === 'SUCCESS' ? 'Thành công' : tx.transactionStatus}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm text-slate-600">
+                        {new Date(tx.timestamp).toLocaleString('vi-VN')}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm font-mono text-slate-700 bg-slate-100 px-2 py-1 rounded">
+                        {tx.bankCode}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-      {/* Phân trang với số trang */}
-      <div style={{ marginTop: '20px', textAlign: 'center' }}>
-        <button
-          onClick={() => handlePageClick(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          ⬅ Trang trước
-        </button>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="bg-slate-50 px-6 py-4 border-t border-slate-200">
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-slate-600">
+                  Hiển thị {(currentPage - 1) * ITEMS_PER_PAGE + 1} đến {Math.min(currentPage * ITEMS_PER_PAGE, transactions.length)} trong tổng số {transactions.length} giao dịch
+                </div>
+                <div className="flex items-center space-x-1">
+                  <button
+                    onClick={() => handlePageClick(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 hover:text-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-1" />
+                    Trước
+                  </button>
 
-        {/* Nút số trang */}
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <button
-            key={page}
-            onClick={() => handlePageClick(page)}
-            style={{
-              margin: '0 5px',
-              fontWeight: currentPage === page ? 'bold' : 'normal',
-              backgroundColor: currentPage === page ? '#ccc' : 'white',
-            }}
-          >
-            {page}
-          </button>
-        ))}
+                  {getVisiblePages().map((page, index) => (
+                    <React.Fragment key={index}>
+                      {page === '...' ? (
+                        <span className="px-3 py-2 text-sm text-slate-400">...</span>
+                      ) : (
+                        <button
+                          onClick={() => handlePageClick(page as number)}
+                          className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
+                            currentPage === page
+                              ? 'bg-blue-600 text-white shadow-sm'
+                              : 'text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 hover:text-slate-900'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      )}
+                    </React.Fragment>
+                  ))}
 
-        <button
-          onClick={() => handlePageClick(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          Trang sau ➡
-        </button>
+                  <button
+                    onClick={() => handlePageClick(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 hover:text-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+                  >
+                    Sau
+                    <ChevronRight className="w-4 h-4 ml-1" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
