@@ -271,14 +271,53 @@ const NewProfile = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Elegant Header */}
-        <div className="text-center mb-12 mt-20">
+        <div className="text-center mb-8 mt-20">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 bg-clip-text text-transparent">
             Quản lý tài khoản
           </h1>
         </div>
 
-        <div className="grid grid-cols- lg:grid-cols-4 gap-8">
-          {/* Enhanced Sidebar */}
+        {/* Horizontal Tab Navigation */}
+        <div className="mb-2">
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl overflow-hidden">
+            <div className="p-2">
+              <div className="flex flex-wrap justify-center gap-2 lg:gap-4">
+                {tabConfig.map(({ id, label, icon: Icon, color }) => (
+                  <button
+                    key={id}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    onClick={() => setActiveTab(id as any)}
+                    className={`flex items-center space-x-2 px-4 py-3 rounded-xl transition-all duration-300 group ${
+                      activeTab === id
+                        ? `${color} text-white shadow-lg transform scale-105`
+                        : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 hover:shadow-md'
+                    }`}
+                  >
+                    <div
+                      className={`p-1.5 rounded-lg transition-all duration-300 ${
+                        activeTab === id
+                          ? 'bg-white/20'
+                          : 'bg-gray-100 group-hover:bg-blue-100'
+                      }`}
+                    >
+                      <Icon
+                        className={`w-4 h-4 ${
+                          activeTab === id
+                            ? 'text-white'
+                            : 'text-gray-600 group-hover:text-blue-600'
+                        }`}
+                      />
+                    </div>
+                    <span className="font-medium text-sm lg:text-base">{label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
+          {/* User Info Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl overflow-hidden">
               {profile && money && (
@@ -358,38 +397,6 @@ const NewProfile = () => {
                   </div>
                 </div>
               )}
-
-              <nav className="p-3">
-                {tabConfig.map(({ id, label, icon: Icon, color }) => (
-                  <button
-                    key={id}
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    onClick={() => setActiveTab(id as any)}
-                    className={`w-full flex items-center space-x-3 px-4 py-4 text-left rounded-xl transition-all duration-300 mb-2 group ${
-                      activeTab === id
-                        ? `${color} text-white shadow-lg transform scale-105`
-                        : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 hover:shadow-md'
-                    }`}
-                  >
-                    <div
-                      className={`p-2 rounded-lg transition-all duration-300 ${
-                        activeTab === id
-                          ? 'bg-white/20'
-                          : 'bg-gray-100 group-hover:bg-blue-100'
-                      }`}
-                    >
-                      <Icon
-                        className={`w-5 h-5 ${
-                          activeTab === id
-                            ? 'text-white'
-                            : 'text-gray-600 group-hover:text-blue-600'
-                        }`}
-                      />
-                    </div>
-                    <span className="font-medium">{label}</span>
-                  </button>
-                ))}
-              </nav>
             </div>
           </div>
 
@@ -531,7 +538,6 @@ const NewProfile = () => {
                   </div>
                 </div>
                 <div className="p-8">
-                  {' '}
                   <GetKitDeliveryStatus />
                 </div>
               </div>
