@@ -1,6 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { 
+  Package, 
+  Clock, 
+  CheckCircle, 
+  XCircle, 
+  Truck, 
+  ChevronDown, 
+  ChevronUp,
+  Calendar,
+  MapPin,
+  AlertCircle,
+  Eye,
+  EyeOff
+} from 'lucide-react';
 
 const GetKitDeliveryStatus = () => {
   const [kitStatus, setKitStatus] = useState<any[]>([]);
@@ -17,35 +31,45 @@ const GetKitDeliveryStatus = () => {
       title: 'Đặt hàng thành công',
       description: 'Đơn hàng của bạn đã được đặt và đang chờ giao hàng',
       icon: '1',
-      status: 'PENDING'
+      status: 'PENDING',
+      iconComponent: Clock,
+      gradient: 'from-yellow-400 to-orange-500'
     },
     {
       id: 'in_progress',
       title: 'Đang giao hàng',
       description: 'Đơn hàng đang được giao đến bạn',
       icon: '2',
-      status: 'IN_PROGRESS'
+      status: 'IN_PROGRESS',
+      iconComponent: Truck,
+      gradient: 'from-blue-400 to-indigo-500'
     },
     {
       id: 'delivered',
       title: 'Đã giao thành công',
       description: 'Đơn hàng đã được giao thành công đến bạn',
       icon: '3',
-      status: 'DELIVERED'
+      status: 'DELIVERED',
+      iconComponent: CheckCircle,
+      gradient: 'from-green-400 to-emerald-500'
     },
     {
       id: 'done',
       title: 'Kit đã được cơ sở tiếp nhận',
       description: 'Kit đã được nhận về và xử lý xong',
       icon: '4',
-      status: 'DONE'
+      status: 'DONE',
+      iconComponent: Package,
+      gradient: 'from-emerald-400 to-teal-500'
     },
     {
       id: 'failed',
       title: 'Giao hàng thất bại',
       description: 'Đơn hàng giao không thành công, sẽ thử lại',
       icon: '!',
-      status: 'FAILED'
+      status: 'FAILED',
+      iconComponent: XCircle,
+      gradient: 'from-red-400 to-pink-500'
     }
   ];
 
@@ -190,53 +214,58 @@ const GetKitDeliveryStatus = () => {
     const upperStatus = status.toUpperCase();
     switch (upperStatus) {
       case 'PENDING':
+        return 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200';
       case 'IN_PROGRESS':
-        return 'bg-gray-50 border-gray-200';
+        return 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200';
       case 'DELIVERED':
-        return 'bg-blue-50 border-blue-200';
+        return 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-200';
       case 'DONE':
-        return 'bg-green-50 border-green-200';
+        return 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200';
       case 'FAILED':
-        return 'bg-red-50 border-red-200';
+        return 'bg-gradient-to-br from-red-50 to-pink-50 border-red-200';
       default:
-        return 'bg-gray-50 border-gray-200';
+        return 'bg-gradient-to-br from-gray-50 to-slate-50 border-gray-200';
     }
   };
 
   // Get status badge color
   const getStatusBadgeClass = (status: string) => {
     const upperStatus = status.toUpperCase();
+    const step = trackingSteps.find(s => s.status === upperStatus);
+    const gradient = step?.gradient || 'from-gray-400 to-gray-500';
+    
     switch (upperStatus) {
       case 'PENDING':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return `bg-gradient-to-r ${gradient} text-white border-0 shadow-lg`;
       case 'IN_PROGRESS':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return `bg-gradient-to-r ${gradient} text-white border-0 shadow-lg`;
       case 'DELIVERED':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return `bg-gradient-to-r ${gradient} text-white border-0 shadow-lg`;
       case 'DONE':
-        return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+        return `bg-gradient-to-r ${gradient} text-white border-0 shadow-lg`;
       case 'FAILED':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return `bg-gradient-to-r ${gradient} text-white border-0 shadow-lg`;
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return `bg-gradient-to-r ${gradient} text-white border-0 shadow-lg`;
     }
   };
 
   // Get step styling classes - Updated for new design
-  const getStepIconClass = (stepClass: string) => {
+  const getStepIconClass = (stepClass: string, step: any) => {
     switch (stepClass) {
       case 'completed':
-        return 'bg-green-500 text-white border-green-500 shadow-md';
+        return `bg-green-500 text-white border-green-500 shadow-md`;
       case 'active':
-        return 'bg-blue-500 text-white border-blue-500 shadow-md';
+        return `bg-blue-500 text-white border-blue-500 shadow-md`;
       case 'failed':
-        return 'bg-red-500 text-white border-red-500 shadow-md';
+        return `bg-red-500 text-white border-red-500 shadow-md`;
       case 'pending':
       default:
         return 'bg-gray-100 text-gray-500 border-gray-300';
     }
   };
-  const getStepTitleClass = (stepClass: string) => {
+
+  const getStepTitleClass = (stepClass: string, step: any) => {
     switch (stepClass) {
       case 'completed':
         return 'text-green-700 font-semibold';
@@ -250,14 +279,19 @@ const GetKitDeliveryStatus = () => {
     }
   };
 
-  const getStepTimeClass = (stepClass: string) => {
+  const getStepTimeClass = (stepClass: string, step: any) => {
+    const baseColor = step.gradient?.includes('green') ? 'text-green-600' : 
+                     step.gradient?.includes('blue') ? 'text-blue-600' :
+                     step.gradient?.includes('yellow') ? 'text-yellow-600' :
+                     step.gradient?.includes('red') ? 'text-red-600' : 'text-gray-600';
+    
     switch (stepClass) {
       case 'completed':
-        return 'text-green-600';
+        return 'text-green-600 font-medium';
       case 'active':
-        return 'text-blue-600';
+        return `${baseColor} font-medium`;
       case 'failed':
-        return 'text-red-600';
+        return 'text-red-600 font-medium';
       case 'pending':
       default:
         return 'text-gray-500';
@@ -272,22 +306,22 @@ const GetKitDeliveryStatus = () => {
 
   if (isLoading && kitStatus.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="flex flex-col items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-          <div className="text-gray-600 text-lg">
-            Đang tải thông tin đơn hàng...
-          </div>
+      <div className="flex flex-col items-center justify-center py-20">
+        <div className="w-12 h-12 border-b-2 border-blue-600 rounded-full animate-spin mb-4"></div>
+        <div className="text-gray-600 text-lg">
+          Đang tải thông tin đơn hàng...
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-0">
+    <div className="space-y-6">
       {kitStatus.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20">
-          <div className="text-6xl mb-4">📦</div>
+          <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+            <Package className="w-10 h-10 text-gray-400" />
+          </div>
           <p className="text-gray-600 text-lg">Không có đơn hàng nào để theo dõi.</p>
         </div>
       ) : (
@@ -299,88 +333,120 @@ const GetKitDeliveryStatus = () => {
             const isExpanded = expandedOrders.has(realIndex);
             const statusColorClass = getStatusColorClass(order.deliveryStatus);
             const statusBadgeClass = getStatusBadgeClass(order.deliveryStatus);
+            const currentStep = trackingSteps.find(s => s.status === order.deliveryStatus.toUpperCase());
             
             return (
-              <div key={realIndex} className={`mb-6 rounded-xl border-2 shadow-lg overflow-hidden ${statusColorClass}`}>
+              <div key={realIndex} className={`rounded-2xl border-2 shadow-lg overflow-hidden ${statusColorClass}`}>
                 {/* Order Header */}
-                <div className="p-6 bg-white">
+                <div className="p-6 bg-white/70 backdrop-blur-sm">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="text-xl font-bold text-gray-800">
-                          Đơn hàng #{realIndex + 1}
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-xl bg-gradient-to-r ${currentStep?.gradient || 'from-gray-400 to-gray-500'} shadow-lg`}>
+                            {currentStep?.iconComponent && (
+                              <currentStep.iconComponent className="w-5 h-5 text-white" />
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-bold text-gray-800">
+                              Đơn hàng #{realIndex + 1}
+                            </h3>
+                            <div className="flex items-center gap-2 text-gray-600 mt-1">
+                              <Calendar className="w-4 h-4" />
+                              <span className="text-sm">
+                                {new Date(order.createOrderDate).toLocaleDateString('vi-VN', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium border ${statusBadgeClass}`}>
+                        <span className={`px-4 py-2 rounded-full text-sm font-bold ${statusBadgeClass}`}>
                           {getStatusDisplayText(order.deliveryStatus)}
                         </span>
                       </div>
-                      <div className="text-gray-600 flex items-center gap-2">
-                        <span className="text-base">📅</span>
-                        <span>Ngày đặt: {new Date(order.createOrderDate).toLocaleDateString('vi-VN', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric'
-                        })}</span>
-                      </div>
                     </div>
                     <button 
-                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+                      className="flex items-center gap-3 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors duration-200 font-medium"
                       onClick={() => toggleOrderExpansion(realIndex)}
                     >
-                      <span className="text-sm">
-                        {isExpanded ? '🔼' : '🔽'}
-                      </span>
-                      <span>
-                        {isExpanded ? 'Thu gọn' : 'Xem chi tiết'}
-                      </span>
+                      {isExpanded ? (
+                        <>
+                          <EyeOff className="w-4 h-4" />
+                          <span>Thu gọn</span>
+                          <ChevronUp className="w-4 h-4" />
+                        </>
+                      ) : (
+                        <>
+                          <Eye className="w-4 h-4" />
+                          <span>Xem chi tiết</span>
+                          <ChevronDown className="w-4 h-4" />
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
 
                 {/* Timeline - Conditionally rendered */}
-              {/* Timeline - Conditionally rendered */}
                 {isExpanded && (
-                  <div className="px-6 pb-6 bg-white border-t border-gray-100">
+                  <div className="px-6 pb-6 bg-white/50 backdrop-blur-sm border-t border-white/30">
                     <div className="mt-6">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                        <span>Trạng thái giao hàng</span>
-                      </h3>
+                      <div className="flex items-center gap-3 mb-8">
+                        <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-lg">
+                          <Truck className="w-5 h-5 text-white" />
+                        </div>
+                        <h4 className="text-lg font-bold text-gray-800">
+                          Trạng thái giao hàng
+                        </h4>
+                        <div className="flex-1 h-px bg-gradient-to-r from-gray-300 to-transparent"></div>
+                      </div>
                       
-                      {/* New Multi-step Progress Bar */}
-                      <div className="mb-8">
+                      {/* Enhanced Multi-step Progress Bar */}
+                      <div className="mb-10">
                         <div className="flex items-center relative">
                           {/* Background Line */}
                           <div 
-                            className="absolute top-6 h-0.5 bg-gray-300 z-0"
+                            className="absolute top-6 h-1 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full z-0"
                             style={{
-                              left: '24px', // Half of circle width (48px/2)
-                              right: '24px' // Half of circle width (48px/2)
+                              left: '24px',
+                              right: '24px'
                             }}
                           ></div>
                           
                           {/* Progress Line */}
                           <div 
-                            className="absolute top-6 h-0.5 bg-green-500 z-10 transition-all duration-500"
+                            className="absolute top-6 h-1 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full z-10 transition-all duration-1000 ease-out shadow-sm"
                             style={{
                               left: '24px',
-                              width: `calc((100% - 48px) * ${currentStepIndex / (relevantSteps.length - 1)})`
+                              width: `calc((100% - 48px) * ${Math.max(0, currentStepIndex / Math.max(1, relevantSteps.length - 1))})`
                             }}
                           ></div>
                           
                           {/* Step Circles Container */}
                           <div className="flex items-center justify-between w-full">
-                            {/* Step Circles */}
                             {relevantSteps.map((step, stepIndex) => {
                               const stepClass = getStepClass(stepIndex, currentStepIndex, order.deliveryStatus, step);
+                              const IconComponent = step.iconComponent;
                               
                               return (
-                                <div key={step.id} className="flex flex-col items-center relative z-20">
+                                <div key={step.id} className="flex flex-col items-center relative z-20 group">
                                   <div 
-                                    className={`w-12 h-12 rounded-full border-2 flex items-center justify-center text-sm font-bold transition-all duration-300 ${getStepIconClass(stepClass)}`}
+                                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all duration-500 transform hover:scale-110 ${getStepIconClass(stepClass, step)}`}
                                   >
-                                    {stepClass === 'completed' ? '✓' : stepClass === 'failed' ? '✗' : step.icon}
+                                    {stepClass === 'completed' ? (
+                                      <CheckCircle className="w-6 h-6" />
+                                    ) : stepClass === 'failed' ? (
+                                      <XCircle className="w-6 h-6" />
+                                    ) : (
+                                      <IconComponent className="w-5 h-5" />
+                                    )}
                                   </div>
-                                  <div className={`mt-3 text-xs font-medium text-center max-w-20 ${getStepTitleClass(stepClass)}`}>
+                                  <div className={`mt-3 text-xs font-bold text-center max-w-20 leading-tight transition-all duration-300 ${getStepTitleClass(stepClass, step)}`}>
                                     {step.title}
                                   </div>
                                 </div>
@@ -390,31 +456,65 @@ const GetKitDeliveryStatus = () => {
                         </div>
                       </div>
 
-                      {/* Detailed Step Information */}
+                      {/* Enhanced Detailed Step Information */}
                       <div className="space-y-4">
                         {relevantSteps.map((step, stepIndex) => {
                           const stepClass = getStepClass(stepIndex, currentStepIndex, order.deliveryStatus, step);
+                          const IconComponent = step.iconComponent;
                           
                           return (
-                            <div key={step.id} className="flex items-start gap-4 p-4 rounded-lg bg-gray-50 border border-gray-200">
+                            <div key={step.id} className={`flex items-start gap-4 p-5 rounded-xl border-2 transition-all duration-300 hover:shadow-lg ${
+                              stepClass === 'active' ? 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 shadow-md' :
+                              stepClass === 'completed' ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200' :
+                              stepClass === 'failed' ? 'bg-gradient-to-r from-red-50 to-pink-50 border-red-200' :
+                              'bg-white/70 border-gray-200 backdrop-blur-sm'
+                            }`}>
                               {/* Step Icon */}
-                              <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-sm font-bold flex-shrink-0 ${getStepIconClass(stepClass)}`}>
-                                {stepClass === 'completed' ? '✓' : stepClass === 'failed' ? '✗' : step.icon}
+                              <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold flex-shrink-0 transition-all duration-300 ${getStepIconClass(stepClass, step)}`}>
+                                {stepClass === 'completed' ? (
+                                  <CheckCircle className="w-6 h-6" />
+                                ) : stepClass === 'failed' ? (
+                                  <XCircle className="w-6 h-6" />
+                                ) : (
+                                  <IconComponent className="w-5 h-5" />
+                                )}
                               </div>
                               
                               {/* Step Content */}
                               <div className="flex-1">
-                                <div className={`text-base font-medium mb-1 ${getStepTitleClass(stepClass)}`}>
+                                <div className={`text-lg font-bold mb-2 ${getStepTitleClass(stepClass, step)}`}>
                                   {step.title}
                                 </div>
-                                <div className="text-gray-600 mb-2 text-sm leading-relaxed">
+                                <div className="text-gray-600 mb-3 text-sm leading-relaxed">
                                   {step.description}
                                 </div>
-                                <div className={`text-xs font-medium ${getStepTimeClass(stepClass)}`}>
-                                  {stepClass === 'pending' ? 'Chưa thực hiện' : 
-                                   stepClass === 'active' ? 'Đang thực hiện' :
-                                   stepClass === 'completed' ? 'Đã hoàn thành' :
-                                   stepClass === 'failed' ? 'Thất bại' : ''}
+                                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold ${
+                                  stepClass === 'pending' ? 'bg-gray-100 text-gray-600' :
+                                  stepClass === 'active' ? `bg-gradient-to-r ${step.gradient} text-white shadow-sm` :
+                                  stepClass === 'completed' ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-sm' :
+                                  stepClass === 'failed' ? 'bg-gradient-to-r from-red-500 to-pink-600 text-white shadow-sm' : ''
+                                }`}>
+                                  {stepClass === 'pending' ? (
+                                    <>
+                                      <Clock className="w-3 h-3" />
+                                      <span>Chưa thực hiện</span>
+                                    </>
+                                  ) : stepClass === 'active' ? (
+                                    <>
+                                      <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                                      <span>Đang thực hiện</span>
+                                    </>
+                                  ) : stepClass === 'completed' ? (
+                                    <>
+                                      <CheckCircle className="w-3 h-3" />
+                                      <span>Đã hoàn thành</span>
+                                    </>
+                                  ) : stepClass === 'failed' ? (
+                                    <>
+                                      <AlertCircle className="w-3 h-3" />
+                                      <span>Thất bại</span>
+                                    </>
+                                  ) : null}
                                 </div>
                               </div>
                             </div>
@@ -428,30 +528,30 @@ const GetKitDeliveryStatus = () => {
             );
           })}
           
-          {/* Pagination Controls */}
+          {/* Enhanced Pagination Controls */}
           {kitStatus.length > itemsPerPage && (
-            <div className="flex justify-center items-center mt-8 gap-4">
+            <div className="flex justify-center items-center mt-10 gap-3">
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className={`px-4 py-2 rounded-lg border font-medium transition-colors duration-200 ${
+                className={`px-5 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg ${
                   currentPage === 1
-                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-white/70 text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:shadow-xl backdrop-blur-sm border border-gray-200'
                 }`}
               >
-                Trang trước
+                ← Trang trước
               </button>
               
-              <div className="flex gap-1">
+              <div className="flex gap-2">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`px-3 py-2 rounded-lg border font-medium transition-colors duration-200 ${
+                    className={`px-4 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg transform hover:scale-105 ${
                       currentPage === page
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                        ? 'bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-xl'
+                        : 'bg-white/70 text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 backdrop-blur-sm border border-gray-200'
                     }`}
                   >
                     {page}
@@ -462,13 +562,13 @@ const GetKitDeliveryStatus = () => {
               <button
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className={`px-4 py-2 rounded-lg border font-medium transition-colors duration-200 ${
+                className={`px-5 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg ${
                   currentPage === totalPages
-                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-white/70 text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:shadow-xl backdrop-blur-sm border border-gray-200'
                 }`}
               >
-                Trang sau
+                Trang sau →
               </button>
             </div>
           )}
