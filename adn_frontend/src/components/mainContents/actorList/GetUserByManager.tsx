@@ -1,17 +1,7 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
-  TextField,
-} from '@mui/material';
+import { Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { showErrorSnackbar, showSuccessAlert } from './utils/notifications';
 import Swal from 'sweetalert2';
-import styles from './GetUserByManager.module.css';
 
 type User = {
   // userId: string;
@@ -118,109 +108,125 @@ function GetUserByManager() {
 
   if (loading) {
     return (
-      <div className={styles.container}>
-        <div className={styles.loadingContainer}>Đang tải dữ liệu...</div>
+      <div className="bg-white p-6">
+        <div className="flex items-center justify-center h-32">
+          <div className="text-gray-500">Đang tải dữ liệu...</div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <h1 className={styles.title}>Quản Lý Người Dùng</h1>
-        <p className={styles.subtitle}>Danh sách người dùng trong hệ thống</p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className={styles.statsContainer}>
-        <div className={styles.statCard}>
-          <h2 className={styles.statNumber}>{account.length}</h2>
-          <p className={styles.statLabel}>Tổng người dùng</p>
-        </div>
-        <div className={styles.statCard}>
-          <h2 className={styles.statNumber}>
-            {account.filter((user) => user.enabled).length}
-          </h2>
-          <p className={styles.statLabel}>Đang hoạt động</p>
-        </div>
-        <div className={styles.statCard}>
-          <h2 className={styles.statNumber}>{searchByPhone.length}</h2>
-          <p className={styles.statLabel}>Kết quả tìm kiếm</p>
-        </div>
-      </div>
+    <div className="bg-white">
 
       {/* Error Message */}
-      {error && <div className={styles.errorMessage}>{error}</div>}
-
-      {/* Table Card */}
-      <div className={styles.tableCard}>
-        {/* Search Section */}
-        <div className={styles.searchContainer}>
-          <TextField
-            label="Tìm kiếm theo số điện thoại"
-            variant="outlined"
-            size="small"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className={styles.searchField}
-            placeholder="Nhập số điện thoại để tìm kiếm..."
-          />
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
         </div>
+      )}
 
-        {/* Table */}
-        <TableContainer className={styles.tableContainer}>
-          <Table className={styles.table}>
-            <TableHead className={styles.tableHead}>
-              <TableRow>
-                <TableCell className={styles.headerCell}>STT</TableCell>
-                <TableCell className={styles.headerCell}>Họ tên</TableCell>
-                <TableCell className={styles.headerCell}>Email</TableCell>
-                <TableCell className={styles.headerCell}>SĐT</TableCell>
-                <TableCell className={styles.headerCell}>Thao tác</TableCell>
-              </TableRow>
-            </TableHead>
+      {/* Search Input */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Nhập số điện thoại để tìm kiếm..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-auto"
+        />
+      </div>
 
-            <TableBody>
-              {searchByPhone.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={5} className={styles.noData}>
-                    {search
-                      ? 'Không tìm thấy người dùng với số điện thoại này'
-                      : 'Chưa có người dùng nào'}
-                  </TableCell>
-                </TableRow>
-              ) : (
-                searchByPhone.map((user, index) => (
-                  <TableRow key={index} className={styles.bodyRow}>
-                    <TableCell className={styles.bodyCell}>
-                      {index + 1}
-                    </TableCell>
-                    <TableCell className={styles.bodyCell}>
-                      {user.fullName}
-                    </TableCell>
-                    <TableCell className={styles.bodyCell}>
-                      {user.email}
-                    </TableCell>
-                    <TableCell className={styles.bodyCell}>
-                      {user.phone}
-                    </TableCell>
-                    <TableCell className={styles.actionCell}>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        className={styles.deleteButton}
+      {/* Table */}
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <table className="w-full table-fixed">
+          <colgroup>
+            <col className="w-16" />
+            <col className="w-40" />
+            <col className="w-56" />
+            <col className="w-32" />
+            <col className="w-28" />
+            <col className="w-24" />
+            <col className="w-20" />
+          </colgroup>
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-3 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                STT
+              </th>
+              <th className="px-3 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                Họ tên
+              </th>
+              <th className="px-3 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                Email
+              </th>
+              <th className="px-3 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                SĐT
+              </th>
+              <th className="px-3 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                Trạng thái
+              </th>
+              <th className="px-3 py-3 text-center text-sm font-medium text-gray-600 border-r border-gray-200">
+                Vai trò
+              </th>
+              <th className="px-3 py-3 text-center text-sm font-medium text-gray-600">
+                Thao tác
+              </th>
+            </tr>
+          </thead>
+
+          <tbody className="divide-y divide-gray-200">
+            {searchByPhone.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                  {search
+                    ? 'Không tìm thấy người dùng với số điện thoại này'
+                    : 'Chưa có người dùng nào'}
+                </td>
+              </tr>
+            ) : (
+              searchByPhone.map((user, index) => (
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="px-3 py-3 text-sm text-blue-600 font-medium text-center border-r border-gray-200">
+                    #{String(index + 1).padStart(4, '0')}
+                  </td>
+                  <td className="px-3 py-3 text-sm text-gray-800 border-r border-gray-200 truncate" title={user.fullName}>
+                    {user.fullName}
+                  </td>
+                  <td className="px-3 py-3 text-sm text-gray-600 border-r border-gray-200 truncate" title={user.email}>
+                    {user.email}
+                  </td>
+                  <td className="px-3 py-3 text-sm text-gray-600 text-center border-r border-gray-200">
+                    {user.phone}
+                  </td>
+                  <td className="px-3 py-3 text-sm text-center border-r border-gray-200">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      user.enabled 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {user.enabled ? 'Hoạt động' : 'Không hoạt động'}
+                    </span>
+                  </td>
+                  <td className="px-3 py-3 text-sm text-gray-600 text-center border-r border-gray-200">
+                    {user.role}
+                  </td>
+                  <td className="px-3 py-3 text-center">
+                    <div className="flex justify-center">
+                      <button
                         onClick={() => handleDelete(user.phone, user.fullName)}
+                        className="p-1 text-red-500 hover:bg-red-50 rounded border border-red-200 hover:border-red-300 transition-colors"
+                        title="Xóa người dùng"
                       >
-                        Xóa
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );
