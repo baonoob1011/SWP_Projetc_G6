@@ -118,20 +118,40 @@ const RevenueDashboard = () => {
       value: item.revenue,
     })) || [];
 
+  // Improved currency formatting functions
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
+    if (value === 0) return '0đ';
+    
+    // Format with thousands separators and add 'đ' suffix
+    const formatted = new Intl.NumberFormat('vi-VN', {
       minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     }).format(value);
+    
+    return `${formatted}đ`;
   };
 
   const formatCurrencyTooltip = (value: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
+    if (value === 0) return '0đ';
+    
+    const formatted = new Intl.NumberFormat('vi-VN', {
       minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     }).format(value);
+    
+    return `${formatted}đ`;
+  };
+
+  // Format for Y-axis with K/M abbreviations
+  const formatYAxisTick = (value: number) => {
+    if (value === 0) return '0';
+    if (value >= 1000000) {
+      return `${(value / 1000000).toFixed(1)}M`;
+    }
+    if (value >= 1000) {
+      return `${(value / 1000).toFixed(0)}K`;
+    }
+    return value.toString();
   };
 
   const chartData =
@@ -342,7 +362,7 @@ const RevenueDashboard = () => {
           <BarChart data={monthlyChartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
-            <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(1)}K`} />
+            <YAxis tickFormatter={formatYAxisTick} />
             <Tooltip
               formatter={(value) => [
                 formatCurrencyTooltip(Number(value)),
@@ -428,10 +448,7 @@ const RevenueDashboard = () => {
               </div>
               <div className="ml-4">
                 <div className="text-4xl font-bold text-gray-900 mb-2">
-                  {typeof stat.value === 'number' &&
-                  stat.label.includes('doanh thu')
-                    ? formatCurrency(stat.value)
-                    : stat.value?.toLocaleString() || 0}
+                  {formatCurrency(stat.value)}
                 </div>
                 <div className="text-gray-600 text-sm mb-3">{stat.label}</div>
               </div>
@@ -452,7 +469,7 @@ const RevenueDashboard = () => {
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
-            <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(1)}K`} />
+            <YAxis tickFormatter={formatYAxisTick} />
             <Tooltip
               formatter={(value) => [
                 formatCurrencyTooltip(Number(value)),
