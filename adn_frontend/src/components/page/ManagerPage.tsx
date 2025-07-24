@@ -74,20 +74,20 @@ const ManagerPage = () => {
 
   const menuItems = [
     { id: 'dashboard', icon: ArrowBack, label: 'Trang chủ', path: '' },
-
+    { id: 'data', icon: List, label: 'Danh sách', path: 'manager/data' }, 
     {
       id: 'result',
       icon: Check,
       label: 'Duyệt kết quả',
       path: 'manager/checkResult',
     },
-    { id: 'data', icon: List, label: 'Danh sách', path: 'manager/data' },
     {
       id: 'location',
       icon: LocationCity,
       label: 'Tạo địa chỉ mới',
       path: 'manager/location',
     },
+    
     {
       id: 'room',
       icon: Room,
