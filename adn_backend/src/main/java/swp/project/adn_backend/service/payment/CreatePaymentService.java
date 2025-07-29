@@ -53,6 +53,9 @@ public class CreatePaymentService {
     public CreatePaymentRequest createPayment(long paymentId, long serviceId) {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PAYMENT_INFO_NOT_EXISTS));
+        if(payment.getPaymentStatus().equals(PaymentStatus.PAID)){
+            throw new RuntimeException("Đã thanh toán");
+        }
         if (!payment.getPaymentMethod().equals(PaymentMethod.VN_PAY)) {
             throw new RuntimeException("Vui lòng chọn phương pháp thanh toán là Vnpay");
         }

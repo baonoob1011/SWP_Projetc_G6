@@ -1256,7 +1256,7 @@ public class AppointmentService {
         if (appointment.getAppointmentType().equals(AppointmentType.CENTER)) {
             appointment.getSlot().setSlotStatus(SlotStatus.COMPLETED);
         }
-        appointment.setAppointmentStatus(AppointmentStatus.WAITING_MANAGER_APPROVAL);
+        appointment.setAppointmentStatus(AppointmentStatus.WAITING_MANAGER_APPROVAL_REFUND);
     }
 
     @Transactional
@@ -1497,7 +1497,7 @@ public class AppointmentService {
         TypedQuery<AppointmentInfoForManagerDTO> query = entityManager
                 .createQuery(jpql, AppointmentInfoForManagerDTO.class);
 
-        query.setParameter("status", AppointmentStatus.WAITING_MANAGER_APPROVAL);
+        query.setParameter("status", AppointmentStatus.WAITING_MANAGER_APPROVAL_REFUND);
 
         return query.getResultList();
     }
