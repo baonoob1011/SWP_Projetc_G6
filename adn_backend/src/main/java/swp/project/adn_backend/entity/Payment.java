@@ -20,7 +20,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     PaymentMethod paymentMethod;
     @Enumerated(EnumType.STRING)
-    PaymentStatus paymentStatus;
+    PaymentStatus getPaymentStatus;
     LocalDate transitionDate;
 
     @ManyToOne(cascade = {
@@ -93,12 +93,12 @@ public class Payment {
         return transitionDate;
     }
 
-    public PaymentStatus getPaymentStatus() {
-        return paymentStatus;
+    public PaymentStatus getGetPaymentStatus() {
+        return getPaymentStatus;
     }
 
-    public void setPaymentStatus(PaymentStatus paymentStatus) {
-        this.paymentStatus = paymentStatus;
+    public void setGetPaymentStatus(PaymentStatus getPaymentStatus) {
+        this.getPaymentStatus = getPaymentStatus;
     }
 
     public List<Invoice> getInvoices() {
@@ -107,6 +107,16 @@ public class Payment {
 
     public void setInvoices(List<Invoice> invoices) {
         this.invoices = invoices;
+    }
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "paymentId=" + paymentId +
+                ", amount=" + amount +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", getPaymentStatus=" + getPaymentStatus +
+                ", transitionDate=" + transitionDate +
+                '}';
     }
 
     public void setTransitionDate(LocalDate transitionDate) {

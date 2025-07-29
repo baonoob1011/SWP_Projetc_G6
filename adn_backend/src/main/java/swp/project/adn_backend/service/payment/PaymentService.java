@@ -93,8 +93,8 @@ public class PaymentService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         Users users = appointment.getUsers();
         for (Payment payment : appointment.getPayments()) {
-            if (payment.getPaymentStatus().equals(PaymentStatus.PAID)) {
-                payment.setPaymentStatus(PaymentStatus.REFUNDED);
+            if (payment.getGetPaymentStatus().equals(PaymentStatus.PAID)) {
+                payment.setGetPaymentStatus(PaymentStatus.REFUNDED);
                 appointment.setAppointmentStatus(AppointmentStatus.REFUND);
                 users.getWallet().setBalance(users.getWallet().getBalance() + (long) payment.getAmount());
                 WalletTransaction walletTransaction = new WalletTransaction();

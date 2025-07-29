@@ -21,8 +21,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
 
     @Query("SELECT a FROM Appointment a JOIN a.payments p " +
             "WHERE a.appointmentStatus = :appointmentStatus " +
-            "AND p.paymentStatus = :paymentStatus")
-    List<Appointment> findByAppointmentStatusAndPaymentStatus(
+            "AND p.getPaymentStatus = :paymentStatus")
+    List<Appointment> findByAppointmentStatusAndGetPaymentStatus(
             @Param("appointmentStatus") AppointmentStatus appointmentStatus,
             @Param("paymentStatus") PaymentStatus paymentStatus);
 

@@ -53,7 +53,7 @@ public class CreatePaymentService {
     public CreatePaymentRequest createPayment(long paymentId, long serviceId) {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.PAYMENT_INFO_NOT_EXISTS));
-        if(payment.getPaymentStatus().equals(PaymentStatus.PAID)){
+        if(payment.getGetPaymentStatus().equals(PaymentStatus.PAID)){
             throw new RuntimeException("Đã thanh toán");
         }
         if (!payment.getPaymentMethod().equals(PaymentMethod.VN_PAY)) {
@@ -151,7 +151,7 @@ public class CreatePaymentService {
         invoice1.setResponseCode(responseCode);
         Payment payment = invoice1.getPayment();
         if (payment != null) {
-            payment.setPaymentStatus(PaymentStatus.PAID);
+            payment.setGetPaymentStatus(PaymentStatus.PAID);
             payment.setTransitionDate(LocalDate.now());
             payment.getAppointment().setNote("Đã thanh toán");
             appointmentService.increaseStaffNotification(payment.getAppointment().getStaff());
@@ -195,7 +195,7 @@ public class CreatePaymentService {
 
         Payment payment = invoice.getPayment();
         if (payment != null) {
-            payment.setPaymentStatus(PaymentStatus.FAILED);
+            payment.setGetPaymentStatus(PaymentStatus.FAILED);
             payment.setTransitionDate(LocalDate.now());
             payment.getAppointment().setNote("thanh toán thất bại");
         }

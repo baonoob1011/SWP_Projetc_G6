@@ -185,7 +185,7 @@ public class AppointmentService {
         payment.setAmount(amountAsDouble); // dùng double
         payment.setAppointment(appointment);
         payment.setUsers(userBookAppointment);
-        payment.setPaymentStatus(PaymentStatus.PENDING);
+        payment.setGetPaymentStatus(PaymentStatus.PENDING);
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         paymentRepository.save(payment);
 
@@ -272,7 +272,7 @@ public class AppointmentService {
     public void cancelUnpaidAppointmentsAfter24Hours() {
         LocalDateTime now = LocalDateTime.now();
         List<Appointment> unpaidAppointments = appointmentRepository
-                .findByAppointmentStatusAndPaymentStatus(AppointmentStatus.CONFIRMED, PaymentStatus.PENDING);
+                .findByAppointmentStatusAndGetPaymentStatus(AppointmentStatus.CONFIRMED, PaymentStatus.PENDING);
 
         for (Appointment appointment : unpaidAppointments) {
             LocalDateTime createdTime = appointment.getCreatedAt();
@@ -280,7 +280,7 @@ public class AppointmentService {
             if (createdTime != null && Duration.between(createdTime, now).toHours() >= 24) {
                 for (Payment payment : appointment.getPayments()) {
                     if (!payment.getPaymentMethod().equals(PaymentMethod.CASH)) {
-                        payment.setPaymentStatus(PaymentStatus.EXPIRED);
+                        payment.setGetPaymentStatus(PaymentStatus.EXPIRED);
                         appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
                         appointment.setNote("Hệ thống đã tự động hủy cuộc hẹn do quá thời gian thanh toán quy định (24 giờ).");
                     }
@@ -477,7 +477,7 @@ public class AppointmentService {
         payment.setAmount(amountAsDouble); // dùng tổng giá
         payment.setAppointment(appointment);
         payment.setUsers(userBookAppointment);
-        payment.setPaymentStatus(PaymentStatus.PENDING);
+        payment.setGetPaymentStatus(PaymentStatus.PENDING);
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         paymentRepository.save(payment);
         if (payment.getPaymentMethod().equals(PaymentMethod.CASH)) {
@@ -773,8 +773,8 @@ public class AppointmentService {
         for (Appointment appointment : appointmentList) {
             boolean isPaidOrRefunded = appointment.getPayments().stream()
                     .anyMatch(payment ->
-                            payment.getPaymentStatus() == PaymentStatus.PAID ||
-                                    payment.getPaymentStatus() == PaymentStatus.REFUNDED
+                            payment.getGetPaymentStatus() == PaymentStatus.PAID ||
+                                    payment.getGetPaymentStatus() == PaymentStatus.REFUNDED
                     );
 
             if (!isPaidOrRefunded) {
@@ -949,6 +949,11 @@ public class AppointmentService {
                     List<ServiceAppointmentResponse> services = List.of(appointmentMapper.toServiceAppointmentResponse(appointment.getServices()));
                     List<LocationAppointmentResponse> locations = List.of(appointmentMapper.toLocationAppointmentResponse(appointment.getLocation()));
                     List<PaymentAppointmentResponse> payments = appointmentMapper.toPaymentAppointmentResponse(appointment.getPayments());
+                    System.out.println("Payments raw (entities): " + appointment.getPayments());
+                    System.out.println("Payments mapped (DTOs): " + payments);
+
+
+
 
                     RoomAppointmentResponse room = new RoomAppointmentResponse();
                     if (appointment.getSlot() != null && appointment.getSlot().getRoom() != null) {
@@ -1226,7 +1231,7 @@ public class AppointmentService {
             if (appointment.getAppointmentType().equals(AppointmentType.CENTER) &&
                     appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
                 for (Payment payment : appointment.getPayments()) {
-                    if (payment.getPaymentStatus().equals(PaymentStatus.PENDING)) {
+                    if (payment.getGetPaymentStatus().equals(PaymentStatus.PENDING)) {
                         ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
                         ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
                         UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(appointment.getUsers());
@@ -1323,9 +1328,9 @@ public class AppointmentService {
             System.out.println(">>> All patients NO_SHOW → Proceeding refund...");
 
             for (Payment payment : appointment.getPayments()) {
-                System.out.println("Payment ID: " + payment.getPaymentId() + " | Status: " + payment.getPaymentStatus());
+                System.out.println("Payment ID: " + payment.getPaymentId() + " | Status: " + payment.getGetPaymentStatus());
 
-                if (payment.getPaymentStatus().equals(PaymentStatus.PAID)) {
+                if (payment.getGetPaymentStatus().equals(PaymentStatus.PAID)) {
                     System.out.println(">>> Refunding payment ID: " + payment.getPaymentId());
                     appointmentRefund(appointmentId);
                 }
@@ -1341,7 +1346,7 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         appointment.setNote("Đã thanh toán");
-        payment.setPaymentStatus(PaymentStatus.PAID);
+        payment.setGetPaymentStatus(PaymentStatus.PAID);
         payment.setTransitionDate(LocalDate.now());
         createPayment(paymentId, appointment.getServices().getServiceId());
 
@@ -1450,7 +1455,7 @@ public class AppointmentService {
             appointment.setNote("Đơn đăng ký đang đợi xác nhận");
 
         }
-        payment.setPaymentStatus(PaymentStatus.PAID);
+        payment.setGetPaymentStatus(PaymentStatus.PAID);
         payment.setTransitionDate(LocalDate.now());
 
         // ✅ Ghi lại giao dịch trong ví
