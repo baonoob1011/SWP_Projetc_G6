@@ -5,6 +5,7 @@ import jakarta.persistence.TypedQuery;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ import swp.project.adn_backend.service.roleService.PatientService;
 import swp.project.adn_backend.service.slot.StaffAssignmentTracker;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -152,7 +154,7 @@ public class AppointmentService {
         }
 
         appointment.setServices(serviceTest);
-
+        appointment.setCreatedAt(LocalDateTime.now());
         appointment.setLocation(location);
         appointment.setUsers(userBookAppointment);
 
@@ -263,6 +265,34 @@ public class AppointmentService {
         appointmentMapper.toAppointmentResponse(saved);
         return allAppointmentAtCenterResponse;
     }
+
+
+    @Scheduled(fixedRate = 300000) // Kiểm tra mỗi 5 phút (300000 ms)
+    @Transactional
+    public void cancelUnpaidAppointmentsAfter24Hours() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Appointment> unpaidAppointments = appointmentRepository
+                .findByAppointmentStatusAndPaymentStatus(AppointmentStatus.CONFIRMED, PaymentStatus.PENDING);
+
+        for (Appointment appointment : unpaidAppointments) {
+            LocalDateTime createdTime = appointment.getCreatedAt();
+
+            if (createdTime != null && Duration.between(createdTime, now).toHours() >= 24) {
+                for (Payment payment : appointment.getPayments()) {
+                    if (!payment.getPaymentMethod().equals(PaymentMethod.CASH)) {
+                        payment.setPaymentStatus(PaymentStatus.EXPIRED);
+                        appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
+                        appointment.setNote("Hệ thống đã tự động hủy cuộc hẹn do quá thời gian thanh toán quy định (24 giờ).");
+                    }
+                }
+
+                appointmentRepository.save(appointment);
+            }
+        }
+    }
+
+
+
 
     @Transactional
     public void increaseStaffNotification(Staff staff) {
@@ -406,6 +436,7 @@ public class AppointmentService {
         appointment.setUsers(userBookAppointment);
         appointment.setAppointmentDate(LocalDate.now());
         appointment.setNote("Đang đợi xác nhận");
+        appointment.setCreatedAt(LocalDateTime.now());
 
         // Tính giá sau khi giảm (nếu có)
 
@@ -975,7 +1006,8 @@ public class AppointmentService {
 
         for (Appointment appointment : appointmentList) {
             if(appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED) ||
-            appointment.getAppointmentStatus().equals(AppointmentStatus.REFUND)){
+            appointment.getAppointmentStatus().equals(AppointmentStatus.REFUND) ||
+            appointment.getAppointmentStatus().equals(AppointmentStatus.CANCELLED)){
                 if (appointment.getAppointmentType().equals(AppointmentType.CENTER)) {
                     ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
                     List<StaffAppointmentResponse> staff = List.of(appointmentMapper.toStaffAppointmentResponse(appointment.getStaff()));
@@ -1194,7 +1226,7 @@ public class AppointmentService {
             if (appointment.getAppointmentType().equals(AppointmentType.CENTER) &&
                     appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
                 for (Payment payment : appointment.getPayments()) {
-                    if (payment.getGetPaymentStatus().equals(PaymentStatus.PENDING)) {
+                    if (payment.getPaymentStatus().equals(PaymentStatus.PENDING)) {
                         ShowAppointmentResponse showAppointmentResponse = appointmentMapper.toShowAppointmentResponse(appointment);
                         ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
                         UserAppointmentResponse userAppointmentResponse = appointmentMapper.toUserAppointmentResponse(appointment.getUsers());

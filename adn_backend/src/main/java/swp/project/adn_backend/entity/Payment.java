@@ -20,7 +20,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     PaymentMethod paymentMethod;
     @Enumerated(EnumType.STRING)
-    PaymentStatus getPaymentStatus;
+    PaymentStatus paymentStatus;
     LocalDate transitionDate;
 
     @ManyToOne(cascade = {
@@ -46,15 +46,7 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(long paymentId, double amount, PaymentMethod paymentMethod, PaymentStatus getPaymentStatus, LocalDate transitionDate, Users users, Appointment appointment) {
-        this.paymentId = paymentId;
-        this.amount = amount;
-        this.paymentMethod = paymentMethod;
-        this.getPaymentStatus = getPaymentStatus;
-        this.transitionDate = transitionDate;
-        this.users = users;
-        this.appointment = appointment;
-    }
+
 
     public long getPaymentId() {
         return paymentId;
@@ -96,24 +88,17 @@ public class Payment {
         this.appointment = appointment;
     }
 
-    public PaymentStatus getPaymentStatus() {
-        return getPaymentStatus;
-    }
-
-    public void setPaymentStatus(PaymentStatus getPaymentStatus) {
-        this.getPaymentStatus = getPaymentStatus;
-    }
 
     public LocalDate getTransitionDate() {
         return transitionDate;
     }
 
-    public PaymentStatus getGetPaymentStatus() {
-        return getPaymentStatus;
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
     }
 
-    public void setGetPaymentStatus(PaymentStatus getPaymentStatus) {
-        this.getPaymentStatus = getPaymentStatus;
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public List<Invoice> getInvoices() {

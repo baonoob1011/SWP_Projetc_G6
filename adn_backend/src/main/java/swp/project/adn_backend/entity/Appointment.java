@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
 import swp.project.adn_backend.enums.AppointmentStatus;
 import swp.project.adn_backend.enums.AppointmentType;
 
@@ -33,6 +34,10 @@ public class Appointment {
 
     @Column(columnDefinition = "nvarchar(255)")
     String note;
+
+    @Column(updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     AppointmentType appointmentType;
@@ -150,6 +155,14 @@ public class Appointment {
     }
 
     public Appointment() {
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public KitDeliveryStatus getKitDeliveryStatus() {
