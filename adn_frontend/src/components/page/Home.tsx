@@ -113,7 +113,7 @@ export default function Home() {
         }
       );
       if (res.ok) {
-        toast.success('thành công');
+        toast.success('Đơn tư vấn đã được chuyển đến bộ phận tư vấn');
       }
     } catch (error) {
       console.log(error);

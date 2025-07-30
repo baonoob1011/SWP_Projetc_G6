@@ -27,7 +27,16 @@ const CheckResult = () => {
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
   };
-
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'WAITING_MANAGER_APPROVAL':
+        return 'Chờ duyệt kết quả';
+      case 'WAITING_MANAGER_APPROVAL_REFUND':
+        return 'Chờ duyệt hoàn tiền';
+      default:
+        return status;
+    }
+  };
   const fetchData = async () => {
     try {
       const res = await fetch(
@@ -141,7 +150,9 @@ const CheckResult = () => {
                       <TableCell>
                         {new Date(item.appointmentDate).toLocaleDateString()}
                       </TableCell>
-                      <TableCell>{item.appointmentStatus}</TableCell>
+                      <TableCell>
+                        {getStatusText(item.appointmentStatus)}
+                      </TableCell>
                       <TableCell>{item.note}</TableCell>
                       <TableCell>
                         <NavLink to={`/checkResultById/${item.appointmentId}`}>
@@ -184,7 +195,9 @@ const CheckResult = () => {
                       <TableCell>
                         {new Date(item.appointmentDate).toLocaleDateString()}
                       </TableCell>
-                      <TableCell>{item.appointmentStatus}</TableCell>
+                      <TableCell>
+                        {getStatusText(item.appointmentStatus)}
+                      </TableCell>
                       <TableCell>{item.note}</TableCell>
                       <TableCell>
                         <Button

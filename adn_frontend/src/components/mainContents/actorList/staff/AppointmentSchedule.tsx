@@ -182,10 +182,7 @@ const AppointmentSchedule = () => {
                       </p>
                       <div className={styles.infoItem}>
                         <p className={styles.infoLabel}>Số Người</p>
-                        <p className={styles.infoValue}>
-                          {item.kitAppointmentResponse?.targetPersonCount ||
-                            '—'}
-                        </p>
+                        <p className={styles.infoValue}>2</p>
                       </div>
                     </div>
 

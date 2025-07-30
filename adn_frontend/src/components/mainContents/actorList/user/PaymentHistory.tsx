@@ -122,7 +122,7 @@ const TransactionTable: React.FC = () => {
               <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                    Mã GD
+                    Đơn số
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
                     Loại
@@ -149,7 +149,7 @@ const TransactionTable: React.FC = () => {
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-sm font-medium text-slate-900">
-                        #{tx.walletTransactionId}
+                        {tx.walletTransactionId}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -166,7 +166,11 @@ const TransactionTable: React.FC = () => {
                               : 'text-green-700'
                           }`}
                         >
-                          {tx.type === 'PAYMENT' ? 'Thanh toán' : 'Nạp tiền'}
+                          {tx.type === 'PAYMENT'
+                            ? 'Thanh toán'
+                            : tx.type === 'DEPOSIT'
+                            ? 'Nạp tiền'
+                            : 'Hoàn tiền'}
                         </span>
                       </div>
                     </td>

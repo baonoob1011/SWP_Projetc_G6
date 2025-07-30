@@ -304,7 +304,7 @@ const Booking = () => {
               }`}
             >
               <FaHospital className="mr-2" />
-              Tại trung tâm
+              Tại cơ sở
             </button>
             <button
               onClick={() => handleTabChange('HOME')}
@@ -448,7 +448,7 @@ const Booking = () => {
                         >
                           {item.payments[0].getPaymentStatus === 'PAID'
                             ? 'Đã thanh toán'
-                            : item.payments[0].getPaymentStatus === 'REFUND'
+                            : item.payments[0].getPaymentStatus === 'REFUNDED'
                             ? 'Đã hoàn tiền'
                             : 'Chưa thanh toán'}
                         </span>
@@ -466,7 +466,7 @@ const Booking = () => {
                               Đổi phương thức thanh toán
                             </p>
                             <select
-                              defaultValue={payment.paymentMethod || 'VNPAY'}
+                              defaultValue={payment.paymentMethod || 'WALLET'}
                               onChange={(e) =>
                                 handleChangMethod(
                                   payment.paymentId,

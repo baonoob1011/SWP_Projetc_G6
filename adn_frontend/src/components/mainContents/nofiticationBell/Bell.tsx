@@ -6,7 +6,6 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  CircularProgress,
   Typography,
   Box,
   Divider,
@@ -258,7 +257,6 @@ export default function WalletNotification() {
       case 'completed':
       case 'confirmed':
         return 'success';
-
       case 'pending':
         return 'warning';
       case 'failed':
@@ -339,9 +337,7 @@ export default function WalletNotification() {
                             : 'Tại cơ sở'}
                         </Typography>
                         <Typography variant="caption" color="textSecondary">
-                          {new Date(appt.appointmentDate).toLocaleString(
-                            'vi-VN'
-                          )}
+                          {appt.appointmentDate}
                         </Typography>
                       </Box>
                       <Box sx={{ textAlign: 'right' }}>
@@ -362,7 +358,11 @@ export default function WalletNotification() {
                     <Typography
                       variant="caption"
                       color="textSecondary"
-                      sx={{ fontStyle: 'italic' }}
+                      sx={{
+                        fontStyle: 'italic',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
+                      }}
                     >
                       {appt.note}
                     </Typography>
@@ -385,7 +385,7 @@ export default function WalletNotification() {
                   navigate('/u-profile');
                 }}
               >
-                Xem tất cả giao dịch
+                Xem chi tiết
               </Typography>
             </Box>
           </>
@@ -460,7 +460,7 @@ export default function WalletNotification() {
                   navigate('/u-profile');
                 }}
               >
-                Xem tất cả giao dịch
+                Xem chi tiết
               </Typography>
             </Box>
           </>

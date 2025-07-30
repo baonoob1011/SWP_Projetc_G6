@@ -2,12 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import styles from './GetConsultant.module.css';
+import Swal from 'sweetalert2';
 
 const GetConsultant = () => {
   const [consultants, setConsultants] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-
-
 
   const fetchConsultants = async () => {
     setLoading(true);
@@ -39,17 +38,18 @@ const GetConsultant = () => {
 
   const handleStatusChange = async (
     registerForConsultationId: number,
-    newStatus: string
+    consultationStatus: string
   ) => {
     try {
       const res = await fetch(
-        `http://localhost:8080/api/register-for-consultation/update-register-consultation-status?registerForConsultationId=${registerForConsultationId}&consultationStatus=${newStatus}`,
+        `http://localhost:8080/api/register-for-consultation/update-register-consultation-status?registerForConsultationId=${registerForConsultationId}`,
         {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
+          body: JSON.stringify({ consultationStatus }),
         }
       );
 
@@ -95,22 +95,43 @@ const GetConsultant = () => {
             </thead>
             <tbody>
               {consultants.map((item) => (
-                <tr key={item.registerForConsultationId} className={styles.tableRow}>
+                <tr
+                  key={item.registerForConsultationId}
+                  className={styles.tableRow}
+                >
                   <td className={styles.tableCell}>{item.name}</td>
                   <td className={styles.tableCell}>{item.phone}</td>
                   <td className={styles.tableCell}>
                     <select
                       value={item.consultationStatus}
-                      onChange={(e) =>
-                        handleStatusChange(
-                          item.registerForConsultationId,
-                          e.target.value
-                        )
-                      }
+                      onChange={(e) => {
+                        const newStatus = e.target.value;
+
+                        Swal.fire({
+                          title: 'Bạn có chắc muốn thay đổi trạng thái?',
+                          text: 'Thao tác này sẽ cập nhật trạng thái của cuộc tư vấn.',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonText: 'Xác nhận',
+                          cancelButtonText: 'Hủy',
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            handleStatusChange(
+                              item.registerForConsultationId,
+                              newStatus
+                            );
+                            Swal.fire(
+                              'Thành công!',
+                              'Trạng thái đã được cập nhật.',
+                              'success'
+                            );
+                          }
+                        });
+                      }}
                       className={styles.selectStatus}
                     >
                       <option value="PENDING">Chờ xử lý</option>
-                      <option value="CONFIRMED">Đã xác nhận</option>
+                      <option value="CONFIRMED">Xác nhận</option>
                       <option value="IN_PROGRESS">Đang tiến hành</option>
                       <option value="COMPLETED">Hoàn thành</option>
                       <option value="CANCELLED">Đã hủy</option>

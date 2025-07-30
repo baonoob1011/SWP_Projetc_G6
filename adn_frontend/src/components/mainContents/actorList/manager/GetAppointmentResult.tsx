@@ -14,6 +14,7 @@ const GetAllResultByManager = () => {
   const { appointmentId } = useParams();
   const [isResult, setIsResult] = useState<any[]>([]);
   const navigate = useNavigate();
+
   const fetchData = async () => {
     try {
       const res = await fetch(
