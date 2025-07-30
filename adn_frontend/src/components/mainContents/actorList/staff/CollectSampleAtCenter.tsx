@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { NavLink, useParams } from 'react-router-dom';
-import { ArrowBack, Check, Delete } from '@mui/icons-material';
+import { ArrowBack, Check } from '@mui/icons-material';
 import styles from './CheckAppointment.module.css';
 import Swal from 'sweetalert2';
 
@@ -550,7 +550,7 @@ const CollectSampleAtCenter = () => {
                           }
                         }}
                       >
-                        <Delete fontSize="small" />
+                        Hủy mẫu
                       </button>
                     </td>
                   </tr>
