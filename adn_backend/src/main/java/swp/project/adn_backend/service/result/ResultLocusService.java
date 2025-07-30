@@ -54,13 +54,13 @@ public class ResultLocusService {
             Map.entry(8.0, 0.04),
             Map.entry(9.0, 0.06),
             Map.entry(10.0, 0.07),
-            Map.entry(11.0, 0.248),  // ✅ Đã fix theo dữ liệu mẫu bạn muốn
-            Map.entry(12.0, 0.180),  // ✅ Dị hợp tử phổ biến
+            Map.entry(11.0, 0.248),
+            Map.entry(12.0, 0.180),
             Map.entry(13.0, 0.100),
             Map.entry(13.2, 0.010),
             Map.entry(14.0, 0.085),
             Map.entry(15.0, 0.070),
-            Map.entry(16.0, 0.150),  // ✅ Rất phổ biến
+            Map.entry(16.0, 0.150),
             Map.entry(17.0, 0.050),
             Map.entry(18.0, 0.030),
             Map.entry(19.0, 0.025),
@@ -207,7 +207,7 @@ public class ResultLocusService {
                         Set<SampleCollectionMethod> methods = civilService.getSampleCollectionMethods();
 
                         if (methods.contains(SampleCollectionMethod.AT_CLINIC)) {
-                            Slot slot = appointment.getSlot(); // ✅ chỉ gán khi chắc chắn có
+                            Slot slot = appointment.getSlot();
                             if (slot != null) {
                                 slot.setSlotStatus(SlotStatus.COMPLETED);
                             }
@@ -234,7 +234,7 @@ public class ResultLocusService {
                     }
                 }
             } else if (type == ServiceType.ADMINISTRATIVE) {
-                Slot slot = appointment.getSlot(); // ✅ ADMINISTRATIVE cũng có slot
+                Slot slot = appointment.getSlot(); //
                 if (slot != null) {
                     slot.setSlotStatus(SlotStatus.COMPLETED);
                 }
@@ -259,8 +259,7 @@ public class ResultLocusService {
     }
 
 
-    // Tính PI chuẩn dựa trên quan hệ cha-con
-    // Tính PI chuẩn dựa trên quan hệ cha-con
+
     private double calculatePI(double father1, double father2, double child1, double child2) {
         if (Double.compare(child1, child2) == 0) {
             // Con đồng hợp tử (ví dụ: 11 - 11)

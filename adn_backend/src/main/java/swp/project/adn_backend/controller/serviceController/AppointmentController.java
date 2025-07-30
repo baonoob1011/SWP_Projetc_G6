@@ -137,6 +137,7 @@ public class AppointmentController {
                                                                                          @RequestParam long appointmentId) {
         return ResponseEntity.ok(appointmentService.getAllAppointmentsResultForManager(authentication, appointmentId));
     }
+    // manager get to view result
     @GetMapping("/get-all-appointment-by-manager")
     public ResponseEntity<List<AppointmentInfoForManagerDTO>> getAppointmentToViewResult() {
         return ResponseEntity.ok(appointmentService.getAppointmentToViewResult());

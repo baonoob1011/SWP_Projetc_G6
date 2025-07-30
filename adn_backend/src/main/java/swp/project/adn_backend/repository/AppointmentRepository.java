@@ -2,10 +2,12 @@ package swp.project.adn_backend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import swp.project.adn_backend.entity.AdministrativeService;
 import swp.project.adn_backend.entity.Appointment;
 import swp.project.adn_backend.enums.AppointmentStatus;
+import swp.project.adn_backend.enums.PaymentStatus;
 
 import java.util.List;
 
@@ -16,7 +18,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment,Long> {
     // Đếm số lượng user duy nhất đã từng có appointment (đăng ký dịch vụ)
     @Query("SELECT COUNT(DISTINCT a.users.userId) FROM Appointment a WHERE a.users IS NOT NULL")
     long countDistinctUsersRegisteredService();
-    
+
+    @Query("SELECT a FROM Appointment a JOIN a.payments p " +
+            "WHERE a.appointmentStatus = :appointmentStatus " +
+            "AND p.getPaymentStatus = :paymentStatus")
+    List<Appointment> findByAppointmentStatusAndGetPaymentStatus(
+            @Param("appointmentStatus") AppointmentStatus appointmentStatus,
+            @Param("paymentStatus") PaymentStatus paymentStatus);
+
     // Đếm số lượng user duy nhất đã hoàn thành appointment
     @Query("SELECT COUNT(DISTINCT a.users.userId) FROM Appointment a WHERE a.users IS NOT NULL AND a.appointmentStatus = 'COMPLETED'")
     long countDistinctUsersWithCompletedAppointments();

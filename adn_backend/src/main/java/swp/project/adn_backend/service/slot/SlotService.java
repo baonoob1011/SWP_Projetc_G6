@@ -161,7 +161,7 @@ public class SlotService {
         Location location = locationRepository.findById(locationId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.LOCATION_NOT_EXISTS));
 
-        // ✅ Lấy 2 ngày hợp lệ sắp tới (bỏ T7/CN)
+        // Lấy 2 ngày hợp lệ sắp tới (bỏ T7/CN)
         List<LocalDate> validDates = getNextWeekdays(today.plusDays(1), 5);
         if (validDates.size() < 2) return Collections.emptyList();
 
@@ -198,15 +198,6 @@ public class SlotService {
 
 
     public List<GetFullSlotResponse> getAllSlot() {
-//        Jwt jwt = (Jwt) authentication.getPrincipal();
-//        Long userId = jwt.getClaim("id");
-//
-//        Staff staffCheck = staffRepository.findById(userId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
-//        if(!staffCheck.getRole().equals("STAFF") ||
-//                !staffCheck.getRole().equals("SAMPLE_COLLECTOR") ){
-//            throw new RuntimeException("Bạn không được phân công slot");
-//        }
         List<GetFullSlotResponse> fullSlotResponses = new ArrayList<>();
         List<Slot> slotList = slotRepository.findAll();
         GetFullSlotResponse getAllServiceResponse = null;
@@ -220,11 +211,6 @@ public class SlotService {
             roomSlotResponse.setRoomName(slot.getRoom().getRoomName());
             roomSlotResponse.setOpenTime(slot.getRoom().getOpenTime());
             roomSlotResponse.setCloseTime(slot.getRoom().getCloseTime());
-
-//                //lay staff
-//                StaffSlotResponse staffSlotResponse = new StaffSlotResponse();
-//                staffSlotResponse.setStaffId(slot.getStaff().getFirst().getStaffId());
-//                staffSlotResponse.setFullName(slot.getStaff().getFirst().getFullName());
 
             List<StaffSlotResponse> staffSlotResponses = new ArrayList<>();
             for (Staff staff : slot.getStaff()) {

@@ -169,7 +169,7 @@ const CreateLocation = () => {
           </div>
           {/* Breadcrumb */}
           <div className="flex items-center mb-6 text-blue-100">
-            <span className="text-white font-medium">Admin</span>
+            <span className="text-white font-medium">Manager</span>
             <span className="mx-2">›</span>
             <span>địa điểm</span>
           </div>
