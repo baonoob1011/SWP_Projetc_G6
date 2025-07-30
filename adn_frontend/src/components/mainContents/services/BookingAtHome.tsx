@@ -325,7 +325,7 @@ const BookingAtHome = () => {
                   <option value="">-- Chọn gói --</option>
                   {price.map((priceItem) => (
                     <option key={priceItem.priceId} value={priceItem.priceId}>
-                      {`${priceItem.price}VND - ${priceItem.time}`}
+                      {`${priceItem.price} VND - ${priceItem.time}`}
                     </option>
                   ))}
                 </select>

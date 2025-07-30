@@ -164,8 +164,12 @@ const CreateResultAllele = () => {
       <div className={styles.container}>
         <div className={styles.formCard}>
           <div className={styles.header}>
-            <h1 className={styles.title}>Nhập giá trị Allele</h1>
-            <p className={styles.subtitle}>Nhập thông tin allele cho mẫu DNA</p>
+            <h1 className={styles.title}>
+              Nhập Thông Tin Gen Di Truyền (Allele)
+            </h1>
+            <p className={styles.subtitle}>
+              Cập nhật allele tại locus cụ thể cho mẫu ADN{' '}
+            </p>
           </div>
 
           {patientName && (

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import styles from './GetConsultant.module.css';
+import Swal from 'sweetalert2';
 
 const GetConsultant = () => {
   const [consultants, setConsultants] = useState<any[]>([]);
@@ -103,16 +104,34 @@ const GetConsultant = () => {
                   <td className={styles.tableCell}>
                     <select
                       value={item.consultationStatus}
-                      onChange={(e) =>
-                        handleStatusChange(
-                          item.registerForConsultationId,
-                          e.target.value
-                        )
-                      }
+                      onChange={(e) => {
+                        const newStatus = e.target.value;
+
+                        Swal.fire({
+                          title: 'Bạn có chắc muốn thay đổi trạng thái?',
+                          text: 'Thao tác này sẽ cập nhật trạng thái của cuộc tư vấn.',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonText: 'Xác nhận',
+                          cancelButtonText: 'Hủy',
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            handleStatusChange(
+                              item.registerForConsultationId,
+                              newStatus
+                            );
+                            Swal.fire(
+                              'Thành công!',
+                              'Trạng thái đã được cập nhật.',
+                              'success'
+                            );
+                          }
+                        });
+                      }}
                       className={styles.selectStatus}
                     >
                       <option value="PENDING">Chờ xử lý</option>
-                      <option value="CONFIRMED">Đã xác nhận</option>
+                      <option value="CONFIRMED">Xác nhận</option>
                       <option value="IN_PROGRESS">Đang tiến hành</option>
                       <option value="COMPLETED">Hoàn thành</option>
                       <option value="CANCELLED">Đã hủy</option>
