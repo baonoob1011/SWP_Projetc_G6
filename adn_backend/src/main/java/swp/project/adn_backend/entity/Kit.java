@@ -115,24 +115,4 @@ public class Kit {
     }
 
 
-    //
-//    @ManyToOne(cascade = {
-//            CascadeType.PERSIST, CascadeType.MERGE,
-//            CascadeType.DETACH, CascadeType.REFRESH
-//    })
-//    @JoinColumn(name = "patient_id", nullable = false)
-//    Patient patient;
-//
-//    @ManyToOne(cascade = {
-//            CascadeType.PERSIST, CascadeType.MERGE,
-//            CascadeType.DETACH, CascadeType.REFRESH
-//    })
-//    @JoinColumn(name = "civil_service_id", nullable = false)
-//    CivilService civilService;
-//
-//    @OneToMany(mappedBy = "kit", fetch = FetchType.LAZY, cascade = {
-//            CascadeType.PERSIST, CascadeType.MERGE,
-//            CascadeType.DETACH, CascadeType.REFRESH
-//    })
-//    List<Sample> sample;
 }

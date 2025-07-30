@@ -939,8 +939,7 @@ public class AppointmentService {
         for (Appointment appointment : appointmentList) {
             if (appointment.getAppointmentStatus().equals(AppointmentStatus.PENDING) ||
                     appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED) ||
-                    appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED) ||
-                    appointment.getAppointmentStatus().equals(AppointmentStatus.WAITING_MANAGER_APPROVAL)
+                    appointment.getAppointmentStatus().equals(AppointmentStatus.COMPLETED)
             ) {
                 if (appointment.getAppointmentType().equals(AppointmentType.CENTER)) {
                     ShowAppointmentResponse show = appointmentMapper.toShowAppointmentResponse(appointment);
@@ -1122,8 +1121,8 @@ public class AppointmentService {
     public List<AllAppointmentResult> getAllAppointmentsResultForManager(Authentication authentication, long appointmentId) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("id");
-
-        Users Manager = userRepository.findById(userId)
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));        Users Manager = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
         System.out.println("getRoles: " + Manager.getRoles());
         System.out.println("getRoles.toString(): " + Manager.getRoles().toString());
@@ -1136,10 +1135,7 @@ public class AppointmentService {
         }
 
 
-        List<Appointment> appointments = appointmentRepository.findAll();
-
         List<AllAppointmentResult> results = new ArrayList<>();
-        for (Appointment appointment : appointments) {
             if (appointment.getAppointmentStatus().equals(AppointmentStatus.WAITING_MANAGER_APPROVAL)) {
                 List<PatientAppointmentResponse> patientAppointmentResponse = appointmentMapper.toPatientAppointmentService(appointment.getPatients());
                 ServiceAppointmentResponse serviceAppointmentResponse = appointmentMapper.toServiceAppointmentResponse(appointment.getServices());
@@ -1180,7 +1176,7 @@ public class AppointmentService {
                 result.setUserAppointmentResponse(userAppointmentResponse);
                 results.add(result);
             }
-        }
+
 
         return results;
     }
@@ -1190,6 +1186,7 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
+        appointment.setNote("Đã có kết quả xét nghiệm");
     }
 
     @Transactional
