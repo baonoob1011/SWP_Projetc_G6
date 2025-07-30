@@ -24,6 +24,7 @@ import swp.project.adn_backend.mapper.ResultAlleleMapper;
 import swp.project.adn_backend.mapper.ResultMapper;
 import swp.project.adn_backend.repository.*;
 import swp.project.adn_backend.service.registerServiceTestService.AllAlleleResponse;
+import swp.project.adn_backend.validator.AlleleValidator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,11 +54,6 @@ private AppointmentMapper appointmentMapper;
         this.appointmentMapper = appointmentMapper;
     }
 
-    // Hàm kiểm tra allele hợp lệ (số nguyên hoặc thập phân)
-    private boolean isValidAllele(String alleleValue) {
-        return alleleValue != null && alleleValue.matches("^\\d+(\\.\\d+)?$");
-    }
-
     @Transactional
     public List<ResultAlleleResponse> createAllelePair(AllelePairRequest request,
                                                        long sampleId,
@@ -71,50 +67,51 @@ private AppointmentMapper appointmentMapper;
 
         Locus locus = locusRepository.findById(locusId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.LOCUS_NOT_EXISTS));
+        String locusName = locus.getLocusName();
 
         List<ResultAlleleResponse> responses = new ArrayList<>();
         LocusResponse locusResponse = new LocusResponse();
 
-        // Allele 1
+        // --- Allele 1 ---
         ResultAllele allele1 = new ResultAllele();
         allele1.setAlleleValue(request.getAllele1());
         allele1.setAllelePosition("1");
         allele1.setSample(sample);
         allele1.setLocus(locus);
         allele1.setAlleleStatus(
-                isValidAllele(String.valueOf(request.getAllele1()))
+                AlleleValidator.isValid(locusName, String.valueOf(request.getAllele1()))
                         ? request.getAlleleStatus()
                         : AlleleStatus.INVALID
         );
         resultAlleleRepository.save(allele1);
         responses.add(resultAlleleMapper.toResultAlleleResponse(allele1));
 
-        // Allele 2
+// --- Allele 2 ---
         ResultAllele allele2 = new ResultAllele();
         allele2.setAlleleValue(request.getAllele2());
         allele2.setAllelePosition("2");
         allele2.setSample(sample);
         allele2.setLocus(locus);
         allele2.setAlleleStatus(
-                isValidAllele(String.valueOf(request.getAllele2()))
+                AlleleValidator.isValid(locusName, String.valueOf(request.getAllele2()))
                         ? request.getAlleleStatus()
                         : AlleleStatus.INVALID
-        );        resultAlleleRepository.save(allele2);
+        );
+        resultAlleleRepository.save(allele2);
+        responses.add(resultAlleleMapper.toResultAlleleResponse(allele2));
+
 
         ResultAlleleResponse resultAlleleResponse = resultAlleleMapper.toResultAlleleResponse(allele2);
         locusResponse.setLocusId(locusId);
-        locusResponse.setLocusName(locus.getLocusName());
+        locusResponse.setLocusName(locusName);
         resultAlleleResponse.setLocusResponse(locusResponse);
         responses.add(resultAlleleResponse);
 
-        // Nếu có 3 allele INVALID thì đánh dấu mẫu là REJECTED
-//        int invalidCount = resultAlleleRepository.countBySample_SampleIdAndAlleleStatus(sampleId, AlleleStatus.INVALID);
-//        if (invalidCount >= 3) {
-//            sample.setSampleStatus(SampleStatus.REJECTED);
-//        }
+
 
         return responses;
     }
+
 
 
     @Transactional

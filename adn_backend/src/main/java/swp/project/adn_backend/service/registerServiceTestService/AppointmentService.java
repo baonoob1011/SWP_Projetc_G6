@@ -1124,11 +1124,6 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));        Users Manager = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.USER_NOT_EXISTED));
-        System.out.println("getRoles: " + Manager.getRoles());
-        System.out.println("getRoles.toString(): " + Manager.getRoles().toString());
-        System.out.println("enum name: " + Roles.MANAGER.name());
-        System.out.println("equals: " + Manager.getRoles().equals(Roles.MANAGER.name()));
-
 
         if (!Manager.getRoles().contains(Roles.MANAGER.name())) {
             throw new RuntimeException("Chỉ Có Manager mới có quyền xem");
