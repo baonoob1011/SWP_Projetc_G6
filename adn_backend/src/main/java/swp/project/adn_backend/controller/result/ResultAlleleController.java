@@ -33,4 +33,9 @@ public class ResultAlleleController {
     public ResponseEntity<AllAlleleResponse>getResultAllele(@RequestParam long patientId){
         return ResponseEntity.ok(resultAlleleService.getAllAlleleOfSample(patientId));
     }
+    @DeleteMapping("/delete-allele")
+    public ResponseEntity<String> deleteAllele(@RequestParam long alleleId){
+        resultAlleleService.deleteAllele(alleleId);
+        return ResponseEntity.ok("Xóa Thành Công");
+    }
 }
