@@ -78,7 +78,7 @@ const GetAllResultByManager = () => {
           <div key={index} className={styles.reportCard}>
             <Button
               component={NavLink}
-              to="/checkResult"
+              to="/manager/checkResult"
               className={styles.backButton}
             >
               <ArrowBack />
@@ -110,11 +110,7 @@ const GetAllResultByManager = () => {
               {/* Phần giới thiệu */}
               <div className={styles.introSection}>
                 <p className={styles.introText}>
-                  Căn cứ vào giấy đề nghị phân tích ADN số:{' '}
-                  <span className={styles.requestNumber}>HID15 5986</span>
-                </p>
-                <p className={styles.introText}>
-                  Của Ông (Bà):{' '}
+                  Ông (Bà):{' '}
                   <span className={styles.applicantName}>
                     {item.userAppointmentResponse.fullName}
                   </span>

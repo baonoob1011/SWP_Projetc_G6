@@ -327,7 +327,7 @@ const BookingHistory = () => {
                         {payment.getPaymentStatus === 'PAID'
                           ? 'Đã thanh toán'
                           : payment.getPaymentStatus === 'REFUNDED'
-                          ? 'Đã hoàn trả'
+                          ? 'Đã hoàn tiền'
                           : 'Chưa thanh toán'}
                       </span>
                     </div>

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from './ResultAllele.module.css';
 import Modal from 'react-modal';
@@ -24,8 +24,8 @@ const CreateResultAllele = () => {
   const location = useLocation();
   const { patientName } = location.state || {};
   const { patientId } = location.state || {};
-  const navigate = useNavigate();
-  const { appointmentId } = location.state || {};
+  // const navigate = useNavigate();
+  // const { appointmentId } = location.state || {};
   const [alleleResultData, setAlleleResultData] = useState<any>('');
   const [showPopup, setShowPopup] = useState(false);
 
@@ -109,7 +109,6 @@ const CreateResultAllele = () => {
         setAllele2('');
         setAlleleStatus('ENTERED');
         setSelectedLocus('');
-        navigate(`/s-page/get-appointment/${appointmentId}`);
       } else {
         const errorData = await response.json();
         toast.error('Lỗi: ' + errorData.message);
@@ -211,7 +210,7 @@ const CreateResultAllele = () => {
               </div>
             </div>
 
-            <div className={styles.formGroup}>
+            {/* <div className={styles.formGroup}>
               <label className={styles.label}>Trạng thái Allele</label>
               <select
                 className={`${styles.selectField} ${styles.statusSelect}`}
@@ -222,7 +221,7 @@ const CreateResultAllele = () => {
                 <option value="VALID">Hợp lệ</option>
                 <option value="INVALID">Không hợp lệ</option>
               </select>
-            </div>
+            </div> */}
 
             <div className={styles.formGroup}>
               <label className={styles.label}>Chọn Locus</label>
@@ -254,9 +253,9 @@ const CreateResultAllele = () => {
           alleleResultData.resultAlleleResponse?.length > 0 && (
             <div className={styles.resultTableContainer}>
               <div className={styles.header}>
-                <h2 className={styles.title}>Kết quả Allele</h2>
+                <h2 className={styles.title}>Dữ liệu Allele đã thu</h2>
                 <p className={styles.subtitle}>
-                  Thông tin chi tiết kết quả phân tích DNA
+                  Tổng hợp dữ liệu Allele đã thu với các locus khác nhau
                 </p>
               </div>
 
