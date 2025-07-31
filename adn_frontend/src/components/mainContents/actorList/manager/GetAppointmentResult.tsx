@@ -245,25 +245,38 @@ const GetAllResultByManager = () => {
                     <tr>
                       <td
                         colSpan={3}
-                        className={styles.tableCell}
-                        style={{ fontWeight: 'bold', textAlign: 'left' }}
+                        className="p-3 text-sm font-bold text-left text-orange-800"
                       >
-                        Xác suất huyết thống:
+                        Tổng CPI:
                       </td>
-                      <td
-                        className={styles.tableCell}
-                        style={{ fontWeight: 'bold', color: '#c0392b' }}
-                      >
-                        {item.resultDetailAppointmentResponse?.[0]?.paternityProbability?.toFixed(
-                          4
-                        )}
-                        %
+                      <td className="p-3 text-sm font-bold text-center text-orange-800 font-mono">
+                        {(
+                          item.resultDetailAppointmentResponse?.[0]
+                            ?.paternityProbability /
+                          (100 -
+                            item.resultDetailAppointmentResponse?.[0]
+                              ?.paternityProbability)
+                        )?.toFixed(6)}
                       </td>
                     </tr>
                   </tfoot>
                 </table>
               </div>
-
+              <div className="mb-8">
+                <div className="border-2 border-orange-400 rounded-lg p-6 bg-orange-50">
+                  <div className="text-center">
+                    <h3 className="text-base font-bold text-orange-700 mb-2">
+                      XÁC SUẤT HUYẾT THỐNG
+                    </h3>
+                    <p className="text-3xl font-bold text-orange-600">
+                      {item.resultDetailAppointmentResponse?.[0]?.paternityProbability?.toFixed(
+                        4
+                      )}
+                      %
+                    </p>
+                  </div>
+                </div>
+              </div>
               {/* Kết luận của hội đồng khoa học */}
               <div className={styles.companyDecision}>
                 <h3 className={styles.decisionTitle}>
