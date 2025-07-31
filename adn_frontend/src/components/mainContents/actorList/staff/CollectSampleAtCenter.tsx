@@ -282,7 +282,6 @@ const CollectSampleAtCenter = () => {
   const sampleStatus = appointments.map(
     (a) => a.patientAppointmentResponse.patientStatus === 'REGISTERED'
   );
-
   useEffect(() => {
     fetchAppointment();
   }, []);
@@ -463,7 +462,9 @@ const CollectSampleAtCenter = () => {
                   <th className={styles.tableHeaderCell}>Ngày thu</th>
                   <th className={styles.tableHeaderCell}>Người thu</th>
                   <th className={styles.tableHeaderCell}>Trạng thái mẫu</th>
-                  <th className={styles.tableHeaderCell}>Thao tác</th>
+                  {sample.some(
+                    (s) => s.sampleResponse.sampleStatus === 'COLLECTED'
+                  ) && <th className={styles.tableHeaderCell}>Thao tác</th>}
                 </tr>
               </thead>
               <tbody>
@@ -523,36 +524,38 @@ const CollectSampleAtCenter = () => {
                         ))}
                       </select>
                     </td>
-                    <td className={styles.tableCell}>
-                      <button
-                        type="submit"
-                        className={styles.submitBtn}
-                        onClick={() => {
-                          const matchedAppointment = appointments.find((a) =>
-                            a.patientAppointmentResponse.some(
-                              (p: any) =>
-                                p.patientId ===
-                                item.patientSampleResponse.patientId
-                            )
-                          );
-                          const appointmentId =
-                            matchedAppointment?.showAppointmentResponse
-                              ?.appointmentId;
-                          if (appointmentId) {
-                            setConfirmDelete({
-                              appointmentId,
-                              sampleId: item.sampleResponse.sampleId,
-                            });
-                          } else {
-                            toast.error(
-                              'Không tìm thấy appointmentId cho mẫu này'
+                    {item.sampleResponse.sampleStatus === 'COLLECTED' && (
+                      <td className={styles.tableCell}>
+                        <button
+                          type="submit"
+                          className={styles.submitBtn}
+                          onClick={() => {
+                            const matchedAppointment = appointments.find((a) =>
+                              a.patientAppointmentResponse.some(
+                                (p: any) =>
+                                  p.patientId ===
+                                  item.patientSampleResponse.patientId
+                              )
                             );
-                          }
-                        }}
-                      >
-                        Hủy mẫu
-                      </button>
-                    </td>
+                            const appointmentId =
+                              matchedAppointment?.showAppointmentResponse
+                                ?.appointmentId;
+                            if (appointmentId) {
+                              setConfirmDelete({
+                                appointmentId,
+                                sampleId: item.sampleResponse.sampleId,
+                              });
+                            } else {
+                              toast.error(
+                                'Không tìm thấy appointmentId cho mẫu này'
+                              );
+                            }
+                          }}
+                        >
+                          Hủy mẫu
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

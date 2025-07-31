@@ -560,7 +560,7 @@ const BookingAtCenter = () => {
               {/* Price Selection */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Chọn Giá
+                  Chọn Gói
                 </label>
                 <select
                   value={selectedPrice}
@@ -571,7 +571,7 @@ const BookingAtCenter = () => {
                   <option value="">-- Chọn gói --</option>
                   {price.map((priceItem) => (
                     <option key={priceItem.priceId} value={priceItem.priceId}>
-                      {`${priceItem.price}VND - ${priceItem.time}`}
+                      {`${priceItem.price} VND - ${priceItem.time}`}
                     </option>
                   ))}
                 </select>

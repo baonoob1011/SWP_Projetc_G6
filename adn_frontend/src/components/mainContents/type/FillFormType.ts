@@ -45,5 +45,5 @@ export const fieldLabels: {
   { name: 'address', label: 'Địa chỉ' },
   { name: 'dateOfBirth', label: 'Ngày sinh', type: 'date' },
   { name: 'identityNumber', label: 'CMND/CCCD' },
-  { name: 'birthCertificate', label: 'Giấy khai sinh (nếu có)' },
+  { name: 'birthCertificate', label: 'Giấy khai sinh' },
 ];
