@@ -491,8 +491,7 @@ const Booking = () => {
                       <div>
                         {item.show?.note &&
                         item.show.note.length > 0 &&
-                        item.payments.length > 0 &&
-                        item.payments[0]?.getPaymentStatus === 'PAID' ? (
+                        item.payments.length > 0 ? (
                           <>
                             <p className="text-sm text-gray-500">
                               Trạng thái đơn đăng ký

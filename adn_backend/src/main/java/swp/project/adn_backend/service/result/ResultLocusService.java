@@ -187,7 +187,7 @@ public class ResultLocusService {
         resultDetail.setResultLoci(new ArrayList<>(resultLocusList));
         resultDetail.setCombinedPaternityIndex(combinedPi);
         resultDetail.setPaternityProbability(paternityProbability);
-        resultDetail.setResultSummary(String.format("Combined PI: %.10f, Probability: %.10f%%", combinedPi, paternityProbability));
+        resultDetail.setResultSummary(String.format("Combined PI: %s, Probability: %s%%", combinedPi, paternityProbability));
         resultDetail.setConclusion(paternityProbability > 99.0 ? "Trùng khớp quan hệ cha – con sinh học" : "Không trùng khớp");
         resultDetail.setAppointment(appointment);
 
