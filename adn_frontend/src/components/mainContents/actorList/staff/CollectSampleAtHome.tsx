@@ -539,6 +539,7 @@ export const CollectSampleAtHome = () => {
                       <td>
                         <button
                           type="submit"
+                          className={styles.cancelSampleBtn}
                           onClick={() => {
                             const matchedAppointment = appointments.find((a) =>
                               a.patientAppointmentResponse.some(
@@ -562,7 +563,7 @@ export const CollectSampleAtHome = () => {
                             }
                           }}
                         >
-                          xóa
+                          Hủy mẫu
                         </button>
                       </td>
                     </tr>

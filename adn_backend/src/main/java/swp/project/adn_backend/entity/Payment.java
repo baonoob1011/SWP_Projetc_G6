@@ -46,15 +46,7 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(long paymentId, double amount, PaymentMethod paymentMethod, PaymentStatus getPaymentStatus, LocalDate transitionDate, Users users, Appointment appointment) {
-        this.paymentId = paymentId;
-        this.amount = amount;
-        this.paymentMethod = paymentMethod;
-        this.getPaymentStatus = getPaymentStatus;
-        this.transitionDate = transitionDate;
-        this.users = users;
-        this.appointment = appointment;
-    }
+
 
     public long getPaymentId() {
         return paymentId;
@@ -96,13 +88,6 @@ public class Payment {
         this.appointment = appointment;
     }
 
-    public PaymentStatus getPaymentStatus() {
-        return getPaymentStatus;
-    }
-
-    public void setPaymentStatus(PaymentStatus getPaymentStatus) {
-        this.getPaymentStatus = getPaymentStatus;
-    }
 
     public LocalDate getTransitionDate() {
         return transitionDate;
@@ -122,6 +107,16 @@ public class Payment {
 
     public void setInvoices(List<Invoice> invoices) {
         this.invoices = invoices;
+    }
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "paymentId=" + paymentId +
+                ", amount=" + amount +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", getPaymentStatus=" + getPaymentStatus +
+                ", transitionDate=" + transitionDate +
+                '}';
     }
 
     public void setTransitionDate(LocalDate transitionDate) {

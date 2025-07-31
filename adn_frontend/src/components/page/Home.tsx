@@ -386,7 +386,7 @@ export default function Home() {
                   Tập đoàn Eurofins
                 </span>{' '}
                 – doanh nghiệp y tế tiên phong được thành lập
-                <span className="font-semibold text-blue-600">26/10/2010</span>.
+                <span className="font-semibold text-blue-600"> 26/10/2010</span>.
               </p>
             </div>
 
@@ -410,7 +410,7 @@ export default function Home() {
                   Tập đoàn Y tế Số 1 Thế giới Eurofins
                 </span>{' '}
                 để xây dựng
-                <span className="font-bold text-green-700">
+                <span className="font-bold text-green-700 bg-green-100 px-2 py-1 rounded-lg mx-1">
                   thương hiệu uy tín đa quốc gia
                 </span>
                 .

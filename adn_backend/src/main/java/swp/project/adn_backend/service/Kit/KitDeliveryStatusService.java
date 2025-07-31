@@ -125,20 +125,6 @@ public class KitDeliveryStatusService {
         // Xử lý nếu trạng thái mới là DONE
         if (newStatus == DeliveryStatus.DONE) {
             kitDeliveryStatus.setReturnDate(LocalDate.now());
-
-            // Lọc ra danh sách nhân viên LAB_TECHNICIAN còn hoạt động
-//            List<Staff> activeLabTechnicians = labTechnicians.stream()
-//                    .filter(staff -> "LAB_TECHNICIAN".equals(staff.getRole()))
-//                    .collect(Collectors.toList());
-//
-//            if (activeLabTechnicians.isEmpty()) {
-//                throw new RuntimeException("Không có nhân viên lab");
-//            }
-
-            // Gán nhân viên theo vòng tròn (round-robin)
-//            int selectedIndex = staffAssignmentTracker.getNextIndex(activeLabTechnicians.size());
-//            Staff selectedStaff = activeLabTechnicians.get(selectedIndex);
-//            appointment.setStaff(selectedStaff);
             appointment.setNote("Đã nhận lại bộ kit");
         }
 

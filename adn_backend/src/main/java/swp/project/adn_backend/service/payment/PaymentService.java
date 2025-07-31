@@ -21,6 +21,7 @@ import swp.project.adn_backend.mapper.PaymentMapper;
 import swp.project.adn_backend.repository.AppointmentRepository;
 import swp.project.adn_backend.repository.PaymentRepository;
 import swp.project.adn_backend.repository.UserRepository;
+import swp.project.adn_backend.repository.WalletTransactionRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,14 +36,17 @@ public class PaymentService {
     private EntityManager entityManager;
     private UserRepository userRepository;
     private AppointmentRepository appointmentRepository;
+    private final WalletTransactionRepository walletTransactionRepository;
 
     @Autowired
-    public PaymentService(PaymentRepository paymentRepository, PaymentMapper paymentMapper, EntityManager entityManager, UserRepository userRepository, AppointmentRepository appointmentRepository) {
+    public PaymentService(PaymentRepository paymentRepository, PaymentMapper paymentMapper, EntityManager entityManager, UserRepository userRepository, AppointmentRepository appointmentRepository,
+                          WalletTransactionRepository walletTransactionRepository) {
         this.paymentRepository = paymentRepository;
         this.paymentMapper = paymentMapper;
         this.entityManager = entityManager;
         this.userRepository = userRepository;
         this.appointmentRepository = appointmentRepository;
+        this.walletTransactionRepository = walletTransactionRepository;
     }
 
     public Payment createPayment(PaymentRequest paymentRequest) {
@@ -90,7 +94,8 @@ public class PaymentService {
         Users users = appointment.getUsers();
         for (Payment payment : appointment.getPayments()) {
             if (payment.getGetPaymentStatus().equals(PaymentStatus.PAID)) {
-                payment.setPaymentStatus(PaymentStatus.REFUNDED);
+                payment.setGetPaymentStatus(PaymentStatus.REFUNDED);
+                appointment.setAppointmentStatus(AppointmentStatus.REFUND);
                 users.getWallet().setBalance(users.getWallet().getBalance() + (long) payment.getAmount());
                 WalletTransaction walletTransaction = new WalletTransaction();
                 walletTransaction.setAmount((long) payment.getAmount());
@@ -100,6 +105,8 @@ public class PaymentService {
                 walletTransaction.setType(TransactionType.REFUND);
                 String txnRef = UUID.randomUUID().toString().replace("-", "").substring(0, 20); // max 20 ký tự
                 walletTransaction.setTxnRef(txnRef);
+                walletTransaction.setWallet(users.getWallet());
+                walletTransactionRepository.save(walletTransaction);
             }
         }
     }

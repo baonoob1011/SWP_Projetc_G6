@@ -79,7 +79,7 @@
 .tableHeaderCell:nth-child(4) { width: 10%; } /* QUAN HỆ */
 .tableHeaderCell:nth-child(5) { width: 12%; } /* GHI CHÚ */
 .tableHeaderCell:nth-child(6) { width: 26%; } /* VẬT XÉT NGHIỆM */
-.tableHeaderCell:nth-child(7) { width: 10%; } /* HỦY */
+.tableHeaderCell:nth-child(7) { width: 10%; } /* Vắng mặt */
 
 .tableRow {
   transition: all 0.2s ease;
@@ -310,13 +310,13 @@
 }
 
 /* Specific column widths for collected samples table */
-.collectedSamplesTable .tableHeaderCell:nth-child(1) { width: 14%; } /* HỌ TÊN */
+.collectedSamplesTable .tableHeaderCell:nth-child(1) { width: 16%; } /* HỌ TÊN */
 .collectedSamplesTable .tableHeaderCell:nth-child(2) { width: 12%; } /* MÃ KIT */
 .collectedSamplesTable .tableHeaderCell:nth-child(3) { width: 12%; } /* LOẠI MẪU */
-.collectedSamplesTable .tableHeaderCell:nth-child(4) { width: 15%; } /* TRẠNG THÁI MẪU */
-.collectedSamplesTable .tableHeaderCell:nth-child(5) { width: 12%; } /* MÃ MẪU */
-.collectedSamplesTable .tableHeaderCell:nth-child(6) { width: 12%; } /* NGÀY THU */
-.collectedSamplesTable .tableHeaderCell:nth-child(7) { width: 12%; } /* NGƯỜI THU */
+.collectedSamplesTable .tableHeaderCell:nth-child(4) { width: 12%; } /* MÃ MẪU */
+.collectedSamplesTable .tableHeaderCell:nth-child(5) { width: 12%; } /* NGÀY THU */
+.collectedSamplesTable .tableHeaderCell:nth-child(6) { width: 15%; } /* NGƯỜI THU */
+.collectedSamplesTable .tableHeaderCell:nth-child(7) { width: 15%; } /* TRẠNG THÁI MẪU */
 .collectedSamplesTable .tableHeaderCell:nth-child(8) { width: 11%; } /* THAO TÁC */
 
 .collectedSamplesTable .tableCell {

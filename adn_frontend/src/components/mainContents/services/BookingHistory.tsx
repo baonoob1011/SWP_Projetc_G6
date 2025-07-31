@@ -12,6 +12,9 @@ import {
   FaMapMarkerAlt,
   FaDoorOpen,
   FaStickyNote,
+  FaClock,
+  FaUserMd,
+  FaCreditCard,
 } from 'react-icons/fa';
 
 const ITEMS_PER_PAGE = 3;
@@ -53,15 +56,15 @@ const BookingHistory = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'CONFIRMED':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border-green-200';
       case 'COMPLETED':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border-blue-200';
       case 'CANCELLED':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-gradient-to-r from-red-100 to-pink-100 text-red-800 border-red-200';
       case 'RATED':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
+        return 'bg-gradient-to-r from-purple-100 to-purple-100 text-purple-800 border-purple-200';
       default:
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800 border-yellow-200';
     }
   };
 
@@ -109,12 +112,17 @@ const BookingHistory = () => {
 
   // Empty state
   const renderEmpty = (msg: string) => (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-      <h3 className="text-xl font-semibold text-gray-900 mb-2">{msg}</h3>
-      <p className="text-gray-600">
-        Bạn chưa có lịch sử đặt lịch nào. Hãy đặt lịch khám để bắt đầu chăm sóc
-        sức khỏe.
-      </p>
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20 p-12 text-center">
+      <div className="mb-6">
+        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+          <FaCalendarAlt className="w-10 h-10 text-gray-800" />
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 mb-2">{msg}</h3>
+        <p className="text-gray-600 text-lg max-w-md mx-auto">
+          Bạn chưa có lịch sử đặt lịch nào. Hãy đặt lịch khám để bắt đầu chăm sóc
+          sức khỏe.
+        </p>
+      </div>
     </div>
   );
 
@@ -125,48 +133,50 @@ const BookingHistory = () => {
     setPage: (p: number) => void
   ) =>
     totalPages > 1 && (
-      <div className="mt-8 flex items-center justify-center space-x-4">
-        <button
-          onClick={() => setPage(Math.max(page - 1, 1))}
-          disabled={page === 1}
-          className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
-            page === 1
-              ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-          }`}
-        >
-          <FaChevronLeft className="mr-2 w-3 h-3" />
-          Trang trước
-        </button>
+      <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
+        <div className="flex items-center justify-center space-x-4">
+          <button
+            onClick={() => setPage(Math.max(page - 1, 1))}
+            disabled={page === 1}
+            className={`group inline-flex items-center space-x-2 px-6 py-3 rounded-xl text-sm font-semibold border-2 transition-all duration-300 ${
+              page === 1
+                ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:border-blue-300 hover:text-blue-700 shadow-sm hover:shadow-md'
+            }`}
+          >
+            <FaChevronLeft className={`w-4 h-4 ${page !== 1 ? 'group-hover:-translate-x-1' : ''} transition-transform duration-300`} />
+            <span>Trang trước</span>
+          </button>
 
-        <div className="flex items-center space-x-2">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-            <button
-              key={p}
-              onClick={() => setPage(p)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
-                page === p
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              {p}
-            </button>
-          ))}
+          <div className="flex items-center space-x-2">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <button
+                key={p}
+                onClick={() => setPage(p)}
+                className={`px-4 py-3 rounded-xl text-sm font-semibold border-2 transition-all duration-300 ${
+                  page === p
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-700 text-white border-blue-600 transform scale-105'
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:border-blue-300 hover:text-blue-700 shadow-sm hover:shadow-md'
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => setPage(Math.min(page + 1, totalPages))}
+            disabled={page === totalPages}
+            className={`group inline-flex items-center space-x-2 px-6 py-3 rounded-xl text-sm font-semibold border-2 transition-all duration-300 ${
+              page === totalPages
+                ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:border-blue-300 hover:text-blue-700 shadow-sm hover:shadow-md'
+            }`}
+          >
+            <span>Trang sau</span>
+            <FaChevronRight className={`w-4 h-4 ${page !== totalPages ? 'group-hover:translate-x-1' : ''} transition-transform duration-300`} />
+          </button>
         </div>
-
-        <button
-          onClick={() => setPage(Math.min(page + 1, totalPages))}
-          disabled={page === totalPages}
-          className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border transition-colors duration-200 ${
-            page === totalPages
-              ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-          }`}
-        >
-          Trang sau
-          <FaChevronRight className="ml-2 w-3 h-3" />
-        </button>
       </div>
     );
 
@@ -183,128 +193,135 @@ const BookingHistory = () => {
         return (
           <div
             key={index}
-            className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
+            className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20 hover:shadow-xl transition-all duration-300 overflow-hidden"
           >
-            <div className="p-6">
-              {/* Header Row */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <FaHospital className="text-blue-600 w-5 h-5" />
+            {/* Card Header */}
+            <div className="relative px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-white rounded-xl shadow-sm">
+                    <FaHospital className="w-5 h-5 text-gray-800" />
                   </div>
                   <div>
-                    <h3 className="text-blue-600 font-bold text-lg">
+                    <h3 className="text-lg font-bold text-gray-900">
                       Lịch sử #{centerStart + index + 1}
                     </h3>
-                    <p className="text-sm text-gray-500">Khám tại trung tâm</p>
+                    <p className="text-sm text-gray-600">Khám tại trung tâm</p>
                   </div>
                 </div>
 
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
+                  className={`px-4 py-2 rounded-full text-sm font-semibold border shadow-sm ${getStatusColor(
                     a?.appointmentStatus
                   )}`}
                 >
                   {translate(a?.appointmentStatus)}
                 </span>
               </div>
+            </div>
 
-              {/* Info Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="p-6">
+              {/* Enhanced Info Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 {/* Ngày khám */}
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <FaCalendarAlt className="text-gray-600 w-4 h-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm text-gray-500 font-medium">
+                <div className="group">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      <FaCalendarAlt className="w-4 h-4 text-gray-800" />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
                       Ngày khám
-                    </p>
-                    <p className="font-semibold text-gray-900 truncate">
-                      {a?.appointmentDate || '-'}
-                    </p>
+                    </span>
                   </div>
+                  <p className="font-medium text-gray-900 ml-11">
+                    {a?.appointmentDate || '-'}
+                  </p>
                 </div>
 
                 {/* Dịch vụ */}
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <FaServicestack className="text-gray-600 w-4 h-4" />
+                <div className="group">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      <FaServicestack className="w-4 h-4 text-gray-800" />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                      Dịch vụ
+                    </span>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-sm text-gray-500 font-medium">Dịch vụ</p>
-                    <p className="font-semibold text-gray-900 truncate">
-                      {service?.serviceName || '-'}
-                    </p>
-                  </div>
+                  <p className="font-medium text-gray-900 line-clamp-2 ml-11">
+                    {service?.serviceName || '-'}
+                  </p>
                 </div>
 
                 {/* Phòng */}
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <FaDoorOpen className="text-gray-600 w-4 h-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm text-gray-500 font-medium">
+                <div className="group">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      <FaDoorOpen className="w-4 h-4 text-gray-800" />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
                       Phòng khám
-                    </p>
-                    <p className="font-semibold text-gray-900 truncate">
-                      {room?.roomName || '-'}
-                    </p>
+                    </span>
                   </div>
+                  <p className="font-medium text-gray-900 ml-11">
+                    {room?.roomName || '-'}
+                  </p>
                 </div>
 
                 {/* Địa điểm */}
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <FaMapMarkerAlt className="text-gray-600 w-4 h-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm text-gray-500 font-medium">
+                <div className="group md:col-span-2 lg:col-span-3">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      <FaMapMarkerAlt className="w-4 h-4 text-gray-800" />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
                       Địa điểm
-                    </p>
-                    <p className="font-semibold text-gray-900 text-sm leading-relaxed">
-                      {loc
-                        ? `${loc.addressLine}, ${loc.district}, ${loc.city}`
-                        : '-'}
-                    </p>
+                    </span>
                   </div>
+                  <p className="font-medium text-gray-900 ml-11">
+                    {loc
+                      ? `${loc.addressLine}, ${loc.district}, ${loc.city}`
+                      : '-'}
+                  </p>
                 </div>
               </div>
 
-              {/* Payment Info */}
+              {/* Enhanced Payment Info */}
               {payment && (
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                  <div className="flex items-center space-x-2 mb-3">
-                    <h4 className="font-semibold text-gray-900 text-base">
+                <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-6 border border-gray-100">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      <FaCreditCard className="w-5 h-5 text-gray-800" />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-900">
                       Thông tin thanh toán
                     </h4>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
                     <div>
-                      <p className="text-gray-500 font-medium">Số tiền</p>
-                      <p className="text-gray-900 font-medium">
+                      <p className="text-sm text-gray-600 mb-1">Số tiền</p>
+                      <p className="text-xl font-bold text-gray-900">
                         {payment.amount
                           ? `${payment.amount.toLocaleString('vi-VN')} VND`
                           : '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-gray-500 font-medium">Phương thức</p>
-                      <p className="text-gray-900 font-medium">
+                      <p className="text-sm text-gray-600 mb-1">Phương thức</p>
+                      <p className="font-medium text-gray-900">
                         {translate(payment.paymentMethod || '-')}
                       </p>
                     </div>
                     <div className="md:text-right">
-                      <p className="text-gray-500 font-medium">Trạng thái</p>
+                      <p className="text-sm text-gray-600 mb-1">Trạng thái</p>
                       <span
-                        className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${
+                        className={`inline-flex px-4 py-2 rounded-full text-sm font-semibold shadow-sm ${
                           payment.getPaymentStatus === 'PAID'
-                            ? 'bg-green-100 text-green-800'
+                            ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800'
                             : payment.getPaymentStatus === 'REFUNDED'
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-yellow-100 text-yellow-800'
+                            ? 'bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800'
+                            : 'bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800'
                         }`}
                       >
                         {payment.getPaymentStatus === 'PAID'
@@ -316,10 +333,13 @@ const BookingHistory = () => {
                     </div>
                   </div>
 
-                  {a && (
-                    <div className="mt-4">
-                      <p className="text-gray-500 font-medium">Ghi chú</p>
-                      <p className="text-gray-900 font-medium">{a.note}</p>
+                  {a?.note && (
+                    <div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <FaStickyNote className="w-4 h-4 text-gray-500" />
+                        <p className="text-sm text-gray-600 font-medium">Ghi chú</p>
+                      </div>
+                      <p className="text-gray-900 font-medium ml-6">{a.note}</p>
                     </div>
                   )}
                 </div>
@@ -342,113 +362,115 @@ const BookingHistory = () => {
         return (
           <div
             key={index}
-            className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
+            className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20 hover:shadow-xl transition-all duration-300 overflow-hidden"
           >
-            <div className="p-6">
-              {/* Header Row */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <FaHome className="text-blue-600 w-5 h-5" />
+            {/* Card Header */}
+            <div className="relative px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-white rounded-xl shadow-sm">
+                    <FaHome className="w-5 h-5 text-gray-800" />
                   </div>
                   <div>
-                    <h3 className="text-blue-600 font-bold text-lg">
+                    <h3 className="text-lg font-bold text-gray-900">
                       Lịch sử #{homeStart + index + 1}
                     </h3>
-                    <p className="text-sm text-gray-500">Khám tại nhà</p>
+                    <p className="text-sm text-gray-600">Khám tại nhà</p>
                   </div>
                 </div>
 
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
+                  className={`px-4 py-2 rounded-full text-sm font-semibold border shadow-sm ${getStatusColor(
                     a?.appointmentStatus
                   )}`}
                 >
                   {translate(a?.appointmentStatus)}
                 </span>
               </div>
+            </div>
 
-              {/* Info Grid */}
+            <div className="p-6">
+              {/* Enhanced Info Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 {/* Ngày khám */}
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <FaCalendarAlt className="text-gray-600 w-4 h-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm text-gray-500 font-medium">
+                <div className="group">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      <FaCalendarAlt className="w-4 h-4 text-gray-800" />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
                       Ngày khám
-                    </p>
-                    <p className="font-semibold text-gray-900 truncate">
-                      {a?.appointmentDate || '-'}
-                    </p>
+                    </span>
                   </div>
+                  <p className="font-medium text-gray-900 ml-11">
+                    {a?.appointmentDate || '-'}
+                  </p>
                 </div>
 
                 {/* Tên kit */}
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <FaServicestack className="text-gray-600 w-4 h-4" />
+                <div className="group">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      <FaServicestack className="w-4 h-4 text-gray-800" />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                      Tên kit
+                    </span>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-sm text-gray-500 font-medium">Tên kit</p>
-                    <p className="font-semibold text-gray-900 truncate">
-                      {kit?.kitName || '-'}
-                    </p>
-                  </div>
+                  <p className="font-medium text-gray-900 line-clamp-2 ml-11">
+                    {kit?.kitName || '-'}
+                  </p>
                 </div>
 
                 {/* Ghi chú */}
-                <div className="flex items-start space-x-3 md:col-span-2">
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <FaStickyNote className="text-gray-600 w-4 h-4" />
+                <div className="group md:col-span-2">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      <FaStickyNote className="w-4 h-4 text-gray-800" />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                      Ghi chú
+                    </span>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-sm text-gray-500 font-medium">Ghi chú</p>
-                    <p className="font-semibold text-gray-900 text-sm leading-relaxed">
-                      {a?.note || 'Không có ghi chú'}
-                    </p>
-                  </div>
+                  <p className="font-medium text-gray-900 ml-11">
+                    {a?.note || 'Không có ghi chú'}
+                  </p>
                 </div>
               </div>
 
-              {/* Payment Info */}
+              {/* Enhanced Payment Info */}
               {payment && (
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                  <div className="flex items-center space-x-2 mb-3">
-                    <FaMoneyBillWave className="text-green-600 w-4 h-4" />
-                    <h4 className="font-semibold text-gray-900">
+                <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-6 border border-gray-100">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      <FaCreditCard className="w-5 h-5 text-gray-800" />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-900">
                       Thông tin thanh toán
                     </h4>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <p className="text-sm text-gray-500 font-medium">
-                        Số tiền
-                      </p>
-                      <p className="font-semibold text-gray-900">
+                      <p className="text-sm text-gray-600 mb-1">Số tiền</p>
+                      <p className="text-xl font-bold text-gray-900">
                         {payment.amount
                           ? `${payment.amount.toLocaleString('vi-VN')} VND`
                           : '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500 font-medium">
-                        Phương thức
-                      </p>
-                      <p className="font-semibold text-gray-900">
+                      <p className="text-sm text-gray-600 mb-1">Phương thức</p>
+                      <p className="font-medium text-gray-900">
                         {translate(payment.paymentMethod || '-')}
                       </p>
                     </div>
                     <div className="md:text-right">
-                      <p className="text-sm text-gray-500 font-medium">
-                        Trạng thái
-                      </p>
+                      <p className="text-sm text-gray-600 mb-1">Trạng thái</p>
                       <span
-                        className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                        className={`inline-flex px-4 py-2 rounded-full text-sm font-semibold shadow-sm ${
                           payment.getPaymentStatus === 'PAID'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-yellow-100 text-yellow-800'
+                            ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800'
+                            : 'bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800'
                         }`}
                       >
                         {payment.getPaymentStatus === 'PAID'
@@ -468,10 +490,13 @@ const BookingHistory = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-          <p className="text-gray-600 text-lg">Đang tải dữ liệu...</p>
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-indigo-400 rounded-full animate-spin mx-auto" style={{ animationDelay: '0.5s' }}></div>
+          </div>
+          <p className="text-gray-600 text-lg font-medium">Đang tải dữ liệu...</p>
         </div>
       </div>
     );
@@ -480,32 +505,46 @@ const BookingHistory = () => {
   return (
     <div className="min-h-screen py-1">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-3 mb-6">
-          {/* Tab Navigation */}
-          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
-            <button
-              onClick={() => handleTabChange(null, 0)}
-              className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                tabIndex === 0
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <FaHospital className="mr-2 w-4 h-4" />
-              Tại trung tâm
-            </button>
-            <button
-              onClick={() => handleTabChange(null, 1)}
-              className={`flex-1 flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                tabIndex === 1
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <FaHome className="mr-2 w-4 h-4" />
-              Tại nhà
-            </button>
+        {/* Enhanced Tab Navigation */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden mb-6">
+          <div className="p-4">
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => handleTabChange(null, 0)}
+                className={`group flex items-center justify-center space-x-3 p-4 rounded-xl transition-all duration-300 ${
+                  tabIndex === 0
+                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white transform scale-105'
+                    : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 hover:shadow-md'
+                }`}
+              >
+                <div className={`p-2 rounded-lg transition-all duration-300 ${
+                  tabIndex === 0 ? 'bg-white/20' : 'bg-white'
+                }`}>
+                  <FaHospital className={`w-4 h-4 ${
+                    tabIndex === 0 ? 'text-white' : 'text-gray-800'
+                  }`} />
+                </div>
+                <span className="font-medium text-sm">Tại trung tâm</span>
+              </button>
+
+              <button
+                onClick={() => handleTabChange(null, 1)}
+                className={`group flex items-center justify-center space-x-3 p-4 rounded-xl transition-all duration-300 ${
+                  tabIndex === 1
+                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white transform scale-105'
+                    : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 hover:shadow-md'
+                }`}
+              >
+                <div className={`p-2 rounded-lg transition-all duration-300 ${
+                  tabIndex === 1 ? 'bg-white/20' : 'bg-white'
+                }`}>
+                  <FaHome className={`w-4 h-4 ${
+                    tabIndex === 1 ? 'text-white' : 'text-gray-800'
+                  }`} />
+                </div>
+                <span className="font-medium text-sm">Tại nhà</span>
+              </button>
+            </div>
           </div>
         </div>
 

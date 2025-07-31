@@ -66,4 +66,15 @@ public class PaymentAppointmentResponse {
     public void setTransitionDate(LocalDate transitionDate) {
         this.transitionDate = transitionDate;
     }
+    @Override
+    public String toString() {
+        return "PaymentAppointmentResponse{" +
+                "paymentId=" + paymentId +
+                ", amount=" + amount +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", getPaymentStatus=" + getPaymentStatus +
+                ", transitionDate=" + transitionDate +
+                '}';
+    }
+
 }
