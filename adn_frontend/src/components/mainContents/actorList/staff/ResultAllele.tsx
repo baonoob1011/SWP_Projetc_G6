@@ -17,6 +17,7 @@ type Locus = {
 const CreateResultAllele = () => {
   const [allele1, setAllele1] = useState('');
   const [allele2, setAllele2] = useState('');
+  const [alleleStatus, setAlleleStatus] = useState('VALID');
   const [locusList, setLocusList] = useState<Locus[]>([]);
   const [selectedLocus, setSelectedLocus] = useState('');
   const { sampleId } = useParams();
@@ -86,6 +87,7 @@ const CreateResultAllele = () => {
     const data = {
       allele1,
       allele2,
+      alleleStatus,
     };
 
     try {
@@ -105,8 +107,8 @@ const CreateResultAllele = () => {
         toast.success('Tạo kết quả allele thành công!');
         setAllele1('');
         setAllele2('');
+        setAlleleStatus('ENTERED');
         setSelectedLocus('');
-        fetchAlleleData();
       } else {
         const errorData = await response.json();
         toast.error('Lỗi: ' + errorData.message);
@@ -334,7 +336,7 @@ const CreateResultAllele = () => {
                                 ? 'Không hợp lệ'
                                 : allele.alleleStatus === 'VALID'
                                 ? 'Hợp lệ'
-                                : allele.alleleStatus || 'Đang xác nhận'}
+                                : allele.alleleStatus || 'Đã xác nhận'}
                             </span>
                           </td>
                         </tr>

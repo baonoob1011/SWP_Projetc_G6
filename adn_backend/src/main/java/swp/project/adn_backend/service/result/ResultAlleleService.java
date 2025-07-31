@@ -5,6 +5,7 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import swp.project.adn_backend.controller.result.ResultAlleleController;
 import swp.project.adn_backend.dto.InfoDTO.AlleleInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo;
 import swp.project.adn_backend.dto.request.result.AllelePairRequest;
@@ -111,7 +112,12 @@ private AppointmentMapper appointmentMapper;
         return responses;
     }
 
-
+@Transactional
+public void deleteAllele(long alleleId){
+    ResultAllele allele= resultAlleleRepository.findById(alleleId)
+            .orElseThrow(() -> new AppException(ErrorCodeUser.ALLELE_NOT_FOUND));
+    resultAlleleRepository.deleteById(alleleId);
+}
 
     @Transactional
     public AllAlleleResponse getAllAlleleOfSample(long patientId) {
