@@ -6,14 +6,11 @@ import {
   FaHome,
   FaServicestack,
   FaCalendarAlt,
-  FaMoneyBillWave,
   FaChevronLeft,
   FaChevronRight,
   FaMapMarkerAlt,
   FaDoorOpen,
   FaStickyNote,
-  FaClock,
-  FaUserMd,
   FaCreditCard,
 } from 'react-icons/fa';
 
@@ -119,8 +116,8 @@ const BookingHistory = () => {
         </div>
         <h3 className="text-2xl font-bold text-gray-900 mb-2">{msg}</h3>
         <p className="text-gray-600 text-lg max-w-md mx-auto">
-          Bạn chưa có lịch sử đặt lịch nào. Hãy đặt lịch khám để bắt đầu chăm sóc
-          sức khỏe.
+          Bạn chưa có lịch sử đặt lịch nào. Hãy đặt lịch khám để bắt đầu chăm
+          sóc sức khỏe.
         </p>
       </div>
     </div>
@@ -144,7 +141,11 @@ const BookingHistory = () => {
                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:border-blue-300 hover:text-blue-700 shadow-sm hover:shadow-md'
             }`}
           >
-            <FaChevronLeft className={`w-4 h-4 ${page !== 1 ? 'group-hover:-translate-x-1' : ''} transition-transform duration-300`} />
+            <FaChevronLeft
+              className={`w-4 h-4 ${
+                page !== 1 ? 'group-hover:-translate-x-1' : ''
+              } transition-transform duration-300`}
+            />
             <span>Trang trước</span>
           </button>
 
@@ -174,7 +175,11 @@ const BookingHistory = () => {
             }`}
           >
             <span>Trang sau</span>
-            <FaChevronRight className={`w-4 h-4 ${page !== totalPages ? 'group-hover:translate-x-1' : ''} transition-transform duration-300`} />
+            <FaChevronRight
+              className={`w-4 h-4 ${
+                page !== totalPages ? 'group-hover:translate-x-1' : ''
+              } transition-transform duration-300`}
+            />
           </button>
         </div>
       </div>
@@ -337,7 +342,9 @@ const BookingHistory = () => {
                     <div>
                       <div className="flex items-center space-x-2 mb-2">
                         <FaStickyNote className="w-4 h-4 text-gray-500" />
-                        <p className="text-sm text-gray-600 font-medium">Ghi chú</p>
+                        <p className="text-sm text-gray-600 font-medium">
+                          Ghi chú
+                        </p>
                       </div>
                       <p className="text-gray-900 font-medium ml-6">{a.note}</p>
                     </div>
@@ -494,9 +501,14 @@ const BookingHistory = () => {
         <div className="text-center">
           <div className="relative">
             <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-indigo-400 rounded-full animate-spin mx-auto" style={{ animationDelay: '0.5s' }}></div>
+            <div
+              className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-indigo-400 rounded-full animate-spin mx-auto"
+              style={{ animationDelay: '0.5s' }}
+            ></div>
           </div>
-          <p className="text-gray-600 text-lg font-medium">Đang tải dữ liệu...</p>
+          <p className="text-gray-600 text-lg font-medium">
+            Đang tải dữ liệu...
+          </p>
         </div>
       </div>
     );
@@ -517,12 +529,16 @@ const BookingHistory = () => {
                     : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 hover:shadow-md'
                 }`}
               >
-                <div className={`p-2 rounded-lg transition-all duration-300 ${
-                  tabIndex === 0 ? 'bg-white/20' : 'bg-white'
-                }`}>
-                  <FaHospital className={`w-4 h-4 ${
-                    tabIndex === 0 ? 'text-white' : 'text-gray-800'
-                  }`} />
+                <div
+                  className={`p-2 rounded-lg transition-all duration-300 ${
+                    tabIndex === 0 ? 'bg-white/20' : 'bg-white'
+                  }`}
+                >
+                  <FaHospital
+                    className={`w-4 h-4 ${
+                      tabIndex === 0 ? 'text-white' : 'text-gray-800'
+                    }`}
+                  />
                 </div>
                 <span className="font-medium text-sm">Tại trung tâm</span>
               </button>
@@ -535,12 +551,16 @@ const BookingHistory = () => {
                     : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 hover:shadow-md'
                 }`}
               >
-                <div className={`p-2 rounded-lg transition-all duration-300 ${
-                  tabIndex === 1 ? 'bg-white/20' : 'bg-white'
-                }`}>
-                  <FaHome className={`w-4 h-4 ${
-                    tabIndex === 1 ? 'text-white' : 'text-gray-800'
-                  }`} />
+                <div
+                  className={`p-2 rounded-lg transition-all duration-300 ${
+                    tabIndex === 1 ? 'bg-white/20' : 'bg-white'
+                  }`}
+                >
+                  <FaHome
+                    className={`w-4 h-4 ${
+                      tabIndex === 1 ? 'text-white' : 'text-gray-800'
+                    }`}
+                  />
                 </div>
                 <span className="font-medium text-sm">Tại nhà</span>
               </button>
