@@ -138,6 +138,7 @@ public class SecurityConfig {
             "/api/appointment/update-note",
             "/api/appointment/book-appointment-again",
             "/api/appointment/appointment-refund",
+            "/api/result-allele/delete-allele/**",
 
     };
     private final String[] MANAGER_ENDPOINTS = {

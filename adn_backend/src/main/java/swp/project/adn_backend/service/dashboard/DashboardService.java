@@ -6,8 +6,6 @@ import swp.project.adn_backend.dto.response.DashboardResponse;
 import swp.project.adn_backend.dto.response.DailyRevenueResponse;
 import swp.project.adn_backend.dto.response.YearlyRevenueResponse;
 import swp.project.adn_backend.dto.response.ServiceRatingStatsResponse;
-import swp.project.adn_backend.dto.response.TotalUsersCompletedResponse;
-import swp.project.adn_backend.dto.response.TotalCancelledAppointmentsResponse;
 import swp.project.adn_backend.dto.response.AppointmentStatusPercentageResponse;
 import swp.project.adn_backend.dto.response.YearlyRevenueSummaryResponse;
 import swp.project.adn_backend.repository.*;
@@ -16,11 +14,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 @Service

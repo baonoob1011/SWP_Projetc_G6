@@ -43,6 +43,9 @@ public class LocusService {
                 "FROM Locus s ";
         TypedQuery<LocusInfoDTO> query = entityManager.createQuery(jpql, LocusInfoDTO.class);
         return query.getResultList();
-
+    }
+    public void deleteLocus(long locusId){
+        Locus locus = locusRepository.findById(locusId).orElseThrow(() -> new AppException(ErrorCodeUser.LOCUS_NOT_EXISTS));
+        locusRepository.delete(locus);
     }
 }

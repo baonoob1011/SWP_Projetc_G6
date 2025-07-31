@@ -18,7 +18,7 @@ import swp.project.adn_backend.service.slot.SlotService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/slot")
+    @RequestMapping("/api/slot")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SlotController {
     @Autowired

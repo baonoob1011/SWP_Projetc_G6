@@ -276,6 +276,9 @@ public class SampleService {
     public void deleteSample(long sampleId) {
         Sample sample = sampleRepository.findById(sampleId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.SAMPLE_NOT_EXISTS));
+        if (!sample.getSampleStatus().equals(SampleStatus.COLLECTED)){
+            throw new RuntimeException("Mẫu này không thể hủy vì đã chuyển đến phòng lab");
+        }
         sample.setSampleStatus(SampleStatus.REJECTED);
     }
 

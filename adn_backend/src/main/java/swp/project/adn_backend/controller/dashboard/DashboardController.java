@@ -8,19 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import swp.project.adn_backend.dto.response.APIResponse;
 import swp.project.adn_backend.dto.response.DashboardResponse;
 import swp.project.adn_backend.dto.response.DailyRevenueResponse;
-import swp.project.adn_backend.dto.response.YearlyRevenueResponse;
 import swp.project.adn_backend.dto.response.ServiceRatingStatsResponse;
 import swp.project.adn_backend.dto.response.TotalRevenueResponse;
-import swp.project.adn_backend.dto.response.TotalUsersCompletedResponse;
-import swp.project.adn_backend.dto.response.TotalCancelledAppointmentsResponse;
 import swp.project.adn_backend.dto.response.AppointmentStatusPercentageResponse;
 import swp.project.adn_backend.dto.response.YearlyRevenueSummaryResponse;
 import swp.project.adn_backend.service.dashboard.DashboardService;
-import swp.project.adn_backend.repository.UserRepository;
-import swp.project.adn_backend.repository.AppointmentRepository;
 
 import java.time.LocalDate;
 
@@ -30,14 +24,10 @@ public class DashboardController {
     
     private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
     private final DashboardService dashboardService;
-    private final UserRepository userRepository;
-    private final AppointmentRepository appointmentRepository;
     
     @Autowired
-    public DashboardController(DashboardService dashboardService, UserRepository userRepository, AppointmentRepository appointmentRepository) {
+    public DashboardController(DashboardService dashboardService) {
         this.dashboardService = dashboardService;
-        this.userRepository = userRepository;
-        this.appointmentRepository = appointmentRepository;
     }
     
     @GetMapping("/stats")

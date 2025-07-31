@@ -5,6 +5,7 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import swp.project.adn_backend.controller.result.ResultAlleleController;
 import swp.project.adn_backend.dto.InfoDTO.AlleleInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo;
 import swp.project.adn_backend.dto.request.result.AllelePairRequest;
@@ -70,7 +71,11 @@ private AppointmentMapper appointmentMapper;
         String locusName = locus.getLocusName();
 
         List<ResultAlleleResponse> responses = new ArrayList<>();
+
+        // Locus Response để set vào mỗi allele response
         LocusResponse locusResponse = new LocusResponse();
+        locusResponse.setLocusId(locusId);
+        locusResponse.setLocusName(locusName);
 
         // --- Allele 1 ---
         ResultAllele allele1 = new ResultAllele();
@@ -84,9 +89,11 @@ private AppointmentMapper appointmentMapper;
                         : AlleleStatus.INVALID
         );
         resultAlleleRepository.save(allele1);
-        responses.add(resultAlleleMapper.toResultAlleleResponse(allele1));
+        ResultAlleleResponse response1 = resultAlleleMapper.toResultAlleleResponse(allele1);
+        response1.setLocusResponse(locusResponse);
+        responses.add(response1);
 
-// --- Allele 2 ---
+        // --- Allele 2 ---
         ResultAllele allele2 = new ResultAllele();
         allele2.setAlleleValue(request.getAllele2());
         allele2.setAllelePosition("2");
@@ -98,21 +105,19 @@ private AppointmentMapper appointmentMapper;
                         : AlleleStatus.INVALID
         );
         resultAlleleRepository.save(allele2);
-        responses.add(resultAlleleMapper.toResultAlleleResponse(allele2));
-
-
-        ResultAlleleResponse resultAlleleResponse = resultAlleleMapper.toResultAlleleResponse(allele2);
-        locusResponse.setLocusId(locusId);
-        locusResponse.setLocusName(locusName);
-        resultAlleleResponse.setLocusResponse(locusResponse);
-        responses.add(resultAlleleResponse);
-
-
+        ResultAlleleResponse response2 = resultAlleleMapper.toResultAlleleResponse(allele2);
+        response2.setLocusResponse(locusResponse);
+        responses.add(response2);
 
         return responses;
     }
 
-
+@Transactional
+public void deleteAllele(long alleleId){
+    ResultAllele allele= resultAlleleRepository.findById(alleleId)
+            .orElseThrow(() -> new AppException(ErrorCodeUser.ALLELE_NOT_FOUND));
+    resultAlleleRepository.deleteById(alleleId);
+}
 
     @Transactional
     public AllAlleleResponse getAllAlleleOfSample(long patientId) {

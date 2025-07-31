@@ -48,48 +48,50 @@ public class ResultLocusService {
     }
 
     // Tần suất alen mẫu (có thể thay bằng dữ liệu từ DB hoặc file cấu hình)
-    private static final Map<Double, Double> alleleFrequencies = Map.ofEntries(
-            Map.entry(6.0, 0.06),
-            Map.entry(7.0, 0.05),
-            Map.entry(8.0, 0.04),
-            Map.entry(9.0, 0.06),
-            Map.entry(10.0, 0.07),
-            Map.entry(11.0, 0.248),
-            Map.entry(12.0, 0.180),
-            Map.entry(13.0, 0.100),
-            Map.entry(13.2, 0.010),
-            Map.entry(14.0, 0.085),
-            Map.entry(15.0, 0.070),
-            Map.entry(16.0, 0.150),
-            Map.entry(17.0, 0.050),
-            Map.entry(18.0, 0.030),
-            Map.entry(19.0, 0.025),
-            Map.entry(20.0, 0.020),
-            Map.entry(21.0, 0.015),
-            Map.entry(22.0, 0.012),
-            Map.entry(23.0, 0.010),
-            Map.entry(24.0, 0.010),
-            Map.entry(25.0, 0.010),
-            Map.entry(26.0, 0.010),
-            Map.entry(27.0, 0.010),
-            Map.entry(28.0, 0.010),
-            Map.entry(29.0, 0.010),
-            Map.entry(30.0, 0.010),
-            Map.entry(31.0, 0.010),
-            Map.entry(32.0, 0.010),
-            Map.entry(32.2, 0.010),
-            Map.entry(33.0, 0.010),
-            Map.entry(34.0, 0.010),
-            Map.entry(35.0, 0.010),
-            Map.entry(36.0, 0.010),
-            Map.entry(37.0, 0.010),
-            Map.entry(38.0, 0.010),
-            Map.entry(39.0, 0.010),
-            Map.entry(40.0, 0.010),
-            Map.entry(41.0, 0.010),
-            Map.entry(42.0, 0.010),
-            Map.entry(43.0, 0.010)
-    );
+    // Tần suất allele theo từng locus (dữ liệu người dùng cung cấp sẵn)
+    private static final Map<String, Map<Double, Double>> alleleFrequenciesAsian = new HashMap<>();
+
+    static {
+        alleleFrequenciesAsian.put("TH01", Map.of(
+                6.0, 0.012, 7.0, 0.122, 8.0, 0.268, 9.0, 0.247, 9.3, 0.187, 10.0, 0.103, 11.0, 0.061));
+        alleleFrequenciesAsian.put("D3S1358", Map.of(
+                12.0, 0.007, 13.0, 0.122, 14.0, 0.276, 15.0, 0.266, 16.0, 0.199, 17.0, 0.086, 18.0, 0.038));
+        alleleFrequenciesAsian.put("vWA", Map.of(
+                14.0, 0.034, 15.0, 0.067, 16.0, 0.138, 17.0, 0.226, 18.0, 0.252, 19.0, 0.180, 20.0, 0.079, 21.0, 0.025));
+        alleleFrequenciesAsian.put("FGA", Map.of(
+                18.0, 0.037, 19.0, 0.061, 20.0, 0.079, 21.0, 0.132, 22.0, 0.156, 23.0, 0.172, 24.0, 0.135, 25.0, 0.093));
+        alleleFrequenciesAsian.put("D8S1179", Map.of(
+                9.0, 0.014, 10.0, 0.041, 11.0, 0.151, 12.0, 0.286, 13.0, 0.283, 14.0, 0.152, 15.0, 0.072));
+        alleleFrequenciesAsian.put("D21S11", Map.of(
+                25.0, 0.005, 26.0, 0.012, 27.0, 0.017, 28.0, 0.122, 29.0, 0.224, 30.0, 0.239, 31.0, 0.169,
+                32.0, 0.103, 33.2, 0.065, 34.2, 0.044));
+        alleleFrequenciesAsian.put("D18S51", Map.of(
+                12.0, 0.012, 13.0, 0.036, 14.0, 0.086, 15.0, 0.151, 16.0, 0.206, 17.0, 0.225, 18.0, 0.162, 19.0, 0.122));
+        alleleFrequenciesAsian.put("D5S818", Map.of(
+                9.0, 0.087, 10.0, 0.224, 11.0, 0.401, 12.0, 0.209, 13.0, 0.079));
+        alleleFrequenciesAsian.put("D13S317", Map.of(
+                8.0, 0.061, 9.0, 0.182, 10.0, 0.304, 11.0, 0.291, 12.0, 0.113, 13.0, 0.049));
+        alleleFrequenciesAsian.put("D7S820", Map.of(
+                8.0, 0.062, 9.0, 0.128, 10.0, 0.282, 11.0, 0.317, 12.0, 0.143, 13.0, 0.068));
+        alleleFrequenciesAsian.put("D16S539", Map.of(
+                9.0, 0.039, 10.0, 0.093, 11.0, 0.281, 12.0, 0.343, 13.0, 0.162, 14.0, 0.082));
+        alleleFrequenciesAsian.put("TPOX", Map.of(
+                6.0, 0.040, 7.0, 0.121, 8.0, 0.302, 9.0, 0.263, 10.0, 0.172, 11.0, 0.102));
+        alleleFrequenciesAsian.put("CSF1PO", Map.of(
+                8.0, 0.092, 9.0, 0.183, 10.0, 0.262, 11.0, 0.286, 12.0, 0.131));
+        alleleFrequenciesAsian.put("D2S1338", Map.of(
+                17.0, 0.030,
+                18.0, 0.070,
+                19.0, 0.110,
+                20.0, 0.160,
+                21.0, 0.180,
+                22.0, 0.170,
+                23.0, 0.140,
+                24.0, 0.110
+        ));
+
+    }
+
 
     // Dịch vụ tạo ResultLocus và ResultDetail với tính toán PI chính xác
     @Transactional
@@ -148,9 +150,11 @@ public class ResultLocusService {
             double child1 = childAlleles.get(0);
             double child2 = childAlleles.get(1);
 
-            double pi = calculatePI(father1, father2, child1, child2);
-            double freq1 = lookupFrequency(child1);
-            double freq2 = lookupFrequency(child2);
+            String cleanLocusName = locusName.trim();
+            double pi = calculatePI(cleanLocusName, father1, father2, child1, child2);
+            double freq1 = lookupFrequency(cleanLocusName, child1);
+            double freq2 = lookupFrequency(cleanLocusName, child2);
+
 
             ResultLocus rl = new ResultLocus();
             rl.setLocusName(locusName);
@@ -176,12 +180,14 @@ public class ResultLocusService {
                 .reduce(1.0, (a, b) -> a * b);
 
         double paternityProbability = (combinedPi / (combinedPi + 1)) * 100;
-
+        if (paternityProbability > 99.9999) {
+            paternityProbability = 99.9999;
+        }
         ResultDetail resultDetail = new ResultDetail();
         resultDetail.setResultLoci(new ArrayList<>(resultLocusList));
         resultDetail.setCombinedPaternityIndex(combinedPi);
         resultDetail.setPaternityProbability(paternityProbability);
-        resultDetail.setResultSummary(String.format("Combined PI: %.2f, Probability: %.4f%%", combinedPi, paternityProbability));
+        resultDetail.setResultSummary(String.format("Combined PI: %.10f, Probability: %.10f%%", combinedPi, paternityProbability));
         resultDetail.setConclusion(paternityProbability > 99.0 ? "Trùng khớp quan hệ cha – con sinh học" : "Không trùng khớp");
         resultDetail.setAppointment(appointment);
 
@@ -225,7 +231,7 @@ public class ResultLocusService {
 
                         if (methods.contains(SampleCollectionMethod.AT_HOME)) {
                             if (appointment.getKitDeliveryStatus() != null) {
-                                Staff staff=appointment.getKitDeliveryStatus().getStaff();
+                                Staff staff = appointment.getKitDeliveryStatus().getStaff();
                                 appointment.setStaff(staff);
                                 appointment.getKitDeliveryStatus().setDeliveryStatus(DeliveryStatus.COMPLETED);
                                 break;
@@ -259,36 +265,62 @@ public class ResultLocusService {
     }
 
 
+    private double calculatePI(String locusName, double father1, double father2, double child1, double child2) {
+        System.out.println("=== DEBUG PI Calculation ===");
+        System.out.println("Locus: " + locusName);
+        System.out.println("Father alleles: " + father1 + ", " + father2);
+        System.out.println("Child alleles: " + child1 + ", " + child2);
 
-    private double calculatePI(double father1, double father2, double child1, double child2) {
         if (Double.compare(child1, child2) == 0) {
-            // Con đồng hợp tử (ví dụ: 11 - 11)
+            System.out.println("Case: Homozygous child");
             if (father1 == child1 || father2 == child1) {
-                double freq = lookupFrequency(child1);
+                double freq = lookupFrequency(locusName, child1);
+                System.out.println("Allele match found. Allele: " + child1 + ", Frequency: " + freq);
+                System.out.println("PI = 1 / freq = " + (1.0 / freq));
                 return 1.0 / freq;
             }
         } else {
-            // Con dị hợp tử (ví dụ: 11 - 12)
+            System.out.println("Case: Heterozygous child");
             boolean hasChild1 = father1 == child1 || father2 == child1;
             boolean hasChild2 = father1 == child2 || father2 == child2;
 
             if (hasChild1 && hasChild2) {
-                // Cả 2 allele của con đều có trong cha
-                double freq1 = lookupFrequency(child1);
-                double freq2 = lookupFrequency(child2);
-                return 1.0 / (freq1 + freq2);
+                double freq1 = lookupFrequency(locusName, child1);
+                double freq2 = lookupFrequency(locusName, child2);
+                double pi = 1.0 / (freq1 + freq2);
+                System.out.println("Both alleles match. Allele1: " + child1 + ", Freq1: " + freq1 +
+                        ", Allele2: " + child2 + ", Freq2: " + freq2 + ", PI: " + pi);
+                return pi;
             } else if (hasChild1 ^ hasChild2) {
-                // Chỉ 1 allele trùng cha
-                double freq = hasChild1 ? lookupFrequency(child1) : lookupFrequency(child2);
-                return 1.0 / (2 * freq); // ✅ Đây là phần đã sửa chuẩn
+                double freq = hasChild1 ? lookupFrequency(locusName, child1) : lookupFrequency(locusName, child2);
+                double usedAllele = hasChild1 ? child1 : child2;
+                double pi = 1.0 / (2 * freq);
+                System.out.println("One allele match. Allele: " + usedAllele + ", Freq: " + freq + ", PI: " + pi);
+                return pi;
             }
         }
-        return 0.0; // Không có allele nào trùng
+
+        System.out.println("No allele match. PI: 0.0");
+        return 0.0;
+    }
+
+    private double lookupFrequency(String locusName, double allele) {
+        Map<Double, Double> freqMap = alleleFrequenciesAsian.get(locusName);
+        if (freqMap == null) {
+            System.out.println("Locus not found: " + locusName + ". Using default freq 0.01.");
+            return 0.01;
+        }
+        double freq = freqMap.getOrDefault(allele, 0.01);
+        if (!freqMap.containsKey(allele)) {
+            System.out.println("Allele " + allele + " not found in locus " + locusName + ". Using default freq 0.01.");
+        }
+
+        System.out.println("DEBUG - Expected locus: [" + locusName + "]");
+        System.out.println("DEBUG - All loaded keys: " + alleleFrequenciesAsian.keySet());
+        return freq;
     }
 
 
-    private double lookupFrequency(double allele) {
-        return alleleFrequencies.getOrDefault(allele, 0.01); // tránh chia cho 0
-    }
+
 }
 

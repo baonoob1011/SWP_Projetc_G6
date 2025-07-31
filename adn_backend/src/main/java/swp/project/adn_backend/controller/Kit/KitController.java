@@ -35,15 +35,5 @@ public class KitController {
         return ResponseEntity.ok(kitService.getAllKit());
     }
 
-//    @GetMapping("/view-kit-status-user")
-//    public ResponseEntity<List<KitStatusInfoDTO>> viewKitStatus() {
-//        return ResponseEntity.ok(kitService.getKitStatusForUser());
-//    }
 
-//    @PutMapping("/update-kit/{kitId}")
-//    public ResponseEntity<String> updateStatusByKitId(@PathVariable("kitId") long kitId,
-//                                                   @RequestBody UpdateKitRequest updateKitRequest) {
-//        kitService.updateStatusByKitId(kitId,updateKitRequest);
-//        return ResponseEntity.ok("update successful");
-//    }
 }
