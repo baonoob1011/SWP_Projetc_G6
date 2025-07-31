@@ -74,7 +74,7 @@ const ManagerPage = () => {
 
   const menuItems = [
     { id: 'dashboard', icon: ArrowBack, label: 'Trang chủ', path: '' },
-    { id: 'data', icon: List, label: 'Danh sách', path: 'manager/data' }, 
+    { id: 'data', icon: List, label: 'Danh sách', path: 'manager/data' },
     {
       id: 'result',
       icon: Check,
@@ -87,7 +87,7 @@ const ManagerPage = () => {
       label: 'Tạo địa chỉ mới',
       path: 'manager/location',
     },
-    
+
     {
       id: 'room',
       icon: Room,
@@ -166,7 +166,7 @@ const ManagerPage = () => {
             <div className="h-6 w-6 bg-blue-600 rounded flex items-center justify-center">
               <Shield className="h-4 w-4 text-white" />
             </div>
-            <span className="font-semibold text-gray-900">Manager Panel</span>
+            <span className="font-semibold text-gray-900">Trang quản lý</span>
           </div>
         </div>
 
@@ -210,7 +210,7 @@ const ManagerPage = () => {
               <Shield className="h-5 w-5 text-white" />
             </div>
             <span className="text-xl font-bold text-gray-900">
-              Manager Panel
+              Trang quản lý
             </span>
           </div>
 
