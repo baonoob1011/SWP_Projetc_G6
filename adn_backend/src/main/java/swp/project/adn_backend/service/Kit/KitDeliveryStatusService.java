@@ -16,6 +16,7 @@ import swp.project.adn_backend.entity.Appointment;
 import swp.project.adn_backend.entity.KitDeliveryStatus;
 import swp.project.adn_backend.entity.Staff;
 import swp.project.adn_backend.entity.Users;
+import swp.project.adn_backend.enums.AppointmentStatus;
 import swp.project.adn_backend.enums.DeliveryStatus;
 import swp.project.adn_backend.enums.ErrorCodeUser;
 import swp.project.adn_backend.exception.AppException;
@@ -134,14 +135,16 @@ public class KitDeliveryStatusService {
                 case PENDING -> appointment.setNote("Đang chờ giao bộ kit");
                 case IN_PROGRESS -> appointment.setNote("Đang giao bộ kit");
                 case DELIVERED -> appointment.setNote("Đã giao bộ kit thành công");
-                case FAILED -> appointment.setNote("Giao bộ kit thất bại");
+                case FAILED ->{
+                    appointment.setNote("Khách hàng không nhận hàng");
+                    appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
+                }
                 default -> { } // DONE đã xử lý ở trên
             }
 
             kitDeliveryStatus.setDeliveryStatus(newStatus);
         }
 
-        // Cập nhật ngày trả nếu có trong request
         if (kitDeliveryStatusRequest.getReturnDate() != null) {
             kitDeliveryStatus.setReturnDate(kitDeliveryStatusRequest.getReturnDate());
         }
