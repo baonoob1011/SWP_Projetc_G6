@@ -44,6 +44,16 @@ const ServiceList = ({ reloadTrigger }: Props) => {
   // const [updatedDescription, setUpdatedDescription] = useState('');
   // const [updatedPrices, setUpdatedPrices] = useState<PriceItem[]>([]);
 
+  const translate = (status: string) => {
+    switch (status) {
+      case 'ADMINISTRATIVE':
+        return 'Hành chính';
+      case 'CIVIL':
+        return 'Dân sự';
+      default:
+        return status;
+    }
+  };
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -399,7 +409,7 @@ const ServiceList = ({ reloadTrigger }: Props) => {
                     {/* Loại */}
                     <td className="px-4 py-3 border-r border-gray-200">
                       <span className="text-sm text-gray-600">
-                        {s.serviceRequest.serviceType}
+                        {translate(s.serviceRequest.serviceType)}
                       </span>
                     </td>
 

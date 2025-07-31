@@ -17,7 +17,6 @@ type Locus = {
 const CreateResultAllele = () => {
   const [allele1, setAllele1] = useState('');
   const [allele2, setAllele2] = useState('');
-  const [alleleStatus, setAlleleStatus] = useState('VALID');
   const [locusList, setLocusList] = useState<Locus[]>([]);
   const [selectedLocus, setSelectedLocus] = useState('');
   const { sampleId } = useParams();
@@ -87,7 +86,6 @@ const CreateResultAllele = () => {
     const data = {
       allele1,
       allele2,
-      alleleStatus,
     };
 
     try {
@@ -107,8 +105,8 @@ const CreateResultAllele = () => {
         toast.success('Tạo kết quả allele thành công!');
         setAllele1('');
         setAllele2('');
-        setAlleleStatus('ENTERED');
         setSelectedLocus('');
+        fetchAlleleData();
       } else {
         const errorData = await response.json();
         toast.error('Lỗi: ' + errorData.message);
@@ -191,7 +189,10 @@ const CreateResultAllele = () => {
                   type="text"
                   className={styles.inputField}
                   value={allele1}
-                  onChange={(e) => setAllele1(e.target.value)}
+                  onChange={(e) => {
+                    const onlyNum = e.target.value.replace(/[^0-9.]/g, '');
+                    setAllele1(onlyNum);
+                  }}
                   placeholder="Nhập giá trị allele 1"
                   required
                 />
@@ -203,7 +204,10 @@ const CreateResultAllele = () => {
                   type="text"
                   className={styles.inputField}
                   value={allele2}
-                  onChange={(e) => setAllele2(e.target.value)}
+                  onChange={(e) => {
+                    const onlyNum = e.target.value.replace(/[^0-9.]/g, '');
+                    setAllele2(onlyNum);
+                  }}
                   placeholder="Nhập giá trị allele 2"
                   required
                 />
@@ -330,7 +334,7 @@ const CreateResultAllele = () => {
                                 ? 'Không hợp lệ'
                                 : allele.alleleStatus === 'VALID'
                                 ? 'Hợp lệ'
-                                : allele.alleleStatus || 'Đã xác nhận'}
+                                : allele.alleleStatus || 'Đang xác nhận'}
                             </span>
                           </td>
                         </tr>

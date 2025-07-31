@@ -488,7 +488,9 @@ export const CollectSampleAtHome = () => {
                     <th>Ngày thu</th>
                     <th>Người thu</th>
                     <th>Trạng thái mẫu</th>
-                    <th>Thao tác</th>
+                    {sample.some(
+                      (s) => s.sampleResponse.sampleStatus === 'COLLECTED'
+                    ) && <th>Thao tác</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -536,36 +538,39 @@ export const CollectSampleAtHome = () => {
                           ))}
                         </select>
                       </td>
-                      <td>
-                        <button
-                          type="submit"
-                          className={styles.cancelSampleBtn}
-                          onClick={() => {
-                            const matchedAppointment = appointments.find((a) =>
-                              a.patientAppointmentResponse.some(
-                                (p: any) =>
-                                  p.patientId ===
-                                  item.patientSampleResponse.patientId
-                              )
-                            );
-                            const appointmentId =
-                              matchedAppointment?.showAppointmentResponse
-                                ?.appointmentId;
-                            if (appointmentId) {
-                              setConfirmDelete({
-                                appointmentId,
-                                sampleId: item.sampleResponse.sampleId,
-                              });
-                            } else {
-                              toast.error(
-                                'Không tìm thấy appointmentId cho mẫu này'
+                      {item.sampleResponse.sampleStatus === 'COLLECTED' && (
+                        <td>
+                          <button
+                            type="submit"
+                            className={styles.cancelSampleBtn}
+                            onClick={() => {
+                              const matchedAppointment = appointments.find(
+                                (a) =>
+                                  a.patientAppointmentResponse.some(
+                                    (p: any) =>
+                                      p.patientId ===
+                                      item.patientSampleResponse.patientId
+                                  )
                               );
-                            }
-                          }}
-                        >
-                          Hủy mẫu
-                        </button>
-                      </td>
+                              const appointmentId =
+                                matchedAppointment?.showAppointmentResponse
+                                  ?.appointmentId;
+                              if (appointmentId) {
+                                setConfirmDelete({
+                                  appointmentId,
+                                  sampleId: item.sampleResponse.sampleId,
+                                });
+                              } else {
+                                toast.error(
+                                  'Không tìm thấy appointmentId cho mẫu này'
+                                );
+                              }
+                            }}
+                          >
+                            Hủy mẫu
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>

@@ -246,6 +246,10 @@ export default function WalletNotification() {
         return 'Đang xử lý';
       case 'CONFIRMED':
         return 'Đã xác nhận';
+      case 'WAITING_MANAGER_APPROVAL':
+        return 'Chờ duyệt kết quả';
+      case 'WAITING_MANAGER_APPROVAL_REFUND':
+        return 'Chờ duyệt hoàn tiền';
       default:
         return type;
     }
