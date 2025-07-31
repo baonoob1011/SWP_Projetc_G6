@@ -410,15 +410,8 @@ const GetAllResult = () => {
                 <div className="grid grid-cols-2 gap-8 border border-gray-200 rounded-lg p-6">
                   <div className="text-center">
                     <h4 className="text-sm font-bold text-blue-600 mb-2">
-                      NGƯỜI THỰC HIỆN
+                      CHỮ KÝ NGƯỜI THANH TOÁN
                     </h4>
-                    <p className="text-xs text-gray-600 mb-4 italic">
-                      (Ký tên và đóng dấu)
-                    </p>
-                    <div className="h-16 mb-2"></div>
-                    <p className="text-sm font-semibold text-gray-700">
-                      Kỹ thuật viên
-                    </p>
                   </div>
                   <div className="text-center">
                     <h4 className="text-sm font-bold text-blue-600 mb-2">
