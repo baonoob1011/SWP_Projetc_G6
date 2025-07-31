@@ -29,4 +29,9 @@ public class LocusController {
     public ResponseEntity<List<LocusInfoDTO>>getAllLocus(){
         return ResponseEntity.ok(locusService.getAllLocus());
     }
+    @DeleteMapping("/delete-locus/{locusId}")
+    public ResponseEntity<String> deleteLocus(@PathVariable long locusId){
+        locusService.deleteLocus(locusId);
+        return ResponseEntity.ok("Delete locus successful");
+    }
 }
