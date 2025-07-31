@@ -388,7 +388,7 @@ const Services = () => {
                       </MenuItem>
                       {kit.map((kit) => (
                         <MenuItem key={kit.kitId} value={kit.kitId}>
-                          {kit.kitCode}
+                          {kit.kitName}
                         </MenuItem>
                       ))}
                     </Select>

@@ -278,15 +278,6 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
                   style: 'infoValue',
                 },
               ],
-              [
-                { text: 'Căn cứ theo giấy đề nghị số:', style: 'infoLabel' },
-                {
-                  text: `HID15 ${
-                    item.showAppointmentResponse?.appointmentId || '5986'
-                  }`,
-                  style: 'infoValue',
-                },
-              ],
             ],
           },
           layout: {
@@ -619,12 +610,7 @@ const ExportResultPDF = ({ item }: ExportResultPDFProps) => {
               [
                 {
                   stack: [
-                    { text: 'NGƯỜI THỰC HIỆN', style: 'signatureTitle' },
-                    {
-                      text: '(Ký tên và đóng dấu)',
-                      style: 'signatureInstruction',
-                    },
-                    { text: 'Kỹ thuật viên', style: 'signatureName' },
+                    { text: 'TÊN NGƯỜI THANH TOÁN', style: 'signatureTitle' },
                   ],
                   margin: [0, 10, 0, 10],
                 },
