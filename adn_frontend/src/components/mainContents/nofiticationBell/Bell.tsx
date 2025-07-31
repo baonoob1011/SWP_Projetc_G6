@@ -232,7 +232,7 @@ export default function WalletNotification() {
     switch (type) {
       case 'DEPOSIT':
         return 'Nạp tiền';
-      case 'REFUNDED':
+      case 'REFUND':
         return 'Hoàn tiền';
       case 'WITHDRAW':
         return 'Rút tiền';
