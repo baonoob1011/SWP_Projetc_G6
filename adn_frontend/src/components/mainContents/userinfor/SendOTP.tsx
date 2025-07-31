@@ -1,52 +1,46 @@
-import {
-  Box,
-  Button,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { useState } from "react";
-import CountdownTimer from "../feature/CountDown";
-import NewPass from "./NewPass";
-import CustomSnackBar from "./Snackbar";
-import styles from "./SendOTP.module.css";
-import bg from "../../../image/Login_banner.png";
-import logo from "../../../image/Logo.png";
+import { Box, Button, Paper, TextField, Typography } from '@mui/material';
+import { useState } from 'react';
+import CountdownTimer from '../feature/CountDown';
+import NewPass from './NewPass';
+import CustomSnackBar from './Snackbar';
+import styles from './SendOTP.module.css';
+import bg from '../../../image/Login_banner.png';
+import logo from '../../../image/Logo.png';
 // import logo from "../../image/Logo.png";
-import { motion } from "framer-motion";
-import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const SendOTP = ({ email }: { email: string }) => {
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
 
   const [snackbar, setSnackbar] = useState({
     open: false,
-    message: "",
-    severity: "success" as "success" | "error",
+    message: '',
+    severity: 'success' as 'success' | 'error',
   });
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsVerifying(true);
     try {
-      const res = await fetch("http://localhost:8080/api/otp/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('http://localhost:8080/api/otp/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp }),
       });
       if (!res.ok) {
         setSnackbar({
           open: true,
-          message: "OTP không hợp lệ hoặc hết hạn",
-          severity: "error",
+          message: 'OTP không hợp lệ hoặc hết hạn',
+          severity: 'error',
         });
       } else {
         setSnackbar({
           open: true,
-          message: "Xác thực thành công",
-          severity: "success",
+          message: 'Xác thực thành công',
+          severity: 'success',
         });
         setTimeout(() => {
           setVerified(true);
@@ -56,8 +50,8 @@ const SendOTP = ({ email }: { email: string }) => {
     } catch (err) {
       setSnackbar({
         open: true,
-        message: "lỗi hệ thống",
-        severity: "error",
+        message: 'lỗi hệ thống',
+        severity: 'error',
       });
     } finally {
       setIsVerifying(false);
@@ -66,38 +60,38 @@ const SendOTP = ({ email }: { email: string }) => {
 
   const resendOtp = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/otp/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('http://localhost:8080/api/otp/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
       if (!res.ok) {
         setSnackbar({
           open: true,
-          message: "Không thể gửi lại OTP",
-          severity: "error",
-        })
+          message: 'Không thể gửi lại OTP',
+          severity: 'error',
+        });
       } else {
         setSnackbar({
           open: true,
-          message: "Gửi OTP thành công",
-          severity: "success",
+          message: 'Gửi OTP thành công',
+          severity: 'success',
         });
-        setOtp("");
+        setOtp('');
       }
     } catch (err) {
       setSnackbar({
         open: true,
         message: (err as Error).message,
-        severity: "error",
+        severity: 'error',
       });
     }
   };
 
   const maskEmail = (email: string) => {
-    const [name, domain] = email.split("@");
+    const [name, domain] = email.split('@');
     const visible = name.length <= 3 ? name[0] : name.slice(0, 3);
-    return `${visible}${"*".repeat(name.length - visible.length)}@${domain}`;
+    return `${visible}${'*'.repeat(name.length - visible.length)}@${domain}`;
   };
 
   if (verified) return <NewPass email={email} />;
@@ -150,7 +144,7 @@ const SendOTP = ({ email }: { email: string }) => {
               color: 'white',
               cursor: 'pointer',
               textDecoration: 'none',
-              '&:hover': { opacity: 0.8 }
+              '&:hover': { opacity: 0.8 },
             }}
           >
             Trang chủ
@@ -160,7 +154,7 @@ const SendOTP = ({ email }: { email: string }) => {
             sx={{
               color: 'white',
               cursor: 'pointer',
-              '&:hover': { opacity: 0.8 }
+              '&:hover': { opacity: 0.8 },
             }}
           >
             Về chúng tôi
@@ -170,7 +164,7 @@ const SendOTP = ({ email }: { email: string }) => {
             sx={{
               color: 'white',
               cursor: 'pointer',
-              '&:hover': { opacity: 0.8 }
+              '&:hover': { opacity: 0.8 },
             }}
           >
             Trợ giúp
@@ -183,7 +177,7 @@ const SendOTP = ({ email }: { email: string }) => {
             sx={{
               color: 'white',
               fontWeight: 'bold',
-              letterSpacing: '1px'
+              letterSpacing: '1px',
             }}
           >
             GENELINK
@@ -199,7 +193,11 @@ const SendOTP = ({ email }: { email: string }) => {
               justifyContent: 'center',
             }}
           >
-            <img src={logo} alt="Logo" style={{ width: '70px', height: '70px' }} />
+            <img
+              src={logo}
+              alt="Logo"
+              style={{ width: '70px', height: '70px' }}
+            />
           </div>
         </div>
       </div>
@@ -214,7 +212,7 @@ const SendOTP = ({ email }: { email: string }) => {
           display: 'grid',
           gridTemplateColumns: 'auto auto',
           columnGap: '200px', // khoảng cách giữa 2 cột
-          rowGap: '60px',    // khoảng cách giữa các hàng
+          rowGap: '60px', // khoảng cách giữa các hàng
         }}
       >
         {/** Hàng 1, Cột 1: Phone **/}
@@ -233,7 +231,10 @@ const SendOTP = ({ email }: { email: string }) => {
             <Typography sx={{ color: 'white', fontSize: 16 }}>📞</Typography>
           </div>
           <div>
-            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+            <Typography
+              variant="body2"
+              sx={{ color: 'white', fontWeight: 'bold' }}
+            >
               Số điện thoại
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
@@ -258,7 +259,10 @@ const SendOTP = ({ email }: { email: string }) => {
             <Typography sx={{ color: 'white', fontSize: 16 }}>✉️</Typography>
           </div>
           <div>
-            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+            <Typography
+              variant="body2"
+              sx={{ color: 'white', fontWeight: 'bold' }}
+            >
               E-Mail
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
@@ -283,7 +287,10 @@ const SendOTP = ({ email }: { email: string }) => {
             <Typography sx={{ color: 'white', fontSize: 16 }}>🌐</Typography>
           </div>
           <div>
-            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+            <Typography
+              variant="body2"
+              sx={{ color: 'white', fontWeight: 'bold' }}
+            >
               Website
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
@@ -308,11 +315,14 @@ const SendOTP = ({ email }: { email: string }) => {
             <Typography sx={{ color: 'white', fontSize: 16 }}>📍</Typography>
           </div>
           <div>
-            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold' }}>
+            <Typography
+              variant="body2"
+              sx={{ color: 'white', fontWeight: 'bold' }}
+            >
               Địa chỉ
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
-            22/14 Đ. Phan Văn Hớn, Tân Thới Nhất, Quận 12, Hồ Chí Minh
+              22/14 Đ. Phan Văn Hớn, Tân Thới Nhất, Quận 12, Hồ Chí Minh
             </Typography>
           </div>
         </div>
@@ -337,7 +347,7 @@ const SendOTP = ({ email }: { email: string }) => {
             width: '400px',
             borderRadius: '20px',
             p: 4,
-            backgroundColor: 'rgba(255, 255, 255, 0.85)',  // match Login form
+            backgroundColor: 'rgba(255, 255, 255, 0.85)', // match Login form
             border: 'none',
             boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
           }}
@@ -347,7 +357,7 @@ const SendOTP = ({ email }: { email: string }) => {
             sx={{
               fontWeight: 'bold',
               mb: 2,
-              color: '#2c3e50',      // same as Login title
+              color: '#2c3e50', // same as Login title
               textAlign: 'center',
             }}
           >
@@ -356,7 +366,7 @@ const SendOTP = ({ email }: { email: string }) => {
 
           <Typography
             sx={{
-              color: '#7f8c8d',      // same as Login subtitle
+              color: '#7f8c8d', // same as Login subtitle
               textAlign: 'center',
               mb: 3,
             }}
@@ -377,7 +387,7 @@ const SendOTP = ({ email }: { email: string }) => {
                 '& .MuiOutlinedInput-root': {
                   height: 56,
                   borderRadius: '25px',
-                  backgroundColor: '#eaf4ff',    // light blue
+                  backgroundColor: '#eaf4ff', // light blue
                   border: 'none',
                   '& fieldset': { border: 'none' },
                   '&:hover fieldset': { border: 'none' },
@@ -389,8 +399,17 @@ const SendOTP = ({ email }: { email: string }) => {
               }}
             />
 
-            <Box mb={2} display="flex" justifyContent="center" alignItems="center">
-              <CountdownTimer duration={60000} onComplete={() => { }} onResend={resendOtp} />
+            <Box
+              mb={2}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <CountdownTimer
+                duration={60000}
+                onComplete={() => {}}
+                onResend={resendOtp}
+              />
             </Box>
 
             <Button
@@ -400,20 +419,27 @@ const SendOTP = ({ email }: { email: string }) => {
               sx={{
                 py: 1.5,
                 borderRadius: '25px',
-                background: 'linear-gradient(135deg,hsl(229, 71.60%, 64.10%) 0%,#b786e8 100%)',
+                background:
+                  'linear-gradient(135deg,hsl(229, 71.60%, 64.10%) 0%,#b786e8 100%)',
                 textTransform: 'none',
                 fontSize: 16,
                 fontWeight: 'bold',
                 mb: 1,
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                  background:
+                    'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
                 },
                 '&:disabled': {
-                  background: 'linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%)',
+                  background:
+                    'linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%)',
                 },
               }}
             >
-              {isVerifying ? <div className={styles.spinner} /> : 'Xác nhận OTP'}
+              {isVerifying ? (
+                <div className={styles.spinner} />
+              ) : (
+                'Xác nhận OTP'
+              )}
             </Button>
           </form>
 
@@ -424,10 +450,8 @@ const SendOTP = ({ email }: { email: string }) => {
             onClose={() => setSnackbar({ ...snackbar, open: false })}
           />
         </Paper>
-
       </motion.div>
     </div>
-
   );
 };
 

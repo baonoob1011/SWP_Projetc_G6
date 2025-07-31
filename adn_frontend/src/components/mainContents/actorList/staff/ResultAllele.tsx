@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { NavLink, useLocation, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from './ResultAllele.module.css';
 import Modal from 'react-modal';
+import Swal from 'sweetalert2';
+import { ArrowBack } from '@mui/icons-material';
 Modal.setAppElement('#root'); // đảm bảo hỗ trợ accessibility
 
 type Locus = {
@@ -25,7 +27,7 @@ const CreateResultAllele = () => {
   const { patientName } = location.state || {};
   const { patientId } = location.state || {};
   // const navigate = useNavigate();
-  // const { appointmentId } = location.state || {};
+  const { appointmentId } = location.state || {};
   const [alleleResultData, setAlleleResultData] = useState<any>('');
   const [showPopup, setShowPopup] = useState(false);
 
@@ -76,6 +78,38 @@ const CreateResultAllele = () => {
     fetchAlleleData();
   }, []);
 
+  const handleDelete = async (alleleId: string) => {
+    const result = await Swal.fire({
+      title: 'Bạn có chắc chắn muốn xóa?',
+      text: 'Thao tác này sẽ không thể hoàn tác!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Xóa',
+      cancelButtonText: 'Hủy',
+    });
+    if (result.isConfirmed) {
+      try {
+        const res = await fetch(
+          `http://localhost:8080/api/result-allele/delete-allele?alleleId=${alleleId}`,
+          {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+        );
+        if (res.ok) {
+          toast.success('Xóa thành công');
+          fetchAlleleData();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -107,8 +141,9 @@ const CreateResultAllele = () => {
         toast.success('Tạo kết quả allele thành công!');
         setAllele1('');
         setAllele2('');
-        setAlleleStatus('ENTERED');
+        setAlleleStatus('VALID');
         setSelectedLocus('');
+        fetchAlleleData();
       } else {
         const errorData = await response.json();
         toast.error('Lỗi: ' + errorData.message);
@@ -162,6 +197,11 @@ const CreateResultAllele = () => {
       </div>
       <div className={styles.container}>
         <div className={styles.formCard}>
+          <div>
+            <NavLink to={`/s-page/get-appointment/${appointmentId}`}>
+              <ArrowBack fontSize="large"></ArrowBack>
+            </NavLink>
+          </div>
           <div className={styles.header}>
             <h1 className={styles.title}>
               Nhập Thông Tin Gen Di Truyền (Allele)
@@ -306,6 +346,7 @@ const CreateResultAllele = () => {
                       <th>Giá trị Allele</th>
                       <th>Vị trí Allele</th>
                       <th>Trạng thái</th>
+                      <th>Nút</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -338,6 +379,14 @@ const CreateResultAllele = () => {
                                 ? 'Hợp lệ'
                                 : allele.alleleStatus || 'Đã xác nhận'}
                             </span>
+                          </td>
+                          <td>
+                            <button
+                              onClick={() => handleDelete(allele.alleleId)}
+                            >
+                              {' '}
+                              Xóa
+                            </button>
                           </td>
                         </tr>
                       )

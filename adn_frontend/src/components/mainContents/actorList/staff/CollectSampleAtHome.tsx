@@ -21,10 +21,10 @@ export const CollectSampleAtHome = () => {
   ];
   const sampleStatusOptions = [
     { value: 'COLLECTED', label: 'Đã thu thập mẫu' },
-    { value: 'IN_TRANSIT', label: 'Đang vận chuyển' },
+    // { value: 'IN_TRANSIT', label: 'Đang vận chuyển' },
     { value: 'RECEIVED', label: 'Đã nhận tại phòng xét nghiệm' },
   ];
-
+  const [kitStatus, setKitStatus] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<{
     [key: string]: string;
@@ -123,7 +123,28 @@ export const CollectSampleAtHome = () => {
   useEffect(() => {
     fetchAppointmentAtHome();
   }, []);
-
+  const fetchKitStatus = async () => {
+    try {
+      const res = await fetch(
+        'http://localhost:8080/api/kit-delivery-status/get-kit-status-staff',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      const data = await res.json();
+      setKitStatus(data);
+    } catch (error) {
+      console.error('Lỗi:', error);
+      toast.error('Lỗi hệ thống khi lấy trạng thái kit');
+    }
+  };
+  useEffect(() => {
+    fetchKitStatus();
+  }, []);
   const handleUpdate = async (
     sampleId: string,
     sampleStatus: string,
@@ -258,6 +279,7 @@ export const CollectSampleAtHome = () => {
       );
       if (res.ok) {
         toast.success('Cập nhật trạng thái thành công');
+        window.location.href = `/s-page/checkAppointmentAtHome/${appointmentId}`;
       } else {
         toast.error('Không thể cập nhật trạng thái cũ');
       }
@@ -346,15 +368,25 @@ export const CollectSampleAtHome = () => {
                       <th className={styles.tableHeaderCell}>Giới tính</th>
                       <th className={styles.tableHeaderCell}>Quan hệ</th>
                       {appointments[0]?.patientAppointmentResponse[0]
-                        ?.patientStatus !== 'COMPLETED' && (
-                        <th className={styles.tableHeaderCell}>Thu mẫu</th>
-                      )}
+                        ?.patientStatus !== 'COMPLETED' &&
+                        kitStatus.some(
+                          (k) =>
+                            k.appointmentId === appointmentId &&
+                            k.deliveryStatus === 'DONE'
+                        ) && (
+                          <th className={styles.tableHeaderCell}>Thu mẫu</th>
+                        )}
                       {appointments[0]?.patientAppointmentResponse[0]
-                        ?.patientStatus !== 'COMPLETED' && (
-                        <th className={styles.tableHeaderCell}>
-                          Trạng thái Kit
-                        </th>
-                      )}
+                        ?.patientStatus !== 'COMPLETED' &&
+                        kitStatus.some(
+                          (k) =>
+                            k.appointmentId === appointmentId &&
+                            k.deliveryStatus !== 'DONE'
+                        ) && (
+                          <th className={styles.tableHeaderCell}>
+                            Trạng thái Kit
+                          </th>
+                        )}
                     </tr>
                   </thead>
                   <tbody>
@@ -384,41 +416,53 @@ export const CollectSampleAtHome = () => {
                           <td className={styles.tableCell}>
                             {patient.relationship}
                           </td>
-                          {patient.patientStatus !== 'COMPLETED' && (
-                            <td className={styles.tableCell}>
-                              <div className={styles.inputGroup}>
-                                <select
-                                  className={styles.sampleSelect}
-                                  value={sampleType[key as any] || ''}
-                                  onChange={(e) => handleSeletedSample(e, key)}
-                                >
-                                  <option value="">Chọn vật xét nghiệm</option>
-                                  {sampleTypes.map((type) => (
-                                    <option key={type} value={type}>
-                                      {type}
-                                    </option>
-                                  ))}
-                                </select>
+                          {kitStatus.some(
+                            (k) =>
+                              k.appointmentId === appointmentId &&
+                              k.deliveryStatus === 'DONE'
+                          ) &&
+                            patient.patientStatus !== 'COMPLETED' && (
+                              <td className={styles.tableCell}>
+                                <div className={styles.inputGroup}>
+                                  <select
+                                    className={styles.sampleSelect}
+                                    value={sampleType[key as any] || ''}
+                                    onChange={(e) =>
+                                      handleSeletedSample(e, key)
+                                    }
+                                  >
+                                    <option value="">Thu mẫu</option>
+                                    {sampleTypes.map((type) => (
+                                      <option key={type} value={type}>
+                                        {type}
+                                      </option>
+                                    ))}
+                                  </select>
 
-                                <button
-                                  className={styles.submitBtn}
-                                  onClick={() =>
-                                    handleSendSample(
-                                      patient.patientId,
-                                      serviceId,
-                                      appointmentId,
-                                      key
-                                    )
-                                  }
-                                >
-                                  <Check fontSize="small" />
-                                </button>
-                              </div>
-                            </td>
-                          )}
+                                  <button
+                                    className={styles.submitBtn}
+                                    onClick={() =>
+                                      handleSendSample(
+                                        patient.patientId,
+                                        serviceId,
+                                        appointmentId,
+                                        key
+                                      )
+                                    }
+                                  >
+                                    <Check fontSize="small" />
+                                  </button>
+                                </div>
+                              </td>
+                            )}
 
                           {isFirstPatient &&
-                            patient.patientStatus !== 'COMPLETED' && (
+                            patient.patientStatus !== 'COMPLETED' &&
+                            kitStatus.some(
+                              (k) =>
+                                k.appointmentId === appointmentId &&
+                                k.deliveryStatus !== 'DONE'
+                            ) && (
                               <td
                                 className={`${styles.tableCell} ${styles.statusColumn}`}
                                 rowSpan={patients.length}
@@ -426,7 +470,11 @@ export const CollectSampleAtHome = () => {
                                 <select
                                   className={styles.statusSelect}
                                   value={
-                                    selectedStatus[appointmentId] || 'PENDING'
+                                    selectedStatus[appointmentId] ??
+                                    kitStatus.find(
+                                      (k) => k.appointmentId === appointmentId
+                                    )?.deliveryStatus ??
+                                    'PENDING'
                                   }
                                   onChange={async (e) => {
                                     const newStatus = e.target.value;
