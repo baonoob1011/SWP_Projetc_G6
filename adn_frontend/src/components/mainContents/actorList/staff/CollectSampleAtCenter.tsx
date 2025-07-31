@@ -248,7 +248,7 @@ const CollectSampleAtCenter = () => {
         throw new Error('Không thể xóa mẫu');
       } else {
         fetchSampleData(appointmentId);
-        toast.success('Thu mẫu thành công');
+        toast.success('Hủy mẫu thành công');
       }
     } catch (error) {
       console.log(error);

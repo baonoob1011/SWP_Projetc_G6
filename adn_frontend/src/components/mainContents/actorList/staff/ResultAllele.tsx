@@ -222,7 +222,22 @@ const CreateResultAllele = () => {
               />
             </div>
           )}
-
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Chọn Locus</label>
+            <select
+              className={`${styles.selectField} ${styles.locusSelect}`}
+              value={selectedLocus}
+              onChange={(e) => setSelectedLocus(e.target.value)}
+              required
+            >
+              <option value="">-- Chọn locus --</option>
+              {locusList.map((locus) => (
+                <option key={locus.locusId} value={locus.locusId}>
+                  {locus.locusName}
+                </option>
+              ))}
+            </select>
+          </div>
           <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.alleleGroup}>
               <div className={`${styles.formGroup} ${styles.alleleField}`}>
@@ -268,23 +283,6 @@ const CreateResultAllele = () => {
                 <option value="INVALID">Không hợp lệ</option>
               </select>
             </div> */}
-
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Chọn Locus</label>
-              <select
-                className={`${styles.selectField} ${styles.locusSelect}`}
-                value={selectedLocus}
-                onChange={(e) => setSelectedLocus(e.target.value)}
-                required
-              >
-                <option value="">-- Chọn locus --</option>
-                {locusList.map((locus) => (
-                  <option key={locus.locusId} value={locus.locusId}>
-                    {locus.locusName}
-                  </option>
-                ))}
-              </select>
-            </div>
 
             <button
               type="submit"
