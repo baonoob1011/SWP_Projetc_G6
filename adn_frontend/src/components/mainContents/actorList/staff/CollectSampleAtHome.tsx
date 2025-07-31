@@ -21,7 +21,7 @@ export const CollectSampleAtHome = () => {
   ];
   const sampleStatusOptions = [
     { value: 'COLLECTED', label: 'Đã thu thập mẫu' },
-    { value: 'IN_TRANSIT', label: 'Đang vận chuyển' },
+    // { value: 'IN_TRANSIT', label: 'Đang vận chuyển' },
     { value: 'RECEIVED', label: 'Đã nhận tại phòng xét nghiệm' },
   ];
   const [kitStatus, setKitStatus] = useState<any[]>([]);
