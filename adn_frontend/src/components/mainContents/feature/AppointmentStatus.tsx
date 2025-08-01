@@ -85,8 +85,8 @@ const GetKitDeliveryStatus = () => {
         return 'failed';
       }
       // For FAILED orders, mark previous steps as completed up to IN_PROGRESS
-      if (stepIndex < 2) return 'completed'; // PENDING, IN_PROGRESS
-      return 'pending';
+      // if (stepIndex < 2) return 'completed'; // PENDING, IN_PROGRESS
+      // return 'pending';
     }
 
     // For DONE status, mark all normal flow steps as completed
@@ -104,6 +104,12 @@ const GetKitDeliveryStatus = () => {
     // For IN_PROGRESS status, mark both PENDING and IN_PROGRESS steps as completed
     if (upperStatus === 'IN_PROGRESS') {
       if (stepIndex <= 1) return 'completed'; // PENDING, IN_PROGRESS
+      return 'pending';
+    }
+
+    // For PENDING status, mark PENDING step as completed
+    if (upperStatus === 'PENDING') {
+      if (stepIndex === 0) return 'completed'; // PENDING step
       return 'pending';
     }
 
