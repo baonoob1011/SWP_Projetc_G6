@@ -5,10 +5,18 @@ export type Patient = {
   gender: string;
   relationship: string;
 };
-
-export type Appointment ={
-  appointmentStatus: string
-}
+export type Kit = {
+  kitId: string;
+  kitCode: string;
+  kitName: string;
+  targetPersonCount: string;
+  price: string;
+  contents: string;
+  quantity: string;
+};
+export type Appointment = {
+  appointmentStatus: string;
+};
 
 export type Staff = {
   staffId: number;

@@ -173,12 +173,6 @@ const BookingAtHome = () => {
       for (let i = 0; i < patients.length; i++) {
         const p = patients[i];
         const age = calculateAge(p.dateOfBirth);
-        if (age < 14 && !p.birthCertificate) {
-          toast.warning(
-            `Người thứ ${i + 1}: Trẻ dưới 14 tuổi phải có giấy khai sinh`
-          );
-          return false;
-        }
         if (age >= 16 && !p.identityNumber) {
           toast.warning(
             `Người thứ ${i + 1}: Từ 16 tuổi trở lên phải có số CMND/CCCD`
