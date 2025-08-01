@@ -10,22 +10,27 @@ import Logo from '../../../../image/Logo.png';
 import Sign from '../../../../image/Sign.png';
 import ExportResultPDF from '../../feature/PrintPDF';
 import Swal from 'sweetalert2';
-const GetAllResultByManager = () => {
+
+type Profile = {
+  role: 'MANAGER' | 'STAFF';
+};
+const GetAllResultByManager = ({ role }: Profile) => {
   const { appointmentId } = useParams();
   const [isResult, setIsResult] = useState<any[]>([]);
   const navigate = useNavigate();
-
+  const isRole = localStorage.getItem('role');
   const fetchData = async () => {
+    const apiMap = {
+      STAFF: `http://localhost:8080/api/appointment/get-all-result-by-staff?appointmentId=${appointmentId}`,
+      MANAGER: `http://localhost:8080/api/appointment/get-all-result-by-manager?appointmentId=${appointmentId}`,
+    };
     try {
-      const res = await fetch(
-        `http://localhost:8080/api/appointment/get-all-result-by-manager?appointmentId=${appointmentId}`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
+      const res = await fetch(apiMap[role], {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
 
       if (!res.ok) {
         toast.error('Không thể lấy dữ liệu');
@@ -328,60 +333,61 @@ const GetAllResultByManager = () => {
             </div>
           </div>
         ))}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '30px',
-          marginTop: '24px',
-          flexWrap: 'wrap',
-        }}
-      >
-        <button
-          type="button"
-          onClick={async () => {
-            const result = await Swal.fire({
-              title: 'Xác nhận gửi kết quả?',
-              text: 'Bạn có chắc muốn gửi kết quả xét nghiệm này?',
-              icon: 'question',
-              showCancelButton: true,
-              confirmButtonText: 'Gửi',
-              cancelButtonText: 'Hủy',
-            });
-
-            if (result.isConfirmed) {
-              handleResult();
-            }
-          }}
+      {isRole === 'MANAGER' && (
+        <div
           style={{
-            padding: '10px 20px',
-            backgroundColor: '#2c3e50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            transition: 'background-color 0.3s ease',
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = '#1a242f';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = '#2c3e50';
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '30px',
+            marginTop: '24px',
+            flexWrap: 'wrap',
           }}
         >
-          Gửi kết quả
-        </button>
-      </div>
-      {isResult
-        .filter(
-          (item) =>
-            item.resultAppointmentResponse?.[0]?.resultStatus === 'COMPLETED'
-        )
-        .map((item, index) => (
-          <ExportResultPDF key={index} item={item} />
-        ))}
+          <button
+            type="button"
+            onClick={async () => {
+              const result = await Swal.fire({
+                title: 'Xác nhận gửi kết quả?',
+                text: 'Bạn có chắc muốn gửi kết quả xét nghiệm này?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Gửi',
+                cancelButtonText: 'Hủy',
+              });
+
+              if (result.isConfirmed) {
+                handleResult();
+              }
+            }}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2c3e50',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s ease',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = '#1a242f';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = '#2c3e50';
+            }}
+          >
+            Gửi kết quả
+          </button>
+        </div>
+      )}
+      {isRole === 'STAFF' &&
+        isResult
+          .filter(
+            (item) =>
+              item.resultAppointmentResponse?.[0]?.resultStatus === 'COMPLETED'
+          )
+          .map((item, index) => <ExportResultPDF key={index} item={item} />)}
     </div>
   );
 };
