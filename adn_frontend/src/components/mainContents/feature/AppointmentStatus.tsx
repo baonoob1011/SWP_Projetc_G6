@@ -101,6 +101,12 @@ const GetKitDeliveryStatus = () => {
       return 'pending';
     }
 
+    // For IN_PROGRESS status, mark both PENDING and IN_PROGRESS steps as completed
+    if (upperStatus === 'IN_PROGRESS') {
+      if (stepIndex <= 1) return 'completed'; // PENDING, IN_PROGRESS
+      return 'pending';
+    }
+
     // For other statuses, use the default logic
     if (stepIndex < currentIndex) return 'completed';
     if (stepIndex === currentIndex) return 'active';
