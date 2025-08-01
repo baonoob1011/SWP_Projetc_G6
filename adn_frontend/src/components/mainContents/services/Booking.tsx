@@ -16,6 +16,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import InvoicePopup from '../actorList/user/PopupInvoice';
 import Swal from 'sweetalert2';
+import { PrinterIcon } from 'lucide-react';
 
 // ==== COMPONENT ====
 const Booking = () => {
@@ -49,6 +50,28 @@ const Booking = () => {
       const data = await res.json();
       setInvoices(data);
       setShowInvoicePopup(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const handleSendCopyResult = async (appoinmentId: number) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/wallet/request-send-hard-copy-result?appointmentId=${appoinmentId}`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (res.ok) {
+        toast.success('Yêu cầu thành công');
+        fetchData();
+        window.location.href = '/u-profile';
+      } else {
+        toast.error('Số dư không đủ');
+      }
     } catch (err) {
       console.error(err);
     }
@@ -627,6 +650,29 @@ const Booking = () => {
                     >
                       <FaEye className="mr-2" />
                       Xem kết quả
+                    </button>
+                  )}
+                  {item.show.appointmentStatus === 'COMPLETED' && (
+                    <button
+                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
+                      onClick={async () => {
+                        const result = await Swal.fire({
+                          title: 'Xác nhận thanh toán',
+                          text: 'Bạn cần thanh toán 50.000 VND để in?',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonColor: '#3085d6',
+                          cancelButtonColor: '#d33',
+                          confirmButtonText: 'Có, thanh toán!',
+                          cancelButtonText: 'Hủy',
+                        });
+                        if (result.isConfirmed) {
+                          handleSendCopyResult(item.show?.appointmentId);
+                        }
+                      }}
+                    >
+                      <PrinterIcon className="mr-2" />
+                      In bản cứng
                     </button>
                   )}
 

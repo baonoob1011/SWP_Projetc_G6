@@ -101,6 +101,7 @@ import { CollectSampleAtHome } from './components/mainContents/actorList/staff/C
 import Deposit from './components/mainContents/services/Deposit';
 import CheckResult from './components/mainContents/actorList/manager/CheckResult';
 import GetAllResultByManager from './components/mainContents/actorList/manager/GetAppointmentResult';
+import CheckResultByStaff from './components/mainContents/actorList/staff/CheckResultByStaff';
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
@@ -113,49 +114,55 @@ function App() {
   const hideHeaderPaths = ['/login', '/signup', '/forget'];
   const shouldHideHeader = hideHeaderPaths.includes(location.pathname);
 
-  const isStaffLayoutRoute = [
-    '/s-page/s-userData',
-    '/s-page/s-slot',
-    '/s-page/checkBooking',
-    '/s-page/checkAppointmentAtCenter/:slotId',
-    '/s-page/checkAppointmentAtHome/:appointmentId',
-    '/s-page/get-appointment/:appointmentId',
-    '/s-page/selectorSlot',
-    '/s-page/labCheckSample',
-    '/s-page/record-result/:sampleId',
-    '/s-page',
-  ].some((path) => matchPath(path, location.pathname));
+  const isStaffLayoutRoute =
+    role === 'STAFF' &&
+    [
+      '/s-page/s-userData',
+      '/s-page/s-slot',
+      '/s-page/checkBooking',
+      '/s-page/checkAppointmentAtCenter/:slotId',
+      '/s-page/checkAppointmentAtHome/:appointmentId',
+      '/s-page/get-appointment/:appointmentId',
+      '/s-page/selectorSlot',
+      '/s-page/labCheckSample',
+      '/s-page/record-result/:sampleId',
+      '/s-page',
+      's-page/print',
+      '/checkResultById/:appointmentId',
+    ].some((path) => matchPath(path, location.pathname));
 
-  const isManagerLayoutRoute = [
-    '/manager/data',
-    '/manager/services',
-    '/manager/checkResult',
-    '/manager/create-services',
-    '/manager/staff',
-    '/manager/user',
-    '/manager/collector',
-    '/manager/technical',
-    '/manager/staff-at-home',
-    '/manager/consultant',
-    '/manager/cashier',
-    '/manager/createKit',
-    '/manager/location',
-    '/manager/room',
-    '/manager/create-blog',
-    '/schedule',
-    'slot/:staffId',
-    '/manager/create-locus',
-    '/newPrice/:serviceId',
-    '/manager',
-    '/discount/:serviceId',
-    '/signup-collector',
-    '/signup-staff',
-    '/signup-staff-technical',
-    '/signup-consultant',
-    '/signup-staff-at-home',
-    '/signup-cashier',
-    '/checkResultById/:appointmentId',
-  ].some((path) => matchPath(path, location.pathname));
+  const isManagerLayoutRoute =
+    role === 'MANAGER' &&
+    [
+      '/manager/data',
+      '/manager/services',
+      '/manager/checkResult',
+      '/manager/create-services',
+      '/manager/staff',
+      '/manager/user',
+      '/manager/collector',
+      '/manager/technical',
+      '/manager/staff-at-home',
+      '/manager/consultant',
+      '/manager/cashier',
+      '/manager/createKit',
+      '/manager/location',
+      '/manager/room',
+      '/manager/create-blog',
+      '/schedule',
+      'slot/:staffId',
+      '/manager/create-locus',
+      '/newPrice/:serviceId',
+      '/manager',
+      '/discount/:serviceId',
+      '/signup-collector',
+      '/signup-staff',
+      '/signup-staff-technical',
+      '/signup-consultant',
+      '/signup-staff-at-home',
+      '/signup-cashier',
+      '/checkResultById/:appointmentId',
+    ].some((path) => matchPath(path, location.pathname));
 
   return (
     <>
@@ -450,6 +457,22 @@ function App() {
                 }
               />
               <Route
+                path="s-page/print"
+                element={
+                  <ProtectedRoute allowedRoles={['STAFF']}>
+                    <CheckResultByStaff />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/checkResultById/:appointmentId"
+                element={
+                  <ProtectedRoute allowedRoles={['STAFF']}>
+                    <GetAllResultByManager role={role as 'STAFF'} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/s-page/record-result/:sampleId"
                 element={
                   <ProtectedRoute allowedRoles={['LAB_TECHNICIAN', 'STAFF']}>
@@ -593,6 +616,14 @@ function App() {
                   }
                 />
               </Route>
+              <Route
+                path="/checkResultById/:appointmentId"
+                element={
+                  <ProtectedRoute allowedRoles={['MANAGER']}>
+                    <GetAllResultByManager role={role as 'MANAGER'} />
+                  </ProtectedRoute>
+                }
+              />
               {/* <Route
                 path="/signup-staff"
                 element={
@@ -709,7 +740,7 @@ function App() {
                 path="/checkResultById/:appointmentId"
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
-                    <GetAllResultByManager />
+                    <GetAllResultByManager role={role as 'MANAGER'} />
                   </ProtectedRoute>
                 }
               />

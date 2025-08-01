@@ -11,6 +11,7 @@ import {
   Shield,
   List,
   BookImageIcon,
+  Printer,
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
@@ -94,6 +95,12 @@ const StaffPage = () => {
             icon: AppRegistration,
             label: 'Đơn đăng ký',
             path: 's-page/selectorSlot',
+          },
+          {
+            id: 'checkAppointment',
+            icon: Printer,
+            label: 'In bản cứng',
+            path: 's-page/print',
           },
         ]
       : role === 'LAB_TECHNICIAN'
