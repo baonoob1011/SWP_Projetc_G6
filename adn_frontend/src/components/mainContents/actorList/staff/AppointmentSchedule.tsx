@@ -164,7 +164,7 @@ const AppointmentSchedule = () => {
                     <div className={styles.infoItem}>
                       <p className={styles.infoLabel}>Trạng Thái</p>
                       <p className={styles.infoValue}>
-                        {item.showAppointmentResponse.appointmentStatus}
+                        {getStatusText(item.showAppointmentResponse.appointmentStatus)}
                       </p>
                       <div className={styles.infoItem}>
                         <p className={styles.infoLabel}>Tên Kit</p>
