@@ -263,7 +263,7 @@ public class AppointmentService {
                 priceAppointmentResponse != null ? priceAppointmentResponse : Collections.emptyList()
         );
 
-        emailService.sendAppointmentAtCenterDetailsEmail(userBookAppointment.getEmail(), allAppointmentAtCenterResponse);
+//        emailService.sendAppointmentAtCenterDetailsEmail(userBookAppointment.getEmail(), allAppointmentAtCenterResponse);
 
 
         appointmentMapper.toAppointmentResponse(saved);
@@ -432,6 +432,7 @@ public class AppointmentService {
         appointment.setUsers(userBookAppointment);
         appointment.setAppointmentDate(LocalDate.now());
         appointment.setCreatedAt(LocalDateTime.now());
+        appointment.setNote("Đơn đăng kí đợi xác nhận");
 
         // Tính giá sau khi giảm (nếu có)
 
@@ -556,7 +557,7 @@ public class AppointmentService {
         emailResponse.setServiceAppointmentResponses(List.of(serviceAppointmentResponse));
         emailResponse.setKitAppointmentResponse(kitAppointmentResponse);
 
-        emailService.sendAppointmentHomeDetailsEmail(userBookAppointment.getEmail(), emailResponse);
+//        emailService.sendAppointmentHomeDetailsEmail(userBookAppointment.getEmail(), emailResponse);
 
 
         return statusResponse;

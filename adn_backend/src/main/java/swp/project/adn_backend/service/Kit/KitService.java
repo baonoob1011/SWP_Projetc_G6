@@ -67,21 +67,10 @@ public class KitService {
         return query.getResultList();
     }
 
-
-//    public KitStatusResponse getKitStatusForUser(long appointmentId) {
-////        Jwt jwt = (Jwt) authentication.getPrincipal();
-////        Long userId = jwt.getClaim("id");
-//        Appointment appointment = appointmentRepository.findById(appointmentId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
-//
-//
-//    }
-//    @Transactional
-//    public void updateStatusByKitId(long kitId, UpdateKitRequest updateKitRequest) {
-//        Kit kit = kitRepository.findById(kitId)
-//                .orElseThrow(() -> new AppException(ErrorCodeUser.KIT_NOT_EXISTS));
-//            kit.setKitStatus(updateKitRequest.getKitStatus());
-//            kit.setReturnDate(updateKitRequest.getReturnDate());
-//    }
-
+    @Transactional
+    public void addKitQuantity(KitRequest kitRequest, long kitId){
+        Kit kit = kitRepository.findById(kitId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.KIT_NOT_EXISTS));
+        kit.setQuantity(kitRequest.getQuantity());
+    }
 }

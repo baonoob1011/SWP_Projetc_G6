@@ -142,19 +142,7 @@ public class SecurityConfig {
 
     };
     private final String[] MANAGER_ENDPOINTS = {
-//            "/api/manager/update-profile",
-//            "/api/manager/**",
-//            "/api/services/**",
-//            "/api/blog/**",
-//            "/api/slot/**",
-//            "/api/price/**",
-//            "/api/room/**",
-//            "/api/payment/**",
-//            "/api/appointment/**",
-//            "/api/kit/**",
-//            "/api/staff/get-all-staff",
-//            "/api/discount/create-discount-service",
-//            "/api/dashboard/**"
+
             "api/**"
     };
 
