@@ -101,11 +101,11 @@ public class ManagerService {
     }
 
     @Transactional
-    public void deleteStaffByPhone(long staffId) {
-
-        Staff staff = staffRepository.findById(staffId)
+    public void deleteStaffByPhone(String phone) {
+        Staff staff = staffRepository.findByPhone(phone)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
         staff.setEnabled(false);
+        staffRepository.save(staff);
     }
 
     @Transactional
