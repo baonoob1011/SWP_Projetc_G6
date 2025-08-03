@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { ArrowBack } from '@mui/icons-material';
-import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styles from '../../feature/GetAllResult.module.css';
 import Logo from '../../../../image/Logo.png';
@@ -81,14 +79,6 @@ const GetAllResultByManager = ({ role }: Profile) => {
         )
         .map((item, index) => (
           <div key={index} className={styles.reportCard}>
-            <Button
-              component={NavLink}
-              to="/manager/checkResult"
-              className={styles.backButton}
-            >
-              <ArrowBack />
-              Quay lại
-            </Button>
             {/* Header */}
             <div className={styles.reportHeader}>
               <div className={styles.headerTop}>

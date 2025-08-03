@@ -3,11 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import HardCopyStatusList from './PrintPDFStatus';
 
 const GetKitDeliveryStatus = () => {
   const [kitStatus, setKitStatus] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [expandedOrders, setExpandedOrders] = useState<Set<number>>(new Set());
+  const [activeTab, setActiveTab] = useState<'status' | 'pdf'>('status');
+
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
@@ -304,95 +307,166 @@ const GetKitDeliveryStatus = () => {
         </div>
       ) : (
         <>
-          {currentItems.map((order: any, orderIndex: number) => {
-            const realIndex = startIndex + orderIndex;
-            const currentStepIndex = getCurrentStepIndex(order.deliveryStatus);
-            const relevantSteps = getRelevantSteps(order.deliveryStatus);
-            const isExpanded = expandedOrders.has(realIndex);
-            const statusColorClass = getStatusColorClass(order.deliveryStatus);
-            const statusBadgeClass = getStatusBadgeClass(order.deliveryStatus);
+          <div className="flex justify-center gap-4 mb-6">
+            <button
+              onClick={() => setActiveTab('status')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+                activeTab === 'status'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Theo dõi giao kit
+            </button>
+            <button
+              onClick={() => setActiveTab('pdf')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+                activeTab === 'pdf'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Theo dõi bản chứng nhận
+            </button>
+          </div>
+          {activeTab === 'status' && (
+            <>
+              {currentItems.map((order: any, orderIndex: number) => {
+                const realIndex = startIndex + orderIndex;
+                const currentStepIndex = getCurrentStepIndex(
+                  order.deliveryStatus
+                );
+                const relevantSteps = getRelevantSteps(order.deliveryStatus);
+                const isExpanded = expandedOrders.has(realIndex);
+                const statusColorClass = getStatusColorClass(
+                  order.deliveryStatus
+                );
+                const statusBadgeClass = getStatusBadgeClass(
+                  order.deliveryStatus
+                );
 
-            return (
-              <div
-                key={realIndex}
-                className={`mb-6 rounded-xl border-2 shadow-lg overflow-hidden ${statusColorClass}`}
-              >
-                {/* Order Header */}
-                <div className="p-6 bg-white">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="text-xl font-bold text-gray-800">
-                          Đơn hàng #{realIndex + 1}
+                return (
+                  <div
+                    key={realIndex}
+                    className={`mb-6 rounded-xl border-2 shadow-lg overflow-hidden ${statusColorClass}`}
+                  >
+                    {/* Order Header */}
+                    <div className="p-6 bg-white">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className="text-xl font-bold text-gray-800">
+                              Đơn hàng #{realIndex + 1}
+                            </div>
+                            <span
+                              className={`px-3 py-1 rounded-full text-sm font-medium border ${statusBadgeClass}`}
+                            >
+                              {getStatusDisplayText(order.deliveryStatus)}
+                            </span>
+                          </div>
+                          <div className="text-gray-600 flex items-center gap-2">
+                            <span className="text-base">📅</span>
+                            <span>
+                              Ngày đặt:{' '}
+                              {new Date(
+                                order.createOrderDate
+                              ).toLocaleDateString('vi-VN', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                              })}
+                            </span>
+                          </div>
                         </div>
-                        <span
-                          className={`px-3 py-1 rounded-full text-sm font-medium border ${statusBadgeClass}`}
+                        <button
+                          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+                          onClick={() => toggleOrderExpansion(realIndex)}
                         >
-                          {getStatusDisplayText(order.deliveryStatus)}
-                        </span>
-                      </div>
-                      <div className="text-gray-600 flex items-center gap-2">
-                        <span className="text-base">📅</span>
-                        <span>
-                          Ngày đặt:{' '}
-                          {new Date(order.createOrderDate).toLocaleDateString(
-                            'vi-VN',
-                            {
-                              day: '2-digit',
-                              month: '2-digit',
-                              year: 'numeric',
-                            }
-                          )}
-                        </span>
+                          <span className="text-sm">
+                            {isExpanded ? (
+                              <ExpandLessIcon />
+                            ) : (
+                              <ExpandMoreIcon />
+                            )}
+                          </span>
+                          <span>{isExpanded ? 'Thu gọn' : 'Xem chi tiết'}</span>
+                        </button>
                       </div>
                     </div>
-                    <button
-                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
-                      onClick={() => toggleOrderExpansion(realIndex)}
-                    >
-                      <span className="text-sm">
-                        {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                      </span>
-                      <span>{isExpanded ? 'Thu gọn' : 'Xem chi tiết'}</span>
-                    </button>
-                  </div>
-                </div>
+                    {isExpanded && (
+                      <div className="px-6 pb-6 bg-white border-t border-gray-100">
+                        <div className="mt-6">
+                          <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                            <span>Trạng thái giao hàng</span>
+                          </h3>
 
-                {/* Timeline - Conditionally rendered */}
-                {/* Timeline - Conditionally rendered */}
-                {isExpanded && (
-                  <div className="px-6 pb-6 bg-white border-t border-gray-100">
-                    <div className="mt-6">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                        <span>Trạng thái giao hàng</span>
-                      </h3>
+                          {/* New Multi-step Progress Bar */}
+                          <div className="mb-8">
+                            <div className="flex items-center relative">
+                              {/* Background Line */}
+                              <div
+                                className="absolute top-6 h-0.5 bg-gray-300 z-0"
+                                style={{
+                                  left: '24px', // Half of circle width (48px/2)
+                                  right: '24px', // Half of circle width (48px/2)
+                                }}
+                              ></div>
 
-                      {/* New Multi-step Progress Bar */}
-                      <div className="mb-8">
-                        <div className="flex items-center relative">
-                          {/* Background Line */}
-                          <div
-                            className="absolute top-6 h-0.5 bg-gray-300 z-0"
-                            style={{
-                              left: '24px', // Half of circle width (48px/2)
-                              right: '24px', // Half of circle width (48px/2)
-                            }}
-                          ></div>
+                              {/* Progress Line */}
+                              <div
+                                className="absolute top-6 h-0.5 bg-green-500 z-10 transition-all duration-500"
+                                style={{
+                                  left: '24px',
+                                  width: `calc((100% - 48px) * ${
+                                    currentStepIndex /
+                                    (relevantSteps.length - 1)
+                                  })`,
+                                }}
+                              ></div>
 
-                          {/* Progress Line */}
-                          <div
-                            className="absolute top-6 h-0.5 bg-green-500 z-10 transition-all duration-500"
-                            style={{
-                              left: '24px',
-                              width: `calc((100% - 48px) * ${
-                                currentStepIndex / (relevantSteps.length - 1)
-                              })`,
-                            }}
-                          ></div>
+                              {/* Step Circles Container */}
+                              <div className="flex items-center justify-between w-full">
+                                {/* Step Circles */}
+                                {relevantSteps.map((step, stepIndex) => {
+                                  const stepClass = getStepClass(
+                                    stepIndex,
+                                    currentStepIndex,
+                                    order.deliveryStatus,
+                                    step
+                                  );
 
-                          {/* Step Circles Container */}
-                          <div className="flex items-center justify-between w-full">
-                            {/* Step Circles */}
+                                  return (
+                                    <div
+                                      key={step.id}
+                                      className="flex flex-col items-center relative z-20"
+                                    >
+                                      <div
+                                        className={`w-12 h-12 rounded-full border-2 flex items-center justify-center text-sm font-bold transition-all duration-300 ${getStepIconClass(
+                                          stepClass
+                                        )}`}
+                                      >
+                                        {stepClass === 'completed'
+                                          ? '✓'
+                                          : stepClass === 'failed'
+                                          ? '✗'
+                                          : step.icon}
+                                      </div>
+                                      <div
+                                        className={`mt-3 text-xs font-medium text-center max-w-20 ${getStepTitleClass(
+                                          stepClass
+                                        )}`}
+                                      >
+                                        {step.title}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Detailed Step Information */}
+                          <div className="space-y-4">
                             {relevantSteps.map((step, stepIndex) => {
                               const stepClass = getStepClass(
                                 stepIndex,
@@ -404,10 +478,11 @@ const GetKitDeliveryStatus = () => {
                               return (
                                 <div
                                   key={step.id}
-                                  className="flex flex-col items-center relative z-20"
+                                  className="flex items-start gap-4 p-4 rounded-lg bg-gray-50 border border-gray-200"
                                 >
+                                  {/* Step Icon */}
                                   <div
-                                    className={`w-12 h-12 rounded-full border-2 flex items-center justify-center text-sm font-bold transition-all duration-300 ${getStepIconClass(
+                                    className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-sm font-bold flex-shrink-0 ${getStepIconClass(
                                       stepClass
                                     )}`}
                                   >
@@ -417,12 +492,34 @@ const GetKitDeliveryStatus = () => {
                                       ? '✗'
                                       : step.icon}
                                   </div>
-                                  <div
-                                    className={`mt-3 text-xs font-medium text-center max-w-20 ${getStepTitleClass(
-                                      stepClass
-                                    )}`}
-                                  >
-                                    {step.title}
+
+                                  {/* Step Content */}
+                                  <div className="flex-1">
+                                    <div
+                                      className={`text-base font-medium mb-1 ${getStepTitleClass(
+                                        stepClass
+                                      )}`}
+                                    >
+                                      {step.title}
+                                    </div>
+                                    <div className="text-gray-600 mb-2 text-sm leading-relaxed">
+                                      {step.description}
+                                    </div>
+                                    <div
+                                      className={`text-xs font-medium ${getStepTimeClass(
+                                        stepClass
+                                      )}`}
+                                    >
+                                      {stepClass === 'pending'
+                                        ? 'Chưa thực hiện'
+                                        : stepClass === 'active'
+                                        ? 'Đang thực hiện'
+                                        : stepClass === 'completed'
+                                        ? 'Đã hoàn thành'
+                                        : stepClass === 'failed'
+                                        ? 'Thất bại'
+                                        : ''}
+                                    </div>
                                   </div>
                                 </div>
                               );
@@ -430,122 +527,64 @@ const GetKitDeliveryStatus = () => {
                           </div>
                         </div>
                       </div>
-
-                      {/* Detailed Step Information */}
-                      <div className="space-y-4">
-                        {relevantSteps.map((step, stepIndex) => {
-                          const stepClass = getStepClass(
-                            stepIndex,
-                            currentStepIndex,
-                            order.deliveryStatus,
-                            step
-                          );
-
-                          return (
-                            <div
-                              key={step.id}
-                              className="flex items-start gap-4 p-4 rounded-lg bg-gray-50 border border-gray-200"
-                            >
-                              {/* Step Icon */}
-                              <div
-                                className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-sm font-bold flex-shrink-0 ${getStepIconClass(
-                                  stepClass
-                                )}`}
-                              >
-                                {stepClass === 'completed'
-                                  ? '✓'
-                                  : stepClass === 'failed'
-                                  ? '✗'
-                                  : step.icon}
-                              </div>
-
-                              {/* Step Content */}
-                              <div className="flex-1">
-                                <div
-                                  className={`text-base font-medium mb-1 ${getStepTitleClass(
-                                    stepClass
-                                  )}`}
-                                >
-                                  {step.title}
-                                </div>
-                                <div className="text-gray-600 mb-2 text-sm leading-relaxed">
-                                  {step.description}
-                                </div>
-                                <div
-                                  className={`text-xs font-medium ${getStepTimeClass(
-                                    stepClass
-                                  )}`}
-                                >
-                                  {stepClass === 'pending'
-                                    ? 'Chưa thực hiện'
-                                    : stepClass === 'active'
-                                    ? 'Đang thực hiện'
-                                    : stepClass === 'completed'
-                                    ? 'Đã hoàn thành'
-                                    : stepClass === 'failed'
-                                    ? 'Thất bại'
-                                    : ''}
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })}
 
-          {/* Pagination Controls */}
-          {kitStatus.length > itemsPerPage && (
-            <div className="flex justify-center items-center mt-8 gap-4">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className={`px-4 py-2 rounded-lg border font-medium transition-colors duration-200 ${
-                  currentPage === 1
-                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                }`}
-              >
-                Trang trước
-              </button>
+              {/* Pagination Controls */}
+              {kitStatus.length > itemsPerPage && (
+                <div className="flex justify-center items-center mt-8 gap-4">
+                  <button
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
+                    disabled={currentPage === 1}
+                    className={`px-4 py-2 rounded-lg border font-medium transition-colors duration-200 ${
+                      currentPage === 1
+                        ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    Trang trước
+                  </button>
 
-              <div className="flex gap-1">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                  (page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`px-3 py-2 rounded-lg border font-medium transition-colors duration-200 ${
-                        currentPage === page
-                          ? 'bg-blue-600 text-white border-blue-600'
-                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  )
-                )}
-              </div>
+                  <div className="flex gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`px-3 py-2 rounded-lg border font-medium transition-colors duration-200 ${
+                            currentPage === page
+                              ? 'bg-blue-600 text-white border-blue-600'
+                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      )
+                    )}
+                  </div>
 
-              <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                disabled={currentPage === totalPages}
-                className={`px-4 py-2 rounded-lg border font-medium transition-colors duration-200 ${
-                  currentPage === totalPages
-                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                }`}
-              >
-                Trang sau
-              </button>
-            </div>
+                  <button
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                    disabled={currentPage === totalPages}
+                    className={`px-4 py-2 rounded-lg border font-medium transition-colors duration-200 ${
+                      currentPage === totalPages
+                        ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    Trang sau
+                  </button>
+                </div>
+              )}
+            </>
           )}
+          {activeTab === 'pdf' && <HardCopyStatusList />}
         </>
       )}
     </div>
