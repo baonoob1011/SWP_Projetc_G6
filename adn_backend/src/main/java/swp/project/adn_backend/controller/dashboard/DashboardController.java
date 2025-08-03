@@ -14,6 +14,7 @@ import swp.project.adn_backend.dto.response.ServiceRatingStatsResponse;
 import swp.project.adn_backend.dto.response.TotalRevenueResponse;
 import swp.project.adn_backend.dto.response.AppointmentStatusPercentageResponse;
 import swp.project.adn_backend.dto.response.YearlyRevenueSummaryResponse;
+import swp.project.adn_backend.dto.response.SystemTransactionHistoryResponse;
 import swp.project.adn_backend.service.dashboard.DashboardService;
 
 import java.time.LocalDate;
@@ -95,6 +96,20 @@ public class DashboardController {
             YearlyRevenueSummaryResponse response = dashboardService.getYearlyRevenueSummary(year);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/transaction-history")
+    public ResponseEntity<SystemTransactionHistoryResponse> getSystemTransactionHistory(
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate,
+            @RequestParam(required = false) Long userId) {
+        try {
+            SystemTransactionHistoryResponse response = dashboardService.getSystemTransactionHistory(startDate, endDate, userId);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error("Error getting system transaction history: ", e);
             return ResponseEntity.badRequest().build();
         }
     }
