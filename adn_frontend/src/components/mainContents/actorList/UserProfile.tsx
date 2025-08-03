@@ -125,12 +125,12 @@ const NewProfile = () => {
 
       if (!res.ok) {
         const errorText = await res.text();
-        toast.error('❌ Cập nhật thất bại: ' + errorText);
+        toast.error('Cập nhật thất bại: ' + errorText);
         return;
       }
 
       const updated = await res.json();
-      toast.success('✅ Cập nhật thông tin thành công!');
+      toast.success(' Cập nhật thông tin thành công!');
       setProfile(updated);
       setUpdateProfile(updated);
     } catch (error) {
@@ -200,42 +200,42 @@ const NewProfile = () => {
       label: 'Cuộc hẹn',
       icon: Calendar,
       color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
-      description: 'Quản lý lịch hẹn của bạn'
+      description: 'Quản lý lịch hẹn của bạn',
     },
     {
       id: 'profile',
       label: 'Hồ sơ cá nhân',
       icon: User,
       color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
-      description: 'Cập nhật thông tin cá nhân'
+      description: 'Cập nhật thông tin cá nhân',
     },
     {
       id: 'changePassword',
       label: 'Đổi mật khẩu',
       icon: Shield,
       color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
-      description: 'Bảo mật tài khoản'
+      description: 'Bảo mật tài khoản',
     },
     {
       id: 'follow',
       label: 'Theo dõi đơn hàng',
       icon: PackageSearch,
       color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
-      description: 'Trạng thái đơn hàng hiện tại'
+      description: 'Trạng thái đơn hàng hiện tại',
     },
     {
       id: 'history',
       label: 'Lịch sử đơn hàng',
       icon: History,
       color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
-      description: 'Xem lại các đơn hàng trước đây'
+      description: 'Xem lại các đơn hàng trước đây',
     },
     {
       id: 'payment',
       label: 'Lịch sử giao dịch',
       icon: Wallet,
       color: 'bg-gradient-to-r from-blue-500 to-indigo-600',
-      description: 'Theo dõi giao dịch tài chính'
+      description: 'Theo dõi giao dịch tài chính',
     },
   ];
 
@@ -271,8 +271,9 @@ const NewProfile = () => {
   ];
 
   const renderTabContent = () => {
-    const currentTab = tabConfig.find(tab => tab.id === activeTab);
-    const tabStyle = currentTab?.color || 'bg-gradient-to-r from-blue-500 to-indigo-600';
+    const currentTab = tabConfig.find((tab) => tab.id === activeTab);
+    const tabStyle =
+      currentTab?.color || 'bg-gradient-to-r from-blue-500 to-indigo-600';
 
     switch (activeTab) {
       case 'appointment':
@@ -306,54 +307,62 @@ const NewProfile = () => {
                   <User className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">Hồ sơ người dùng</h2>
-                  <p className="text-white/80 mt-1">Cập nhật và quản lý thông tin cá nhân của bạn</p>
+                  <h2 className="text-2xl font-bold text-white">
+                    Hồ sơ người dùng
+                  </h2>
+                  <p className="text-white/80 mt-1">
+                    Cập nhật và quản lý thông tin cá nhân của bạn
+                  </p>
                 </div>
               </div>
             </div>
 
             <div className="p-8">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {profileFields.map(({ field, label, icon: Icon, type, gradient }) => (
-                  <div key={field} className="group">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className={`p-2.5 rounded-xl bg-gradient-to-r ${gradient} shadow-lg`}>
-                        <Icon className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                          {label}
-                        </span>
-                        <div className="h-0.5 bg-gradient-to-r from-gray-300 to-transparent mt-1"></div>
-                      </div>
-                    </div>
-                    <div className="relative">
-                      <input
-                        type={type}
-                        name={field}
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        value={(updateProfile as any)[field]}
-                        onChange={handleInput}
-                        readOnly={editableField !== field}
-                        onClick={() => setEditableField(field)}
-                        onBlur={() => setEditableField(null)}
-                        className={`w-full px-4 py-4 border-2 rounded-xl transition-all duration-300 text-gray-800 font-medium ${
-                          editableField === field
-                            ? 'border-blue-400 ring-4 ring-blue-100 bg-blue-50 shadow-lg transform scale-[1.02]'
-                            : 'border-gray-200 hover:border-gray-300 bg-white/80 hover:shadow-md focus:border-blue-400 focus:ring-4 focus:ring-blue-100'
-                        } focus:outline-none`}
-                        placeholder={`Nhập ${label.toLowerCase()}`}
-                      />
-                      {editableField === field && (
-                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                          <div className="p-1.5 bg-blue-500 rounded-full animate-pulse shadow-lg">
-                            <Edit3 className="w-4 h-4 text-white" />
-                          </div>
+                {profileFields.map(
+                  ({ field, label, icon: Icon, type, gradient }) => (
+                    <div key={field} className="group">
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div
+                          className={`p-2.5 rounded-xl bg-gradient-to-r ${gradient} shadow-lg`}
+                        >
+                          <Icon className="w-5 h-5 text-white" />
                         </div>
-                      )}
+                        <div>
+                          <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                            {label}
+                          </span>
+                          <div className="h-0.5 bg-gradient-to-r from-gray-300 to-transparent mt-1"></div>
+                        </div>
+                      </div>
+                      <div className="relative">
+                        <input
+                          type={type}
+                          name={field}
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          value={(updateProfile as any)[field]}
+                          onChange={handleInput}
+                          readOnly={editableField !== field}
+                          onClick={() => setEditableField(field)}
+                          onBlur={() => setEditableField(null)}
+                          className={`w-full px-4 py-4 border-2 rounded-xl transition-all duration-300 text-gray-800 font-medium ${
+                            editableField === field
+                              ? 'border-blue-400 ring-4 ring-blue-100 bg-blue-50 shadow-lg transform scale-[1.02]'
+                              : 'border-gray-200 hover:border-gray-300 bg-white/80 hover:shadow-md focus:border-blue-400 focus:ring-4 focus:ring-blue-100'
+                          } focus:outline-none`}
+                          placeholder={`Nhập ${label.toLowerCase()}`}
+                        />
+                        {editableField === field && (
+                          <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                            <div className="p-1.5 bg-blue-500 rounded-full animate-pulse shadow-lg">
+                              <Edit3 className="w-4 h-4 text-white" />
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
 
               <div className="mt-12 pt-8 border-t border-gray-200/50">
@@ -382,8 +391,12 @@ const NewProfile = () => {
                   <Shield className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">Bảo mật tài khoản</h2>
-                  <p className="text-white/80 mt-1">Thay đổi mật khẩu để tăng cường bảo mật</p>
+                  <h2 className="text-2xl font-bold text-white">
+                    Bảo mật tài khoản
+                  </h2>
+                  <p className="text-white/80 mt-1">
+                    Thay đổi mật khẩu để tăng cường bảo mật
+                  </p>
                 </div>
               </div>
             </div>
@@ -410,8 +423,12 @@ const NewProfile = () => {
                   <PackageSearch className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">Theo dõi đơn hàng</h2>
-                  <p className="text-white/80 mt-1">Trạng thái đơn hàng hiện tại</p>
+                  <h2 className="text-2xl font-bold text-white">
+                    Theo dõi đơn hàng
+                  </h2>
+                  <p className="text-white/80 mt-1">
+                    Trạng thái đơn hàng hiện tại
+                  </p>
                 </div>
               </div>
             </div>
@@ -431,8 +448,12 @@ const NewProfile = () => {
                   <History className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">Lịch sử đơn hàng</h2>
-                  <p className="text-white/80 mt-1">Xem lại các đơn hàng trước đây</p>
+                  <h2 className="text-2xl font-bold text-white">
+                    Lịch sử đơn hàng
+                  </h2>
+                  <p className="text-white/80 mt-1">
+                    Xem lại các đơn hàng trước đây
+                  </p>
                 </div>
               </div>
             </div>
@@ -452,8 +473,12 @@ const NewProfile = () => {
                   <Wallet className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">Lịch sử giao dịch</h2>
-                  <p className="text-white/80 mt-1">Theo dõi giao dịch tài chính trước đây</p>
+                  <h2 className="text-2xl font-bold text-white">
+                    Lịch sử giao dịch
+                  </h2>
+                  <p className="text-white/80 mt-1">
+                    Theo dõi giao dịch tài chính trước đây
+                  </p>
                 </div>
               </div>
             </div>
@@ -510,7 +535,9 @@ const NewProfile = () => {
                         }`}
                       />
                     </div>
-                    <span className="font-medium text-sm text-center leading-tight">{label}</span>
+                    <span className="font-medium text-sm text-center leading-tight">
+                      {label}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -552,7 +579,9 @@ const NewProfile = () => {
                       <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                         <div className="flex items-center justify-center gap-2 mb-2">
                           <Wallet className="w-5 h-5 text-white/80" />
-                          <span className="text-sm text-white/80 font-medium">Số dư ví</span>
+                          <span className="text-sm text-white/80 font-medium">
+                            Số dư ví
+                          </span>
                         </div>
                         <div className="flex items-center justify-center gap-2">
                           <span className="text-2xl font-bold tracking-wide transition-all select-none">
@@ -576,10 +605,7 @@ const NewProfile = () => {
                     </div>
 
                     {/* Enhanced Deposit Form */}
-                    <form
-                      onSubmit={handleDeposit}
-                      className="w-full space-y-3"
-                    >
+                    <form onSubmit={handleDeposit} className="w-full space-y-3">
                       <div className="relative">
                         <input
                           id="amount"
@@ -635,7 +661,7 @@ const NewProfile = () => {
                 </div>
               </div>
             )}
-            
+
             {renderTabContent()}
           </div>
         </div>

@@ -129,6 +129,7 @@ function App() {
       '/s-page',
       's-page/print',
       '/checkResultById/:appointmentId',
+      '/result/:appointmentId',
     ].some((path) => matchPath(path, location.pathname));
 
   const isManagerLayoutRoute =
@@ -493,6 +494,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['STAFF']}>
                     <CollectSampleAtHome />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/result/:appointmentId"
+                element={
+                  <ProtectedRoute allowedRoles={['STAFF']}>
+                    <GetAllResult />
                   </ProtectedRoute>
                 }
               />

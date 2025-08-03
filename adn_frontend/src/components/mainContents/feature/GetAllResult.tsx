@@ -12,7 +12,7 @@ import ExportResultPDF from './PrintPDF';
 const GetAllResult = () => {
   const { appointmentId } = useParams();
   const [isResult, setIsResult] = useState<any[]>([]);
-
+  const role = localStorage.getItem('role');
   const fetchData = async () => {
     try {
       const res = await fetch(
@@ -59,14 +59,25 @@ const GetAllResult = () => {
             >
               {/* Back Button */}
               <div className="p-6 bg-gray-50 border-b mt-20">
-                <Button
-                  component={NavLink}
-                  to="/u-profile"
-                  className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
-                >
-                  <ArrowBack />
-                  Quay lại
-                </Button>
+                {role === 'USER' ? (
+                  <Button
+                    component={NavLink}
+                    to="/u-profile"
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
+                  >
+                    <ArrowBack />
+                    Quay lại
+                  </Button>
+                ) : (
+                  <Button
+                    component={NavLink}
+                    to="/s-page/print"
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
+                  >
+                    <ArrowBack />
+                    Quay lại
+                  </Button>
+                )}
               </div>
 
               <div className="p-8">
