@@ -71,6 +71,6 @@ public class KitService {
     public void addKitQuantity(KitRequest kitRequest, long kitId){
         Kit kit = kitRepository.findById(kitId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.KIT_NOT_EXISTS));
-        kit.setQuantity(kitRequest.getQuantity());
+        kit.setQuantity(kit.getQuantity()+kitRequest.getQuantity());
     }
 }
