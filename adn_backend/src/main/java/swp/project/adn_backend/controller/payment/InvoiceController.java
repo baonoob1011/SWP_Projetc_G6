@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import swp.project.adn_backend.dto.InfoDTO.InvoiceUserDTO;
+import swp.project.adn_backend.dto.InfoDTO.InvoiceServiceInfoDTO;
 import swp.project.adn_backend.service.payment.InvoiceService;
 
 import java.util.List;
@@ -20,5 +21,10 @@ public class InvoiceController {
     @GetMapping("/get-invoice-of-user")
     public ResponseEntity<List<InvoiceUserDTO>>getInvoice(@RequestParam long appointmentId){
         return ResponseEntity.ok(invoiceService.getInvoiceOfUser(appointmentId));
+    }
+
+    @GetMapping("/search-by-bankcode")
+    public ResponseEntity<InvoiceServiceInfoDTO> searchInvoiceByBankCode(@RequestParam String bankCode) {
+        return ResponseEntity.ok(invoiceService.searchInvoiceByBankCode(bankCode));
     }
 }

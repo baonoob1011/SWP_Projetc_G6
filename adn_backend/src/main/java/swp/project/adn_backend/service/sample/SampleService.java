@@ -83,6 +83,7 @@ public class SampleService {
         if (serviceTest.getKit().getQuantity() == 0) {
             throw new RuntimeException("Cơ sở đã hết số lượng kit");
         }
+
         Sample sample = sampleMapper.toSample(sampleRequest);
         sample.setCollectionDate(LocalDate.now());
         sample.setSampleCode(generateSampleCode());
@@ -150,6 +151,7 @@ public class SampleService {
                 .orElseThrow(() -> new AppException(ErrorCodeUser.STAFF_NOT_EXISTED));
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppException(ErrorCodeUser.APPOINTMENT_NOT_EXISTS));
+
         List<Sample> sampleList = appointment.getSampleList();
         List<AllSampleResponse> allSampleResponseList = new ArrayList<>();
         for (Sample sample : sampleList) {

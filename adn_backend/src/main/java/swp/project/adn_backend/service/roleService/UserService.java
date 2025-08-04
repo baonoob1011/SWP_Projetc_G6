@@ -33,7 +33,6 @@ import swp.project.adn_backend.mapper.StaffMapper;
 import swp.project.adn_backend.mapper.UserMapper;
 import swp.project.adn_backend.repository.*;
 import swp.project.adn_backend.service.authService.SendEmailService;
-import org.springframework.mail.SimpleMailMessage;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -134,7 +133,6 @@ public class UserService {
         roles.add(Roles.STAFF.name());
         users.setRoles(roles);
         users.setCreateAt(LocalDate.now());
-        sendWelcomeEmail(users.getEmail(), users.getUsername(), password);
         String seed = URLEncoder.encode(users.getFullName(), StandardCharsets.UTF_8);
         String avatarUrl = "https://api.dicebear.com/9.x/personas/svg?seed=" + seed;
         users.setAvatarUrl(avatarUrl);
@@ -181,21 +179,6 @@ public class UserService {
         staff.setUsers(userRegister);
         staffRepository.save(staff);
 
-        // Send welcome email to staff
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(users.getEmail());
-        message.setSubject("Welcome to ADN Medical Center - Staff Account Created");
-        message.setText("Dear " + users.getFullName() + ",\n\n" +
-                "Welcome to ADN Medical Center! Your staff account has been successfully created.\n\n" +
-                "Your account details:\n" +
-                "Username: " + users.getUsername() + "\n" +
-                "Password: " + staffRequest.getPassword() + "\n\n" +
-                "Email: " + users.getEmail() + "\n" +
-                "You can now log in to the system using your credentials.\n\n" +
-                "Best regards,\n" +
-                "ADN Medical Center Team");
-        sendEmailService.sendEmailCreateAccountSuccessful(users.getEmail(), message.getText());
-
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
     }
@@ -229,21 +212,6 @@ public class UserService {
         staff.setUsers(userRegister);
         staffRepository.save(staff);
 
-        // Send welcome email to staff
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(users.getEmail());
-        message.setSubject("Welcome to ADN Medical Center - Staff Account Created");
-        message.setText("Dear " + users.getFullName() + ",\n\n" +
-                "Welcome to ADN Medical Center! Your staff account has been successfully created.\n\n" +
-                "Your account details:\n" +
-                "Username: " + users.getUsername() + "\n" +
-                "Password: " + staffRequest.getPassword() + "\n\n" +
-                "Email: " + users.getEmail() + "\n" +
-                "You can now log in to the system using your credentials.\n\n" +
-                "Best regards,\n" +
-                "ADN Medical Center Team");
-        sendEmailService.sendEmailCreateAccountSuccessful(users.getEmail(), message.getText());
-
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
     }
@@ -276,21 +244,6 @@ public class UserService {
         staff.setCreateAt(LocalDate.now());
         staff.setUsers(userRegister);
         staffRepository.save(staff);
-
-        // Send welcome email to staff
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(users.getEmail());
-        message.setSubject("Welcome to ADN Medical Center - Staff Account Created");
-        message.setText("Dear " + users.getFullName() + ",\n\n" +
-                "Welcome to ADN Medical Center! Your staff account has been successfully created.\n\n" +
-                "Your account details:\n" +
-                "Username: " + users.getUsername() + "\n" +
-                "Password: " + staffRequest.getPassword() + "\n\n" +
-                "Email: " + users.getEmail() + "\n" +
-                "You can now log in to the system using your credentials.\n\n" +
-                "Best regards,\n" +
-                "ADN Medical Center Team");
-        sendEmailService.sendEmailCreateAccountSuccessful(users.getEmail(), message.getText());
 
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
@@ -326,21 +279,6 @@ public class UserService {
         staff.setUsers(userRegister);
         staffRepository.save(staff);
 
-        // Send welcome email to staff
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(users.getEmail());
-        message.setSubject("Welcome to ADN Medical Center - Staff Account Created");
-        message.setText("Dear " + users.getFullName() + ",\n\n" +
-                "Welcome to ADN Medical Center! Your staff account has been successfully created.\n\n" +
-                "Your account details:\n" +
-                "Username: " + users.getUsername() + "\n" +
-                "Password: " + staffRequest.getPassword() + "\n\n" +
-                "Email: " + users.getEmail() + "\n" +
-                "You can now log in to the system using your credentials.\n\n" +
-                "Best regards,\n" +
-                "ADN Medical Center Team");
-        sendEmailService.sendEmailCreateAccountSuccessful(users.getEmail(), message.getText());
-
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
     }
@@ -374,21 +312,6 @@ public class UserService {
 
         staff.setUsers(userRegister);
         staffRepository.save(staff);
-
-        // Send welcome email to staff
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(users.getEmail());
-        message.setSubject("Welcome to ADN Medical Center - Staff Account Created");
-        message.setText("Dear " + users.getFullName() + ",\n\n" +
-                "Welcome to ADN Medical Center! Your staff account has been successfully created.\n\n" +
-                "Your account details:\n" +
-                "Username: " + users.getUsername() + "\n" +
-                "Password: " + staffRequest.getPassword() + "\n\n" +
-                "Email: " + users.getEmail() + "\n" +
-                "You can now log in to the system using your credentials.\n\n" +
-                "Best regards,\n" +
-                "ADN Medical Center Team");
-        sendEmailService.sendEmailCreateAccountSuccessful(users.getEmail(), message.getText());
 
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
@@ -424,21 +347,6 @@ public class UserService {
         staff.setUsers(userRegister);
         staffRepository.save(staff);
 
-        // Send welcome email to staff
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(users.getEmail());
-        message.setSubject("Welcome to ADN Medical Center - Staff Account Created");
-        message.setText("Dear " + users.getFullName() + ",\n\n" +
-                "Welcome to ADN Medical Center! Your staff account has been successfully created.\n\n" +
-                "Your account details:\n" +
-                "Username: " + users.getUsername() + "\n" +
-                "Password: " + staffRequest.getPassword() + "\n\n" +
-                "Email: " + users.getEmail() + "\n" +
-                "You can now log in to the system using your credentials.\n\n" +
-                "Best regards,\n" +
-                "ADN Medical Center Team");
-        sendEmailService.sendEmailCreateAccountSuccessful(users.getEmail(), message.getText());
-
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
     }
@@ -473,21 +381,6 @@ public class UserService {
         staff.setUsers(userRegister);
         staffRepository.save(staff);
 
-        // Send welcome email to staff
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(users.getEmail());
-        message.setSubject("Welcome to ADN Medical Center - Staff Account Created");
-        message.setText("Dear " + users.getFullName() + ",\n\n" +
-                "Welcome to ADN Medical Center! Your staff account has been successfully created.\n\n" +
-                "Your account details:\n" +
-                "Username: " + users.getUsername() + "\n" +
-                "Password: " + staffRequest.getPassword() + "\n\n" +
-                "Email: " + users.getEmail() + "\n" +
-                "You can now log in to the system using your credentials.\n\n" +
-                "Best regards,\n" +
-                "ADN Medical Center Team");
-        sendEmailService.sendEmailCreateAccountSuccessful(users.getEmail(), message.getText());
-
         // Lưu lại để cascade lưu role
         return userRepository.save(users);
     }
@@ -520,21 +413,6 @@ public class UserService {
 
         manager.setUsers(userRegister);
         managerRepository.save(manager);
-
-        // Send welcome email to manager
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(users.getEmail());
-        message.setSubject("Welcome to ADN Medical Center - Manager Account Created");
-        message.setText("Dear " + users.getFullName() + ",\n\n" +
-                "Welcome to ADN Medical Center! Your manager account has been successfully created.\n\n" +
-                "Your account details:\n" +
-                "Username: " + users.getUsername() + "\n" +
-                "Password: " + managerRequest.getPassword() + "\n\n" +
-                "Email: " + users.getEmail() + "\n" +
-                "You can now log in to the system using your credentials.\n\n" +
-                "Best regards,\n" +
-                "ADN Medical Center Team");
-        sendEmailService.sendEmailCreateAccountSuccessful(users.getEmail(), message.getText());
 
         return userRepository.save(users);
     }
@@ -688,27 +566,7 @@ public class UserService {
         }
     }
 
-    private void sendWelcomeEmail(String email, String username, String password) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Welcome to ADN Medical Center - Staff Account Created");
-        message.setText(
-                "Welcome to ADN Medical Center! Your staff account has been successfully created.\n\n" +
-                        "Your account details:\n" +
-                        "Username: " + username + "\n" +
-                        "Password: " + password + "\n\n" +
-                        "Email: " + email + "\n" +
-                        "You can now log in to the system using your credentials.\n\n" +
-                        "Best regards,\n" +
-                        "ADN Medical Center Team");
 
-        try {
-            sendEmailService.sendEmailCreateAccountSuccessful(email, message.getText());
-        } catch (Exception e) {
-            // Log error or handle email failure
-            throw new RuntimeException("Email send fail");
-        }
-    }
 
     // Random string generator
     private String generateRandomString(int length) {

@@ -34,6 +34,10 @@ public class KitController {
     public ResponseEntity<List<KitInfoDTO>> getALlKit() {
         return ResponseEntity.ok(kitService.getAllKit());
     }
-
-
+    @PutMapping("/add-kit-quantity")
+    public ResponseEntity<String> addKitQuantity(@RequestParam long kitId,
+                                                 @RequestBody KitRequest kitRequest) {
+        kitService.addKitQuantity(kitRequest,kitId);
+        return ResponseEntity.ok("tăng số lượng kit thành công");
+    }
 }

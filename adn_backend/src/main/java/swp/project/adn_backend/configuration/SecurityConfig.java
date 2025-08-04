@@ -58,7 +58,12 @@ public class SecurityConfig {
             "/topic/**",
             "/app/**",
             "/api/wallet/**",
-            "/api/chat/**"
+            "/api/chat/**",
+            "api/result/get-hard-copy-result/**",
+            "/api/appointment/get-all-result/**",
+            "/api/result/update-hard-copy-result/**"
+
+
     };
     private final String[] CASHIER_ENDPOINTS = {
             "/api/cashier/**",
@@ -69,7 +74,6 @@ public class SecurityConfig {
             "/api/services/get-service-to-feedback/**",
             "/api/appointment/cancel-appointment/**",
             "/api/appointment/get-appointment/**",
-            "/api/appointment/get-all-result/**",
             "/api/appointment/get-history/**",
             "/api/appointment/get-appointment-history-user/**",
             "/api/slot/get-all-slot-user/**",
@@ -89,6 +93,7 @@ public class SecurityConfig {
             "/api/feedback/create-feedback/**",
             "/api/feedback/get-all-feedback-of-service/**",
             "/api/invoice/get-invoice-of-user/**",
+            "/api/result/request-send-hard-copy-result/**",
     };
     private final String[] STAFF_PUBLIC = {
             "/api/sample/get-all-sample/**",
@@ -122,10 +127,14 @@ public class SecurityConfig {
             "/api/slot/get-all-slot-staff-collector/**",
             "/api/kit-delivery-status/update-kit-status/**",
             "/api/feedback/response-feedback",
-            "/api/appointment/get-appointment-at-home-by-staff",
+            "/api/appointment/get-appointment-at-home-by-staff/**",
             "/api/kit-delivery-status/get-kit-status-staff-by-appointment/**",
             "/api/sample/**",
             "/api/sample/collect-sample-patient-at-center",
+            "/api/appointment/get-all-result-by-staff/**",
+            "/api/appointment/get-all-appointment-by-staff-to-send-hard-copy/**",
+            "/api/appointment/get-appointment-by-phone/**",
+
 
     };
 
@@ -142,19 +151,7 @@ public class SecurityConfig {
 
     };
     private final String[] MANAGER_ENDPOINTS = {
-//            "/api/manager/update-profile",
-//            "/api/manager/**",
-//            "/api/services/**",
-//            "/api/blog/**",
-//            "/api/slot/**",
-//            "/api/price/**",
-//            "/api/room/**",
-//            "/api/payment/**",
-//            "/api/appointment/**",
-//            "/api/kit/**",
-//            "/api/staff/get-all-staff",
-//            "/api/discount/create-discount-service",
-//            "/api/dashboard/**"
+
             "api/**"
     };
 

@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.UpdateTimestamp;
+import swp.project.adn_backend.enums.HardCopyDeliveryStatus;
 import swp.project.adn_backend.enums.ResultStatus;
 
 import java.time.LocalDate;
@@ -21,6 +23,11 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "result_id")
     long result_id;
+    @UpdateTimestamp
+    private LocalDateTime updatedTime;
+
+    @Enumerated(EnumType.STRING)
+    HardCopyDeliveryStatus hardCopyDeliveryStatus;
 
     @Column(name = "collection_date")
     LocalDate collectionDate;
@@ -37,7 +44,8 @@ public class Result {
     })
     @JoinColumn(name = "appointment_id", nullable = false)
     Appointment appointment;
-
+    @Column(name = "hard_copy_status_updated_at")
+    private LocalDateTime hardCopyStatusUpdatedAt;
 
     @OneToOne(mappedBy = "result")
     ResultDetail resultDetail;
@@ -45,7 +53,29 @@ public class Result {
     public Result() {
     }
 
+    public LocalDateTime getUpdatedTime() {
+        return updatedTime;
+    }
 
+    public void setUpdatedTime(LocalDateTime updatedTime) {
+        this.updatedTime = updatedTime;
+    }
+
+    public HardCopyDeliveryStatus getHardCopyDeliveryStatus() {
+        return hardCopyDeliveryStatus;
+    }
+
+    public void setHardCopyDeliveryStatus(HardCopyDeliveryStatus hardCopyDeliveryStatus) {
+        this.hardCopyDeliveryStatus = hardCopyDeliveryStatus;
+    }
+
+    public LocalDateTime getHardCopyStatusUpdatedAt() {
+        return hardCopyStatusUpdatedAt;
+    }
+
+    public void setHardCopyStatusUpdatedAt(LocalDateTime hardCopyStatusUpdatedAt) {
+        this.hardCopyStatusUpdatedAt = hardCopyStatusUpdatedAt;
+    }
 
     public long getResult_id() {
         return result_id;

@@ -56,7 +56,7 @@ public class StaffService {
     public List<StaffBasicInfo> getAllStaffCollectorBasicInfo() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo(" +
                 "s.staffId, s.fullName, s.phone, s.email, s.avatarUrl, s.gender, s.idCard, s.address, s.dateOfBirth) FROM Staff s " +
-                "Where s.role=:role";
+                "Where s.role=:role AND s.enabled = true";
         TypedQuery<StaffBasicInfo> query = entityManager.createQuery(jpql, StaffBasicInfo.class);
         query.setParameter("role", "SAMPLE_COLLECTOR");
         return query.getResultList();
@@ -65,7 +65,7 @@ public class StaffService {
     public List<StaffBasicInfo> getAllCashierAccount() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo(" +
                 "s.staffId, s.fullName, s.phone, s.email, s.avatarUrl, s.gender, s.idCard, s.address, s.dateOfBirth) FROM Staff s " +
-                "Where s.role=:role";
+                "Where s.role=:role AND s.enabled = true";
         TypedQuery<StaffBasicInfo> query = entityManager.createQuery(jpql, StaffBasicInfo.class);
         query.setParameter("role", "CASHIER");
         return query.getResultList();
@@ -74,7 +74,7 @@ public class StaffService {
     public List<StaffBasicInfo> getAllStaffAtHomeBasicInfo() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo(" +
                 "s.staffId, s.fullName, s.phone, s.email, s.avatarUrl, s.gender, s.idCard, s.address, s.dateOfBirth) FROM Staff s " +
-                "Where s.role=:role";
+                "Where s.role=:role AND s.enabled = true";
         TypedQuery<StaffBasicInfo> query = entityManager.createQuery(jpql, StaffBasicInfo.class);
         query.setParameter("role", "STAFF_AT_HOME");
         return query.getResultList();
@@ -83,7 +83,7 @@ public class StaffService {
     public List<StaffBasicInfo> getAllLabTechnicianBasicInfo() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo(" +
                 "s.staffId, s.fullName, s.phone, s.email, s.avatarUrl, s.gender, s.idCard, s.address, s.dateOfBirth) FROM Staff s " +
-                "Where s.role=:role";
+                "Where s.role=:role AND s.enabled = true";
         TypedQuery<StaffBasicInfo> query = entityManager.createQuery(jpql, StaffBasicInfo.class);
         query.setParameter("role", "LAB_TECHNICIAN");
         return query.getResultList();
@@ -101,7 +101,7 @@ public class StaffService {
     public List<StaffBasicInfo> getAllStaffBasicInfo() {
         String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.StaffBasicInfo(" +
                 "s.staffId, s.fullName, s.phone, s.email, s.avatarUrl, s.gender, s.idCard, s.address, s.dateOfBirth) FROM Staff s " +
-                "Where s.role=:role";
+                "Where s.role=:role AND s.enabled = true";
         TypedQuery<StaffBasicInfo> query = entityManager.createQuery(jpql, StaffBasicInfo.class);
         query.setParameter("role", "STAFF");
         return query.getResultList();

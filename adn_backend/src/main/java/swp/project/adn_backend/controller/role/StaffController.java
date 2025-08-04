@@ -72,10 +72,13 @@ public class StaffController {
         return ResponseEntity.ok(appointmentService.getAppointmentByStaffId(authentication));
     }
 
+
+
     @GetMapping("/get-appointment-at-home-by-staff")
     public ResponseEntity<AllAppointmentResponse> getAppointmentAtHomeByStaffId(Authentication authentication) {
         return ResponseEntity.ok(appointmentService.getAppointmentAtHomeByStaffId(authentication));
     }
+
 
 
     @PutMapping("/update-profile")

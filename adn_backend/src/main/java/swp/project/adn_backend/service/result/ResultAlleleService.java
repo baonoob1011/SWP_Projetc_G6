@@ -41,9 +41,9 @@ public class ResultAlleleService {
     private StaffRepository staffRepository;
     private EntityManager entityManager;
     private PatientRepository patientRepository;
-private AppointmentMapper appointmentMapper;
+    private AppointmentMapper appointmentMapper;
 
-@Autowired
+    @Autowired
     public ResultAlleleService(ResultAlleleRepository resultAlleleRepository, ResultAlleleMapper resultAlleleMapper, SampleRepository sampleRepository, LocusRepository locusRepository, StaffRepository staffRepository, EntityManager entityManager, PatientRepository patientRepository, AppointmentMapper appointmentMapper) {
         this.resultAlleleRepository = resultAlleleRepository;
         this.resultAlleleMapper = resultAlleleMapper;
@@ -112,12 +112,13 @@ private AppointmentMapper appointmentMapper;
         return responses;
     }
 
-@Transactional
-public void deleteAllele(long alleleId){
-    ResultAllele allele= resultAlleleRepository.findById(alleleId)
-            .orElseThrow(() -> new AppException(ErrorCodeUser.ALLELE_NOT_FOUND));
-    resultAlleleRepository.deleteById(alleleId);
-}
+    @Transactional
+    public void deleteAllele(long alleleId) {
+        ResultAllele allele = resultAlleleRepository.findById(alleleId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.ALLELE_NOT_FOUND));
+        allele.setAlleleStatus(AlleleStatus.INVALID);
+    }
+
 
     @Transactional
     public AllAlleleResponse getAllAlleleOfSample(long patientId) {
