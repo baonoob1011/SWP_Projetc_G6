@@ -141,7 +141,7 @@ const CheckResultByStaff = () => {
                 <td>
                   <select
                     className="form-select form-select-sm"
-                    value={item.hardCopyDeliveryStatus || 'PENDING'}
+                    value={item.hardCopyDeliveryStatus}
                     onChange={(e) =>
                       handleUpdate(item.appointmentId, e.target.value)
                     }
@@ -149,12 +149,11 @@ const CheckResultByStaff = () => {
                     <option value="PENDING">Chờ xử lý</option>
                     <option value="PRINTED">Đã in xong</option>
                     <option value="SHIPPED">Đã gửi vận chuyển</option>
-                    <option value="DELIVERED">Đã giao cho khách</option>
                   </select>
                 </td>
                 <td>
                   <NavLink
-                    to={`/checkResultById/${item.appointmentId}`}
+                    to={`/result/${item.appointmentId}`}
                     className="btn btn-primary btn-sm"
                   >
                     Xem chi tiết
