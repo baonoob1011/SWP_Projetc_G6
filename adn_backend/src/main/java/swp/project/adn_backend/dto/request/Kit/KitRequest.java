@@ -13,6 +13,9 @@ public class KitRequest {
     String contents;
     int quantity;
 
+//    LocalDate deliveryDate;
+//    LocalDate returnDate;
+//    DeliveryStatus kitStatus;
 
 
     public int getQuantity() {

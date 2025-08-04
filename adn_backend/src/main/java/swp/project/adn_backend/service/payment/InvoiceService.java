@@ -9,7 +9,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import swp.project.adn_backend.dto.InfoDTO.InvoiceUserDTO;
 import swp.project.adn_backend.dto.InfoDTO.KitDeliveryStatusInfoDTO;
-import swp.project.adn_backend.dto.InfoDTO.InvoiceServiceInfoDTO;
 import swp.project.adn_backend.entity.Appointment;
 import swp.project.adn_backend.entity.Invoice;
 import swp.project.adn_backend.entity.Users;
@@ -68,27 +67,6 @@ public class InvoiceService {
     // ✅ Thêm hàm để lấy hóa đơn theo txnRef
     public Optional<Invoice> getInvoiceByTxnRef(String txnRef) {
         return invoiceRepository.findByTxnRef(txnRef);
-    }
-
-    // ✅ Thêm hàm để search thông tin dịch vụ theo bankCode
-    public InvoiceServiceInfoDTO searchInvoiceByBankCode(String bankCode) {
-        String jpql = "SELECT new swp.project.adn_backend.dto.InfoDTO.InvoiceServiceInfoDTO(" +
-                "i.invoiceId, i.txnRef, i.orderInfo, i.amount, " +
-                "COALESCE(st.serviceName, 'Không có thông tin dịch vụ'), " +
-                "COALESCE(st.description, 'Không có mô tả'), " +
-                "i.payDate, i.createdDate) " +
-                "FROM Invoice i " +
-                "LEFT JOIN i.serviceTest st " +
-                "WHERE i.bankCode = :bankCode";
-
-        TypedQuery<InvoiceServiceInfoDTO> query = entityManager.createQuery(jpql, InvoiceServiceInfoDTO.class);
-        query.setParameter("bankCode", bankCode);
-        
-        try {
-            return query.getSingleResult();
-        } catch (Exception e) {
-            throw new AppException(ErrorCodeUser.INVOICE_NOT_EXISTS);
-        }
     }
     public String generateRandomBankCode(int length) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

@@ -9,8 +9,6 @@ const AppointmentSchedule = () => {
   const [loadingHome, setLoadingHome] = useState(false);
   const [loadingRowId, setLoadingRowId] = useState<string | null>(null);
   const [isKit, setIsKit] = useState<Kit[]>([]);
-  const [showKitTable, setShowKitTable] = useState(false); // State để điều khiển hiển thị bảng kit
-
   const translateCivilStatus = (status: string): string => {
     switch (status) {
       case 'CIVIL':
@@ -192,7 +190,7 @@ const AppointmentSchedule = () => {
                     <div className={styles.infoItem}>
                       <p className={styles.infoLabel}>Trạng Thái</p>
                       <p className={styles.infoValue}>
-                        {getStatusText(item.showAppointmentResponse.appointmentStatus)}
+                        {item.showAppointmentResponse.appointmentStatus}
                       </p>
                       <div className={styles.infoItem}>
                         <p className={styles.infoLabel}>Tên Kit</p>
@@ -304,152 +302,157 @@ const AppointmentSchedule = () => {
           </div>
         )}
       </div>
-      {/* Nút hiển thị bảng kit */}
-          <button
-            onClick={() => setShowKitTable(!showKitTable)}
-            style={{
-              marginTop: '16px',
-              marginLeft: '30px',
-              padding: '10px 20px',
-              backgroundColor: showKitTable ? '#dc3545' : '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: '500',
-              transition: 'background-color 0.2s'
-            }}
-          >
-            {showKitTable ? 'Ẩn Bảng Kit' : 'Hiển Thị Bảng Kit'}
-          </button>
-      {/* Bảng Kit - chỉ hiển thị khi showKitTable = true */}
-      {showKitTable && (
-        <div style={{ marginTop: '32px', padding:'24px'}}>
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <div style={{ 
-              padding: '16px', 
-              backgroundColor: '#f8f9fa', 
-              borderBottom: '1px solid #e9ecef' 
-            }}>
-              <h2 style={{ 
-                margin: 0, 
-                fontSize: '18px', 
-                fontWeight: '600', 
-                color: '#333' 
-              }}>
-                Danh Sách Kit
-              </h2>
-            </div>
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
-                    <div className="flex items-center gap-1">
-                      Mã Kit
-                      <svg
-                        className="w-3 h-3 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-                        />
-                      </svg>
-                    </div>
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
-                    <div className="flex items-center gap-1">
-                      Tên Kit
-                      <svg
-                        className="w-3 h-3 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-                        />
-                      </svg>
-                    </div>
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
-                    <div className="flex items-center gap-1">
-                      Số Lượng Kit
-                      <svg
-                        className="w-3 h-3 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-                        />
-                      </svg>
-                    </div>
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
-                    <div className="flex items-center gap-1">
-                      Nội Dung
-                      <svg
-                        className="w-3 h-3 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-                        />
-                      </svg>
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {isKit && isKit.length > 0 ? (
-                  isKit.map((kit, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm text-blue-600 font-medium border-r border-gray-200">
-                        {kit.kitCode}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-800 border-r border-gray-200">
-                        {kit.kitName}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
-                        <div className="flex items-center gap-2">
-                          <span>{kit.quantity} kit</span>
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  Mã Kit
+                  <svg
+                    className="w-3 h-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                    />
+                  </svg>
+                </div>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  Tên Kit
+                  <svg
+                    className="w-3 h-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                    />
+                  </svg>
+                </div>
+              </th>
+              {/* <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                        <div className="flex items-center gap-1">
+                          Số Người Sử Dụng
+                          <svg
+                            className="w-3 h-3 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                            />
+                          </svg>
                         </div>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">
-                        {kit.contents}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
-                      Không tìm thấy kit nào
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+                      </th> */}
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                <div className="flex items-center gap-1">
+                  Số Lượng Kit
+                  <svg
+                    className="w-3 h-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                    />
+                  </svg>
+                </div>
+              </th>
+              {/* <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                        <div className="flex items-center gap-1">
+                          Giá
+                          <svg
+                            className="w-3 h-3 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                            />
+                          </svg>
+                        </div>
+                      </th> */}
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                <div className="flex items-center gap-1">
+                  Nội Dung
+                  <svg
+                    className="w-3 h-3 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                    />
+                  </svg>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {isKit && isKit.length > 0 ? (
+              isKit.map((kit, index) => (
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 text-sm text-blue-600 font-medium border-r border-gray-200">
+                    {kit.kitCode}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-800 border-r border-gray-200">
+                    {kit.kitName}
+                  </td>
+                  {/* <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                            {kit.targetPersonCount} người
+                          </td> */}
+                  <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                    <div className="flex items-center gap-2">
+                      <span>{kit.quantity} kit</span>
+                    </div>
+                  </td>
+
+                  {/* <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                            {kit.price}đ
+                          </td> */}
+                  <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">
+                    {kit.contents}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                  Không tìm thấy kit nào
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

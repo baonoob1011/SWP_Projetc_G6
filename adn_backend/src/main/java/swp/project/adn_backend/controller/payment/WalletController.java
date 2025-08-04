@@ -9,8 +9,6 @@ import swp.project.adn_backend.dto.InfoDTO.PaymentInfoDTO;
 import swp.project.adn_backend.dto.InfoDTO.WalletInfoAmountDTO;
 import swp.project.adn_backend.dto.InfoDTO.WalletTransitionDTO;
 import swp.project.adn_backend.dto.InfoDTO.WalletTransitionInfoDTO;
-import swp.project.adn_backend.dto.request.HardCopyDeliveryRequest;
-import swp.project.adn_backend.dto.request.Kit.KitRequest;
 import swp.project.adn_backend.dto.request.payment.CreatePaymentRequest;
 import swp.project.adn_backend.dto.request.payment.WalletRequest;
 import swp.project.adn_backend.repository.WalletTransactionRepository;
@@ -18,7 +16,6 @@ import swp.project.adn_backend.service.payment.CreatePaymentService;
 import swp.project.adn_backend.service.payment.PaymentService;
 import swp.project.adn_backend.service.payment.VNPayService;
 import swp.project.adn_backend.service.registerServiceTestService.AppointmentService;
-import swp.project.adn_backend.service.result.ResultService;
 import swp.project.adn_backend.service.wallet.WalletService;
 
 import java.util.List;
@@ -35,10 +32,9 @@ public class WalletController {
     private WalletTransactionRepository walletTransactionRepository;
     private WalletService walletService;
     private AppointmentService appointmentService;
-    private ResultService resultService;
 
     @Autowired
-    public WalletController(PaymentService paymentService, VNPayService vnPayService, PaymentService getPaymentService, CreatePaymentService createPaymentService, WalletTransactionRepository walletTransactionRepository, WalletService walletService, AppointmentService appointmentService, ResultService resultService) {
+    public WalletController(PaymentService paymentService, VNPayService vnPayService, PaymentService getPaymentService, CreatePaymentService createPaymentService, WalletTransactionRepository walletTransactionRepository, WalletService walletService, AppointmentService appointmentService) {
         this.paymentService = paymentService;
         this.vnPayService = vnPayService;
         this.getPaymentService = getPaymentService;
@@ -46,7 +42,6 @@ public class WalletController {
         this.walletTransactionRepository = walletTransactionRepository;
         this.walletService = walletService;
         this.appointmentService = appointmentService;
-        this.resultService = resultService;
     }
 
     @GetMapping("/get-all-payment")
@@ -126,17 +121,7 @@ public class WalletController {
     public ResponseEntity<WalletInfoAmountDTO> getWalletAmount(Authentication authentication) {
         return ResponseEntity.ok(walletService.getWalletAmount(authentication));
     }
-    //user yeu cau gui bang cung
-    @PostMapping("/request-send-hard-copy-result")
-    public ResponseEntity<String> requestHardCopyDelivery(@RequestParam long appointmentId) {
-        resultService.requestHardCopyDelivery(appointmentId);
-        return ResponseEntity.ok("yêu cầu gửi bản cứng thành công");
-    }
-    //staff update trang thai gui bang cung
-//    @PutMapping("/update-hard-copy-result")
-//    public ResponseEntity<String> updateHardCopyDelivery(@RequestParam long appointmentId,
-//                                                         @RequestBody HardCopyDeliveryRequest hardCopyDeliveryRequest) {
-//        resultService.updateHardCopyDelivery(appointmentId,hardCopyDeliveryRequest);
-//        return ResponseEntity.ok("update thành công");
-//    }
+
+//    @GetMapping("/return-order-payment")
+//    public
 }

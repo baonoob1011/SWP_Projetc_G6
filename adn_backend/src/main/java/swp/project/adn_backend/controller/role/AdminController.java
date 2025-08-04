@@ -69,13 +69,8 @@ public class AdminController {
     }
 
     @DeleteMapping("/delete-staff")
-    public ResponseEntity<String> deleteStaffByPhone(@RequestParam String phone) {
-        try {
-            managerService.deleteStaffByPhone(phone);
-            return ResponseEntity.ok("Xóa nhân viên thành công");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Không thể xóa nhân viên: " + e.getMessage());
-        }
+    public void deleteStaffByPhone(@RequestParam long staffId) {
+        managerService.deleteStaffByPhone(staffId);
     }
 
     @DeleteMapping("/delete-manager")

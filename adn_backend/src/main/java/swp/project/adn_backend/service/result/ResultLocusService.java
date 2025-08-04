@@ -53,7 +53,7 @@ public class ResultLocusService {
 
     static {
         alleleFrequenciesAsian.put("TH01", Map.of(
-                6.0, 0.13, 7.0, 0.122, 8.0, 0.268, 9.0, 0.247, 9.3, 0.187, 10.0, 0.103, 11.0, 0.061));
+                6.0, 0.012, 7.0, 0.122, 8.0, 0.268, 9.0, 0.247, 9.3, 0.187, 10.0, 0.103, 11.0, 0.061));
         alleleFrequenciesAsian.put("D3S1358", Map.of(
                 12.0, 0.007, 13.0, 0.122, 14.0, 0.276, 15.0, 0.266, 16.0, 0.199, 17.0, 0.086, 18.0, 0.038));
         alleleFrequenciesAsian.put("vWA", Map.of(
@@ -187,7 +187,7 @@ public class ResultLocusService {
         resultDetail.setResultLoci(new ArrayList<>(resultLocusList));
         resultDetail.setCombinedPaternityIndex(combinedPi);
         resultDetail.setPaternityProbability(paternityProbability);
-        resultDetail.setResultSummary(String.format("Combined PI: %s, Probability: %s%%", combinedPi, paternityProbability));
+        resultDetail.setResultSummary(String.format("Combined PI: %.10f, Probability: %.10f%%", combinedPi, paternityProbability));
         resultDetail.setConclusion(paternityProbability > 99.0 ? "Trùng khớp quan hệ cha – con sinh học" : "Không trùng khớp");
         resultDetail.setAppointment(appointment);
 

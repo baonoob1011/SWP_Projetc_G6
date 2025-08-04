@@ -35,9 +35,7 @@ public class ResultAlleleController {
     }
     @DeleteMapping("/delete-allele")
     public ResponseEntity<String> deleteAllele(@RequestParam long alleleId){
-        System.out.println("Received request to delete alleleId = " + alleleId);
         resultAlleleService.deleteAllele(alleleId);
         return ResponseEntity.ok("Xóa Thành Công");
     }
-
 }

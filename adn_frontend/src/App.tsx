@@ -115,22 +115,23 @@ function App() {
   const shouldHideHeader = hideHeaderPaths.includes(location.pathname);
 
   const isStaffLayoutRoute =
-    role === 'STAFF' &&
-    [
-      '/s-page/s-userData',
-      '/s-page/s-slot',
-      '/s-page/checkBooking',
-      '/s-page/checkAppointmentAtCenter/:slotId',
-      '/s-page/checkAppointmentAtHome/:appointmentId',
-      '/s-page/get-appointment/:appointmentId',
-      '/s-page/selectorSlot',
-      '/s-page/labCheckSample',
-      '/s-page/record-result/:sampleId',
-      '/s-page',
-      's-page/print',
-      '/checkResultById/:appointmentId',
-      '/result/:appointmentId',
-    ].some((path) => matchPath(path, location.pathname));
+    role === 'STAFF' ||
+    (role === 'LAB_TECHNICIAN' &&
+      [
+        '/s-page/s-userData',
+        '/s-page/s-slot',
+        '/s-page/checkBooking',
+        '/s-page/checkAppointmentAtCenter/:slotId',
+        '/s-page/checkAppointmentAtHome/:appointmentId',
+        '/s-page/get-appointment/:appointmentId',
+        '/s-page/selectorSlot',
+        '/s-page/labCheckSample',
+        '/s-page/record-result/:sampleId',
+        '/s-page',
+        's-page/print',
+        '/checkResultById/:appointmentId',
+        '/result/:appointmentId',
+      ].some((path) => matchPath(path, location.pathname)));
 
   const isManagerLayoutRoute =
     role === 'MANAGER' &&

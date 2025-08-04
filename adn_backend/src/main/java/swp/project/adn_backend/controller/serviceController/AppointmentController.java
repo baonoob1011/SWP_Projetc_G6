@@ -50,6 +50,14 @@ public class AppointmentController {
                                                                   @RequestParam long locationId,
                                                                   @RequestParam long priceId) {
 
+        ServiceTest serviceTest = serviceTestRepository.findById(serviceId)
+                .orElseThrow(() -> new AppException(ErrorCodeUser.SERVICE_NOT_EXISTS));
+
+
+        if (serviceTest.getServiceType().equals(ServiceType.ADMINISTRATIVE)) {
+            validatePatientRequests(request.getPatientRequestList());
+        }
+
         return appointmentService.bookAppointmentAtCenter(
                 request.getAppointmentRequest(),
                 authentication,
@@ -129,35 +137,15 @@ public class AppointmentController {
                                                                                          @RequestParam long appointmentId) {
         return ResponseEntity.ok(appointmentService.getAllAppointmentsResultForManager(authentication, appointmentId));
     }
-    @GetMapping("/get-all-history-result-by-phone")
-    public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResultByPhone(Authentication authentication,
-                                                                                         @RequestParam String phone) {
-        return ResponseEntity.ok(appointmentService.getAllAppointmentsResultByPhone(authentication, phone));
-    }
-
-    //staff lay ra de in giay cung
-    @GetMapping("/get-all-result-by-staff")
-    public ResponseEntity<List<AllAppointmentResult>> getAllAppointmentsResultForStaffToSendHardCopy(Authentication authentication,
-                                                                                                     @RequestParam long appointmentId) {
-        return ResponseEntity.ok(appointmentService.getAllAppointmentsResultForStaffToSendHardCopy(authentication, appointmentId));
-    }
-
     // manager get to view result
     @GetMapping("/get-all-appointment-by-manager")
     public ResponseEntity<List<AppointmentInfoForManagerDTO>> getAppointmentToViewResult() {
         return ResponseEntity.ok(appointmentService.getAppointmentToViewResult());
     }
-
     @GetMapping("/get-all-appointment-by-manager-to-refund")
     public ResponseEntity<List<AppointmentInfoForManagerDTO>> getAppointmentToRefund() {
         return ResponseEntity.ok(appointmentService.getAppointmentToRefund());
     }
-
-    @GetMapping("/get-all-appointment-by-staff-to-send-hard-copy")
-    public ResponseEntity<List<AppointmentInfoForManagerDTO>> getAppointmentToSendHardCopy() {
-        return ResponseEntity.ok(appointmentService.getAppointmentToSendHardCopy());
-    }
-
     //thêm staff vào appointment at home
     @PutMapping("/update-staff-to-appointment-at-home")
     public ResponseEntity<String> addStaffToAppointment(@RequestParam long staffId,
@@ -165,12 +153,6 @@ public class AppointmentController {
         appointmentService.addStaffToAppointment(staffId, appointmentId);
         return ResponseEntity.ok("add staff to appointment successful");
     }
-
-    @GetMapping("/get-appointment-by-phone")
-    public ResponseEntity<AllAppointmentResponse> getAppointmentByPhone(@RequestParam String phone) {
-        return ResponseEntity.ok(appointmentService.getAppointmentByPhone(phone));
-    }
-
     //thong bao sample bi loi
     @PutMapping("/update-note")
     public ResponseEntity<String> updateNote(@RequestBody AppointmentRequest appointmentRequest,
@@ -207,7 +189,6 @@ public class AppointmentController {
         appointmentService.updateAppointmentStatusByManager(appointmentId);
         return ResponseEntity.ok("update thanh cong");
     }
-
     //
     @PutMapping("/appointment-refund")
     public ResponseEntity<String> appointmentRefund(@RequestParam long appointmentId) {
@@ -254,6 +235,8 @@ public class AppointmentController {
                     throw new RuntimeException("Người từ 16 tuổi trở lên bắt buộc phải có số CCCD");
                 }
             }
+
+            // Có thể thêm các điều kiện khác nếu cần
         }
     }
 

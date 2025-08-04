@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import DescriptionIcon from '@mui/icons-material/Description';
 import HardCopyStatusList from './PrintPDFStatus';
 
 const GetKitDeliveryStatus = () => {
@@ -13,7 +11,7 @@ const GetKitDeliveryStatus = () => {
   const [expandedOrders, setExpandedOrders] = useState<Set<number>>(new Set());
   const [activeTab, setActiveTab] = useState<'status' | 'pdf'>('status');
 
-  // Pagination statesF
+  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
 
@@ -90,8 +88,8 @@ const GetKitDeliveryStatus = () => {
         return 'failed';
       }
       // For FAILED orders, mark previous steps as completed up to IN_PROGRESS
-      // if (stepIndex < 2) return 'completed'; // PENDING, IN_PROGRESS
-      // return 'pending';
+      if (stepIndex < 2) return 'completed'; // PENDING, IN_PROGRESS
+      return 'pending';
     }
 
     // For DONE status, mark all normal flow steps as completed
@@ -103,18 +101,6 @@ const GetKitDeliveryStatus = () => {
     // For DELIVERED status, mark steps 0,1,2 as completed, 3 as pending
     if (upperStatus === 'DELIVERED') {
       if (stepIndex <= 2) return 'completed';
-      return 'pending';
-    }
-
-    // For IN_PROGRESS status, mark both PENDING and IN_PROGRESS steps as completed
-    if (upperStatus === 'IN_PROGRESS') {
-      if (stepIndex <= 1) return 'completed'; // PENDING, IN_PROGRESS
-      return 'pending';
-    }
-
-    // For PENDING status, mark PENDING step as completed
-    if (upperStatus === 'PENDING') {
-      if (stepIndex === 0) return 'completed'; // PENDING step
       return 'pending';
     }
 
@@ -321,75 +307,28 @@ const GetKitDeliveryStatus = () => {
         </div>
       ) : (
         <>
-          {/* Updated Tab Design */}
-          <div className="flex gap-4 mb-8">
-            {/* Theo dõi giao kit tab */}
-            <div
+          <div className="flex justify-center gap-4 mb-6">
+            <button
               onClick={() => setActiveTab('status')}
-              className={`flex-1 cursor-pointer transition-all duration-300 ${
-                activeTab === 'status' ? 'transform scale-105' : ''
-              }`}
-            >
-              <div className={`relative rounded-2xl shadow-lg overflow-hidden h-20 ${
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
                 activeTab === 'status'
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600'
-                  : 'bg-white border border-gray-200 hover:shadow-md'
-              }`}>
-                <div className="flex items-center justify-center h-full px-6 relative z-10">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${
-                      activeTab === 'status'
-                        ? 'bg-white'
-                        : 'bg-blue-50'
-                    }`}>
-                      <LocalShippingIcon className={`text-xl ${
-                        activeTab === 'status' ? 'text-black' : 'text-blue-600'
-                      }`} />
-                    </div>
-                    <span className={`font-semibold text-base ${
-                      activeTab === 'status' ? 'text-white' : 'text-gray-700'
-                    }`}>
-                      Theo dõi giao kit
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Theo dõi bản chứng nhận tab */}
-            <div
-              onClick={() => setActiveTab('pdf')}
-              className={`flex-1 cursor-pointer transition-all duration-300 ${
-                activeTab === 'pdf' ? 'transform scale-105' : ''
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              <div className={`relative rounded-2xl shadow-lg overflow-hidden h-20 ${
+              Theo dõi giao kit
+            </button>
+            <button
+              onClick={() => setActiveTab('pdf')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
                 activeTab === 'pdf'
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600'
-                  : 'bg-white border border-gray-200 hover:shadow-md'
-              }`}>
-                <div className="flex items-center justify-center h-full px-6 relative z-10">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${
-                      activeTab === 'pdf'
-                        ? 'bg-white'
-                        : 'bg-blue-50'
-                    }`}>
-                      <DescriptionIcon className={`text-xl ${
-                        activeTab === 'pdf' ? 'text-black' : 'text-blue-600'
-                      }`} />
-                    </div>
-                    <span className={`font-semibold text-base ${
-                      activeTab === 'pdf' ? 'text-white' : 'text-gray-700'
-                    }`}>
-                      Theo dõi bản chứng nhận
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Theo dõi bản chứng nhận
+            </button>
           </div>
-
           {activeTab === 'status' && (
             <>
               {currentItems.map((order: any, orderIndex: number) => {
