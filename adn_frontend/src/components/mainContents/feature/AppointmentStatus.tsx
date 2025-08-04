@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import DescriptionIcon from '@mui/icons-material/Description';
 import HardCopyStatusList from './PrintPDFStatus';
 
 const GetKitDeliveryStatus = () => {
@@ -11,7 +13,7 @@ const GetKitDeliveryStatus = () => {
   const [expandedOrders, setExpandedOrders] = useState<Set<number>>(new Set());
   const [activeTab, setActiveTab] = useState<'status' | 'pdf'>('status');
 
-  // Pagination states
+  // Pagination statesF
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
 
@@ -319,28 +321,75 @@ const GetKitDeliveryStatus = () => {
         </div>
       ) : (
         <>
-          <div className="flex justify-center gap-4 mb-6">
-            <button
+          {/* Updated Tab Design */}
+          <div className="flex gap-4 mb-8">
+            {/* Theo dõi giao kit tab */}
+            <div
               onClick={() => setActiveTab('status')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+              className={`flex-1 cursor-pointer transition-all duration-300 ${
+                activeTab === 'status' ? 'transform scale-105' : ''
+              }`}
+            >
+              <div className={`relative rounded-2xl shadow-lg overflow-hidden h-20 ${
                 activeTab === 'status'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              Theo dõi giao kit
-            </button>
-            <button
+                  ? 'bg-gradient-to-r from-blue-500 to-blue-600'
+                  : 'bg-white border border-gray-200 hover:shadow-md'
+              }`}>
+                <div className="flex items-center justify-center h-full px-6 relative z-10">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-lg ${
+                      activeTab === 'status'
+                        ? 'bg-white'
+                        : 'bg-blue-50'
+                    }`}>
+                      <LocalShippingIcon className={`text-xl ${
+                        activeTab === 'status' ? 'text-black' : 'text-blue-600'
+                      }`} />
+                    </div>
+                    <span className={`font-semibold text-base ${
+                      activeTab === 'status' ? 'text-white' : 'text-gray-700'
+                    }`}>
+                      Theo dõi giao kit
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Theo dõi bản chứng nhận tab */}
+            <div
               onClick={() => setActiveTab('pdf')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
-                activeTab === 'pdf'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              className={`flex-1 cursor-pointer transition-all duration-300 ${
+                activeTab === 'pdf' ? 'transform scale-105' : ''
               }`}
             >
-              Theo dõi bản chứng nhận
-            </button>
+              <div className={`relative rounded-2xl shadow-lg overflow-hidden h-20 ${
+                activeTab === 'pdf'
+                  ? 'bg-gradient-to-r from-blue-500 to-blue-600'
+                  : 'bg-white border border-gray-200 hover:shadow-md'
+              }`}>
+                <div className="flex items-center justify-center h-full px-6 relative z-10">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-lg ${
+                      activeTab === 'pdf'
+                        ? 'bg-white'
+                        : 'bg-blue-50'
+                    }`}>
+                      <DescriptionIcon className={`text-xl ${
+                        activeTab === 'pdf' ? 'text-black' : 'text-blue-600'
+                      }`} />
+                    </div>
+                    <span className={`font-semibold text-base ${
+                      activeTab === 'pdf' ? 'text-white' : 'text-gray-700'
+                    }`}>
+                      Theo dõi bản chứng nhận
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+
           {activeTab === 'status' && (
             <>
               {currentItems.map((order: any, orderIndex: number) => {
