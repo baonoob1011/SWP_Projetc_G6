@@ -69,7 +69,7 @@ const StaffPage = () => {
   const role = localStorage.getItem('role');
 
   const menuItems = [
-    { id: 'dashboard', icon: ArrowBack, label: 'Home', path: '' },
+    { id: 'home', icon: ArrowBack, label: 'Trang chủ', path: '' },
     ...(role === 'STAFF'
       ? [
           {

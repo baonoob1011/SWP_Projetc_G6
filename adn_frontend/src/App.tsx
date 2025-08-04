@@ -131,6 +131,7 @@ function App() {
         's-page/print',
         '/checkResultById/:appointmentId',
         '/result/:appointmentId',
+        '/',
       ].some((path) => matchPath(path, location.pathname)));
 
   const isManagerLayoutRoute =
