@@ -39,8 +39,8 @@ const HardCopyStatusList = () => {
   };
   const handleUpdate = async (appointmentId: string) => {
     const result = await Swal.fire({
-      title: 'Xác nhận thay đổi?',
-      text: 'Bạn có chắc chắn muốn đổi trạng thái này?',
+      title: 'Xác nhận',
+      text: 'Bạn có chắc chắn đã nhận được?',
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Xác nhận',
