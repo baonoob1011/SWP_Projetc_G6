@@ -145,7 +145,7 @@ const TransactionHistory = () => {
                     : 'N/A'}
                 </td>
                 <td>{tx.serviceName}</td>
-                <td>{dayjs(tx.appointmentDate).format('DD/MM/YYYY')}</td>
+                <td>{dayjs(tx.timestamp).format('HH:mm:ss DD/MM/YYYY')}</td>
               </tr>
             ))}
           </tbody>
