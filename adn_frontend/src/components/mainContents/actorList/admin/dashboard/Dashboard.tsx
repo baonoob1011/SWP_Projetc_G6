@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs, Tab, Container, Row, Col } from 'react-bootstrap';
+import { Tabs, Tab, Container } from 'react-bootstrap';
 import GetAppointmentPercentage from './GetAppoinmentPercentage';
 import GetRating from './GetRating';
 import Stats from './GetStats';
