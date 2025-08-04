@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs, Tab, Container } from 'react-bootstrap';
+import { Tabs, Tab, Container, Row, Col } from 'react-bootstrap';
 import GetAppointmentPercentage from './GetAppoinmentPercentage';
 import GetRating from './GetRating';
 import Stats from './GetStats';
@@ -8,16 +8,26 @@ import TransactionHistory from './TransactionHistory';
 
 export const DashBoard = () => {
   return (
-    <Container className="mt-4">
-      <Tabs defaultActiveKey="overview" id="dashboard-tabs" className="mb-3">
+    <Container fluid className="mt-4 px-4">
+      <Tabs
+        defaultActiveKey="overview"
+        id="dashboard-tabs"
+        className="mb-4"
+        fill
+      >
         <Tab eventKey="transactions" title="Lịch sử giao dịch">
-          <TransactionHistory />
+          <div className="py-3">
+            <TransactionHistory />
+          </div>
         </Tab>
+
         <Tab eventKey="overview" title="Tổng quan hệ thống">
-          <Stats />
-          <GetAppointmentPercentage />
-          <RevenueDashboard />
-          <GetRating />
+          <div className="py-3">
+            <Stats />
+            <GetAppointmentPercentage />
+            <RevenueDashboard />
+            <GetRating />
+          </div>
         </Tab>
       </Tabs>
     </Container>
