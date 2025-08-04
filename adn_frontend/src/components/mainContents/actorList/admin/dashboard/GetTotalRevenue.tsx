@@ -121,24 +121,24 @@ const RevenueDashboard = () => {
   // Improved currency formatting functions
   const formatCurrency = (value: number) => {
     if (value === 0) return '0đ';
-    
+
     // Format with thousands separators and add 'đ' suffix
     const formatted = new Intl.NumberFormat('vi-VN', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
-    
+
     return `${formatted}đ`;
   };
 
   const formatCurrencyTooltip = (value: number) => {
     if (value === 0) return '0đ';
-    
+
     const formatted = new Intl.NumberFormat('vi-VN', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
-    
+
     return `${formatted}đ`;
   };
 
@@ -208,13 +208,14 @@ const RevenueDashboard = () => {
 
   // Calculate monthly stats
   const totalYearRevenue = yearRevenue?.totalRevenue || 0;
-  const averageMonthlyRevenue = yearRevenue?.monthlyRevenues?.length 
-    ? totalYearRevenue / yearRevenue.monthlyRevenues.length 
+  const averageMonthlyRevenue = yearRevenue?.monthlyRevenues?.length
+    ? totalYearRevenue / yearRevenue.monthlyRevenues.length
     : 0;
-  const highestMonthRevenue = yearRevenue?.monthlyRevenues?.reduce(
-    (max, month) => (month.revenue > max ? month.revenue : max),
-    0
-  ) || 0;
+  const highestMonthRevenue =
+    yearRevenue?.monthlyRevenues?.reduce(
+      (max, month) => (month.revenue > max ? month.revenue : max),
+      0
+    ) || 0;
 
   // Main revenue stats with circular progress indicators
   const mainStats = [
@@ -304,7 +305,7 @@ const RevenueDashboard = () => {
                 Tổng quan doanh thu năm {year} - Phân tích theo từng tháng
               </p>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <label className="flex flex-col text-sm font-medium text-white">
                 Chọn năm:
@@ -329,7 +330,10 @@ const RevenueDashboard = () => {
           {/* Monthly Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {monthlyStats.map((stat, idx) => (
-              <div key={idx} className="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
+              <div
+                key={idx}
+                className="bg-white/20 backdrop-blur-sm rounded-2xl p-4"
+              >
                 <div className="flex items-center">
                   <div
                     className={`w-12 h-12 rounded-full border-2 ${stat.circleColor} bg-white/30 flex items-center justify-center mr-4`}
