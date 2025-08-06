@@ -5,10 +5,14 @@ import { NavLink, useParams } from 'react-router-dom';
 import { ArrowBack, Check } from '@mui/icons-material';
 import styles from './CheckAppointment.module.css';
 import Swal from 'sweetalert2';
+import Modal from '../../feature/ShowPopup';
+import type { Kit } from '../../type/BookingType';
 
 const CollectSampleAtCenter = () => {
   const { slotId } = useParams();
 
+  const [isKit, setIsKit] = useState<Kit[]>([]);
+  const [showKitTable, setShowKitTable] = useState(false); // State để điều khiển hiển thị bảng kit
   const [sample, setSample] = useState<any[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -25,7 +29,7 @@ const CollectSampleAtCenter = () => {
   const sampleStatusOptions = [
     { value: 'COLLECTED', label: 'Đã thu thập mẫu' },
     // { value: 'IN_TRANSIT', label: 'Đang vận chuyển' },
-    { value: 'RECEIVED', label: 'Đã nhận tại phòng xét nghiệm' },
+    { value: 'RECEIVED', label: 'Chuyển tới phòng xét nghiệm' },
   ];
   const Translation = (status: string) => {
     switch (status) {
@@ -34,7 +38,7 @@ const CollectSampleAtCenter = () => {
       case 'IN_TRANSIT':
         return 'Đang vận chuyển';
       case 'RECEIVED':
-        return 'Đã nhận tại phòng xét nghiệm';
+        return 'Chuyển tới phòng xét nghiệm';
       case 'SAMPLE_COLLECTED':
         return 'Đã thu mẫu';
       case 'IN_ANALYSIS':
@@ -53,6 +57,27 @@ const CollectSampleAtCenter = () => {
     appointmentId: string;
     sampleId: string;
   } | null>(null);
+  const fetchKitData = async () => {
+    try {
+      const res = await fetch(
+        'http://localhost:8080/api/kit/get-all-kit-staff',
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        toast.error('không thể lấy danh sách Kit');
+      } else {
+        const data = await res.json();
+        setIsKit(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const fetchAppointment = async () => {
     try {
       setLoading(true);
@@ -227,6 +252,7 @@ const CollectSampleAtCenter = () => {
       } else {
         toast.success('Thu mẫu thành công');
         fetchSampleData(appointmentId);
+        fetchAppointment();
       }
     } catch (error) {
       console.log(error);
@@ -279,133 +305,213 @@ const CollectSampleAtCenter = () => {
     }
   };
 
-  const sampleStatus = appointments.map(
-    (a) => a.patientAppointmentResponse.patientStatus === 'REGISTERED'
-  );
   useEffect(() => {
     fetchAppointment();
+    fetchKitData();
   }, []);
   return (
-    <div className={styles.container}>
-      <NavLink to="/s-page/s-slot">
-        <ArrowBack></ArrowBack>
-      </NavLink>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Kiểm tra lịch hẹn - Slot {slotId}</h1>
-      </div>
+    <div>
+      <div>
+        <button
+          onClick={() => setShowKitTable(true)}
+          style={{
+            marginTop: '16px',
+            marginLeft: '30px',
+            padding: '10px 20px',
+            backgroundColor: '#007bff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '500',
+            transition: 'background-color 0.2s',
+          }}
+        >
+          Hiển Thị Bảng Kit
+        </button>
 
-      {loading ? (
-        <div className={styles.loadingContainer}>
-          <span className={styles.loadingText}>Đang tải dữ liệu...</span>
-        </div>
-      ) : appointments.length > 0 ? (
-        <div className={styles.tableContainer}>
-          <table className={styles.table}>
-            <thead className={styles.tableHeader}>
-              <tr>
-                <th className={styles.tableHeaderCell}>Họ tên</th>
-                <th className={styles.tableHeaderCell}>Tên dịch vụ</th>
-                <th className={styles.tableHeaderCell}>Tên Kit</th>
-                <th className={styles.tableHeaderCell}>Quan hệ</th>
-                <th className={styles.tableHeaderCell}>Ghi chú</th>
-
-                {appointments[0]?.patientAppointmentResponse?.some(
-                  (patient: any) =>
-                    patient?.patientStatus !== 'COMPLETED' &&
-                    patient?.patientStatus !== 'NO_SHOW'
-                ) && <th className={styles.tableHeaderCell}>Vật xét nghiệm</th>}
-
-                {appointments[0]?.patientAppointmentResponse?.some(
-                  (patient: any) =>
-                    patient?.patientStatus !== 'COMPLETED' &&
-                    patient?.patientStatus !== 'NO_SHOW'
-                ) &&
-                  sampleStatus && (
-                    <th className={styles.tableHeaderCell}>Vắng mặt</th>
+        {/* Modal bảng kit */}
+        {showKitTable && (
+          <Modal onClose={() => setShowKitTable(false)}>
+            <div>
+              <h2
+                style={{
+                  fontSize: '20px',
+                  fontWeight: 'bold',
+                  marginBottom: '16px',
+                }}
+              >
+                Danh Sách Kit
+              </h2>
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                      Mã Kit
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                      Tên Kit
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                      Số Lượng
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                      Nội Dung
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {isKit.length > 0 ? (
+                    isKit.map((kit, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 text-sm text-blue-600 font-medium border-r border-gray-200">
+                          {kit.kitCode}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-800 border-r border-gray-200">
+                          {kit.kitName}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                          {kit.quantity} kit
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600">
+                          {kit.contents}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="px-4 py-8 text-center text-gray-500"
+                      >
+                        Không tìm thấy kit nào
+                      </td>
+                    </tr>
                   )}
-              </tr>
-            </thead>
+                </tbody>
+              </table>
+            </div>
+          </Modal>
+        )}
+      </div>
+      <div className={styles.container}>
+        <NavLink to="/s-page/s-slot">
+          <ArrowBack></ArrowBack>
+        </NavLink>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Kiểm tra lịch hẹn - Slot {slotId}</h1>
+        </div>
 
-            <tbody>
-              {appointments.map((appointmentItem) =>
-                appointmentItem.patientAppointmentResponse.map(
-                  (patient: any) => {
-                    const appointmentId =
-                      appointmentItem.showAppointmentResponse?.appointmentId;
-                    const serviceId =
-                      appointmentItem.serviceAppointmentResponses?.[0]
-                        ?.serviceId;
-                    const key = `${appointmentId}_${patient.patientId}`;
-                    const isPaid =
-                      appointmentItem.showAppointmentResponse?.note ===
-                      'Chưa thanh toán';
+        {loading ? (
+          <div className={styles.loadingContainer}>
+            <span className={styles.loadingText}>Đang tải dữ liệu...</span>
+          </div>
+        ) : appointments.length > 0 ? (
+          <div className={styles.tableContainer}>
+            <table className={styles.table}>
+              <thead className={styles.tableHeader}>
+                <tr>
+                  <th className={styles.tableHeaderCell}>Họ tên</th>
+                  <th className={styles.tableHeaderCell}>Tên dịch vụ</th>
+                  <th className={styles.tableHeaderCell}>Tên Kit</th>
+                  <th className={styles.tableHeaderCell}>Quan hệ</th>
+                  <th className={styles.tableHeaderCell}>Ghi chú</th>
 
-                    return (
-                      <tr key={key} className={styles.tableRow}>
-                        <td className={styles.tableCell}>{patient.fullName}</td>
-                        <td className={styles.tableCell}>
-                          {
-                            appointmentItem.serviceAppointmentResponses?.[0]
-                              .serviceName
-                          }
-                        </td>
-                        <td className={styles.tableCell}>
-                          {appointmentItem.kitAppointmentResponse.kitName}
-                        </td>
+                  {appointments[0]?.patientAppointmentResponse?.some(
+                    (patient: any) =>
+                      patient?.patientStatus !== 'COMPLETED' &&
+                      patient?.patientStatus !== 'NO_SHOW'
+                  ) && (
+                    <th className={styles.tableHeaderCell}>Vật xét nghiệm</th>
+                  )}
 
-                        <td className={styles.tableCell}>
-                          {patient.relationship}
-                        </td>
+                  {appointments[0]?.patientAppointmentResponse?.some(
+                    (patient: any) => patient?.patientStatus === 'REGISTERED'
+                  ) && <th className={styles.tableHeaderCell}>Vắng mặt</th>}
+                </tr>
+              </thead>
 
-                        <td className={styles.tableCell}>
-                          {Translation(patient.patientStatus)}
-                        </td>
+              <tbody>
+                {appointments.map((appointmentItem) =>
+                  appointmentItem.patientAppointmentResponse.map(
+                    (patient: any) => {
+                      const appointmentId =
+                        appointmentItem.showAppointmentResponse?.appointmentId;
+                      const serviceId =
+                        appointmentItem.serviceAppointmentResponses?.[0]
+                          ?.serviceId;
+                      const key = `${appointmentId}_${patient.patientId}`;
+                      const isPaid =
+                        appointmentItem.showAppointmentResponse?.note ===
+                        'Chưa thanh toán';
 
-                        {patient.patientStatus !== 'COMPLETED' &&
-                          patient.patientStatus !== 'NO_SHOW' && (
-                            <td className={styles.tableCell}>
-                              {!isPaid ? (
-                                <div className={styles.actionsContainer}>
-                                  <select
-                                    className={styles.sampleSelect}
-                                    value={sampleType[key as any] || ''}
-                                    onChange={(e) =>
-                                      handleSeletedSample(e, key)
-                                    }
-                                  >
-                                    <option value="">
-                                      Chọn vật xét nghiệm
-                                    </option>
-                                    {sampleTypes.map((type) => (
-                                      <option key={type} value={type}>
-                                        {type}
+                      return (
+                        <tr key={key} className={styles.tableRow}>
+                          <td className={styles.tableCell}>
+                            {patient.fullName}
+                          </td>
+                          <td className={styles.tableCell}>
+                            {
+                              appointmentItem.serviceAppointmentResponses?.[0]
+                                .serviceName
+                            }
+                          </td>
+                          <td className={styles.tableCell}>
+                            {appointmentItem.kitAppointmentResponse.kitName}
+                          </td>
+
+                          <td className={styles.tableCell}>
+                            {patient.relationship}
+                          </td>
+
+                          <td className={styles.tableCell}>
+                            {Translation(patient.patientStatus)}
+                          </td>
+
+                          {patient.patientStatus !== 'COMPLETED' &&
+                            patient.patientStatus !== 'NO_SHOW' && (
+                              <td className={styles.tableCell}>
+                                {!isPaid ? (
+                                  <div className={styles.actionsContainer}>
+                                    <select
+                                      className={styles.sampleSelect}
+                                      value={sampleType[key as any] || ''}
+                                      onChange={(e) =>
+                                        handleSeletedSample(e, key)
+                                      }
+                                    >
+                                      <option value="">
+                                        Chọn vật xét nghiệm
                                       </option>
-                                    ))}
-                                  </select>
-                                  <button
-                                    className={styles.submitBtn}
-                                    onClick={() =>
-                                      handleSendSample(
-                                        patient.patientId,
-                                        serviceId,
-                                        appointmentId,
-                                        key
-                                      )
-                                    }
-                                  >
-                                    <Check fontSize="small" />
-                                  </button>
-                                </div>
-                              ) : (
-                                <span className={styles.unpaidStatus}>
-                                  Chưa thanh toán
-                                </span>
-                              )}
-                            </td>
-                          )}
-                        {patient.patientStatus !== 'COMPLETED' &&
-                          patient.patientStatus !== 'NO_SHOW' &&
-                          sampleStatus && (
+                                      {sampleTypes.map((type) => (
+                                        <option key={type} value={type}>
+                                          {type}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    <button
+                                      className={styles.submitBtn}
+                                      onClick={() =>
+                                        handleSendSample(
+                                          patient.patientId,
+                                          serviceId,
+                                          appointmentId,
+                                          key
+                                        )
+                                      }
+                                    >
+                                      <Check fontSize="small" />
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <span className={styles.unpaidStatus}>
+                                    Chưa thanh toán
+                                  </span>
+                                )}
+                              </td>
+                            )}
+                          {patient?.patientStatus === 'REGISTERED' && (
                             <td>
                               <button
                                 className={styles.submitBtn}
@@ -431,165 +537,176 @@ const CollectSampleAtCenter = () => {
                               </button>
                             </td>
                           )}
-                      </tr>
-                    );
-                  }
-                )
-              )}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className={styles.emptyState}>
-          <h3>Không có lịch hẹn nào</h3>
-          <p>Slot này hiện tại chưa có lịch hẹn nào được đặt.</p>
-        </div>
-      )}
-
-      {sample.length > 0 ? (
-        <div className={styles.collectedSamplesContainer}>
-          <h2 className={styles.subTitle}>Danh sách mẫu đã nhập</h2>
-          <div
-            className={`${styles.tableContainer} ${styles.collectedSamplesTable}`}
-          >
-            <table className={styles.table}>
-              <thead className={styles.tableHeader}>
-                <tr>
-                  <th className={styles.tableHeaderCell}>Họ tên</th>
-                  <th className={styles.tableHeaderCell}>Mã Kit</th>
-                  <th className={styles.tableHeaderCell}>Loại mẫu</th>
-                  <th className={styles.tableHeaderCell}>Mã mẫu</th>
-                  <th className={styles.tableHeaderCell}>Ngày thu</th>
-                  <th className={styles.tableHeaderCell}>Người thu</th>
-                  <th className={styles.tableHeaderCell}>Trạng thái mẫu</th>
-                  {sample.some(
-                    (s) => s.sampleResponse.sampleStatus === 'COLLECTED'
-                  ) && <th className={styles.tableHeaderCell}>Thao tác</th>}
-                </tr>
-              </thead>
-              <tbody>
-                {sample.map((item: any, index: number) => (
-                  <tr key={index} className={styles.tableRow}>
-                    <td className={styles.tableCell}>
-                      {item.patientSampleResponse.fullName}
-                    </td>
-                    <td className={styles.tableCell}>
-                      {item.kitAppointmentResponse.kitCode}
-                    </td>
-                    <td className={styles.tableCell}>
-                      {item.sampleResponse.sampleType}
-                    </td>
-
-                    <td className={styles.tableCell}>
-                      {item.sampleResponse.sampleCode}
-                    </td>
-                    <td className={styles.tableCell}>
-                      {item.sampleResponse.collectionDate}
-                    </td>
-                    <td className={styles.tableCell}>
-                      {item.staffSampleResponse.fullName}
-                    </td>
-                    <td className={styles.tableCell}>
-                      <select
-                        value={item.sampleResponse.sampleStatus}
-                        onChange={async (e) => {
-                          const selectedValue = e.target.value;
-
-                          // Nếu chưa chọn giá trị mới thì không làm gì
-                          if (!selectedValue) return;
-
-                          const result = await Swal.fire({
-                            title: 'Xác nhận thay đổi?',
-                            text: `Bạn có chắc chắn muốn đổi sang trạng thái mẫu này"?`,
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonText: 'Xác nhận',
-                            cancelButtonText: 'Hủy',
-                          });
-
-                          if (result.isConfirmed) {
-                            handleUpdate(
-                              item.sampleResponse.sampleId,
-                              selectedValue
-                            );
-                          }
-                        }}
-                        className={styles.sampleSelect}
-                      >
-                        <option value="">Chọn trạng thái</option>
-                        {sampleStatusOptions.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    {item.sampleResponse.sampleStatus === 'COLLECTED' && (
-                      <td className={styles.tableCell}>
-                        <button
-                          type="submit"
-                          className={styles.submitBtn}
-                          onClick={() => {
-                            const matchedAppointment = appointments.find((a) =>
-                              a.patientAppointmentResponse.some(
-                                (p: any) =>
-                                  p.patientId ===
-                                  item.patientSampleResponse.patientId
-                              )
-                            );
-                            const appointmentId =
-                              matchedAppointment?.showAppointmentResponse
-                                ?.appointmentId;
-                            if (appointmentId) {
-                              setConfirmDelete({
-                                appointmentId,
-                                sampleId: item.sampleResponse.sampleId,
-                              });
-                            } else {
-                              toast.error(
-                                'Không tìm thấy appointmentId cho mẫu này'
-                              );
-                            }
-                          }}
-                        >
-                          Hủy mẫu
-                        </button>
-                      </td>
-                    )}
-                  </tr>
-                ))}
+                        </tr>
+                      );
+                    }
+                  )
+                )}
               </tbody>
             </table>
           </div>
-        </div>
-      ) : null}
-      {confirmDelete && (
-        <div className={styles.confirmOverlay}>
-          <div className={styles.confirmModal}>
-            <p>Bạn có chắc chắn muốn xóa mẫu này?</p>
-            <div className={styles.confirmActions}>
-              <button
-                className={styles.confirmBtn}
-                onClick={() => {
-                  handleDelete(
-                    confirmDelete.appointmentId,
-                    confirmDelete.sampleId
-                  ); // ✅ gọi API
-                  setConfirmDelete(null);
-                }}
-              >
-                Đồng ý
-              </button>
-              <button
-                className={styles.cancelBtn}
-                onClick={() => setConfirmDelete(null)}
-              >
-                Hủy
-              </button>
+        ) : (
+          <div className={styles.emptyState}>
+            <h3>Khách hàng chưa thanh toán hóa đơn</h3>
+            <p>Nhắc nhở khách hàng thanh toán hóa đơn rồi quay lại</p>
+          </div>
+        )}
+
+        {sample.length > 0 ? (
+          <div className={styles.collectedSamplesContainer}>
+            <h2 className={styles.subTitle}>Danh sách mẫu đã nhập</h2>
+            <div
+              className={`${styles.tableContainer} ${styles.collectedSamplesTable}`}
+            >
+              <table className={styles.table}>
+                <thead className={styles.tableHeader}>
+                  <tr>
+                    <th className={styles.tableHeaderCell}>Họ tên</th>
+                    <th className={styles.tableHeaderCell}>Mã Kit</th>
+                    <th className={styles.tableHeaderCell}>Loại mẫu</th>
+                    <th className={styles.tableHeaderCell}>Mã mẫu</th>
+                    <th className={styles.tableHeaderCell}>Ngày thu</th>
+                    <th className={styles.tableHeaderCell}>Người thu</th>
+                    <th className={styles.tableHeaderCell}>Trạng thái mẫu</th>
+                    {sample.some(
+                      (s) => s.sampleResponse.sampleStatus === 'COLLECTED'
+                    ) && <th className={styles.tableHeaderCell}>Thao tác</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {sample.map((item: any, index: number) => (
+                    <tr key={index} className={styles.tableRow}>
+                      <td className={styles.tableCell}>
+                        {item.patientSampleResponse.fullName}
+                      </td>
+                      <td className={styles.tableCell}>
+                        {item.kitAppointmentResponse.kitCode}
+                      </td>
+                      <td className={styles.tableCell}>
+                        {item.sampleResponse.sampleType}
+                      </td>
+                      <td className={styles.tableCell}>
+                        {item.sampleResponse.sampleCode}
+                      </td>
+                      <td className={styles.tableCell}>
+                        {item.sampleResponse.collectionDate}
+                      </td>
+                      <td className={styles.tableCell}>
+                        {item.staffSampleResponse.fullName}
+                      </td>
+
+                      {item.sampleResponse.sampleStatus !== 'RECEIVED' ? (
+                        <td className={styles.tableCell}>
+                          <select
+                            value={item.sampleResponse.sampleStatus}
+                            onChange={async (e) => {
+                              const selectedValue = e.target.value;
+
+                              // Nếu chưa chọn giá trị mới thì không làm gì
+                              if (!selectedValue) return;
+
+                              const result = await Swal.fire({
+                                title: 'Xác nhận thay đổi?',
+                                text: `Bạn có chắc chắn muốn đổi sang trạng thái mẫu này"?`,
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonText: 'Xác nhận',
+                                cancelButtonText: 'Hủy',
+                              });
+
+                              if (result.isConfirmed) {
+                                handleUpdate(
+                                  item.sampleResponse.sampleId,
+                                  selectedValue
+                                );
+                              }
+                            }}
+                            className={styles.sampleSelect}
+                          >
+                            <option value="">Chọn trạng thái</option>
+                            {sampleStatusOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                      ) : (
+                        <td className={styles.tableCell}>
+                          <span className={styles.disabledStatusText}>
+                            Đã chuyển tới phòng xét nghiệm
+                          </span>
+                        </td>
+                      )}
+
+                      {item.sampleResponse.sampleStatus === 'COLLECTED' && (
+                        <td className={styles.tableCell}>
+                          <button
+                            type="submit"
+                            className={styles.submitBtn}
+                            onClick={() => {
+                              const matchedAppointment = appointments.find(
+                                (a) =>
+                                  a.patientAppointmentResponse.some(
+                                    (p: any) =>
+                                      p.patientId ===
+                                      item.patientSampleResponse.patientId
+                                  )
+                              );
+                              const appointmentId =
+                                matchedAppointment?.showAppointmentResponse
+                                  ?.appointmentId;
+                              if (appointmentId) {
+                                setConfirmDelete({
+                                  appointmentId,
+                                  sampleId: item.sampleResponse.sampleId,
+                                });
+                              } else {
+                                toast.error(
+                                  'Không tìm thấy appointmentId cho mẫu này'
+                                );
+                              }
+                            }}
+                          >
+                            Hủy mẫu
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
-      )}
+        ) : null}
+        {confirmDelete && (
+          <div className={styles.confirmOverlay}>
+            <div className={styles.confirmModal}>
+              <p>Bạn có chắc chắn muốn xóa mẫu này?</p>
+              <div className={styles.confirmActions}>
+                <button
+                  className={styles.confirmBtn}
+                  onClick={() => {
+                    handleDelete(
+                      confirmDelete.appointmentId,
+                      confirmDelete.sampleId
+                    ); // ✅ gọi API
+                    setConfirmDelete(null);
+                  }}
+                >
+                  Đồng ý
+                </button>
+                <button
+                  className={styles.cancelBtn}
+                  onClick={() => setConfirmDelete(null)}
+                >
+                  Hủy
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -4,7 +4,6 @@ import {
   X,
   //   Settings,
   LogOut,
-  Bell,
   // Users,
   // BarChart3,
   // FileText,
@@ -12,6 +11,7 @@ import {
   List,
   BookImageIcon,
   Printer,
+  History,
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
@@ -21,7 +21,6 @@ import { toast } from 'react-toastify';
 const StaffPage = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeItem, setActiveItem] = useState('dashboard');
-  const [notifications] = useState(0);
   const [fullName, setFullName] = useState<string>('');
   const navigate = useNavigate();
   const TimeLeftLogout = (exp: number) => {
@@ -69,9 +68,9 @@ const StaffPage = () => {
   const role = localStorage.getItem('role');
 
   const menuItems = [
-    { id: 'dashboard', icon: ArrowBack, label: 'Home', path: '' },
     ...(role === 'STAFF'
       ? [
+          { id: 'home', icon: ArrowBack, label: 'Trang chủ', path: '' },
           {
             id: 'data',
             icon: List,
@@ -97,16 +96,22 @@ const StaffPage = () => {
             path: 's-page/selectorSlot',
           },
           {
-            id: 'checkAppointment',
+            id: 'checkPrint',
             icon: Printer,
             label: 'In bản cứng',
             path: 's-page/print',
+          },
+          {
+            id: 'checkHistory',
+            icon: History,
+            label: 'Tra cứu lịch đặt',
+            path: 's-page/bookingHistory',
           },
         ]
       : role === 'LAB_TECHNICIAN'
       ? [
           {
-            id: 'checkAppointment',
+            id: 'checkSample',
             icon: AppRegistration,
             label: 'Đơn đăng ký',
             path: 's-page/labCheckSample',
@@ -248,10 +253,8 @@ const StaffPage = () => {
           })}
         </nav>
 
-        {/* Bottom Section */}
         <div className="border-t border-gray-200 p-4 space-y-2">
-          {/* Notifications */}
-          <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">
+          {/* <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">
             <div className="relative">
               <Bell className="h-5 w-5" />
               {notifications > 0 && (
@@ -261,7 +264,7 @@ const StaffPage = () => {
               )}
             </div>
             <span className="font-medium">Thông báo</span>
-          </button>
+          </button> */}
 
           {/* Settings
           <button className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200 w-full">

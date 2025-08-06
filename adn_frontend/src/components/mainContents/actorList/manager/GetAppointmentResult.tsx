@@ -9,26 +9,22 @@ import Sign from '../../../../image/Sign.png';
 import ExportResultPDF from '../../feature/PrintPDF';
 import Swal from 'sweetalert2';
 
-type Profile = {
-  role: 'MANAGER' | 'STAFF';
-};
-const GetAllResultByManager = ({ role }: Profile) => {
+const GetAllResultByManager = () => {
   const { appointmentId } = useParams();
   const [isResult, setIsResult] = useState<any[]>([]);
   const navigate = useNavigate();
   const isRole = localStorage.getItem('role');
   const fetchData = async () => {
-    const apiMap = {
-      STAFF: `http://localhost:8080/api/appointment/get-all-result-by-staff?appointmentId=${appointmentId}`,
-      MANAGER: `http://localhost:8080/api/appointment/get-all-result-by-manager?appointmentId=${appointmentId}`,
-    };
     try {
-      const res = await fetch(apiMap[role], {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
+      const res = await fetch(
+        `http://localhost:8080/api/appointment/get-all-result-by-manager?appointmentId=${appointmentId}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
 
       if (!res.ok) {
         toast.error('Không thể lấy dữ liệu');
@@ -371,13 +367,14 @@ const GetAllResultByManager = ({ role }: Profile) => {
           </button>
         </div>
       )}
-      {isRole === 'STAFF' &&
-        isResult
-          .filter(
-            (item) =>
-              item.resultAppointmentResponse?.[0]?.resultStatus === 'COMPLETED'
-          )
-          .map((item, index) => <ExportResultPDF key={index} item={item} />)}
+      {isResult
+        .filter(
+          (item) =>
+            item.resultAppointmentResponse?.[0]?.resultStatus === 'COMPLETED'
+        )
+        .map((item, index) => (
+          <ExportResultPDF key={index} item={item} />
+        ))}
     </div>
   );
 };
