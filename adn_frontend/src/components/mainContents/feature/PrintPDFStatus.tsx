@@ -334,6 +334,7 @@ const HardCopyStatusList = () => {
                     </div>
                     <div className="flex items-center gap-3">
                       {result.hardCopyDeliveryStatus === 'SHIPPED' && (
+
                         <button
                           onClick={() => handleUpdate(result.appointmentId)}
                           className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium"
