@@ -8,6 +8,7 @@ type Invoice = {
   payDate: string;
   bankCode: string;
   transactionStatus: string;
+  orderInfo: string;
 };
 
 type Props = {
@@ -67,6 +68,10 @@ const InvoicePopup: React.FC<Props> = ({ visible, onClose, invoices }) => {
               <p>
                 <span className="font-medium text-gray-700">Mã hóa đơn:</span>{' '}
                 {invoice.bankCode}
+              </p>
+              <p>
+                <span className="font-medium text-gray-700">Loại dịch vụ:</span>{' '}
+                {invoice.orderInfo}
               </p>
               <p>
                 <span className="font-medium text-gray-700">Trạng thái:</span>{' '}
