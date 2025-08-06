@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import styles from './AppointmentSchedule.module.css';
 import type { Kit } from '../../type/BookingType';
+import Modal from '../../feature/ShowPopup';
 
 const AppointmentSchedule = () => {
   const [homeSchedule, setHomeSchedule] = useState<any[]>([]);
@@ -192,7 +193,9 @@ const AppointmentSchedule = () => {
                     <div className={styles.infoItem}>
                       <p className={styles.infoLabel}>Trạng Thái</p>
                       <p className={styles.infoValue}>
-                        {getStatusText(item.showAppointmentResponse.appointmentStatus)}
+                        {getStatusText(
+                          item.showAppointmentResponse.appointmentStatus
+                        )}
                       </p>
                       <div className={styles.infoItem}>
                         <p className={styles.infoLabel}>Tên Kit</p>
@@ -305,26 +308,110 @@ const AppointmentSchedule = () => {
         )}
       </div>
       {/* Nút hiển thị bảng kit */}
-          <button
-            onClick={() => setShowKitTable(!showKitTable)}
-            style={{
-              marginTop: '16px',
-              marginLeft: '30px',
-              padding: '10px 20px',
-              backgroundColor: showKitTable ? '#dc3545' : '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: '500',
-              transition: 'background-color 0.2s'
-            }}
-          >
-            {showKitTable ? 'Ẩn Bảng Kit' : 'Hiển Thị Bảng Kit'}
-          </button>
-      {/* Bảng Kit - chỉ hiển thị khi showKitTable = true */}
+      <button
+        onClick={() => setShowKitTable(true)}
+        style={{
+          marginTop: '16px',
+          marginLeft: '30px',
+          padding: '10px 20px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: 'pointer',
+          fontSize: '14px',
+          fontWeight: '500',
+          transition: 'background-color 0.2s',
+        }}
+      >
+        Hiển Thị Bảng Kit
+      </button>
+
+      {/* Modal bảng kit */}
       {showKitTable && (
+        <Modal onClose={() => setShowKitTable(false)}>
+          <div>
+            <h2
+              style={{
+                fontSize: '20px',
+                fontWeight: 'bold',
+                marginBottom: '16px',
+              }}
+            >
+              Danh Sách Kit
+            </h2>
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                    Mã Kit
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                    Tên Kit
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
+                    Số Lượng
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
+                    Nội Dung
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {isKit.length > 0 ? (
+                  isKit.map((kit, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-sm text-blue-600 font-medium border-r border-gray-200">
+                        {kit.kitCode}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-800 border-r border-gray-200">
+                        {kit.kitName}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600 border-r border-gray-200">
+                        {kit.quantity} kit
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {kit.contents}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-4 py-8 text-center text-gray-500"
+                    >
+                      Không tìm thấy kit nào
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Modal>
+      )}
+
+      {/* Nút hiển thị bảng kit */}
+      {/* <button
+        onClick={() => setShowKitTable(!showKitTable)}
+        style={{
+          marginTop: '16px',
+          marginLeft: '30px',
+          padding: '10px 20px',
+          backgroundColor: showKitTable ? '#dc3545' : '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: 'pointer',
+          fontSize: '14px',
+          fontWeight: '500',
+          transition: 'background-color 0.2s',
+        }}
+      >
+        {showKitTable ? 'Ẩn Bảng Kit' : 'Hiển Thị Bảng Kit'}
+      </button> */}
+      {/* Bảng Kit - chỉ hiển thị khi showKitTable = true */}
+      {/* {showKitTable && (
         <div style={{ marginTop: '32px', padding:'24px'}}>
           <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <div style={{ 
@@ -449,7 +536,7 @@ const AppointmentSchedule = () => {
             </table>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

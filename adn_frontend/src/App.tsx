@@ -102,6 +102,7 @@ import Deposit from './components/mainContents/services/Deposit';
 import CheckResult from './components/mainContents/actorList/manager/CheckResult';
 import GetAllResultByManager from './components/mainContents/actorList/manager/GetAppointmentResult';
 import CheckResultByStaff from './components/mainContents/actorList/staff/CheckResultByStaff';
+import CheckHistoryAppointment from './components/mainContents/actorList/staff/CheckHistoryAppoiment';
 // import CreateBlog from './components/mainContents/services/CreateBlog';
 
 function App() {
@@ -115,8 +116,8 @@ function App() {
   const shouldHideHeader = hideHeaderPaths.includes(location.pathname);
 
   const isStaffLayoutRoute =
-    role === 'STAFF' ||
-    (role === 'LAB_TECHNICIAN' &&
+    role === 'LAB_TECHNICIAN' ||
+    (role === 'STAFF' &&
       [
         '/s-page/s-userData',
         '/s-page/s-slot',
@@ -129,9 +130,8 @@ function App() {
         '/s-page/record-result/:sampleId',
         '/s-page',
         's-page/print',
-        '/checkResultById/:appointmentId',
         '/result/:appointmentId',
-        '/',
+        '/s-page/bookingHistory',
       ].some((path) => matchPath(path, location.pathname)));
 
   const isManagerLayoutRoute =
@@ -468,13 +468,14 @@ function App() {
                 }
               />
               <Route
-                path="/checkResultById/:appointmentId"
+                path="s-page/bookingHistory"
                 element={
                   <ProtectedRoute allowedRoles={['STAFF']}>
-                    <GetAllResultByManager role={role as 'STAFF'} />
+                    <CheckHistoryAppointment />
                   </ProtectedRoute>
                 }
               />
+
               <Route
                 path="/s-page/record-result/:sampleId"
                 element={
@@ -631,7 +632,7 @@ function App() {
                 path="/checkResultById/:appointmentId"
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
-                    <GetAllResultByManager role={role as 'MANAGER'} />
+                    <GetAllResultByManager />
                   </ProtectedRoute>
                 }
               />
@@ -744,14 +745,6 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['MANAGER']}>
                     <CreateKit />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/checkResultById/:appointmentId"
-                element={
-                  <ProtectedRoute allowedRoles={['MANAGER']}>
-                    <GetAllResultByManager role={role as 'MANAGER'} />
                   </ProtectedRoute>
                 }
               />
