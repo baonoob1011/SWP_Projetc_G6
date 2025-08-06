@@ -8,7 +8,9 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 const HardCopyStatusList = () => {
   const [resultStatus, setResultStatus] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [expandedResults, setExpandedResults] = useState<Set<number>>(new Set());
+  const [expandedResults, setExpandedResults] = useState<Set<number>>(
+    new Set()
+  );
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -48,8 +50,7 @@ const HardCopyStatusList = () => {
 
   // Function to get current step index based on API status
   const getCurrentStepIndex = (status: string) => {
-    const upperStatus = status.toUpperCase();
-    switch (upperStatus) {
+    switch (status) {
       case 'PENDING':
         return 0;
       case 'PRINTED':
@@ -69,28 +70,26 @@ const HardCopyStatusList = () => {
     currentIndex: number,
     status: string
   ) => {
-    const upperStatus = status.toUpperCase();
-
     // For DELIVERED status, mark all steps as completed
-    if (upperStatus === 'DELIVERED') {
+    if (status === 'DELIVERED') {
       if (stepIndex <= 3) return 'completed';
       return 'pending';
     }
 
     // For SHIPPED status, mark steps 0,1,2 as completed
-    if (upperStatus === 'SHIPPED') {
+    if (status === 'SHIPPED') {
       if (stepIndex <= 2) return 'completed';
       return 'pending';
     }
 
     // For PRINTED status, mark steps 0,1 as completed
-    if (upperStatus === 'PRINTED') {
+    if (status === 'PRINTED') {
       if (stepIndex <= 1) return 'completed';
       return 'pending';
     }
 
     // For PENDING status, mark PENDING step as completed
-    if (upperStatus === 'PENDING') {
+    if (status === 'PENDING') {
       if (stepIndex === 0) return 'completed';
       return 'pending';
     }
@@ -183,8 +182,7 @@ const HardCopyStatusList = () => {
 
   // Get status display text
   const getStatusDisplayText = (status: string) => {
-    const upperStatus = status.toUpperCase();
-    switch (upperStatus) {
+    switch (status) {
       case 'PENDING':
         return 'Chờ xử lý';
       case 'PRINTED':
@@ -200,8 +198,7 @@ const HardCopyStatusList = () => {
 
   // Get status color class
   const getStatusColorClass = (status: string) => {
-    const upperStatus = status.toUpperCase();
-    switch (upperStatus) {
+    switch (status) {
       case 'PENDING':
         return 'bg-yellow-50 border-yellow-200';
       case 'PRINTED':
@@ -217,8 +214,7 @@ const HardCopyStatusList = () => {
 
   // Get status badge color
   const getStatusBadgeClass = (status: string) => {
-    const upperStatus = status.toUpperCase();
-    switch (upperStatus) {
+    switch (status) {
       case 'PENDING':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'PRINTED':
@@ -337,7 +333,7 @@ const HardCopyStatusList = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      {result.hardCopyDeliveryStatus !== 'DELIVERED' && (
+                      {result.hardCopyDeliveryStatus === 'SHIPPED' && (
                         <button
                           onClick={() => handleUpdate(result.appointmentId)}
                           className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium"
@@ -350,11 +346,7 @@ const HardCopyStatusList = () => {
                         onClick={() => toggleResultExpansion(realIndex)}
                       >
                         <span className="text-sm">
-                          {isExpanded ? (
-                            <ExpandLessIcon />
-                          ) : (
-                            <ExpandMoreIcon />
-                          )}
+                          {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                         </span>
                         <span>{isExpanded ? 'Thu gọn' : 'Xem chi tiết'}</span>
                       </button>
@@ -494,9 +486,7 @@ const HardCopyStatusList = () => {
           {resultStatus.length > itemsPerPage && (
             <div className="flex justify-center items-center mt-8 gap-4">
               <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.max(prev - 1, 1))
-                }
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
                 className={`px-4 py-2 rounded-lg border font-medium transition-colors duration-200 ${
                   currentPage === 1
