@@ -448,14 +448,14 @@ const GetAllResult = () => {
           ))}
 
         {/* Export PDF Components */}
-        {isResult
-          .filter(
-            (item) =>
-              item.resultAppointmentResponse?.[0]?.resultStatus === 'COMPLETED'
-          )
-          .map((item, index) => (
-            <ExportResultPDF key={index} item={item} />
-          ))}
+        {role === 'STAFF' &&
+          isResult
+            .filter(
+              (item) =>
+                item.resultAppointmentResponse?.[0]?.resultStatus ===
+                'COMPLETED'
+            )
+            .map((item, index) => <ExportResultPDF key={index} item={item} />)}
       </div>
     </div>
   );
