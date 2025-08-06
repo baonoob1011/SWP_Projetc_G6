@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import CustomSnackBar from '../userinfor/Snackbar';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
-import locationImage from '../../mainContents/feature/featureImage/Location.png'
+import locationImage from '../../mainContents/feature/featureImage/Location.png';
 type Location = {
   addressLine: string;
   district: string;
@@ -15,13 +15,11 @@ const CreateLocation = () => {
     addressLine: '',
     district: '',
     city: '',
-    locationId: ''
+    locationId: '',
   });
 
   const [auth, setAuth] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -33,31 +31,31 @@ const CreateLocation = () => {
   useEffect(() => {
     setAuth(
       localStorage.getItem('role') === 'ADMIN' ||
-      localStorage.getItem('role') === 'MANAGER'
+        localStorage.getItem('role') === 'MANAGER'
     );
   }, []);
 
   const fetchData = async () => {
     try {
-      const res = await fetch('http://localhost:8080/api/location/get-all-location',
+      const res = await fetch(
+        'http://localhost:8080/api/location/get-all-location',
         {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
-      )
+      );
       if (!res.ok) {
-        toast.error('không thể lấy danh sách địa điểm')
+        toast.error('không thể lấy danh sách địa điểm');
       } else {
         const data = await res.json();
-        setIsLocation(data)
+        setIsLocation(data);
       }
-
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   useEffect(() => {
     fetchData();
   }, []);
@@ -81,12 +79,15 @@ const CreateLocation = () => {
 
     if (confirmation.isConfirmed) {
       try {
-        const res = await fetch(`http://localhost:8080/api/location/delete-location/${locationId}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
+        const res = await fetch(
+          `http://localhost:8080/api/location/delete-location/${locationId}`,
+          {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+        );
 
         if (!res.ok) {
           toast.error('Không thể xóa địa điểm');
@@ -142,7 +143,12 @@ const CreateLocation = () => {
           timer: 1300,
         });
 
-        setLocation({ addressLine: '', district: '', city: '', locationId: '' });
+        setLocation({
+          addressLine: '',
+          district: '',
+          city: '',
+          locationId: '',
+        });
         fetchData();
       }
     } catch (error) {
@@ -165,7 +171,9 @@ const CreateLocation = () => {
         {/* Statistics Header */}
         <div className="bg-[#405EF3] rounded-lg p-6 mb-6 relative">
           <div className="flex items-center gap-2 mb-3">
-            <h2 className="text-white text-lg font-semibold">Quản lý địa điểm</h2>
+            <h2 className="text-white text-lg font-semibold">
+              Quản lý địa điểm
+            </h2>
           </div>
           {/* Breadcrumb */}
           <div className="flex items-center mb-6 text-blue-100">
@@ -175,20 +183,34 @@ const CreateLocation = () => {
           </div>
           <div className="bg-green-500 bg-opacity-30 rounded-lg p-2 max-w-xs">
             <div className="flex items-center gap-2 mb-2">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              <svg
+                className="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
               </svg>
             </div>
-            <div className="text-blue-100 text-xl">Tổng số địa điểm: {isLocation.length}</div>
+            <div className="text-blue-100 text-xl">
+              Tổng số địa điểm: {isLocation.length}
+            </div>
           </div>
-
 
           {/* Đặt hình ảnh vào trong header */}
           <div className="absolute right-0 bottom-0 mb-4 mr-40">
-            <img src={locationImage} alt="location" className="h-40 object-contain" />
+            <img
+              src={locationImage}
+              alt="location"
+              className="h-40 object-contain"
+            />
           </div>
         </div>
-
 
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -204,7 +226,9 @@ const CreateLocation = () => {
         {showCreateForm && (
           <div className="bg-white border border-gray-200 rounded-lg mb-6 shadow-sm">
             <div className="p-6">
-              <h3 className="text-lg font-medium text-gray-800 mb-4">Thêm địa điểm mới</h3>
+              <h3 className="text-lg font-medium text-gray-800 mb-4">
+                Thêm địa điểm mới
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -274,32 +298,72 @@ const CreateLocation = () => {
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                   <div className="flex items-center gap-1">
                     ID
-                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    <svg
+                      className="w-3 h-3 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                      />
                     </svg>
                   </div>
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                   <div className="flex items-center gap-1">
                     Địa chỉ
-                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    <svg
+                      className="w-3 h-3 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                      />
                     </svg>
                   </div>
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                   <div className="flex items-center gap-1">
                     Phường
-                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    <svg
+                      className="w-3 h-3 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                      />
                     </svg>
                   </div>
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600 border-r border-gray-200">
                   <div className="flex items-center gap-1">
                     Thành phố
-                    <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    <svg
+                      className="w-3 h-3 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                      />
                     </svg>
                   </div>
                 </th>
@@ -330,8 +394,18 @@ const CreateLocation = () => {
                         className="p-1 text-red-500 hover:bg-red-50 rounded border border-red-200 hover:border-red-300 transition-colors"
                         title="Delete"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -340,7 +414,10 @@ const CreateLocation = () => {
               ))}
               {isLocation.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                  <td
+                    colSpan={5}
+                    className="px-4 py-8 text-center text-gray-500"
+                  >
                     No locations found
                   </td>
                 </tr>
