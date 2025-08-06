@@ -72,7 +72,7 @@ const TransactionHistory = () => {
       style: 'currency',
       currency: 'VND',
     });
-    const sign = transactionType === 'INCOME' ? '+' : '-';
+    const sign = transactionType === 'PAYMENT' ? '-' : '+';
     return `${sign}${formattedValue}`;
   };
 
@@ -376,13 +376,13 @@ const TransactionHistory = () => {
                     </td>
                     <td
                       className={`px-6 py-4 text-sm font-bold border-r-2 border-gray-200 text-right ${
-                        tx.transactionType === 'INCOME'
-                          ? 'text-green-600 bg-green-50'
-                          : 'text-red-600 bg-red-50'
+                        tx.category === 'PAYMENT'
+                          ? 'text-red-600 bg-red-50'
+                          : 'text-green-600 bg-green-50'
                       }`}
                     >
                       <div className="truncate">
-                        {formatCurrencyWithSign(tx.amount, tx.transactionType)}
+                        {formatCurrencyWithSign(tx.amount, tx.category)}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700 font-medium border-r-2 border-gray-200 text-right">
@@ -495,34 +495,6 @@ const TransactionHistory = () => {
                       </p>
                       <p className="text-2xl font-semibold text-red-900">
                         {formatCurrency(summary.totalExpense)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <svg
-                        className="h-8 w-8 text-blue-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                        />
-                      </svg>
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-blue-600">
-                        Lợi nhuận
-                      </p>
-                      <p className="text-2xl font-semibold text-blue-900">
-                        {formatCurrency(summary.netAmount)}
                       </p>
                     </div>
                   </div>

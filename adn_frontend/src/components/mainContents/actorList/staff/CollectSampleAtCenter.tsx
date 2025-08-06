@@ -19,13 +19,7 @@ const CollectSampleAtCenter = () => {
   const [loading, setLoading] = useState(false);
 
   const [sampleType, setSampleTypes] = useState<{ [key: string]: string }>({});
-  const sampleTypes = [
-    'Niêm mạc miệng',
-    'Máu',
-    'Móng tay / móng chân',
-    'Răng',
-    'Tóc',
-  ];
+  const sampleTypes = ['Niêm mạc miệng', 'Máu', 'Móng tay', 'Răng', 'Tóc'];
   const sampleStatusOptions = [
     { value: 'COLLECTED', label: 'Đã thu thập mẫu' },
     // { value: 'IN_TRANSIT', label: 'Đang vận chuyển' },

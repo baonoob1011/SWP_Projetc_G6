@@ -12,13 +12,7 @@ export const CollectSampleAtHome = () => {
   const [sample, setSample] = useState<any[]>([]);
   const { appointmentId } = useParams();
   const [appointments, setAppointments] = useState<any[]>([]);
-  const sampleTypes = [
-    'Niêm mạc miệng',
-    'Máu',
-    'Móng tay / móng chân',
-    'Răng',
-    'Tóc',
-  ];
+  const sampleTypes = ['Niêm mạc miệng', 'Máu', 'Móng tay', 'Răng', 'Tóc'];
   const sampleStatusOptions = [
     { value: 'COLLECTED', label: 'Đã thu thập mẫu' },
     // { value: 'IN_TRANSIT', label: 'Đang vận chuyển' },
