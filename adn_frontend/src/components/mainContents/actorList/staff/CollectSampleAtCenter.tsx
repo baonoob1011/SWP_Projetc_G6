@@ -29,7 +29,7 @@ const CollectSampleAtCenter = () => {
   const sampleStatusOptions = [
     { value: 'COLLECTED', label: 'Đã thu thập mẫu' },
     // { value: 'IN_TRANSIT', label: 'Đang vận chuyển' },
-    { value: 'RECEIVED', label: 'Đã chuyển tới phòng xét nghiệm' },
+    { value: 'RECEIVED', label: 'Chuyển tới phòng xét nghiệm' },
   ];
   const Translation = (status: string) => {
     switch (status) {
@@ -38,7 +38,7 @@ const CollectSampleAtCenter = () => {
       case 'IN_TRANSIT':
         return 'Đang vận chuyển';
       case 'RECEIVED':
-        return 'Đã chuyển tới phòng xét nghiệm';
+        return 'Chuyển tới phòng xét nghiệm';
       case 'SAMPLE_COLLECTED':
         return 'Đã thu mẫu';
       case 'IN_ANALYSIS':
@@ -252,6 +252,7 @@ const CollectSampleAtCenter = () => {
       } else {
         toast.success('Thu mẫu thành công');
         fetchSampleData(appointmentId);
+        fetchAppointment();
       }
     } catch (error) {
       console.log(error);
@@ -304,9 +305,6 @@ const CollectSampleAtCenter = () => {
     }
   };
 
-  const sampleStatus = appointments.map(
-    (a) => a.patientAppointmentResponse.patientStatus === 'REGISTERED'
-  );
   useEffect(() => {
     fetchAppointment();
     fetchKitData();
@@ -429,13 +427,8 @@ const CollectSampleAtCenter = () => {
                   )}
 
                   {appointments[0]?.patientAppointmentResponse?.some(
-                    (patient: any) =>
-                      patient?.patientStatus !== 'COMPLETED' &&
-                      patient?.patientStatus !== 'NO_SHOW'
-                  ) &&
-                    sampleStatus && (
-                      <th className={styles.tableHeaderCell}>Vắng mặt</th>
-                    )}
+                    (patient: any) => patient?.patientStatus === 'REGISTERED'
+                  ) && <th className={styles.tableHeaderCell}>Vắng mặt</th>}
                 </tr>
               </thead>
 
@@ -518,34 +511,32 @@ const CollectSampleAtCenter = () => {
                                 )}
                               </td>
                             )}
-                          {patient.patientStatus !== 'COMPLETED' &&
-                            patient.patientStatus !== 'NO_SHOW' &&
-                            sampleStatus && (
-                              <td>
-                                <button
-                                  className={styles.submitBtn}
-                                  onClick={async () => {
-                                    const result = await Swal.fire({
-                                      title: 'Xác nhận vắng mặt?',
-                                      text: 'Bạn có chắc chắn muốn đánh dấu bệnh nhân này là vắng mặt?',
-                                      icon: 'warning',
-                                      showCancelButton: true,
-                                      confirmButtonText: 'Xác nhận',
-                                      cancelButtonText: 'Hủy',
-                                    });
+                          {patient?.patientStatus === 'REGISTERED' && (
+                            <td>
+                              <button
+                                className={styles.submitBtn}
+                                onClick={async () => {
+                                  const result = await Swal.fire({
+                                    title: 'Xác nhận vắng mặt?',
+                                    text: 'Bạn có chắc chắn muốn đánh dấu bệnh nhân này là vắng mặt?',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Xác nhận',
+                                    cancelButtonText: 'Hủy',
+                                  });
 
-                                    if (result.isConfirmed) {
-                                      handleAbsent(
-                                        patient.patientId,
-                                        appointmentId
-                                      );
-                                    }
-                                  }}
-                                >
-                                  Vắng mặt
-                                </button>
-                              </td>
-                            )}
+                                  if (result.isConfirmed) {
+                                    handleAbsent(
+                                      patient.patientId,
+                                      appointmentId
+                                    );
+                                  }
+                                }}
+                              >
+                                Vắng mặt
+                              </button>
+                            </td>
+                          )}
                         </tr>
                       );
                     }
@@ -556,8 +547,8 @@ const CollectSampleAtCenter = () => {
           </div>
         ) : (
           <div className={styles.emptyState}>
-            <h3>Không có lịch hẹn nào</h3>
-            <p>Slot này hiện tại chưa có lịch hẹn nào được đặt.</p>
+            <h3>Khách hàng chưa thanh toán hóa đơn</h3>
+            <p>Nhắc nhở khách hàng thanh toán hóa đơn rồi quay lại</p>
           </div>
         )}
 

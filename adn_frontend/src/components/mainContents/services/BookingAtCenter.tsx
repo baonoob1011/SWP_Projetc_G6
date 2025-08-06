@@ -10,7 +10,7 @@ import {
   type SlotInfo,
 } from '../type/FillFormType';
 import CustomSnackBar from '../userinfor/Snackbar';
-import { book } from '../userinfor/Validation';
+import { book } from '../userinfor/ValidationBooking';
 
 const BookingAtCenter = () => {
   const { serviceId } = useParams<{ serviceId: string }>();

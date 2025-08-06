@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { fieldLabels, type Patient, type Price } from '../type/FillFormType';
 import CustomSnackBar from '../userinfor/Snackbar';
-import { book } from '../userinfor/Validation';
+import { book } from '../userinfor/ValidationBooking';
 
 const BookingAtHome = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
