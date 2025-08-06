@@ -310,7 +310,7 @@ const HardCopyStatusList = () => {
 
             return (
               <div>
-                {currentStepIndex > 0 && (
+                {result.hardCopyDeliveryStatus !== null && (
                   <div
                     key={realIndex}
                     className={`mb-6 rounded-xl border-2 shadow-lg overflow-hidden ${statusColorClass}`}
