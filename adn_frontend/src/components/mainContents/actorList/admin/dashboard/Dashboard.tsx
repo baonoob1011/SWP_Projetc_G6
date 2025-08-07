@@ -18,9 +18,9 @@ export const DashBoard = () => {
         <Tab eventKey="overview" title="Tổng quan hệ thống">
           <div className="py-3">
             <Stats />
+            <GetAppointmentPercentage /> 
             <TopPayment />
             <TopDesposit />
-            <GetAppointmentPercentage />
             <RevenueDashboard />
             <GetRating />
           </div>
