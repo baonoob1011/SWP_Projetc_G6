@@ -88,7 +88,7 @@ const GetAppointmentPercentage = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ml-10 bg-gray-50 min-h-screen">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ml-10 bg-gray-50 min-h-screen mt-10">
       {/* Stats Cards */}
       <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
         <div className="flex items-center justify-between mb-4">
